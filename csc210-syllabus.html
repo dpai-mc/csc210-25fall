@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSC210: Computer Organization & Architecture</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #ffffff;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            background-color: #1e3a8a;
+            color: white;
+            padding: 2rem 0;
+            margin-bottom: 2rem;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            text-align: center;
+        }
+
+        .course-subtitle {
+            text-align: center;
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        h2 {
+            color: #1e3a8a;
+            font-size: 1.8rem;
+            margin: 2rem 0 1rem 0;
+            border-bottom: 3px solid #1e3a8a;
+            padding-bottom: 0.5rem;
+        }
+
+        h3 {
+            color: #1e3a8a;
+            font-size: 1.4rem;
+            margin: 1.5rem 0 0.8rem 0;
+        }
+
+        h4 {
+            color: #1e3a8a;
+            font-size: 1.2rem;
+            margin: 1rem 0 0.5rem 0;
+        }
+
+        .description-box {
+            background-color: #f8fafc;
+            border-left: 4px solid #1e3a8a;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .slo-list {
+            background-color: #f1f5f9;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+        }
+
+        .slo-list ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .slo-list li {
+            margin: 1rem 0;
+            padding-left: 2rem;
+            position: relative;
+        }
+
+        .slo-list li::before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #1e3a8a;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .phase-container {
+            background-color: #f8fafc;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border: 1px solid #e2e8f0;
+        }
+
+        .phase-header {
+            background-color: #1e3a8a;
+            color: white;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .week-item {
+            background-color: white;
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 0.8rem 0;
+            border-left: 4px solid #1e3a8a;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .week-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+
+        .week-title {
+            font-weight: bold;
+            color: #1e3a8a;
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .week-topics {
+            color: #4b5563;
+            margin: 0.5rem 0;
+        }
+
+        .week-details {
+            font-size: 0.9rem;
+            color: #6b7280;
+            line-height: 1.4;
+        }
+
+        .collapsible {
+            cursor: pointer;
+            user-select: none;
+            position: relative;
+            padding-right: 2rem;
+        }
+
+        .collapsible::after {
+            content: "▼";
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            transition: transform 0.3s ease;
+            color: #1e3a8a;
+        }
+
+        .collapsible.active::after {
+            transform: translateY(-50%) rotate(180deg);
+        }
+
+        .collapsible-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .collapsible-content.active {
+            max-height: 500px;
+        }
+
+        .checkpoint {
+            background-color: #fef3c7;
+            border-left: 4px solid #f59e0b;
+            padding: 0.8rem;
+            margin: 0.5rem 0;
+            border-radius: 0 6px 6px 0;
+            font-size: 0.9rem;
+        }
+
+        .quiz-exam {
+            background-color: #fee2e2;
+            border-left: 4px solid #ef4444;
+            padding: 0.8rem;
+            margin: 0.5rem 0;
+            border-radius: 0 6px 6px 0;
+            font-size: 0.9rem;
+        }
+
+        .nav-tabs {
+            display: flex;
+            border-bottom: 2px solid #e2e8f0;
+            margin: 2rem 0 1rem 0;
+            flex-wrap: wrap;
+        }
+
+        .nav-tab {
+            background: none;
+            border: none;
+            padding: 1rem 2rem;
+            cursor: pointer;
+            font-size: 1rem;
+            color: #6b7280;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .nav-tab:hover {
+            color: #1e3a8a;
+            background-color: #f8fafc;
+        }
+
+        .nav-tab.active {
+            color: #1e3a8a;
+            border-bottom-color: #1e3a8a;
+            font-weight: bold;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            .nav-tab {
+                padding: 0.8rem 1rem;
+                font-size: 0.9rem;
+            }
+
+            .phase-container {
+                padding: 1rem;
+            }
+
+            .week-item {
+                padding: 0.8rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 1.7rem;
+            }
+
+            .nav-tabs {
+                flex-direction: column;
+            }
+
+            .nav-tab {
+                text-align: center;
+                border-bottom: 1px solid #e2e8f0;
+                border-radius: 0;
+            }
+
+            .nav-tab.active {
+                border-bottom: 1px solid #1e3a8a;
+                background-color: #f8fafc;
+            }
+        }
+
+        /* Focus styles for accessibility */
+        .nav-tab:focus,
+        .collapsible:focus {
+            outline: 2px solid #1e3a8a;
+            outline-offset: 2px;
+        }
+
+        /* Skip to content link for screen readers */
+        .skip-link {
+            position: absolute;
+            top: -40px;
+            left: 6px;
+            background: #1e3a8a;
+            color: white;
+            padding: 8px;
+            text-decoration: none;
+            border-radius: 4px;
+        }
+
+        .skip-link:focus {
+            top: 6px;
+        }
+    </style>
+</head>
+<body>
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+    
+    <header>
+        <div class="container">
+            <h1>CSC210: Computer Organization & Architecture</h1>
+            <p class="course-subtitle">3-Credit Online Lecture Course</p>
+        </div>
+    </header>
+
+    <main id="main-content" class="container">
+        <div class="nav-tabs" role="tablist">
+            <button class="nav-tab active" role="tab" aria-selected="true" aria-controls="overview-tab" id="overview-btn">Course Overview</button>
+            <button class="nav-tab" role="tab" aria-selected="false" aria-controls="outline-tab" id="outline-btn">Course Outline</button>
+        </div>
+
+        <div id="overview-tab" class="tab-content active" role="tabpanel" aria-labelledby="overview-btn">
+            <section>
+                <h2>Course Description</h2>
+                <div class="description-box">
+                    <p>This course will explore the organization and behavior of real computer systems at the assembly-language level. The mapping of statements and constructs in a high-level language onto sequences of machine instructions is studied, as well as the internal representation of simple data types and structures. Numerical computation is examined, noting the various data representation errors and potential procedural errors. (C-ID: COMP-142)</p>
+                </div>
+
+                <h2>Student Learning Objectives</h2>
+                <div class="slo-list">
+                    <p>Upon successful completion of this course, students will be able to:</p>
+                    <ul>
+                        <li>Write, execute and debug small programs or segments of larger programs using an assembly language.</li>
+                        <li>Describe basic computer architecture, organization and design.</li>
+                        <li>Discuss how fundamental high-level language constructs are implemented at the machine-language level.</li>
+                    </ul>
+                </div>
+            </section>
+        </div>
+
+        <div id="outline-tab" class="tab-content" role="tabpanel" aria-labelledby="outline-btn">
+            <section>
+                <h2>17-Week Course Outline</h2>
+                
+                <div class="phase-container">
+                    <div class="phase-header">Phase 1: Digital Foundations (Weeks 1-4)</div>
+                    
+                    <div class="week-item">
+                        <div class="week-title collapsible" tabindex="0" role="button" aria-expanded="false">Week 1: Introduction to Computer Architecture</div>
+                        <div class="collapsible-content">
+                            <div class="week-topics"><strong>Topics:</strong> Course overview, levels of abstraction, number systems</div>
+                            <div class="week-details">
+                                <strong>Reading:</strong> "But How Do It Know?" Ch. 1-2 + supplementary materials<br>
+                                <strong>Assignment:</strong> Number conversion problems, reflection on hardware-software interface<br>
+                                <strong>Videos:</strong> Introduction to binary/hex, computer abstraction layers
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="week-item">
+                        <div class="week-title collapsible" tabindex="0" role="button" aria-expanded="false">Week 2: Boolean Logic & Gates</div>
+                        <div class="collapsible-content">
+                            <div class="week-topics"><strong>Topics:</strong> Boolean algebra, truth tables, basic logic gates</div>
+                            <div class="week-details">
+                                <strong>Reading:</strong> "But How Do It Know?" Ch. 3-4<br>
+                                <strong>Assignment:</strong> Boolean expression simplification, gate-level design problems<br>
+                                <strong>Videos:</strong> Logic gate operations, Boolean algebra rules
+                            </div>
+                            <div class="checkpoint"><strong>Checkpoint 1:</strong> Simple gate combinations in Logisim (verify understanding)</div>
+                        </div>
+                    </div>
+
+                    <div class="week-item">
+                        <div class="week-title collapsible" tabindex="0" role="button" aria-expanded="false">Week 3: Combinational Logic Design</div>
+                        <div class="collapsible-content">
+                            <div class="week-topics"><strong>Topics:</strong> Adders, multiplexers, decoders, encoders</div>
+                            <div class="week-details">
+                                <strong>Reading:</strong> Supplementary materials on combinational circuits<br>
+                                <strong>Assignment:</strong> Design problems for arithmetic circuits<br>
+                                <strong>Videos:</strong> Building complex circuits from gates
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="week-item">
+                        <div class="week-title collapsible" tabindex="0" role="button" aria-expanded="false">Week 4: Sequential Logic & Memory Basics</div>
+                        <div class="collapsible-content">
+                            <div class="week-topics"><strong>Topics:</strong> Latches, flip-flops, registers, RAM concepts</div>
+                            <div class="week-details">
+                                <strong>Reading:</strong> "But How Do It Know?" Ch. 5-6<br>
+                                <strong>Assignment:</strong> Sequential circuit analysis, memory organization problems
+                            </div>
+                            <div class="quiz-exam"><strong>Quiz 1:</strong> Covers weeks 1-4</div>
+                            <div class="checkpoint"><strong>Checkpoint 2:</strong> 8-bit register design submission</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="phase-container">
+                    <div class="phase-header">Phase 2: Assembly Language (Weeks 5-8)</div>
+                    
+                    <div class="week-item">
+                        <div class="week-title collapsible" tabindex="0" role="button" aria-expanded="false">Week 5: Introduction to MIPS Architecture</div>
+                        <div class="collapsible-content">
+                            <div class="week-topics"><strong>Topics:</strong> ISA concepts, MIPS registers, instruction formats</div>
+                            <div class="week-details">
+                                <strong>Reading:</strong> MIPS reference materials, instruction set overview<br>
+                                <strong>Assignment:</strong> Instruction encoding/decoding exercises<br>
+                                <strong>Videos:</strong> MIPS architecture overview, MARS tutorial
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="week-item">
+                        <div class="week-title collapsible" tabindex="0" role="button" aria-expanded="false">Week 6: MIPS Arithmetic & Logic Instructions</div>
+                        <div class="collapsible-content">
+                            <div class="week-topics"><strong>Topics:</strong> R-type instructions, immediate operations, logical operations</div>
+                            <div class="week-details">
+                                <strong>Reading:</strong> MIPS programming guide (arithmetic/logic sections)<br>
+                                <strong>Assignment:</strong> Write simple MIPS programs, trace execution<br>
+                                <strong>Videos:</strong> Step-by-step MIPS programming examples
+                            </div>
+                            <div class="checkpoint"><strong>Checkpoint 3:</strong> 8-bit ALU simulation due (matching "But How Do It Know?" specs)</div>
+                        </div>
+                    </div>
+
+                    <div class="week-item">
+                        <div class="week-title collapsible" tabindex="0" role="button" aria-expanded="false">Week 7: MIPS Control Flow & Procedures</div>
+                        <div class="collapsible-content">
+                            <div class="week-topics"><strong>Topics:</strong> Branches, jumps, procedure calls, stack usage</div>
+                            <div class="week-details">
+                                <strong>Reading:</strong> MIPS programming guide (control flow sections)<br>
+                                <strong>Assignment:</strong> Convert Java methods to MIPS procedures<br>
+                                <strong>Videos:</strong> Stack operations, procedure calling conventions
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="week-item">
+                        <div class="week-title collapsible" tabindex="0" role="button" aria-expanded="false">Week 8: MIPS Memory & Arrays</div>
+                        <div class="collapsible-content">
+                            <div class="week-topics"><strong>Topics:</strong> Load/store instructions, addressing modes, array manipulation</div>
+                            <div class="week-details">
+                                <strong>Reading:</strong> MIPS memory model documentation<br>
+                                <strong>Assignment:</strong> Array processing programs in MIPS
+                            </div>
+                            <div class="quiz-exam"><strong>Midterm Exam:</strong> Comprehensive exam on weeks 1-8</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="phase-container">
+                    <div class="phase-header">Phase 3: CPU Design Theory (Weeks 9-12)</div>
+                    
+                    <div class="week-item">
+                        <div class="week-title collapsible" tabindex="0" role="button" aria-expanded="false">Week 9: CPU Architecture Overview</div>
+                        <div class="collapsible-content">
+                            <div class="week-topics"><strong>Topics:</strong> Von Neumann model, datapath components, fetch-decode-execute</div>
+                            <div class="week-details">
+                                <strong>Reading:</strong> "But How Do It Know?" Ch. 7-9<br>
+                                <strong>Assignment:</strong> Datapath tracing exercises, component identification<br>
+                                <strong>Videos:</strong> CPU simulation walkthroughs
+                            </div>
+                            <div class="checkpoint"><strong>Checkpoint 4:</strong> Complete RAM module with MAR (256 bytes)</div>
+                        </div>
+                    </div>
+
+                    <div class="week-item">
+                        <div class="week-title collapsible" tabindex="0" role="button" aria-expanded="false">Week 10: The ALU & Register File</div>
+                        <div class="collapsible-content">
+                            <div class="week-topics"><strong>Topics:</strong> ALU design, operation selection, register file organization</div>
+                            <div class="week-details">
+                                <strong>Reading:</strong> "But How Do It Know?" Ch. 10-11<br>
+                                <strong>Assignment:</strong> ALU operation analysis, design modifications<br>
+                                <strong>Project Planning:</strong> Submit CPU implementation plan
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="week-item">
+                        <div class="week-title collapsible" tabindex="0" role="button" aria-expanded="false">Week 11: Control Unit Design</div>
+                        <div class="collapsible-content">
+                            <div class="week-topics"><strong>Topics:</strong> Instruction decoding, control signals, microprogramming basics</div>
+                            <div class="week-details">
+                                <strong>Reading:</strong> "But How Do It Know?" Ch. 12-13<br>
+                                <strong>Assignment:</strong> Control signal generation for instruction subset<br>
+                                <strong>Videos:</strong> Control unit implementation strategies
+                            </div>
+                            <div class="checkpoint"><strong>Checkpoint 5:</strong> Register file with bus connections (R0-R3, PC, MAR, etc.)</div>
+                        </div>
+                    </div>
+
+                    <div class="week-item">
+                        <div class="week-title collapsible" tabindex="0" role="button" aria-expanded="false">Week 12: Memory Interface & I/O</div>
+                        <div class="collapsible-content">
+                            <div class="week-topics"><strong>Topics:</strong> Memory addressing, I/O mechanisms, memory-mapped I/O</div>
+                            <div class="week-details">
+                                <strong>Reading:</strong> "But How Do It Know?" Ch. 14-15<br>
+                                <strong>Assignment:</strong> Memory system design problems
+                            </div>
+                            <div class="quiz-exam"><strong>Quiz 2:</strong> Covers weeks 9-12</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="phase-container">
+                    <div class="phase-header">Phase 4: Integration & Modern Topics (Weeks 13-17)</div>
+                    
+                    <div class="week-item">
+                        <div class="week-title collapsible" tabindex="0" role="button" aria-expanded="false">Week 13: Complete CPU Integration</div>
+                        <div class="collapsible-content">
+                            <div class="week-topics"><strong>Topics:</strong> Connecting all components, instruction implementation</div>
+                            <div class="week-details">
+                                <strong>Reading:</strong> "But How Do It Know?" Ch. 16-17<br>
+                                <strong>Assignment:</strong> CPU design documentation, instruction set planning<br>
+                                <strong>Videos:</strong> Complete CPU walkthroughs
+                            </div>
+                            <div class="checkpoint"><strong>Checkpoint 6:</strong> Basic CPU with MOV, ADD, SUB working</div>
+                        </div>
+                    </div>
+
+                    <div class="week-item">
+                        <div class="week-title collapsible" tabindex="0" role="button" aria-expanded="false">Week 14: Advanced Instructions & Testing</div>
+                        <div class="collapsible-content">
+                            <div class="week-topics"><strong>Topics:</strong> Implementing jumps, branches, and I/O instructions</div>
+                            <div class="week-details">
+                                <strong>Reading:</strong> Supplementary materials on instruction implementation<br>
+                                <strong>Assignment:</strong> Test program development<br>
+                                <strong>Project Progress:</strong> Instructor feedback on checkpoint 6
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="week-item">
+                        <div class="week-title collapsible" tabindex="0" role="button" aria-expanded="false">Week 15: Performance Basics (Shortened Week - 2 days)</div>
+                        <div class="collapsible-content">
+                            <div class="week-topics"><strong>Topics:</strong> CPI, clock rate, basic performance metrics</div>
+                            <div class="week-details">
+                                <strong>Reading:</strong> Performance measurement introduction<br>
+                                <strong>Light Assignment:</strong> Performance calculation worksheet
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="week-item">
+                        <div class="week-title collapsible" tabindex="0" role="button" aria-expanded="false">Week 16: Modern Architecture Topics</div>
+                        <div class="collapsible-content">
+                            <div class="week-topics"><strong>Topics:</strong> Cache basics, pipelining introduction, multicore concepts</div>
+                            <div class="week-details">
+                                <strong>Reading:</strong> Selected modern architecture articles<br>
+                                <strong>Assignment:</strong> Research paper on modern CPU feature
+                            </div>
+                            <div class="checkpoint"><strong>Checkpoint 7:</strong> Full CPU with 10+ instructions</div>
+                        </div>
+                    </div>
+
+                    <div class="week-item">
+                        <div class="week-title collapsible" tabindex="0" role="button" aria-expanded="false">Week 17: Course Synthesis & Final Project</div>
+                        <div class="collapsible-content">
+                            <div class="week-topics"><strong>Topics:</strong> Review, industry applications, future directions</div>
+                            <div class="week-details">
+                                <strong>Final Project Due:</strong> Complete CPU simulation with documentation
+                            </div>
+                            <div class="quiz-exam"><strong>Final Exam:</strong> Comprehensive exam (proctored online)</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <script>
+        // Tab functionality
+        function initializeTabs() {
+            const tabButtons = document.querySelectorAll('.nav-tab');
+            const tabContents = document.querySelectorAll('.tab-content');
+
+            tabButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    // Remove active class from all tabs and contents
+                    tabButtons.forEach(tab => {
+                        tab.classList.remove('active');
+                        tab.setAttribute('aria-selected', 'false');
+                    });
+                    tabContents.forEach(content => {
+                        content.classList.remove('active');
+                    });
+
+                    // Add active class to clicked tab and corresponding content
+                    button.classList.add('active');
+                    button.setAttribute('aria-selected', 'true');
+                    const targetTab = button.getAttribute('aria-controls');
+                    document.getElementById(targetTab).classList.add('active');
+                });
+
+                // Keyboard navigation for tabs
+                button.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        button.click();
+                    }
+                });
+            });
+        }
+
+        // Collapsible functionality
+        function initializeCollapsibles() {
+            const collapsibles = document.querySelectorAll('.collapsible');
+
+            collapsibles.forEach(collapsible => {
+                collapsible.addEventListener('click', function() {
+                    this.classList.toggle('active');
+                    const content = this.nextElementSibling;
+                    
+                    if (content.classList.contains('active')) {
+                        content.classList.remove('active');
+                        this.setAttribute('aria-expanded', 'false');
+                    } else {
+                        content.classList.add('active');
+                        this.setAttribute('aria-expanded', 'true');
+                    }
+                });
+
+                // Keyboard support for collapsibles
+                collapsible.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        this.click();
+                    }
+                });
+            });
+        }
+
+        // Initialize all interactive elements when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeTabs();
+            initializeCollapsibles();
+        });
+
+        // Smooth scrolling for skip link
+        document.addEventListener('DOMContentLoaded', function() {
+            const skipLink = document.querySelector('.skip-link');
+            if (skipLink) {
+                skipLink.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({ behavior: 'smooth' });
+                        target.focus();
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>
