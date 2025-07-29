@@ -1,0 +1,928 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSC210L: Computer Organization Lab</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #ffffff;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            background-color: #1e3a8a;
+            color: white;
+            padding: 2rem 0;
+            margin-bottom: 2rem;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            text-align: center;
+        }
+
+        .course-subtitle {
+            text-align: center;
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        h2 {
+            color: #1e3a8a;
+            font-size: 1.8rem;
+            margin: 2rem 0 1rem 0;
+            border-bottom: 3px solid #1e3a8a;
+            padding-bottom: 0.5rem;
+        }
+
+        h3 {
+            color: #1e3a8a;
+            font-size: 1.4rem;
+            margin: 1.5rem 0 0.8rem 0;
+        }
+
+        h4 {
+            color: #1e3a8a;
+            font-size: 1.2rem;
+            margin: 1rem 0 0.5rem 0;
+        }
+
+        .description-box {
+            background-color: #f8fafc;
+            border-left: 4px solid #1e3a8a;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .slo-list {
+            background-color: #f1f5f9;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+        }
+
+        .slo-list ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .slo-list li {
+            margin: 1rem 0;
+            padding-left: 2rem;
+            position: relative;
+        }
+
+        .slo-list li::before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #1e3a8a;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .phase-container {
+            background-color: #f8fafc;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border: 1px solid #e2e8f0;
+        }
+
+        .phase-header {
+            background-color: #1e3a8a;
+            color: white;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .week-item {
+            background-color: white;
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 0.8rem 0;
+            border-left: 4px solid #1e3a8a;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .week-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+
+        .week-title {
+            font-weight: bold;
+            color: #1e3a8a;
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .week-topics {
+            color: #4b5563;
+            margin: 0.5rem 0;
+        }
+
+        .week-details {
+            font-size: 0.9rem;
+            color: #6b7280;
+            line-height: 1.4;
+        }
+
+        .collapsible {
+            cursor: pointer;
+            user-select: none;
+            position: relative;
+            padding-right: 2rem;
+        }
+
+        .collapsible::after {
+            content: "▼";
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            transition: transform 0.3s ease;
+            color: #1e3a8a;
+        }
+
+        .collapsible.active::after {
+            transform: translateY(-50%) rotate(180deg);
+        }
+
+        .collapsible-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .collapsible-content.active {
+            max-height: 500px;
+        }
+
+        .deliverable {
+            background-color: #dcfce7;
+            border-left: 4px solid #16a34a;
+            padding: 0.8rem;
+            margin: 0.5rem 0;
+            border-radius: 0 6px 6px 0;
+            font-size: 0.9rem;
+        }
+
+        .exam {
+            background-color: #fee2e2;
+            border-left: 4px solid #ef4444;
+            padding: 0.8rem;
+            margin: 0.5rem 0;
+            border-radius: 0 6px 6px 0;
+            font-size: 0.9rem;
+        }
+
+        .lecture-support {
+            background-color: #fef3c7;
+            border-left: 4px solid #f59e0b;
+            padding: 0.8rem;
+            margin: 0.5rem 0;
+            border-radius: 0 6px 6px 0;
+            font-size: 0.9rem;
+        }
+
+        .nav-tabs {
+            display: flex;
+            border-bottom: 2px solid #e2e8f0;
+            margin: 2rem 0 1rem 0;
+            flex-wrap: wrap;
+        }
+
+        .nav-tab {
+            background: none;
+            border: none;
+            padding: 1rem 2rem;
+            cursor: pointer;
+            font-size: 1rem;
+            color: #6b7280;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .nav-tab:hover {
+            color: #1e3a8a;
+            background-color: #f8fafc;
+        }
+
+        .nav-tab.active {
+            color: #1e3a8a;
+            border-bottom-color: #1e3a8a;
+            font-weight: bold;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .alignment-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+            background-color: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .alignment-table th {
+            background-color: #1e3a8a;
+            color: white;
+            padding: 1rem;
+            text-align: left;
+            font-weight: bold;
+        }
+
+        .alignment-table td {
+            padding: 0.8rem 1rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .alignment-table tr:nth-child(even) {
+            background-color: #f8fafc;
+        }
+
+        .alignment-table tr:hover {
+            background-color: #f1f5f9;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            .nav-tab {
+                padding: 0.8rem 1rem;
+                font-size: 0.9rem;
+            }
+
+            .phase-container {
+                padding: 1rem;
+            }
+
+            .week-item {
+                padding: 0.8rem;
+            }
+
+            .alignment-table {
+                font-size: 0.8rem;
+            }
+
+            .alignment-table th,
+            .alignment-table td {
+                padding: 0.5rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 1.7rem;
+            }
+
+            .nav-tabs {
+                flex-direction: column;
+            }
+
+            .nav-tab {
+                text-align: center;
+                border-bottom: 1px solid #e2e8f0;
+                border-radius: 0;
+            }
+
+            .nav-tab.active {
+                border-bottom: 1px solid #1e3a8a;
+                background-color: #f8fafc;
+            }
+
+            .alignment-table {
+                display: block;
+                overflow-x: auto;
+                white-space: nowrap;
+            }
+        }
+
+        /* Focus styles for accessibility */
+        .nav-tab:focus,
+        .collapsible:focus {
+            outline: 2px solid #1e3a8a;
+            outline-offset: 2px;
+        }
+
+        /* Skip to content link for screen readers */
+        .skip-link {
+            position: absolute;
+            top: -40px;
+            left: 6px;
+            background: #1e3a8a;
+            color: white;
+            padding: 8px;
+            text-decoration: none;
+            border-radius: 4px;
+        }
+
+        .skip-link:focus {
+            top: 6px;
+        }
+    </style>
+</head>
+<body>
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+    
+    <header>
+        <div class="container">
+            <h1>CSC210L: Computer Organization Lab</h1>
+            <p class="course-subtitle">1-Credit Hands-On Laboratory Course</p>
+        </div>
+    </header>
+
+    <section class="container">
+        <div style="background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); border-radius: 12px; padding: 2rem; margin-bottom: 2rem; border: 2px solid #16a34a;">
+            <h2 style="color: #166534; margin-top: 0; text-align: center; font-size: 1.6rem;">Transform Theory into Practice</h2>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin-top: 1rem;">
+                <div style="text-align: center;">
+                    <div style="font-size: 2rem; margin-bottom: 0.5rem;">⚡</div>
+                    <h4 style="color: #166534; margin: 0.5rem 0;">Progressive Building</h4>
+                    <p style="margin: 0; font-size: 0.9rem;">Start with basic gates and build up to a complete 8-bit CPU through guided lab exercises</p>
+                </div>
+                <div style="text-align: center;">
+                    <div style="font-size: 2rem; margin-bottom: 0.5rem;">🔬</div>
+                    <h4 style="color: #166534; margin: 0.5rem 0;">Professional Tools</h4>
+                    <p style="margin: 0; font-size: 0.9rem;">Master Logisim for circuit design and MARS for MIPS programming - industry-standard simulators</p>
+                </div>
+                <div style="text-align: center;">
+                    <div style="font-size: 2rem; margin-bottom: 0.5rem;">📋</div>
+                    <h4 style="color: #166534; margin: 0.5rem 0;">Synchronized Learning</h4>
+                    <p style="margin: 0; font-size: 0.9rem;">Lab deliverables directly support lecture checkpoints for seamless learning progression</p>
+                </div>
+            </div>
+            <div style="text-align: center; margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid #86efac;">
+                <p style="margin: 0; font-weight: bold; color: #166534;">Perfect companion to CSC210 Computer Organization & Architecture</p>
+                <p style="margin: 0.5rem 0 0 0; font-size: 0.9rem; color: #065f46;">Weekly hands-on labs • Real circuit building • MIPS assembly programming</p>
+            </div>
+        </div>
+    </section>
+
+    <main id="main-content" class="container">
+        <div class="nav-tabs" role="tablist">
+            <button class="nav-tab active" role="tab" aria-selected="true" aria-controls="overview-tab" id="overview-btn">Course Overview</button>
+            <button class="nav-tab" role="tab" aria-selected="false" aria-controls="instructor-tab" id="instructor-btn">Instructor & Course Info</button>
+            <button class="nav-tab" role="tab" aria-selected="false" aria-controls="outline-tab" id="outline-btn">Lab Outline</button>
+            <button class="nav-tab" role="tab" aria-selected="false" aria-controls="alignment-tab" id="alignment-btn">Lecture Alignment</button>
+            <button class="nav-tab" role="tab" aria-selected="false" aria-controls="policies-tab" id="policies-btn">Policies & Resources</button>
+        </div>
+
+        <div id="overview-tab" class="tab-content active" role="tabpanel" aria-labelledby="overview-btn">
+            <section>
+                <h2>Course Description</h2>
+                <div class="description-box">
+                    <p>This hands-on laboratory course provides practical experience with computer organization and architecture concepts. Students will design and build digital circuits using Logisim simulation software, culminating in the construction of a complete 8-bit CPU. The course includes extensive practice with MIPS assembly language programming using the MARS simulator. Lab activities are synchronized with CSC210 lecture content to reinforce theoretical concepts through practical implementation.</p>
+                </div>
+
+                <h2>Laboratory Learning Objectives</h2>
+                <div class="slo-list">
+                    <p>Upon successful completion of this lab course, students will be able to:</p>
+                    <ul>
+                        <li>Design and simulate digital circuits from basic gates to complex CPU components using Logisim.</li>
+                        <li>Implement and test arithmetic logic units, memory systems, and control units.</li>
+                        <li>Write, debug, and optimize MIPS assembly language programs using the MARS simulator.</li>
+                        <li>Build a complete 8-bit CPU capable of executing a custom instruction set.</li>
+                        <li>Demonstrate understanding of the hardware-software interface through practical projects.</li>
+                        <li>Use professional simulation tools for circuit design and assembly programming.</li>
+                    </ul>
+                </div>
+
+                <h2>Key Projects & Deliverables</h2>
+                <div class="phase-container">
+                    <h4>Progressive CPU Construction</h4>
+                    <p>Students build their CPU in stages: basic gates → combinational circuits → sequential circuits → ALU → memory systems → register files → control unit → complete integrated CPU</p>
+                    
+                    <h4>MIPS Programming Portfolio</h4>
+                    <p>Comprehensive collection of assembly programs including arithmetic operations, control structures, array processing, and recursive functions</p>
+                    
+                    <h4>Final Demonstration</h4>
+                    <p>Working 8-bit CPU with 10+ implemented instructions, capable of running custom programs and demonstrating all major computer architecture concepts</p>
+                </div>
+            </section>
+        </div>
+
+        <div id="instructor-tab" class="tab-content" role="tabpanel" aria-labelledby="instructor-btn">
+            <section>
+                <h2>Instructor Information</h2>
+                <div class="description-box">
+                    <p><strong>Instructor:</strong> David Pai<br>
+                    <strong>Office:</strong> Rm 4170 (1st floor, SW corner of Library Bldg)<br>
+                    <strong>Email:</strong> <a href="mailto:dpai@mendocino.edu">dpai@mendocino.edu</a><br>
+                    <strong>Phone:</strong> 707-468-3126 (office)<br>
+                    <strong>Zoom Room:</strong> Personal Meeting Room</p>
+                </div>
+
+                <h2>Lab Meeting Information</h2>
+                <div class="slo-list">
+                    <p><strong>Format:</strong> Online<br>
+                    <strong>Credit Hours:</strong> 1 (3 hours lab work per week)<br>
+                    <strong>Prerequisites:</strong> Concurrent enrollment in CSC210 (recommended) or instructor approval</p>
+                </div>
+
+                <h2>Contact Hours</h2>
+                <div class="phase-container">
+                    <h4>Online</h4>
+                    <p>Mondays 3:00 PM - 4:00 PM (by email request)</p>
+                    
+                    <h4>In Office (Ukiah Campus)</h4>
+                    <ul style="list-style-type: disc; padding-left: 2rem; margin: 1rem 0;">
+                        <li>Tuesdays: 12:30 PM - 2:00 PM</li>
+                        <li>Wednesdays: 12:30 PM - 2:00 PM</li>
+                        <li>Thursdays: 12:30 PM - 1:30 PM</li>
+                    </ul>
+                    
+                    <h4>Other</h4>
+                    <p>By appointment via online schedule</p>
+                </div>
+
+                <h2>Required Software & Tools</h2>
+                <div class="description-box">
+                    <p><strong>All software is provided free of charge:</strong></p>
+                    <ul style="list-style-type: disc; padding-left: 2rem; margin: 1rem 0;">
+                        <li><strong>Logisim Evolution:</strong> Circuit design and simulation software</li>
+                        <li><strong>MARS (MIPS Assembler and Runtime Simulator):</strong> MIPS programming environment</li>
+                        <li><strong>Computer with Java Support:</strong> Both tools require Java runtime environment</li>
+                        <li><strong>Screen Recording Software:</strong> For project demonstrations (OBS or similar)</li>
+                    </ul>
+                </div>
+
+                <h2>Key Semester Dates</h2>
+                <div class="slo-list">
+                    <p><strong>Add/Drop/Refund Deadline:</strong> August 30, 2025<br>
+                    <strong>Last Day to Drop with 'W':</strong> November 8, 2025<br>
+                    <strong>Thanksgiving Break:</strong> November 26 - 30, 2025<br>
+                    <strong>Last Day of Semester:</strong> December 12, 2025<br>
+                    <strong>Last Day for Pass/No Pass:</strong> December 13, 2025</p>
+                </div>
+            </section>
+        </div>
+
+        <div id="outline-tab" class="tab-content" role="tabpanel" aria-labelledby="outline-btn">
+            <section>
+                <h2>17-Week Lab Course Outline</h2>
+                
+                <div class="phase-container">
+                    <div class="phase-header">Phase 1: Tool Mastery (Weeks 1-4)</div>
+                    
+                    <div class="week-item">
+                        <div class="week-title collapsible" tabindex="0" role="button" aria-expanded="false">Week 1: Logisim Introduction</div>
+                        <div class="collapsible-content">
+                            <div class="week-topics"><strong>Lab:</strong> Logisim basics, creating simple circuits</div>
+                            <div class="week-details">
+                                <strong>Exercise:</strong> Build basic gates, verify truth tables
+                            </div>
+                            <div class="deliverable"><strong>Deliverable:</strong> Screenshot portfolio of basic gates</div>
+                        </div>
+                    </div>
+
+                    <div class="week-item">
+                        <div class="week-title collapsible" tabindex="0" role="button" aria-expanded="false">Week 2: Combinational Circuits in Logisim</div>
+                        <div class="collapsible-content">
+                            <div class="week-topics"><strong>Lab:</strong> Build half/full adders, 4-bit ripple carry adder</div>
+                            <div class="week-details">
+                                <strong>Exercise:</strong> Create and test multiplexers
+                            </div>
+                            <div class="deliverable"><strong>Deliverable:</strong> Working 4-bit adder circuit</div>
+                        </div>
+                    </div>
+
+                    <div class="week-item">
+                        <div class="week-title collapsible" tabindex="0" role="button" aria-expanded="false">Week 3: Advanced Combinational Circuits</div>
+                        <div class="collapsible-content">
+                            <div class="week-topics"><strong>Lab:</strong> Build decoders, encoders, and comparators</div>
+                            <div class="week-details">
+                                <strong>Exercise:</strong> Create 8-bit magnitude comparator
+                            </div>
+                            <div class="deliverable"><strong>Deliverable:</strong> Combinational circuit library</div>
+                        </div>
+                    </div>
+
+                    <div class="week-item">
+                        <div class="week-title collapsible" tabindex="0" role="button" aria-expanded="false">Week 4: Sequential Circuits Lab</div>
+                        <div class="collapsible-content">
+                            <div class="week-topics"><strong>Lab:</strong> Implement flip-flops, build 8-bit register</div>
+                            <div class="week-details">
+                                <strong>Exercise:</strong> Create register with load/clear controls
+                            </div>
+                            <div class="deliverable"><strong>Deliverable:</strong> 8-bit register component</div>
+                            <div class="lecture-support"><strong>Supports Lecture Checkpoint 2:</strong> 8-bit register design</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="phase-container">
+                    <div class="phase-header">Phase 2: MARS Programming (Weeks 5-8)</div>
+                    
+                    <div class="week-item">
+                        <div class="week-title collapsible" tabindex="0" role="button" aria-expanded="false">Week 5: MARS Environment & Basic Programs</div>
+                        <div class="collapsible-content">
+                            <div class="week-topics"><strong>Lab:</strong> MARS setup, first programs, debugging tools</div>
+                            <div class="week-details">
+                                <strong>Exercise:</strong> Arithmetic expression evaluation
+                            </div>
+                            <div class="deliverable"><strong>Deliverable:</strong> Three working MIPS programs</div>
+                        </div>
+                    </div>
+
+                    <div class="week-item">
+                        <div class="week-title collapsible" tabindex="0" role="button" aria-expanded="false">Week 6: ALU Construction</div>
+                        <div class="collapsible-content">
+                            <div class="week-topics"><strong>Lab:</strong> Build complete 8-bit ALU following "But How Do It Know?"</div>
+                            <div class="week-details">
+                                <strong>Exercise:</strong> Test all ALU operations systematically
+                            </div>
+                            <div class="deliverable"><strong>Deliverable:</strong> Working 8-bit ALU</div>
+                            <div class="lecture-support"><strong>Supports Lecture Checkpoint 3:</strong> 8-bit ALU simulation</div>
+                        </div>
+                    </div>
+
+                    <div class="week-item">
+                        <div class="week-title collapsible" tabindex="0" role="button" aria-expanded="false">Week 7: Control Structures in MIPS</div>
+                        <div class="collapsible-content">
+                            <div class="week-topics"><strong>Lab:</strong> Implement loops, conditionals, case structures</div>
+                            <div class="week-details">
+                                <strong>Exercise:</strong> Number guessing game in MIPS
+                            </div>
+                            <div class="deliverable"><strong>Deliverable:</strong> Control flow program suite</div>
+                        </div>
+                    </div>
+
+                    <div class="week-item">
+                        <div class="week-title collapsible" tabindex="0" role="button" aria-expanded="false">Week 8: Arrays & Procedures</div>
+                        <div class="collapsible-content">
+                            <div class="week-topics"><strong>Lab:</strong> Array sorting, recursive functions in MIPS</div>
+                            <div class="week-details">
+                                <strong>Exercise:</strong> Implement quicksort
+                            </div>
+                            <div class="deliverable"><strong>Deliverable:</strong> Sorting algorithm implementations</div>
+                            <div class="exam"><strong>Lab Midterm:</strong> Practical exam</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="phase-container">
+                    <div class="phase-header">Phase 3: CPU Construction (Weeks 9-12)</div>
+                    
+                    <div class="week-item">
+                        <div class="week-title collapsible" tabindex="0" role="button" aria-expanded="false">Week 9: Memory System Implementation</div>
+                        <div class="collapsible-content">
+                            <div class="week-topics"><strong>Lab:</strong> Build RAM with MAR, implement 256-byte memory</div>
+                            <div class="week-details">
+                                <strong>Exercise:</strong> Test memory read/write operations
+                            </div>
+                            <div class="deliverable"><strong>Deliverable:</strong> Complete RAM module</div>
+                            <div class="lecture-support"><strong>Supports Lecture Checkpoint 4:</strong> RAM module with MAR</div>
+                        </div>
+                    </div>
+
+                    <div class="week-item">
+                        <div class="week-title collapsible" tabindex="0" role="button" aria-expanded="false">Week 10: Register File & Bus System</div>
+                        <div class="collapsible-content">
+                            <div class="week-topics"><strong>Lab:</strong> Implement full register file (R0-R3, ACC, TMP, etc.)</div>
+                            <div class="week-details">
+                                <strong>Exercise:</strong> Test data movement between all registers
+                            </div>
+                            <div class="deliverable"><strong>Deliverable:</strong> Connected register system with bus</div>
+                        </div>
+                    </div>
+
+                    <div class="week-item">
+                        <div class="week-title collapsible" tabindex="0" role="button" aria-expanded="false">Week 11: Register Integration</div>
+                        <div class="collapsible-content">
+                            <div class="week-topics"><strong>Lab:</strong> Complete register file with PC, IR, FLAGS</div>
+                            <div class="week-details">
+                                <strong>Exercise:</strong> Verify all register operations
+                            </div>
+                            <div class="deliverable"><strong>Deliverable:</strong> Full register set</div>
+                            <div class="lecture-support"><strong>Supports Lecture Checkpoint 5:</strong> Register file with bus connections</div>
+                        </div>
+                    </div>
+
+                    <div class="week-item">
+                        <div class="week-title collapsible" tabindex="0" role="button" aria-expanded="false">Week 12: Control Unit Construction</div>
+                        <div class="collapsible-content">
+                            <div class="week-topics"><strong>Lab:</strong> Build instruction decoder and control signal generator</div>
+                            <div class="week-details">
+                                <strong>Exercise:</strong> Implement control for MOV, ADD, SUB
+                            </div>
+                            <div class="deliverable"><strong>Deliverable:</strong> Basic control unit</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="phase-container">
+                    <div class="phase-header">Phase 4: Project Completion (Weeks 13-17)</div>
+                    
+                    <div class="week-item">
+                        <div class="week-title collapsible" tabindex="0" role="button" aria-expanded="false">Week 13: Basic CPU Integration</div>
+                        <div class="collapsible-content">
+                            <div class="week-topics"><strong>Lab:</strong> Connect ALU, registers, control unit</div>
+                            <div class="week-details">
+                                <strong>Exercise:</strong> Implement and test MOV, ADD, SUB instructions
+                            </div>
+                            <div class="deliverable"><strong>Deliverable:</strong> Basic CPU</div>
+                            <div class="lecture-support"><strong>Supports Lecture Checkpoint 6:</strong> Basic CPU with 3 instructions</div>
+                        </div>
+                    </div>
+
+                    <div class="week-item">
+                        <div class="week-title collapsible" tabindex="0" role="button" aria-expanded="false">Week 14: Advanced Instruction Implementation</div>
+                        <div class="collapsible-content">
+                            <div class="week-topics"><strong>Lab:</strong> Add LOAD, STORE, JMP, conditional branches</div>
+                            <div class="week-details">
+                                <strong>Exercise:</strong> Write test programs for all instructions
+                            </div>
+                            <div class="deliverable"><strong>Deliverable:</strong> CPU with 10+ instructions</div>
+                        </div>
+                    </div>
+
+                    <div class="week-item">
+                        <div class="week-title collapsible" tabindex="0" role="button" aria-expanded="false">Week 15: I/O Implementation (Shortened Week)</div>
+                        <div class="collapsible-content">
+                            <div class="week-topics"><strong>Lab:</strong> Add basic input/output capabilities</div>
+                            <div class="week-details">
+                                <strong>Exercise:</strong> Simple I/O test
+                            </div>
+                            <div class="deliverable"><strong>Deliverable:</strong> I/O demonstration</div>
+                        </div>
+                    </div>
+
+                    <div class="week-item">
+                        <div class="week-title collapsible" tabindex="0" role="button" aria-expanded="false">Week 16: Testing & Optimization</div>
+                        <div class="collapsible-content">
+                            <div class="week-topics"><strong>Lab:</strong> Comprehensive testing, debugging complex programs</div>
+                            <div class="week-details">
+                                <strong>Exercise:</strong> Performance measurement and optimization
+                            </div>
+                            <div class="deliverable"><strong>Deliverable:</strong> Complete CPU with test suite</div>
+                            <div class="lecture-support"><strong>Supports Lecture Checkpoint 7:</strong> Full CPU with 10+ instructions</div>
+                        </div>
+                    </div>
+
+                    <div class="week-item">
+                        <div class="week-title collapsible" tabindex="0" role="button" aria-expanded="false">Week 17: Final Demonstrations</div>
+                        <div class="collapsible-content">
+                            <div class="week-topics"><strong>Lab:</strong> Present working CPU, run demo programs</div>
+                            <div class="week-details">
+                                <strong>Final Practical:</strong> Build specified circuit under time constraint
+                            </div>
+                            <div class="deliverable"><strong>Deliverable:</strong> Video demonstration of complete CPU</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <div id="alignment-tab" class="tab-content" role="tabpanel" aria-labelledby="alignment-btn">
+            <section>
+                <h2>Checkpoint Alignment Summary</h2>
+                <div class="description-box">
+                    <p>This table shows how CSC210L lab deliverables directly support CSC210 lecture checkpoints, ensuring seamless integration between theory and practice.</p>
+                </div>
+                
+                <table class="alignment-table">
+                    <thead>
+                        <tr>
+                            <th>Week</th>
+                            <th>Lecture Checkpoint</th>
+                            <th>Lab Support</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>2</td>
+                            <td>Checkpoint 1</td>
+                            <td>Week 1-2</td>
+                            <td>Basic gates verification</td>
+                        </tr>
+                        <tr>
+                            <td>4</td>
+                            <td>Checkpoint 2</td>
+                            <td>Week 4</td>
+                            <td>8-bit register</td>
+                        </tr>
+                        <tr>
+                            <td>6</td>
+                            <td>Checkpoint 3</td>
+                            <td>Week 6</td>
+                            <td>8-bit ALU</td>
+                        </tr>
+                        <tr>
+                            <td>9</td>
+                            <td>Checkpoint 4</td>
+                            <td>Week 9</td>
+                            <td>RAM with MAR</td>
+                        </tr>
+                        <tr>
+                            <td>11</td>
+                            <td>Checkpoint 5</td>
+                            <td>Week 10-11</td>
+                            <td>Complete register file</td>
+                        </tr>
+                        <tr>
+                            <td>13</td>
+                            <td>Checkpoint 6</td>
+                            <td>Week 13</td>
+                            <td>Basic CPU (3 instructions)</td>
+                        </tr>
+                        <tr>
+                            <td>16</td>
+                            <td>Checkpoint 7</td>
+                            <td>Week 16</td>
+                            <td>Full CPU (10+ instructions)</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h2>Key Features of Lab-Lecture Integration</h2>
+                <div class="phase-container">
+                    <h4>Progressive Checkpoints</h4>
+                    <p>Lab deliverables are completed just before corresponding lecture checkpoints, providing hands-on experience that reinforces theoretical understanding.</p>
+                    
+                    <h4>Scaffolded Learning</h4>
+                    <p>Each lab builds on previous work, creating a complete learning progression from basic components to a functional CPU.</p>
+                    
+                    <h4>Synchronized Timing</h4>
+                    <p>Lab activities are carefully timed to provide practical context for lecture content while preparing students for upcoming theoretical concepts.</p>
+                    
+                    <h4>Practical Validation</h4>
+                    <p>Students can test and validate theoretical concepts through hands-on implementation, deepening understanding of computer architecture principles.</p>
+                </div>
+            </section>
+        </div>
+
+        <div id="policies-tab" class="tab-content" role="tabpanel" aria-labelledby="policies-btn">
+            <section>
+                <h2>Lab Policies & Student Support</h2>
+                
+                <h3>Lab Assignments & Late Submissions</h3>
+                <div class="description-box">
+                    <p>All lab deliverables are expected to be submitted as defined in the assignment description and NO LATER THAN the provided Due Date. For the lab midterm and final demonstration, NO LATE SUBMISSIONS will be accepted. For weekly lab deliverables, submissions will remain open however if submission is completed after we have reviewed the deliverable in class (generally will review first class after due date), a 15% reduction in your score will be applied. If you are having difficulties with circuit design or programming, please communicate with the instructor before the deadline.</p>
+                </div>
+
+                <h3>Technical Requirements & Software Support</h3>
+                <div class="phase-container">
+                    <p><strong>Logisim Evolution:</strong> Students must use the latest stable version of Logisim Evolution for all circuit design work. Technical support is available during office hours.</p>
+                    
+                    <p><strong>MARS Simulator:</strong> All MIPS programming must be completed using the MARS simulator. Students experiencing compatibility issues should contact the instructor immediately.</p>
+                    
+                    <p><strong>File Formats:</strong> All circuit files must be submitted in .circ format. Assembly programs must be submitted as .asm files with accompanying documentation.</p>
+                    
+                    <p><strong>Video Demonstrations:</strong> Final project demonstrations must be submitted as MP4 files with clear audio narration explaining the CPU functionality.</p>
+                </div>
+
+                <h3>Academic Integrity in Lab Work</h3>
+                <div class="slo-list">
+                    <p>While collaboration is encouraged during lab sessions, all submitted work must be your own. Students may discuss concepts and troubleshoot together, but circuit designs and code implementations must be individual work. Sharing of .circ files or .asm source code constitutes academic misconduct. For specific guidelines please refer to <a href="https://www.mendocino.edu/sites/default/files/docs/BOT/Procedures/ap5500.1_.pdf" style="color: #1e3a8a;" target="_blank" rel="noopener">Admin Procedure 5500.1</a> for the Student Conduct Guidelines and <a href="https://www.mendocino.edu/sites/default/files/docs/BOT/Procedures/ap5500.2.pdf" style="color: #1e3a8a;" target="_blank" rel="noopener">Admin Procedure 5500.2</a> on academic honesty.</p>
+                </div>
+
+                <h3>Students with Disabilities</h3>
+                <div class="description-box">
+                    <p>The College is committed to creating a learning environment that meets the needs of its diverse student body. If you have a disability, or think you may have one, please meet with the Disability Resource Center to request an official accommodation. The staff can be reached at (707) 468-3031 or <a href="mailto:drc@mendocino.edu" style="color: #1e3a8a;">drc@mendocino.edu</a>. Lab accommodations may include extended time for practical exams, alternative demonstration formats, or assistive technology support.</p>
+                </div>
+
+                <h3>Financial Aid</h3>
+                <div class="phase-container">
+                    <p>Don't miss out on available financial aid, visit <a href="https://www.mendocino.edu/financial-aid" style="color: #1e3a8a;" target="_blank" rel="noopener">https://www.mendocino.edu/financial-aid</a> to apply today! To receive financial aid, you must meet the Satisfactory Academic Progress (SAP) requirements. If you have questions, please contact financial aid at <a href="mailto:financialaid@mendocino.edu" style="color: #1e3a8a;">financialaid@mendocino.edu</a>.</p>
+                </div>
+
+                <h3>Student Resources</h3>
+                <div class="slo-list">
+                    <p>A summary of helpful resources for students can be found at <a href="https://www.mendocino.edu/student-services/student-resources/student-resource-summary" style="color: #1e3a8a;" target="_blank" rel="noopener">Student Resources</a> and in Spanish at <a href="https://www.mendocino.edu/ayuda-para-estudiantes" style="color: #1e3a8a;" target="_blank" rel="noopener">Ayuda para estudiantes</a>.</p>
+                </div>
+
+                <h3>Lab Safety & Best Practices</h3>
+                <div class="description-box">
+                    <p><strong>Digital Safety:</strong> Always save your work frequently and maintain backup copies of all circuit files and programs. Use cloud storage or external drives to prevent data loss.</p>
+                    
+                    <p><strong>Time Management:</strong> Lab projects build progressively - falling behind early in the semester makes later projects significantly more difficult. Plan adequate time for debugging and testing.</p>
+                    
+                    <p><strong>Resource Usage:</strong> Be mindful of computational resources when running complex simulations. Large circuits may require significant processing time.</p>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <script>
+        // Tab functionality
+        function initializeTabs() {
+            const tabButtons = document.querySelectorAll('.nav-tab');
+            const tabContents = document.querySelectorAll('.tab-content');
+
+            tabButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    // Remove active class from all tabs and contents
+                    tabButtons.forEach(tab => {
+                        tab.classList.remove('active');
+                        tab.setAttribute('aria-selected', 'false');
+                    });
+                    tabContents.forEach(content => {
+                        content.classList.remove('active');
+                    });
+
+                    // Add active class to clicked tab and corresponding content
+                    button.classList.add('active');
+                    button.setAttribute('aria-selected', 'true');
+                    const targetTab = button.getAttribute('aria-controls');
+                    document.getElementById(targetTab).classList.add('active');
+                });
+
+                // Keyboard navigation for tabs
+                button.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        button.click();
+                    }
+                });
+            });
+        }
+
+        // Collapsible functionality
+        function initializeCollapsibles() {
+            const collapsibles = document.querySelectorAll('.collapsible');
+
+            collapsibles.forEach(collapsible => {
+                collapsible.addEventListener('click', function() {
+                    this.classList.toggle('active');
+                    const content = this.nextElementSibling;
+                    
+                    if (content.classList.contains('active')) {
+                        content.classList.remove('active');
+                        this.setAttribute('aria-expanded', 'false');
+                    } else {
+                        content.classList.add('active');
+                        this.setAttribute('aria-expanded', 'true');
+                    }
+                });
+
+                // Keyboard support for collapsibles
+                collapsible.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        this.click();
+                    }
+                });
+            });
+        }
+
+        // Initialize all interactive elements when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeTabs();
+            initializeCollapsibles();
+        });
+
+        // Smooth scrolling for skip link
+        document.addEventListener('DOMContentLoaded', function() {
+            const skipLink = document.querySelector('.skip-link');
+            if (skipLink) {
+                skipLink.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({ behavior: 'smooth' });
+                        target.focus();
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>
