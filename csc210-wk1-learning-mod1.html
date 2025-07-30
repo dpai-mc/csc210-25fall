@@ -1,0 +1,1207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSC210 Module 1: The Big Picture</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f8fafc;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header */
+        header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            color: white;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .module-subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            background: white;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            background: #e5e7eb;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #16a34a 0%, #22c55e 100%);
+            border-radius: 5px;
+            transition: width 0.8s ease;
+            width: 0%;
+        }
+
+        /* Content Sections */
+        .content-section {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            color: #1e3a8a;
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            border-bottom: 3px solid #e5e7eb;
+            padding-bottom: 0.5rem;
+        }
+
+        h3 {
+            color: #374151;
+            font-size: 1.4rem;
+            margin: 1.5rem 0 1rem 0;
+        }
+
+        h4 {
+            color: #4b5563;
+            font-size: 1.2rem;
+            margin: 1rem 0 0.5rem 0;
+        }
+
+        /* Interactive Computer Components Explorer */
+        .computer-explorer {
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            border: 2px solid #0ea5e9;
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+
+        .computer-diagram {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .component {
+            background: white;
+            border: 2px solid #cbd5e1;
+            border-radius: 8px;
+            padding: 1rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .component:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            border-color: #3b82f6;
+        }
+
+        .component.active {
+            border-color: #1e40af;
+            background: #dbeafe;
+            transform: scale(1.05);
+        }
+
+        .component-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .component-name {
+            font-weight: bold;
+            color: #1e3a8a;
+            margin-bottom: 0.3rem;
+        }
+
+        .component-role {
+            font-size: 0.9rem;
+            color: #6b7280;
+        }
+
+        .component-details {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: #1e3a8a;
+            color: white;
+            padding: 1rem;
+            border-radius: 0 0 8px 8px;
+            font-size: 0.9rem;
+            opacity: 0;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+            z-index: 10;
+        }
+
+        .component.active .component-details {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Abstraction Layers Visualization */
+        .abstraction-layers {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            border: 2px solid #f59e0b;
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+
+        .layer {
+            background: white;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 0.5rem 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .layer:hover {
+            background: #f9fafb;
+            border-color: #9ca3af;
+        }
+
+        .layer.active {
+            background: #e0f2fe;
+            border-color: #0284c7;
+        }
+
+        .layer-title {
+            font-weight: bold;
+            color: #1e3a8a;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .layer-description {
+            margin-top: 0.5rem;
+            color: #6b7280;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .layer.active .layer-description {
+            max-height: 200px;
+        }
+
+        /* Quiz Components */
+        .quiz-section {
+            background: #f0fdf4;
+            border: 2px solid #16a34a;
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+
+        .question {
+            margin-bottom: 2rem;
+        }
+
+        .question-text {
+            font-weight: bold;
+            margin-bottom: 1rem;
+            color: #166534;
+        }
+
+        .options {
+            list-style: none;
+            padding: 0;
+        }
+
+        .option {
+            background: white;
+            border: 2px solid #d1d5db;
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 0.5rem 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .option:hover {
+            border-color: #9ca3af;
+            background: #f9fafb;
+        }
+
+        .option.selected {
+            border-color: #3b82f6;
+            background: #dbeafe;
+        }
+
+        .option.correct {
+            border-color: #16a34a;
+            background: #dcfce7;
+        }
+
+        .option.incorrect {
+            border-color: #ef4444;
+            background: #fee2e2;
+        }
+
+        .feedback {
+            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: 8px;
+            display: none;
+        }
+
+        .feedback.correct {
+            background: #dcfce7;
+            color: #166534;
+            border: 1px solid #16a34a;
+        }
+
+        .feedback.incorrect {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #ef4444;
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(30, 58, 138, 0.3);
+        }
+
+        .btn-secondary {
+            background: #f3f4f6;
+            color: #374151;
+            border: 1px solid #d1d5db;
+        }
+
+        .btn-secondary:hover {
+            background: #e5e7eb;
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        /* Video Container */
+        .video-container {
+            background: #1f2937;
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+            text-align: center;
+        }
+
+        .video-placeholder {
+            background: #374151;
+            border-radius: 8px;
+            padding: 3rem;
+            color: white;
+            margin-bottom: 1rem;
+        }
+
+        .video-controls {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        /* Reflection Section */
+        .reflection-section {
+            background: #faf5ff;
+            border: 2px solid #a855f7;
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+
+        .reflection-prompt {
+            font-weight: bold;
+            color: #7c3aed;
+            margin-bottom: 1rem;
+        }
+
+        .reflection-input {
+            width: 100%;
+            min-height: 120px;
+            padding: 1rem;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-family: inherit;
+            resize: vertical;
+        }
+
+        .reflection-input:focus {
+            outline: 2px solid #3b82f6;
+            border-color: #3b82f6;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+
+            h1 {
+                font-size: 1.8rem;
+            }
+
+            .computer-diagram {
+                grid-template-columns: 1fr;
+            }
+
+            .component-details {
+                position: static;
+                opacity: 1;
+                transform: none;
+                margin-top: 1rem;
+                border-radius: 8px;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+        }
+
+        /* Accessibility */
+        .btn:focus,
+        .component:focus,
+        .layer:focus,
+        .option:focus {
+            outline: 3px solid #3b82f6;
+            outline-offset: 2px;
+        }
+
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Module 1: The Big Picture</h1>
+            <p class="module-subtitle">Foundation Concepts & Abstraction Layers • Estimated Time: 2 hours</p>
+        </div>
+    </header>
+
+    <main class="container">
+        <!-- Progress Tracking -->
+        <div class="progress-container">
+            <div class="progress-header">
+                <span style="font-weight: bold; color: #1e3a8a;">Module 1 Progress</span>
+                <span id="progress-text">0% Complete</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-fill"></div>
+            </div>
+        </div>
+
+        <!-- Introduction Video Section -->
+        <section class="content-section">
+            <h2>🎥 Welcome Video</h2>
+            <div class="video-container">
+                <div class="video-placeholder">
+                    <h3 style="margin-bottom: 1rem;">Course Introduction & Overview</h3>
+                    <p style="margin-bottom: 1rem;">Duration: 15 minutes</p>
+                    <div style="font-size: 4rem; margin: 1rem 0;">▶️</div>
+                    <p style="font-size: 0.9rem; opacity: 0.8;">Click play to start the introduction video</p>
+                </div>
+                <div class="video-controls">
+                    <button class="btn btn-primary" onclick="playVideo('intro')">
+                        ▶️ Play Video
+                    </button>
+                    <button class="btn btn-secondary" onclick="showTranscript('intro')">
+                        📄 View Transcript
+                    </button>
+                </div>
+            </div>
+            <div class="action-buttons">
+                <button class="btn btn-primary" onclick="completeSection('video')" id="video-complete-btn" disabled>
+                    ✅ Mark Video Complete
+                </button>
+            </div>
+        </section>
+
+        <!-- Interactive Computer Components Explorer -->
+        <section class="content-section">
+            <h2>🖥️ Interactive Computer Components Explorer</h2>
+            <p>Click on each component to learn about its role in a computer system. Understanding these components helps you see how they work together to execute programs.</p>
+            
+            <div class="computer-explorer">
+                <h3 style="text-align: center; color: #0ea5e9; margin-bottom: 1rem;">Major Computer Components</h3>
+                <div class="computer-diagram">
+                    <div class="component" tabindex="0" data-component="cpu" onclick="exploreComponent('cpu')">
+                        <div class="component-icon">🧠</div>
+                        <div class="component-name">CPU</div>
+                        <div class="component-role">Central Processing Unit</div>
+                        <div class="component-details">
+                            The "brain" of the computer that executes instructions. Contains the ALU (Arithmetic Logic Unit) and Control Unit. Processes data and coordinates all other components.
+                        </div>
+                    </div>
+
+                    <div class="component" tabindex="0" data-component="memory" onclick="exploreComponent('memory')">
+                        <div class="component-icon">💾</div>
+                        <div class="component-name">Memory</div>
+                        <div class="component-role">RAM & Storage</div>
+                        <div class="component-details">
+                            Stores programs and data. RAM provides fast, temporary storage for running programs. Storage devices provide permanent data retention.
+                        </div>
+                    </div>
+
+                    <div class="component" tabindex="0" data-component="io" onclick="exploreComponent('io')">
+                        <div class="component-icon">🔌</div>
+                        <div class="component-name">I/O Devices</div>
+                        <div class="component-role">Input & Output</div>
+                        <div class="component-details">
+                            Interfaces between humans and computers. Input devices (keyboard, mouse) send data in. Output devices (monitor, speakers) present results.
+                        </div>
+                    </div>
+
+                    <div class="component" tabindex="0" data-component="bus" onclick="exploreComponent('bus')">
+                        <div class="component-icon">🚌</div>
+                        <div class="component-name">System Bus</div>
+                        <div class="component-role">Data Highway</div>
+                        <div class="component-details">
+                            Connects all components together. Consists of data bus (carries information), address bus (specifies locations), and control bus (coordinates operations).
+                        </div>
+                    </div>
+
+                    <div class="component" tabindex="0" data-component="motherboard" onclick="exploreComponent('motherboard')">
+                        <div class="component-icon">🔧</div>
+                        <div class="component-name">Motherboard</div>
+                        <div class="component-role">Main Circuit Board</div>
+                        <div class="component-details">
+                            The foundation that connects all components. Contains slots, sockets, and circuits that allow components to communicate and receive power.
+                        </div>
+                    </div>
+
+                    <div class="component" tabindex="0" data-component="power" onclick="exploreComponent('power')">
+                        <div class="component-icon">⚡</div>
+                        <div class="component-name">Power Supply</div>
+                        <div class="component-role">Energy Provider</div>
+                        <div class="component-details">
+                            Converts AC power from the wall outlet to DC power that computer components need. Provides stable, regulated power to all system components.
+                        </div>
+                    </div>
+                </div>
+                <div class="action-buttons">
+                    <button class="btn btn-primary" onclick="completeSection('components')" id="components-complete-btn" disabled>
+                        ✅ Complete Component Exploration
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Abstraction Layers -->
+        <section class="content-section">
+            <h2>🏗️ Abstraction Layers</h2>
+            <p>Computers work through layers of abstraction - each layer hides the complexity of the layer below it. Click each layer to explore how they build upon each other.</p>
+            
+            <div class="abstraction-layers">
+                <div class="layer" tabindex="0" data-layer="applications" onclick="exploreLayer('applications')">
+                    <div class="layer-title">
+                        <span>🖥️ Applications & User Programs</span>
+                        <span>▼</span>
+                    </div>
+                    <div class="layer-description">
+                        The software you use daily - web browsers, games, word processors. These programs are written in high-level languages and focus on user functionality rather than hardware details.
+                    </div>
+                </div>
+
+                <div class="layer" tabindex="0" data-layer="highlevel" onclick="exploreLayer('highlevel')">
+                    <div class="layer-title">
+                        <span>📝 High-Level Languages (Java, Python, C++)</span>
+                        <span>▼</span>
+                    </div>
+                    <div class="layer-description">
+                        Programming languages that are closer to human language. They provide abstractions like variables, functions, and objects that make programming easier but must be translated to lower levels.
+                    </div>
+                </div>
+
+                <div class="layer" tabindex="0" data-layer="assembly" onclick="exploreLayer('assembly')">
+                    <div class="layer-title">
+                        <span>⚙️ Assembly Language & Machine Code</span>
+                        <span>▼</span>
+                    </div>
+                    <div class="layer-description">
+                        Low-level languages that directly correspond to processor instructions. Assembly uses mnemonics like "ADD" and "MOV" while machine code is pure binary. This is what we'll study extensively in this course.
+                    </div>
+                </div>
+
+                <div class="layer" tabindex="0" data-layer="microarch" onclick="exploreLayer('microarch')">
+                    <div class="layer-title">
+                        <span>🔧 Microarchitecture & Hardware</span>
+                        <span>▼</span>
+                    </div>
+                    <div class="layer-description">
+                        The physical implementation of the processor - how instructions are actually executed using registers, ALUs, and control units. This includes concepts like pipelining and caching.
+                    </div>
+                </div>
+
+                <div class="layer" tabindex="0" data-layer="digital" onclick="exploreLayer('digital')">
+                    <div class="layer-title">
+                        <span>🚥 Digital Logic & Gates</span>
+                        <span>▼</span>
+                    </div>
+                    <div class="layer-description">
+                        Boolean logic implemented with transistors. AND, OR, NOT gates combine to create more complex circuits like adders and multiplexers. Everything ultimately reduces to switches that are either on or off.
+                    </div>
+                </div>
+
+                <div class="layer" tabindex="0" data-layer="physics" onclick="exploreLayer('physics')">
+                    <div class="layer-title">
+                        <span>⚛️ Physics & Transistors</span>
+                        <span>▼</span>
+                    </div>
+                    <div class="layer-description">
+                        The fundamental physics of semiconductors and transistors. Billions of tiny switches made from silicon that can be turned on or off by controlling electrical signals. This is where the digital world meets the physical world.
+                    </div>
+                </div>
+
+                <div class="action-buttons">
+                    <button class="btn btn-primary" onclick="completeSection('layers')" id="layers-complete-btn" disabled>
+                        ✅ Complete Abstraction Layers
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Knowledge Check Quiz -->
+        <section class="content-section">
+            <h2>🧠 Knowledge Check Quiz</h2>
+            <div class="quiz-section">
+                <div class="question" data-question="1">
+                    <div class="question-text">1. Which computer component is often called the "brain" of the computer?</div>
+                    <ul class="options">
+                        <li class="option" data-answer="a" onclick="selectAnswer(1, 'a')">A) Memory (RAM)</li>
+                        <li class="option" data-answer="b" onclick="selectAnswer(1, 'b')">B) Central Processing Unit (CPU)</li>
+                        <li class="option" data-answer="c" onclick="selectAnswer(1, 'c')">C) Hard Drive</li>
+                        <li class="option" data-answer="d" onclick="selectAnswer(1, 'd')">D) Motherboard</li>
+                    </ul>
+                    <div class="feedback" id="feedback-1"></div>
+                </div>
+
+                <div class="question" data-question="2">
+                    <div class="question-text">2. What is the main purpose of abstraction layers in computer systems?</div>
+                    <ul class="options">
+                        <li class="option" data-answer="a" onclick="selectAnswer(2, 'a')">A) To make computers run faster</li>
+                        <li class="option" data-answer="b" onclick="selectAnswer(2, 'b')">B) To hide complexity and make systems easier to understand and use</li>
+                        <li class="option" data-answer="c" onclick="selectAnswer(2, 'c')">C) To reduce the cost of manufacturing</li>
+                        <li class="option" data-answer="d" onclick="selectAnswer(2, 'd')">D) To prevent unauthorized access</li>
+                    </ul>
+                    <div class="feedback" id="feedback-2"></div>
+                </div>
+
+                <div class="question" data-question="3">
+                    <div class="question-text">3. Which layer is closest to the actual hardware?</div>
+                    <ul class="options">
+                        <li class="option" data-answer="a" onclick="selectAnswer(3, 'a')">A) High-level programming languages</li>
+                        <li class="option" data-answer="b" onclick="selectAnswer(3, 'b')">B) Application software</li>
+                        <li class="option" data-answer="c" onclick="selectAnswer(3, 'c')">C) Digital logic and transistors</li>
+                        <li class="option" data-answer="d" onclick="selectAnswer(3, 'd')">D) Operating system</li>
+                    </ul>
+                    <div class="feedback" id="feedback-3"></div>
+                </div>
+
+                <div class="action-buttons">
+                    <button class="btn btn-primary" onclick="submitQuiz()" id="quiz-submit-btn" disabled>
+                        📊 Submit Quiz
+                    </button>
+                    <button class="btn btn-secondary" onclick="resetQuiz()">
+                        🔄 Reset Quiz
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Reflection Section -->
+        <section class="content-section">
+            <h2>💭 Reflection & Discussion</h2>
+            <div class="reflection-section">
+                <div class="reflection-prompt">
+                    Reflection Prompt: Think about a smartphone or computer you use regularly. Can you identify examples of the different abstraction layers we discussed? How does understanding these layers change your perspective on how technology works?
+                </div>
+                <textarea 
+                    class="reflection-input" 
+                    id="reflection-text"
+                    placeholder="Share your thoughts here... Consider specific examples like how touching an app icon eventually causes transistors to switch, or how a high-level programming language like the one used to create your favorite app ultimately becomes machine code."
+                    oninput="updateReflection()">
+                </textarea>
+                <div class="action-buttons">
+                    <button class="btn btn-primary" onclick="completeSection('reflection')" id="reflection-complete-btn" disabled>
+                        ✅ Complete Reflection
+                    </button>
+                    <button class="btn btn-secondary" onclick="saveReflection()">
+                        💾 Save Draft
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Module Completion -->
+        <section class="content-section">
+            <h2>🎉 Module 1 Complete!</h2>
+            <p>Congratulations! You've completed Module 1: The Big Picture. You should now understand:</p>
+            <ul style="margin: 1rem 0; padding-left: 2rem;">
+                <li>The major components of a computer system and their roles</li>
+                <li>How abstraction layers hide complexity and enable modern computing</li>
+                <li>The relationship between high-level programs and low-level hardware</li>
+                <li>Why understanding computer architecture is important for software developers</li>
+            </ul>
+            
+            <div class="action-buttons">
+                <button class="btn btn-primary" onclick="proceedToModule2()" id="module-complete-btn" disabled>
+                    🚀 Proceed to Module 2: Number Systems
+                </button>
+                <button class="btn btn-secondary" onclick="reviewModule()">
+                    🔍 Review Module Content
+                </button>
+                <button class="btn btn-secondary" onclick="downloadNotes()">
+                    📝 Download Study Notes
+                </button>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        // Module state tracking
+        let moduleState = {
+            sectionsCompleted: {
+                video: false,
+                components: false,
+                layers: false,
+                quiz: false,
+                reflection: false
+            },
+            componentsExplored: new Set(),
+            layersExplored: new Set(),
+            quizAnswers: {},
+            quizSubmitted: false,
+            reflectionText: '',
+            overallProgress: 0
+        };
+
+        // Quiz answers (correct answers)
+        const quizAnswers = {
+            1: 'b', // CPU
+            2: 'b', // Hide complexity
+            3: 'c'  // Digital logic and transistors
+        };
+
+        // Initialize module
+        document.addEventListener('DOMContentLoaded', function() {
+            loadModuleState();
+            updateProgress();
+            updateButtonStates();
+        });
+
+        // Save state to localStorage
+        function saveModuleState() {
+            try {
+                localStorage.setItem('csc210_module1_state', JSON.stringify(moduleState));
+            } catch (error) {
+                console.warn('Could not save module state:', error);
+            }
+        }
+
+        // Load state from localStorage
+        function loadModuleState() {
+            try {
+                const saved = localStorage.getItem('csc210_module1_state');
+                if (saved) {
+                    const savedState = JSON.parse(saved);
+                    moduleState = { ...moduleState, ...savedState };
+                    
+                    // Restore UI state
+                    restoreUIState();
+                }
+            } catch (error) {
+                console.warn('Could not load module state:', error);
+            }
+        }
+
+        // Restore UI based on saved state
+        function restoreUIState() {
+            // Restore reflection text
+            if (moduleState.reflectionText) {
+                document.getElementById('reflection-text').value = moduleState.reflectionText;
+            }
+
+            // Restore quiz answers
+            Object.keys(moduleState.quizAnswers).forEach(questionNum => {
+                const answer = moduleState.quizAnswers[questionNum];
+                const option = document.querySelector(`[data-question="${questionNum}"] [data-answer="${answer}"]`);
+                if (option) {
+                    option.classList.add('selected');
+                }
+            });
+
+            // Mark explored components and layers
+            moduleState.componentsExplored.forEach(component => {
+                const element = document.querySelector(`[data-component="${component}"]`);
+                if (element) {
+                    element.style.opacity = '0.8';
+                }
+            });
+
+            moduleState.layersExplored.forEach(layer => {
+                const element = document.querySelector(`[data-layer="${layer}"]`);
+                if (element) {
+                    element.style.opacity = '0.8';
+                }
+            });
+        }
+
+        // Update progress bar
+        function updateProgress() {
+            const completedSections = Object.values(moduleState.sectionsCompleted).filter(Boolean).length;
+            const totalSections = Object.keys(moduleState.sectionsCompleted).length;
+            const percentage = Math.round((completedSections / totalSections) * 100);
+            
+            moduleState.overallProgress = percentage;
+            
+            const progressFill = document.getElementById('progress-fill');
+            const progressText = document.getElementById('progress-text');
+            
+            if (progressFill) {
+                progressFill.style.width = `${percentage}%`;
+            }
+            
+            if (progressText) {
+                progressText.textContent = `${percentage}% Complete`;
+            }
+
+            saveModuleState();
+        }
+
+        // Update button states based on completion
+        function updateButtonStates() {
+            // Video completion button
+            const videoBtn = document.getElementById('video-complete-btn');
+            if (videoBtn && moduleState.sectionsCompleted.video) {
+                videoBtn.disabled = false;
+                videoBtn.textContent = '✅ Video Completed';
+            }
+
+            // Components completion button
+            const componentsBtn = document.getElementById('components-complete-btn');
+            if (componentsBtn) {
+                if (moduleState.componentsExplored.size >= 3) {
+                    componentsBtn.disabled = false;
+                }
+                if (moduleState.sectionsCompleted.components) {
+                    componentsBtn.textContent = '✅ Components Completed';
+                }
+            }
+
+            // Layers completion button
+            const layersBtn = document.getElementById('layers-complete-btn');
+            if (layersBtn) {
+                if (moduleState.layersExplored.size >= 3) {
+                    layersBtn.disabled = false;
+                }
+                if (moduleState.sectionsCompleted.layers) {
+                    layersBtn.textContent = '✅ Layers Completed';
+                }
+            }
+
+            // Quiz submit button
+            const quizBtn = document.getElementById('quiz-submit-btn');
+            if (quizBtn) {
+                if (Object.keys(moduleState.quizAnswers).length >= 3) {
+                    quizBtn.disabled = false;
+                }
+                if (moduleState.quizSubmitted) {
+                    quizBtn.textContent = '✅ Quiz Submitted';
+                    quizBtn.disabled = true;
+                }
+            }
+
+            // Reflection completion button
+            const reflectionBtn = document.getElementById('reflection-complete-btn');
+            if (reflectionBtn) {
+                if (moduleState.reflectionText.length >= 50) {
+                    reflectionBtn.disabled = false;
+                }
+                if (moduleState.sectionsCompleted.reflection) {
+                    reflectionBtn.textContent = '✅ Reflection Completed';
+                }
+            }
+
+            // Module completion button
+            const moduleBtn = document.getElementById('module-complete-btn');
+            if (moduleBtn) {
+                const allCompleted = Object.values(moduleState.sectionsCompleted).every(Boolean);
+                if (allCompleted) {
+                    moduleBtn.disabled = false;
+                }
+            }
+        }
+
+        // Video functions
+        function playVideo(videoId) {
+            alert('Video player would open here. For demo purposes, marking as watched.');
+            moduleState.sectionsCompleted.video = true;
+            updateProgress();
+            updateButtonStates();
+        }
+
+        function showTranscript(videoId) {
+            alert('Video transcript would be displayed here in a modal or expandable section.');
+        }
+
+        // Component exploration
+        function exploreComponent(componentName) {
+            // Remove active class from all components
+            document.querySelectorAll('.component').forEach(comp => {
+                comp.classList.remove('active');
+            });
+
+            // Add active class to clicked component
+            const component = document.querySelector(`[data-component="${componentName}"]`);
+            if (component) {
+                component.classList.add('active');
+                
+                // Track exploration
+                moduleState.componentsExplored.add(componentName);
+                
+                // Visual feedback for explored components
+                setTimeout(() => {
+                    component.style.opacity = '0.8';
+                }, 2000);
+
+                updateButtonStates();
+                saveModuleState();
+            }
+        }
+
+        // Layer exploration
+        function exploreLayer(layerName) {
+            const layer = document.querySelector(`[data-layer="${layerName}"]`);
+            if (layer) {
+                // Toggle active state
+                layer.classList.toggle('active');
+                
+                // Track exploration
+                moduleState.layersExplored.add(layerName);
+                
+                // Visual feedback for explored layers
+                setTimeout(() => {
+                    layer.style.opacity = '0.8';
+                }, 1000);
+
+                updateButtonStates();
+                saveModuleState();
+            }
+        }
+
+        // Quiz functions
+        function selectAnswer(questionNum, answer) {
+            // Remove selection from all options in this question
+            const question = document.querySelector(`[data-question="${questionNum}"]`);
+            question.querySelectorAll('.option').forEach(opt => {
+                opt.classList.remove('selected');
+            });
+
+            // Select the clicked option
+            const selectedOption = question.querySelector(`[data-answer="${answer}"]`);
+            selectedOption.classList.add('selected');
+
+            // Store the answer
+            moduleState.quizAnswers[questionNum] = answer;
+
+            updateButtonStates();
+            saveModuleState();
+        }
+
+        function submitQuiz() {
+            if (Object.keys(moduleState.quizAnswers).length < 3) {
+                alert('Please answer all questions before submitting.');
+                return;
+            }
+
+            let score = 0;
+            const totalQuestions = Object.keys(quizAnswers).length;
+
+            // Check each answer and provide feedback
+            Object.keys(quizAnswers).forEach(questionNum => {
+                const userAnswer = moduleState.quizAnswers[questionNum];
+                const correctAnswer = quizAnswers[questionNum];
+                const isCorrect = userAnswer === correctAnswer;
+
+                if (isCorrect) score++;
+
+                // Update UI to show correct/incorrect
+                const question = document.querySelector(`[data-question="${questionNum}"]`);
+                const userOption = question.querySelector(`[data-answer="${userAnswer}"]`);
+                const correctOption = question.querySelector(`[data-answer="${correctAnswer}"]`);
+
+                if (isCorrect) {
+                    userOption.classList.add('correct');
+                } else {
+                    userOption.classList.add('incorrect');
+                    correctOption.classList.add('correct');
+                }
+
+                // Show feedback
+                const feedback = document.getElementById(`feedback-${questionNum}`);
+                if (feedback) {
+                    feedback.style.display = 'block';
+                    if (isCorrect) {
+                        feedback.className = 'feedback correct';
+                        feedback.textContent = '✅ Correct! Well done.';
+                    } else {
+                        feedback.className = 'feedback incorrect';
+                        feedback.textContent = getFeedbackMessage(questionNum, correctAnswer);
+                    }
+                }
+            });
+
+            // Overall feedback
+            const percentage = Math.round((score / totalQuestions) * 100);
+            alert(`Quiz completed! You scored ${score}/${totalQuestions} (${percentage}%). ${percentage >= 70 ? 'Great job!' : 'Review the material and try again if needed.'}`);
+
+            moduleState.quizSubmitted = true;
+            moduleState.sectionsCompleted.quiz = true;
+            updateProgress();
+            updateButtonStates();
+        }
+
+        function getFeedbackMessage(questionNum, correctAnswer) {
+            const messages = {
+                1: '❌ The CPU (Central Processing Unit) is called the "brain" because it executes instructions and coordinates all computer operations.',
+                2: '❌ Abstraction layers hide complexity, allowing each layer to focus on its specific purpose without worrying about implementation details below.',
+                3: '❌ Digital logic and transistors are the lowest level we typically discuss in computer architecture, directly controlling electrical signals.'
+            };
+            return messages[questionNum] || '❌ Incorrect. Please review the material.';
+        }
+
+        function resetQuiz() {
+            // Clear all selections and feedback
+            document.querySelectorAll('.option').forEach(opt => {
+                opt.classList.remove('selected', 'correct', 'incorrect');
+            });
+
+            document.querySelectorAll('.feedback').forEach(feedback => {
+                feedback.style.display = 'none';
+            });
+
+            // Reset state
+            moduleState.quizAnswers = {};
+            moduleState.quizSubmitted = false;
+            moduleState.sectionsCompleted.quiz = false;
+
+            updateProgress();
+            updateButtonStates();
+            saveModuleState();
+        }
+
+        // Reflection functions
+        function updateReflection() {
+            const reflectionText = document.getElementById('reflection-text').value;
+            moduleState.reflectionText = reflectionText;
+            updateButtonStates();
+            saveModuleState();
+        }
+
+        function saveReflection() {
+            const reflectionText = document.getElementById('reflection-text').value;
+            if (reflectionText.trim().length > 0) {
+                moduleState.reflectionText = reflectionText;
+                saveModuleState();
+                alert('Reflection saved successfully!');
+            } else {
+                alert('Please write some reflection before saving.');
+            }
+        }
+
+        // Section completion functions
+        function completeSection(sectionName) {
+            moduleState.sectionsCompleted[sectionName] = true;
+            updateProgress();
+            updateButtonStates();
+            
+            // Provide feedback
+            const messages = {
+                video: 'Video section completed! 🎥',
+                components: 'Component exploration completed! 🖥️',
+                layers: 'Abstraction layers completed! 🏗️',
+                quiz: 'Knowledge check completed! 🧠',
+                reflection: 'Reflection completed! 💭'
+            };
+            
+            alert(messages[sectionName] || 'Section completed!');
+        }
+
+        // Module navigation
+        function proceedToModule2() {
+            const allCompleted = Object.values(moduleState.sectionsCompleted).every(Boolean);
+            if (!allCompleted) {
+                alert('Please complete all sections before proceeding to Module 2.');
+                return;
+            }
+            
+            // In a real implementation, this would navigate to Module 2
+            alert('🎉 Excellent work! Module 2: Number Systems is now unlocked. You would be redirected to Module 2 in the full implementation.');
+        }
+
+        function reviewModule() {
+            // Scroll to top and highlight incomplete sections
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            
+            const incomplete = Object.entries(moduleState.sectionsCompleted)
+                .filter(([section, completed]) => !completed)
+                .map(([section]) => section);
+            
+            if (incomplete.length > 0) {
+                alert(`Review needed for: ${incomplete.join(', ')}`);
+            } else {
+                alert('All sections completed! Great job!');
+            }
+        }
+
+        function downloadNotes() {
+            // Create a summary of the module content
+            const notes = `
+CSC210 Module 1: The Big Picture - Study Notes
+
+KEY CONCEPTS:
+1. Computer Components:
+   - CPU: Central Processing Unit (the "brain")
+   - Memory: RAM and storage for programs and data
+   - I/O Devices: Input and output interfaces
+   - System Bus: Connects all components
+   - Motherboard: Main circuit board
+   - Power Supply: Provides electrical power
+
+2. Abstraction Layers (from top to bottom):
+   - Applications & User Programs
+   - High-Level Languages (Java, Python, C++)
+   - Assembly Language & Machine Code
+   - Microarchitecture & Hardware
+   - Digital Logic & Gates
+   - Physics & Transistors
+
+3. Why Abstraction Matters:
+   - Hides complexity
+   - Enables specialization
+   - Makes systems manageable
+   - Allows higher-level thinking
+
+REFLECTION:
+${moduleState.reflectionText || 'No reflection recorded yet.'}
+
+Module completed: ${Object.values(moduleState.sectionsCompleted).every(Boolean) ? 'Yes' : 'No'}
+Progress: ${moduleState.overallProgress}%
+            `;
+
+            // Create and download the file
+            const blob = new Blob([notes], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'CSC210_Module1_Notes.txt';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        // Keyboard accessibility
+        document.addEventListener('keydown', function(e) {
+            // Allow Enter key to activate clickable elements
+            if (e.key === 'Enter' && e.target.hasAttribute('tabindex')) {
+                e.preventDefault();
+                e.target.click();
+            }
+        });
+
+        // Auto-save on page unload
+        window.addEventListener('beforeunload', function() {
+            saveModuleState();
+        });
+
+        // Periodic auto-save
+        setInterval(saveModuleState, 30000); // Save every 30 seconds
+    </script>
+</body>
+</html>
