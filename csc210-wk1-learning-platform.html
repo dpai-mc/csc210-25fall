@@ -1,0 +1,1286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSC210 Week 1: Introduction to Computer Architecture</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f8fafc;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header and Navigation */
+        header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            color: white;
+            padding: 2rem 0;
+            margin-bottom: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-content {
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .course-subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-bottom: 1rem;
+        }
+
+        .week-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1.5rem;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+        }
+
+        .info-item {
+            text-align: center;
+        }
+
+        .info-label {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            margin-bottom: 0.3rem;
+        }
+
+        .info-value {
+            font-size: 1.1rem;
+            font-weight: bold;
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            background: white;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .progress-title {
+            font-weight: bold;
+            color: #1e3a8a;
+        }
+
+        .progress-percentage {
+            color: #6b7280;
+            font-size: 0.9rem;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e5e7eb;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #16a34a 0%, #22c55e 100%);
+            border-radius: 4px;
+            transition: width 0.5s ease;
+            width: 0%;
+        }
+
+        /* Navigation Tabs */
+        .nav-tabs {
+            display: flex;
+            background: white;
+            border-radius: 12px;
+            padding: 0.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            overflow-x: auto;
+        }
+
+        .nav-tab {
+            background: none;
+            border: none;
+            padding: 1rem 1.5rem;
+            cursor: pointer;
+            font-size: 1rem;
+            color: #6b7280;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+            min-width: fit-content;
+        }
+
+        .nav-tab:hover {
+            color: #1e3a8a;
+            background-color: #f8fafc;
+        }
+
+        .nav-tab.active {
+            color: #1e3a8a;
+            background-color: #e0f2fe;
+            font-weight: bold;
+            box-shadow: 0 2px 4px rgba(30, 58, 138, 0.2);
+        }
+
+        /* Content Areas */
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .content-section {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            color: #1e3a8a;
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            border-bottom: 3px solid #e5e7eb;
+            padding-bottom: 0.5rem;
+        }
+
+        h3 {
+            color: #374151;
+            font-size: 1.4rem;
+            margin: 1.5rem 0 1rem 0;
+        }
+
+        h4 {
+            color: #4b5563;
+            font-size: 1.2rem;
+            margin: 1rem 0 0.5rem 0;
+        }
+
+        /* Module Cards */
+        .module-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .module-card {
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            border-radius: 12px;
+            padding: 1.5rem;
+            border: 2px solid #e5e7eb;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .module-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            border-color: #3b82f6;
+        }
+
+        .module-card.completed {
+            border-color: #16a34a;
+            background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+        }
+
+        .module-card.locked {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .module-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .module-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #1e3a8a;
+        }
+
+        .module-status {
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        .status-available {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .status-completed {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .status-locked {
+            background: #f3f4f6;
+            color: #6b7280;
+        }
+
+        .module-description {
+            color: #6b7280;
+            margin-bottom: 1rem;
+            line-height: 1.5;
+        }
+
+        .module-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.9rem;
+            color: #6b7280;
+        }
+
+        .module-duration {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .module-difficulty {
+            padding: 0.2rem 0.6rem;
+            border-radius: 12px;
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        /* Collapsible Content */
+        .collapsible {
+            cursor: pointer;
+            user-select: none;
+            position: relative;
+            padding: 1rem;
+            background: #f8fafc;
+            border-radius: 8px;
+            margin: 1rem 0;
+            border: 1px solid #e5e7eb;
+            transition: all 0.3s ease;
+        }
+
+        .collapsible:hover {
+            background: #f1f5f9;
+            border-color: #cbd5e1;
+        }
+
+        .collapsible.active {
+            background: #e0f2fe;
+            border-color: #0284c7;
+        }
+
+        .collapsible::after {
+            content: "▼";
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            transition: transform 0.3s ease;
+            color: #1e3a8a;
+            font-size: 1.2rem;
+        }
+
+        .collapsible.active::after {
+            transform: translateY(-50%) rotate(180deg);
+        }
+
+        .collapsible-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease;
+            background: white;
+            border-radius: 0 0 8px 8px;
+            border: 1px solid #e5e7eb;
+            border-top: none;
+        }
+
+        .collapsible-content.active {
+            max-height: 1000px;
+            padding: 1.5rem;
+        }
+
+        /* Learning Objectives */
+        .objectives-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .objectives-list li {
+            padding: 0.8rem 0;
+            border-bottom: 1px solid #f3f4f6;
+            position: relative;
+            padding-left: 2rem;
+        }
+
+        .objectives-list li::before {
+            content: "🎯";
+            position: absolute;
+            left: 0;
+            top: 0.8rem;
+        }
+
+        .objectives-list li:last-child {
+            border-bottom: none;
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(30, 58, 138, 0.3);
+        }
+
+        .btn-secondary {
+            background: #f3f4f6;
+            color: #374151;
+            border: 1px solid #d1d5db;
+        }
+
+        .btn-secondary:hover {
+            background: #e5e7eb;
+            border-color: #9ca3af;
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        /* Quick Navigation Sidebar */
+        .quick-nav {
+            position: fixed;
+            top: 50%;
+            right: 20px;
+            transform: translateY(-50%);
+            background: white;
+            border-radius: 12px;
+            padding: 1rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            max-width: 200px;
+            z-index: 100;
+        }
+
+        .quick-nav h4 {
+            margin: 0 0 1rem 0;
+            font-size: 0.9rem;
+            color: #1e3a8a;
+            text-align: center;
+        }
+
+        .quick-nav ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .quick-nav li {
+            margin: 0.5rem 0;
+        }
+
+        .quick-nav a {
+            color: #6b7280;
+            text-decoration: none;
+            font-size: 0.8rem;
+            padding: 0.3rem 0.5rem;
+            border-radius: 4px;
+            display: block;
+            transition: all 0.2s ease;
+        }
+
+        .quick-nav a:hover,
+        .quick-nav a.active {
+            color: #1e3a8a;
+            background: #f0f9ff;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .quick-nav {
+                display: none;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            .nav-tabs {
+                padding: 0.3rem;
+            }
+
+            .nav-tab {
+                padding: 0.8rem 1rem;
+                font-size: 0.9rem;
+            }
+
+            .module-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            .week-info {
+                grid-template-columns: 1fr;
+                gap: 0.5rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 1.7rem;
+            }
+
+            .content-section {
+                padding: 1rem;
+            }
+
+            .module-card {
+                padding: 1rem;
+            }
+        }
+
+        /* Focus styles for accessibility */
+        .nav-tab:focus,
+        .collapsible:focus,
+        .btn:focus,
+        .module-card:focus {
+            outline: 3px solid #3b82f6;
+            outline-offset: 2px;
+        }
+
+        /* Skip to content link for screen readers */
+        .skip-link {
+            position: absolute;
+            top: -40px;
+            left: 6px;
+            background: #1e3a8a;
+            color: white;
+            padding: 8px 12px;
+            text-decoration: none;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+
+        .skip-link:focus {
+            top: 6px;
+        }
+
+        /* Screen reader only content */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+
+        /* Loading states */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #3498db;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+    
+    <!-- Quick Navigation Sidebar -->
+    <nav class="quick-nav" role="navigation" aria-label="Quick navigation">
+        <h4>Quick Nav</h4>
+        <ul>
+            <li><a href="#overview" data-tab="overview">Overview</a></li>
+            <li><a href="#modules" data-tab="modules">Learning Modules</a></li>
+            <li><a href="#objectives" data-tab="objectives">Objectives</a></li>
+            <li><a href="#assessment" data-tab="assessment">Assessment</a></li>
+            <li><a href="#resources" data-tab="resources">Resources</a></li>
+        </ul>
+    </nav>
+
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <h1>Week 1: Introduction to Computer Architecture</h1>
+                <p class="course-subtitle">Foundations of Computing - Number Systems & Abstraction Layers</p>
+                
+                <div class="week-info">
+                    <div class="info-item">
+                        <div class="info-label">Time Commitment</div>
+                        <div class="info-value">9 hours</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Modules</div>
+                        <div class="info-value">4 modules</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Due Date</div>
+                        <div class="info-value">Friday, 11:59 PM</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Points</div>
+                        <div class="info-value">100 points</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main id="main-content" class="container">
+        <!-- Progress Tracking -->
+        <div class="progress-container">
+            <div class="progress-header">
+                <span class="progress-title">Week 1 Progress</span>
+                <span class="progress-percentage" id="progress-text">0% Complete</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-fill"></div>
+            </div>
+        </div>
+
+        <!-- Navigation Tabs -->
+        <nav class="nav-tabs" role="tablist" aria-label="Course content navigation">
+            <button class="nav-tab active" role="tab" aria-selected="true" aria-controls="overview-tab" id="overview-btn" data-tab="overview">
+                📋 Overview
+            </button>
+            <button class="nav-tab" role="tab" aria-selected="false" aria-controls="modules-tab" id="modules-btn" data-tab="modules">
+                🎯 Learning Modules
+            </button>
+            <button class="nav-tab" role="tab" aria-selected="false" aria-controls="objectives-tab" id="objectives-btn" data-tab="objectives">
+                🏆 Learning Objectives
+            </button>
+            <button class="nav-tab" role="tab" aria-selected="false" aria-controls="assessment-tab" id="assessment-btn" data-tab="assessment">
+                📊 Assessment
+            </button>
+            <button class="nav-tab" role="tab" aria-selected="false" aria-controls="resources-tab" id="resources-btn" data-tab="resources">
+                📚 Resources
+            </button>
+        </nav>
+
+        <!-- Tab Content Areas -->
+        <div id="overview-tab" class="tab-content active" role="tabpanel" aria-labelledby="overview-btn">
+            <div class="content-section">
+                <h2>Welcome to Computer Architecture</h2>
+                <p>This week establishes the foundation for understanding how computers work at the hardware level. You'll explore the layers of abstraction that make modern computing possible and master the number systems that computers use internally.</p>
+                
+                <div class="collapsible" tabindex="0" role="button" aria-expanded="false" aria-controls="what-learn">
+                    <h3>What You'll Learn This Week</h3>
+                </div>
+                <div class="collapsible-content" id="what-learn">
+                    <ul class="objectives-list">
+                        <li>The relationship between hardware and software through abstraction layers</li>
+                        <li>How to convert numbers between decimal, binary, and hexadecimal systems</li>
+                        <li>Signed integer representation using two's complement notation</li>
+                        <li>How data is stored and manipulated at the bit level</li>
+                        <li>Major components of computer systems and their roles</li>
+                    </ul>
+                </div>
+
+                <div class="collapsible" tabindex="0" role="button" aria-expanded="false" aria-controls="big-picture">
+                    <h3>The Big Picture</h3>
+                </div>
+                <div class="collapsible-content" id="big-picture">
+                    <p>By the end of this course, you'll build a complete 8-bit CPU from scratch! This week's number systems form the foundation for everything else we'll learn. Understanding binary and hexadecimal isn't just academic - it's essential for:</p>
+                    <ul style="margin: 1rem 0; padding-left: 2rem;">
+                        <li>Debugging low-level programs</li>
+                        <li>Understanding memory addresses</li>
+                        <li>Working with embedded systems</li>
+                        <li>Optimizing software performance</li>
+                        <li>Digital circuit design</li>
+                    </ul>
+                </div>
+
+                <div class="action-buttons">
+                    <button class="btn btn-primary" onclick="switchTab('modules')">
+                        🚀 Start Learning
+                    </button>
+                    <button class="btn btn-secondary" onclick="toggleCollapsible('course-roadmap')">
+                        🗺️ View Course Roadmap
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div id="modules-tab" class="tab-content" role="tabpanel" aria-labelledby="modules-btn">
+            <div class="content-section">
+                <h2>Learning Modules</h2>
+                <p>Complete these four modules in order. Each builds on the previous one and includes interactive content, practice problems, and self-assessments.</p>
+                
+                <div class="module-grid">
+                    <div class="module-card" tabindex="0" data-module="1" onclick="openModule(1)">
+                        <div class="module-header">
+                            <div class="module-title">Module 1: The Big Picture</div>
+                            <div class="module-status status-available">Available</div>
+                        </div>
+                        <div class="module-description">
+                            Foundation concepts and abstraction layers. Learn how simple switches become complex computers through layers of abstraction.
+                        </div>
+                        <div class="module-meta">
+                            <div class="module-duration">⏱️ 2 hours</div>
+                            <div class="module-difficulty">Beginner</div>
+                        </div>
+                    </div>
+
+                    <div class="module-card locked" tabindex="0" data-module="2">
+                        <div class="module-header">
+                            <div class="module-title">Module 2: Number Systems</div>
+                            <div class="module-status status-locked">Locked</div>
+                        </div>
+                        <div class="module-description">
+                            Binary, decimal, and hexadecimal fundamentals. Master conversions between number systems with interactive tools.
+                        </div>
+                        <div class="module-meta">
+                            <div class="module-duration">⏱️ 3 hours</div>
+                            <div class="module-difficulty">Intermediate</div>
+                        </div>
+                    </div>
+
+                    <div class="module-card locked" tabindex="0" data-module="3">
+                        <div class="module-header">
+                            <div class="module-title">Module 3: Two's Complement</div>
+                            <div class="module-status status-locked">Locked</div>
+                        </div>
+                        <div class="module-description">
+                            Signed number representation and binary arithmetic. Understand how computers handle negative numbers.
+                        </div>
+                        <div class="module-meta">
+                            <div class="module-duration">⏱️ 2 hours</div>
+                            <div class="module-difficulty">Intermediate</div>
+                        </div>
+                    </div>
+
+                    <div class="module-card locked" tabindex="0" data-module="4">
+                        <div class="module-header">
+                            <div class="module-title">Module 4: Putting It Together</div>
+                            <div class="module-status status-locked">Locked</div>
+                        </div>
+                        <div class="module-description">
+                            Synthesis and application. Connect concepts and prepare for Week 2. Complete the comprehensive assignment.
+                        </div>
+                        <div class="module-meta">
+                            <div class="module-duration">⏱️ 2 hours</div>
+                            <div class="module-difficulty">Advanced</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="action-buttons">
+                    <button class="btn btn-primary" onclick="openModule(1)">
+                        ▶️ Start Module 1
+                    </button>
+                    <button class="btn btn-secondary" onclick="downloadSchedule()">
+                        📅 Download Study Schedule
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div id="objectives-tab" class="tab-content" role="tabpanel" aria-labelledby="objectives-btn">
+            <div class="content-section">
+                <h2>Learning Objectives</h2>
+                <p>By the end of this week, you will be able to:</p>
+                
+                <ul class="objectives-list">
+                    <li>Explain the relationship between hardware and software through abstraction layers</li>
+                    <li>Convert numbers between decimal, binary, and hexadecimal representations</li>
+                    <li>Represent signed integers using two's complement notation</li>
+                    <li>Describe how data is stored and manipulated at the bit level</li>
+                    <li>Identify the major components of a computer system and their roles</li>
+                </ul>
+
+                <div class="collapsible" tabindex="0" role="button" aria-expanded="false" aria-controls="assessment-alignment">
+                    <h3>How These Align with Course Goals</h3>
+                </div>
+                <div class="collapsible-content" id="assessment-alignment">
+                    <p>These objectives directly support the course's main goals:</p>
+                    <ul style="margin: 1rem 0; padding-left: 2rem;">
+                        <li><strong>Write assembly programs:</strong> Number systems are essential for understanding memory addresses and data representation</li>
+                        <li><strong>Describe computer architecture:</strong> Abstraction layers show how components work together</li>
+                        <li><strong>Understand implementation:</strong> Binary representation is how high-level constructs are actually stored</li>
+                    </ul>
+                </div>
+
+                <div class="action-buttons">
+                    <button class="btn btn-primary" onclick="openSelfAssessment()">
+                        🎯 Take Self-Assessment
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div id="assessment-tab" class="tab-content" role="tabpanel" aria-labelledby="assessment-btn">
+            <div class="content-section">
+                <h2>Assessment Overview</h2>
+                
+                <div class="module-grid">
+                    <div class="module-card">
+                        <div class="module-header">
+                            <div class="module-title">Formative Assessment</div>
+                            <div class="module-status status-available">Ongoing</div>
+                        </div>
+                        <div class="module-description">
+                            Practice quizzes, self-check questions, and interactive exercises throughout each module. Unlimited attempts with immediate feedback.
+                        </div>
+                        <div class="module-meta">
+                            <div class="module-duration">📝 Self-paced</div>
+                            <div class="module-difficulty">0 points</div>
+                        </div>
+                    </div>
+
+                    <div class="module-card">
+                        <div class="module-header">
+                            <div class="module-title">Summative Assignment</div>
+                            <div class="module-status status-locked">Due Friday</div>
+                        </div>
+                        <div class="module-description">
+                            Comprehensive problem set covering number conversions, two's complement, binary arithmetic, and real-world applications.
+                        </div>
+                        <div class="module-meta">
+                            <div class="module-duration">📊 90 minutes</div>
+                            <div class="module-difficulty">100 points</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="collapsible" tabindex="0" role="button" aria-expanded="false" aria-controls="grading-breakdown">
+                    <h3>Grading Breakdown</h3>
+                </div>
+                <div class="collapsible-content" id="grading-breakdown">
+                    <ul style="margin: 1rem 0; padding-left: 2rem;">
+                        <li><strong>Basic Conversions (40 points):</strong> Decimal ↔ Binary ↔ Hexadecimal</li>
+                        <li><strong>Two's Complement (30 points):</strong> Signed number representation and arithmetic</li>
+                        <li><strong>Binary Arithmetic (20 points):</strong> Addition, subtraction, overflow detection</li>
+                        <li><strong>Applications (10 points):</strong> RGB colors, IP addresses, memory addresses</li>
+                    </ul>
+                </div>
+
+                <div class="action-buttons">
+                    <button class="btn btn-secondary" onclick="viewRubric()">
+                        📋 View Detailed Rubric
+                    </button>
+                    <button class="btn btn-secondary" onclick="viewSampleProblems()">
+                        🔍 Sample Problems
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div id="resources-tab" class="tab-content" role="tabpanel" aria-labelledby="resources-btn">
+            <div class="content-section">
+                <h2>Learning Resources</h2>
+                
+                <div class="collapsible" tabindex="0" role="button" aria-expanded="false" aria-controls="required-reading">
+                    <h3>📖 Required Reading</h3>
+                </div>
+                <div class="collapsible-content" id="required-reading">
+                    <ul style="margin: 1rem 0; padding-left: 2rem;">
+                        <li><strong>"But How Do It Know?" Chapters 1-2:</strong> Foundation concepts and the simplicity underlying complexity</li>
+                        <li><strong>Supplementary Reading:</strong> Abstraction layers from transistors to applications</li>
+                        <li><strong>Interactive Tutorials:</strong> Embedded within each module for hands-on practice</li>
+                    </ul>
+                </div>
+
+                <div class="collapsible" tabindex="0" role="button" aria-expanded="false" aria-controls="video-content">
+                    <h3>🎥 Video Content</h3>
+                </div>
+                <div class="collapsible-content" id="video-content">
+                    <ul style="margin: 1rem 0; padding-left: 2rem;">
+                        <li><strong>Introduction Video (15 min):</strong> Course welcome and overview</li>
+                        <li><strong>Binary & Hexadecimal Series (45 min total):</strong> Step-by-step number system explanations</li>
+                        <li><strong>Two's Complement Deep Dive (20 min):</strong> Understanding negative number representation</li>
+                        <li><strong>Synthesis Video (15 min):</strong> Connecting concepts to real applications</li>
+                    </ul>
+                    <p><em>All videos include closed captions and downloadable transcripts.</em></p>
+                </div>
+
+                <div class="collapsible" tabindex="0" role="button" aria-expanded="false" aria-controls="tools-software">
+                    <h3>🛠️ Tools & Software</h3>
+                </div>
+                <div class="collapsible-content" id="tools-software">
+                    <ul style="margin: 1rem 0; padding-left: 2rem;">
+                        <li><strong>Interactive Conversion Tools:</strong> Built-in calculators for practice</li>
+                        <li><strong>Number System Visualizers:</strong> See patterns and relationships</li>
+                        <li><strong>Calculator Apps:</strong> Windows/Mac calculator for verification</li>
+                        <li><strong>Mobile Tools:</strong> All interactive content works on smartphones</li>
+                    </ul>
+                </div>
+
+                <div class="collapsible" tabindex="0" role="button" aria-expanded="false" aria-controls="getting-help">
+                    <h3>💬 Getting Help</h3>
+                </div>
+                <div class="collapsible-content" id="getting-help">
+                    <ul style="margin: 1rem 0; padding-left: 2rem;">
+                        <li><strong>Discussion Forums:</strong> Ask questions and help classmates</li>
+                        <li><strong>Virtual Office Hours:</strong> Mondays 3-4 PM and by appointment</li>
+                        <li><strong>AI Tutor:</strong> 24/7 guided help with step-by-step explanations</li>
+                        <li><strong>Study Groups:</strong> Connect with peers for collaborative learning</li>
+                        <li><strong>FAQ Section:</strong> Common mistakes and solutions</li>
+                    </ul>
+                </div>
+
+                <div class="action-buttons">
+                    <button class="btn btn-primary" onclick="openDiscussion()">
+                        💬 Join Discussion Forum
+                    </button>
+                    <button class="btn btn-secondary" onclick="accessHelp()">
+                        🆘 Get Help Now
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Global state management
+        let currentTab = 'overview';
+        let moduleProgress = {
+            1: { completed: false, unlocked: true },
+            2: { completed: false, unlocked: false },
+            3: { completed: false, unlocked: false },
+            4: { completed: false, unlocked: false }
+        };
+        let overallProgress = 0;
+
+        // Tab functionality
+        function initializeTabs() {
+            const tabButtons = document.querySelectorAll('.nav-tab');
+            const tabContents = document.querySelectorAll('.tab-content');
+            const quickNavLinks = document.querySelectorAll('.quick-nav a');
+
+            // Tab button click handlers
+            tabButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const tabName = button.getAttribute('data-tab');
+                    switchTab(tabName);
+                });
+
+                // Keyboard navigation for tabs
+                button.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        const tabName = button.getAttribute('data-tab');
+                        switchTab(tabName);
+                    }
+                });
+            });
+
+            // Quick navigation click handlers
+            quickNavLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const tabName = link.getAttribute('data-tab');
+                    switchTab(tabName);
+                });
+            });
+        }
+
+        // Switch between tabs
+        function switchTab(tabName) {
+            // Update tab buttons
+            document.querySelectorAll('.nav-tab').forEach(tab => {
+                tab.classList.remove('active');
+                tab.setAttribute('aria-selected', 'false');
+            });
+            
+            // Update tab contents
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+
+            // Update quick nav
+            document.querySelectorAll('.quick-nav a').forEach(link => {
+                link.classList.remove('active');
+            });
+
+            // Activate selected tab
+            const selectedButton = document.querySelector(`[data-tab="${tabName}"]`);
+            const selectedContent = document.getElementById(`${tabName}-tab`);
+            const selectedNavLink = document.querySelector(`.quick-nav a[data-tab="${tabName}"]`);
+
+            if (selectedButton && selectedContent) {
+                selectedButton.classList.add('active');
+                selectedButton.setAttribute('aria-selected', 'true');
+                selectedContent.classList.add('active');
+                
+                if (selectedNavLink) {
+                    selectedNavLink.classList.add('active');
+                }
+
+                currentTab = tabName;
+                
+                // Scroll to top of content
+                selectedContent.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }
+
+        // Collapsible functionality
+        function initializeCollapsibles() {
+            const collapsibles = document.querySelectorAll('.collapsible');
+
+            collapsibles.forEach(collapsible => {
+                collapsible.addEventListener('click', function() {
+                    toggleCollapsible(this);
+                });
+
+                // Keyboard support for collapsibles
+                collapsible.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        toggleCollapsible(this);
+                    }
+                });
+
+                // Initialize ARIA attributes
+                collapsible.setAttribute('aria-expanded', 'false');
+                collapsible.setAttribute('role', 'button');
+            });
+        }
+
+        // Toggle collapsible content
+        function toggleCollapsible(element) {
+            if (typeof element === 'string') {
+                element = document.getElementById(element);
+            }
+            
+            element.classList.toggle('active');
+            const content = element.nextElementSibling;
+            
+            if (content && content.classList.contains('collapsible-content')) {
+                if (content.classList.contains('active')) {
+                    content.classList.remove('active');
+                    element.setAttribute('aria-expanded', 'false');
+                } else {
+                    content.classList.add('active');
+                    element.setAttribute('aria-expanded', 'true');
+                }
+            }
+        }
+
+        // Module management
+        function openModule(moduleNumber) {
+            if (!moduleProgress[moduleNumber].unlocked) {
+                alert('Complete previous modules to unlock this content.');
+                return;
+            }
+
+            // In a full implementation, this would open the module content
+            alert(`Opening Module ${moduleNumber}: ${getModuleName(moduleNumber)}`);
+            
+            // Simulate module interaction for demo
+            if (moduleNumber === 1) {
+                // Mark module 1 as completed and unlock module 2
+                moduleProgress[1].completed = true;
+                moduleProgress[2].unlocked = true;
+                updateModuleDisplay();
+                updateProgress();
+            }
+        }
+
+        function getModuleName(moduleNumber) {
+            const names = {
+                1: 'The Big Picture',
+                2: 'Number Systems',
+                3: 'Two\'s Complement',
+                4: 'Putting It Together'
+            };
+            return names[moduleNumber];
+        }
+
+        // Update module card displays
+        function updateModuleDisplay() {
+            document.querySelectorAll('.module-card').forEach(card => {
+                const moduleNum = parseInt(card.getAttribute('data-module'));
+                const module = moduleProgress[moduleNum];
+                
+                if (!module) return;
+
+                // Remove all status classes
+                card.classList.remove('completed', 'locked');
+                
+                // Update status
+                const statusElement = card.querySelector('.module-status');
+                if (module.completed) {
+                    card.classList.add('completed');
+                    statusElement.textContent = 'Completed';
+                    statusElement.className = 'module-status status-completed';
+                } else if (module.unlocked) {
+                    statusElement.textContent = 'Available';
+                    statusElement.className = 'module-status status-available';
+                } else {
+                    card.classList.add('locked');
+                    statusElement.textContent = 'Locked';
+                    statusElement.className = 'module-status status-locked';
+                }
+
+                // Update click handler
+                if (module.unlocked) {
+                    card.style.cursor = 'pointer';
+                    card.onclick = () => openModule(moduleNum);
+                } else {
+                    card.style.cursor = 'not-allowed';
+                    card.onclick = null;
+                }
+            });
+        }
+
+        // Progress tracking
+        function updateProgress() {
+            const completedModules = Object.values(moduleProgress).filter(m => m.completed).length;
+            const totalModules = Object.keys(moduleProgress).length;
+            const percentage = Math.round((completedModules / totalModules) * 100);
+            
+            overallProgress = percentage;
+            
+            // Update progress bar
+            const progressFill = document.getElementById('progress-fill');
+            const progressText = document.getElementById('progress-text');
+            
+            if (progressFill) {
+                progressFill.style.width = `${percentage}%`;
+            }
+            
+            if (progressText) {
+                progressText.textContent = `${percentage}% Complete`;
+            }
+        }
+
+        // Placeholder functions for future implementation
+        function downloadSchedule() {
+            alert('Study schedule download will be implemented in Phase 2');
+        }
+
+        function openSelfAssessment() {
+            alert('Self-assessment tool will be implemented in Phase 3');
+        }
+
+        function viewRubric() {
+            alert('Detailed rubric will be implemented in Phase 2');
+        }
+
+        function viewSampleProblems() {
+            alert('Sample problems will be implemented in Phase 3');
+        }
+
+        function openDiscussion() {
+            alert('Discussion forum will be implemented in Phase 2');
+        }
+
+        function accessHelp() {
+            alert('Help system will be implemented in Phase 4');
+        }
+
+        // Accessibility enhancements
+        function initializeAccessibility() {
+            // Add skip links functionality
+            const skipLink = document.querySelector('.skip-link');
+            if (skipLink) {
+                skipLink.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({ behavior: 'smooth' });
+                        target.focus();
+                    }
+                });
+            }
+
+            // Add keyboard navigation for module cards
+            document.querySelectorAll('.module-card').forEach(card => {
+                card.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        const moduleNum = parseInt(this.getAttribute('data-module'));
+                        if (moduleProgress[moduleNum]?.unlocked) {
+                            openModule(moduleNum);
+                        }
+                    }
+                });
+            });
+
+            // Announce dynamic content changes to screen readers
+            const announcer = document.createElement('div');
+            announcer.setAttribute('aria-live', 'polite');
+            announcer.setAttribute('aria-atomic', 'true');
+            announcer.className = 'sr-only';
+            announcer.id = 'announcer';
+            document.body.appendChild(announcer);
+        }
+
+        // Announce changes for screen readers
+        function announce(message) {
+            const announcer = document.getElementById('announcer');
+            if (announcer) {
+                announcer.textContent = message;
+                setTimeout(() => {
+                    announcer.textContent = '';
+                }, 1000);
+            }
+        }
+
+        // Local storage for progress persistence
+        function saveProgress() {
+            try {
+                const progressData = {
+                    moduleProgress: moduleProgress,
+                    overallProgress: overallProgress,
+                    currentTab: currentTab,
+                    timestamp: new Date().toISOString()
+                };
+                localStorage.setItem('csc210_week1_progress', JSON.stringify(progressData));
+            } catch (error) {
+                console.warn('Could not save progress to local storage:', error);
+            }
+        }
+
+        function loadProgress() {
+            try {
+                const saved = localStorage.getItem('csc210_week1_progress');
+                if (saved) {
+                    const progressData = JSON.parse(saved);
+                    moduleProgress = progressData.moduleProgress || moduleProgress;
+                    overallProgress = progressData.overallProgress || 0;
+                    
+                    updateModuleDisplay();
+                    updateProgress();
+                    
+                    console.log('Progress loaded from local storage');
+                }
+            } catch (error) {
+                console.warn('Could not load progress from local storage:', error);
+            }
+        }
+
+        // Enhanced error handling
+        window.addEventListener('error', function(e) {
+            console.error('Learning platform error:', e.error);
+            announce('An error occurred. Please try refreshing the page.');
+        });
+
+        // Initialize everything when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Initializing CSC210 Learning Platform Phase 1...');
+            
+            initializeTabs();
+            initializeCollapsibles();
+            initializeAccessibility();
+            loadProgress();
+            updateModuleDisplay();
+            updateProgress();
+            
+            // Save progress periodically
+            setInterval(saveProgress, 30000); // Save every 30 seconds
+            
+            // Save progress before page unload
+            window.addEventListener('beforeunload', saveProgress);
+            
+            console.log('Learning platform initialized successfully');
+            announce('Learning platform loaded. Navigate using tabs or quick navigation.');
+        });
+
+        // Responsive behavior
+        function handleResize() {
+            // Hide quick nav on mobile
+            const quickNav = document.querySelector('.quick-nav');
+            if (quickNav) {
+                if (window.innerWidth <= 1024) {
+                    quickNav.style.display = 'none';
+                } else {
+                    quickNav.style.display = 'block';
+                }
+            }
+        }
+
+        window.addEventListener('resize', handleResize);
+        window.addEventListener('load', handleResize);
+    </script>
+</body>
+</html>
