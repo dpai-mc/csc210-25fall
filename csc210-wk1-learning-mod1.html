@@ -460,6 +460,11 @@
         <div class="container">
             <h1>Module 1: The Big Picture</h1>
             <p class="module-subtitle">Foundation Concepts & Abstraction Layers • Estimated Time: 2 hours</p>
+            <div style="margin-top: 1rem;">
+                <button class="btn btn-secondary" onclick="returnToPlatform()" style="font-size: 0.9rem; padding: 0.5rem 1rem;">
+                    ← Return to Learning Platform
+                </button>
+            </div>
         </div>
     </header>
 
@@ -728,17 +733,20 @@
                 <li>Why understanding computer architecture is important for software developers</li>
             </ul>
             
-            <div class="action-buttons">
-                <button class="btn btn-primary" onclick="proceedToModule2()" id="module-complete-btn" disabled>
-                    🚀 Proceed to Module 2: Number Systems
-                </button>
-                <button class="btn btn-secondary" onclick="reviewModule()">
-                    🔍 Review Module Content
-                </button>
-                <button class="btn btn-secondary" onclick="downloadNotes()">
-                    📝 Download Study Notes
-                </button>
-            </div>
+                <div class="action-buttons">
+                    <button class="btn btn-primary" onclick="returnToPlatformWithCompletion()" id="module-complete-btn" disabled>
+                        🚀 Complete Module & Return to Platform
+                    </button>
+                    <button class="btn btn-secondary" onclick="returnToPlatform()">
+                        ← Return to Learning Platform
+                    </button>
+                    <button class="btn btn-secondary" onclick="reviewModule()">
+                        🔍 Review Module Content
+                    </button>
+                    <button class="btn btn-secondary" onclick="downloadNotes()">
+                        📝 Download Study Notes
+                    </button>
+                </div>
         </section>
     </main>
 
@@ -769,10 +777,33 @@
 
         // Initialize module
         document.addEventListener('DOMContentLoaded', function() {
+            console.log('Initializing CSC210 Module 1...');
+            
+            // Check if we came from the main platform
+            checkReturnUrl();
+            
             loadModuleState();
             updateProgress();
             updateButtonStates();
+            
+            console.log('Module 1 initialized successfully');
         });
+
+        // Check for return URL and module parameters
+        function checkReturnUrl() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const returnUrl = urlParams.get('return');
+            const moduleNum = urlParams.get('moduleNum');
+            
+            if (returnUrl) {
+                // Store return URL for later use
+                moduleState.returnUrl = decodeURIComponent(returnUrl);
+            }
+            
+            if (moduleNum) {
+                moduleState.moduleNumber = parseInt(moduleNum);
+            }
+        }
 
         // Save state to localStorage
         function saveModuleState() {
@@ -1120,8 +1151,30 @@
                 return;
             }
             
-            // In a real implementation, this would navigate to Module 2
-            alert('🎉 Excellent work! Module 2: Number Systems is now unlocked. You would be redirected to Module 2 in the full implementation.');
+            // Mark this module as completed and return to main platform
+            returnToPlatformWithCompletion();
+        }
+
+        function returnToPlatformWithCompletion() {
+            // Mark module as completed in the main platform
+            if (moduleState.returnUrl) {
+                // Add completion parameter to return URL
+                const separator = moduleState.returnUrl.includes('?') ? '&' : '?';
+                const completionUrl = `${moduleState.returnUrl}${separator}completed=${moduleState.moduleNumber}`;
+                window.location.href = completionUrl;
+            } else {
+                // Fallback: return to main platform
+                window.location.href = 'https://dpai-mc.github.io/csc210-25fall/csc210-wk1-learning-platform.html?completed=1';
+            }
+        }
+
+        function returnToPlatform() {
+            if (moduleState.returnUrl) {
+                window.location.href = moduleState.returnUrl;
+            } else {
+                // Fallback: return to main platform
+                window.location.href = 'https://dpai-mc.github.io/csc210-25fall/csc210-wk1-learning-platform.html';
+            }
         }
 
         function reviewModule() {
