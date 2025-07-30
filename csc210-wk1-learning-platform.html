@@ -968,16 +968,23 @@
                 return;
             }
 
-            // In a full implementation, this would open the module content
-            alert(`Opening Module ${moduleNumber}: ${getModuleName(moduleNumber)}`);
+            // Save current platform state
+            saveProgress();
             
-            // Simulate module interaction for demo
-            if (moduleNumber === 1) {
-                // Mark module 1 as completed and unlock module 2
-                moduleProgress[1].completed = true;
-                moduleProgress[2].unlocked = true;
-                updateModuleDisplay();
-                updateProgress();
+            // Navigate to the specific module page
+            const moduleUrls = {
+                1: 'https://dpai-mc.github.io/csc210-25fall/csc210-wk1-learning-mod1.html',
+                2: 'module2.html', // Will be created later
+                3: 'module3.html', // Will be created later
+                4: 'module4.html'  // Will be created later
+            };
+            
+            if (moduleUrls[moduleNumber]) {
+                // Add return URL parameter so module knows where to return
+                const returnUrl = encodeURIComponent(window.location.href);
+                window.location.href = `${moduleUrls[moduleNumber]}?return=${returnUrl}&moduleNum=${moduleNumber}`;
+            } else {
+                alert(`Module ${moduleNumber}: ${getModuleName(moduleNumber)} - Coming Soon!`);
             }
         }
 
