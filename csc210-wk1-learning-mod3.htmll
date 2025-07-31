@@ -1,0 +1,1725 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSC210 Module 3: Two's Complement</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f8fafc;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header */
+        header {
+            background: linear-gradient(135deg, #7c2d12 0%, #dc2626 100%);
+            color: white;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .module-subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            background: white;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            background: #e5e7eb;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #16a34a 0%, #22c55e 100%);
+            border-radius: 5px;
+            transition: width 0.8s ease;
+            width: 0%;
+        }
+
+        /* Content Sections */
+        .content-section {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            color: #7c2d12;
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            border-bottom: 3px solid #e5e7eb;
+            padding-bottom: 0.5rem;
+        }
+
+        h3 {
+            color: #374151;
+            font-size: 1.4rem;
+            margin: 1.5rem 0 1rem 0;
+        }
+
+        h4 {
+            color: #4b5563;
+            font-size: 1.2rem;
+            margin: 1rem 0 0.5rem 0;
+        }
+
+        /* Two's Complement Visualizer */
+        .twos-complement-section {
+            background: linear-gradient(135deg, #fef2f2 0%, #fecaca 100%);
+            border: 2px solid #ef4444;
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+
+        .number-wheel {
+            display: flex;
+            justify-content: center;
+            margin: 2rem 0;
+        }
+
+        .wheel-container {
+            position: relative;
+            width: 300px;
+            height: 300px;
+            border: 3px solid #dc2626;
+            border-radius: 50%;
+            background: white;
+        }
+
+        .wheel-number {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #f3f4f6;
+            border: 2px solid #d1d5db;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .wheel-number:hover {
+            transform: scale(1.2);
+            background: #dbeafe;
+            border-color: #3b82f6;
+        }
+
+        .wheel-number.selected {
+            background: #dc2626;
+            color: white;
+            border-color: #7c2d12;
+            transform: scale(1.3);
+        }
+
+        .wheel-center {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            background: white;
+            padding: 1rem;
+            border-radius: 8px;
+            border: 2px solid #dc2626;
+        }
+
+        /* Binary Arithmetic Calculator */
+        .arithmetic-section {
+            background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+            border: 2px solid #f59e0b;
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+
+        .arithmetic-calculator {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+        }
+
+        .operand-input {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr auto 1fr;
+            gap: 1rem;
+            align-items: center;
+            margin: 1rem 0;
+        }
+
+        .number-input-box {
+            background: #f8fafc;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 1rem;
+            text-align: center;
+        }
+
+        .number-input-box.negative {
+            background: #fef2f2;
+            border-color: #ef4444;
+        }
+
+        .number-input-box.positive {
+            background: #f0fdf4;
+            border-color: #22c55e;
+        }
+
+        .operation-select {
+            background: #1e40af;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 1rem;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .binary-display {
+            font-family: 'Courier New', monospace;
+            font-size: 1.1rem;
+            font-weight: bold;
+        }
+
+        .arithmetic-result {
+            background: #f0f9ff;
+            border: 2px solid #0ea5e9;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-top: 1rem;
+            text-align: center;
+        }
+
+        /* Step-by-step process */
+        .conversion-steps {
+            background: linear-gradient(135deg, #f0f9ff 0%, #dbeafe 100%);
+            border: 2px solid #3b82f6;
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+
+        .step-card {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+            border-left: 4px solid #3b82f6;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .step-number {
+            display: inline-block;
+            background: #3b82f6;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 30px;
+            font-weight: bold;
+            margin-right: 1rem;
+        }
+
+        .binary-bits {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: center;
+            margin: 1rem 0;
+            flex-wrap: wrap;
+        }
+
+        .bit {
+            background: white;
+            border: 2px solid #d1d5db;
+            border-radius: 6px;
+            padding: 0.8rem;
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+            font-size: 1.1rem;
+            min-width: 40px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .bit.sign-bit {
+            background: #fef2f2;
+            border-color: #ef4444;
+            color: #dc2626;
+        }
+
+        .bit.flipped {
+            background: #fef3c7;
+            border-color: #f59e0b;
+            animation: highlight 0.5s ease;
+        }
+
+        .bit.result {
+            background: #f0fdf4;
+            border-color: #22c55e;
+            color: #16a34a;
+        }
+
+        @keyframes highlight {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+
+        /* Overflow Detection */
+        .overflow-demo {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            border: 2px solid #64748b;
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+
+        .overflow-warning {
+            background: #fef2f2;
+            border: 2px solid #ef4444;
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+            color: #991b1b;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .overflow-warning:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(239, 68, 68, 0.3);
+        }
+
+        .overflow-safe {
+            background: #f0fdf4;
+            border: 2px solid #22c55e;
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+            color: #166534;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .overflow-safe:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(34, 197, 94, 0.3);
+        }
+
+        /* Quiz Components */
+        .quiz-section {
+            background: #f0fdf4;
+            border: 2px solid #16a34a;
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+
+        .question {
+            margin-bottom: 2rem;
+        }
+
+        .question-text {
+            font-weight: bold;
+            margin-bottom: 1rem;
+            color: #166534;
+        }
+
+        .options {
+            list-style: none;
+            padding: 0;
+        }
+
+        .option {
+            background: white;
+            border: 2px solid #d1d5db;
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 0.5rem 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .option:hover {
+            border-color: #9ca3af;
+            background: #f9fafb;
+        }
+
+        .option.selected {
+            border-color: #3b82f6;
+            background: #dbeafe;
+        }
+
+        .option.correct {
+            border-color: #16a34a;
+            background: #dcfce7;
+        }
+
+        .option.incorrect {
+            border-color: #ef4444;
+            background: #fee2e2;
+        }
+
+        .feedback {
+            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: 8px;
+            display: none;
+        }
+
+        .feedback.correct {
+            background: #dcfce7;
+            color: #166534;
+            border: 1px solid #16a34a;
+            display: block;
+        }
+
+        .feedback.incorrect {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #ef4444;
+            display: block;
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #7c2d12 0%, #dc2626 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(124, 45, 18, 0.3);
+        }
+
+        .btn-secondary {
+            background: #f3f4f6;
+            color: #374151;
+            border: 1px solid #d1d5db;
+        }
+
+        .btn-secondary:hover {
+            background: #e5e7eb;
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        /* Video Container */
+        .video-container {
+            background: #1f2937;
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+            text-align: center;
+        }
+
+        .video-placeholder {
+            background: #374151;
+            border-radius: 8px;
+            padding: 3rem;
+            color: white;
+            margin-bottom: 1rem;
+        }
+
+        /* Reflection Section */
+        .reflection-section {
+            background: #faf5ff;
+            border: 2px solid #a855f7;
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+
+        .reflection-prompt {
+            font-weight: bold;
+            color: #7c3aed;
+            margin-bottom: 1rem;
+        }
+
+        .reflection-input {
+            width: 100%;
+            min-height: 120px;
+            padding: 1rem;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-family: inherit;
+            resize: vertical;
+        }
+
+        .reflection-input:focus {
+            outline: 2px solid #3b82f6;
+            border-color: #3b82f6;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+
+            h1 {
+                font-size: 1.8rem;
+            }
+
+            .wheel-container {
+                width: 250px;
+                height: 250px;
+            }
+
+            .operand-input {
+                grid-template-columns: 1fr;
+                gap: 0.5rem;
+            }
+
+            .binary-bits {
+                justify-content: flex-start;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+        }
+
+        /* Accessibility */
+        .btn:focus,
+        .wheel-number:focus,
+        .option:focus {
+            outline: 3px solid #3b82f6;
+            outline-offset: 2px;
+        }
+
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Module 3: Two's Complement</h1>
+            <p class="module-subtitle">Signed Number Representation & Binary Arithmetic • Estimated Time: 2 hours</p>
+            <div style="margin-top: 1rem;">
+                <button class="btn btn-secondary" onclick="returnToPlatform()" style="font-size: 0.9rem; padding: 0.5rem 1rem; background: rgba(255,255,255,0.2); border: 2px solid rgba(255,255,255,0.5); color: white;">
+                    ← Return to Learning Platform
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <!-- Progress Tracking -->
+        <div class="progress-container">
+            <div class="progress-header">
+                <span style="font-weight: bold; color: #7c2d12;">Module 3 Progress (This Session)</span>
+                <span id="progress-text">0% Complete</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-fill"></div>
+            </div>
+            <p style="font-size: 0.9rem; color: #6b7280; margin-top: 0.5rem;">
+                ⓘ Progress resets when you close your browser. Download your work before leaving.
+            </p>
+        </div>
+
+        <!-- Introduction Video Section -->
+        <section class="content-section">
+            <h2>🎥 Understanding Negative Numbers</h2>
+            <div class="video-container">
+                <div class="video-placeholder">
+                    <h3 style="margin-bottom: 1rem;">Two's Complement Deep Dive</h3>
+                    <p style="margin-bottom: 1rem;">Duration: 20 minutes</p>
+                    <div style="font-size: 4rem; margin: 1rem 0;">▶️</div>
+                    <p style="font-size: 0.9rem; opacity: 0.8;">Why two's complement works • Binary arithmetic • Overflow detection</p>
+                </div>
+                <div style="display: flex; justify-content: center; gap: 1rem; margin-top: 1rem; flex-wrap: wrap;">
+                    <button class="btn btn-primary" onclick="playVideo('negative-numbers')">
+                        ▶️ Play Two's Complement Video
+                    </button>
+                    <button class="btn btn-secondary" onclick="showTranscript('negative-numbers')">
+                        📄 View Transcript
+                    </button>
+                </div>
+            </div>
+            <div class="action-buttons">
+                <button class="btn btn-primary" onclick="completeSection('video')" id="video-complete-btn" disabled>
+                    ✅ Mark Video Complete
+                </button>
+            </div>
+        </section>
+
+        <!-- Step-by-Step Two's Complement Tutorial -->
+        <section class="content-section">
+            <h2>🎯 Two's Complement Step-by-Step</h2>
+            <p>Learn how to represent negative numbers in binary and understand why two's complement is the standard method.</p>
+            
+            <div class="conversion-steps">
+                <h3 style="text-align: center; color: #3b82f6; margin-bottom: 2rem;">Interactive Two's Complement Converter</h3>
+                
+                <div style="text-align: center; margin-bottom: 2rem;">
+                    <label style="display: block; font-weight: bold; margin-bottom: 0.5rem;">Enter a signed number to convert (-128 to +127):</label>
+                    <input type="number" id="signed-input" min="-128" max="127" value="-42" 
+                           style="padding: 0.8rem; font-size: 1.2rem; border: 2px solid #3b82f6; border-radius: 6px; text-align: center; width: 120px;"
+                           oninput="convertToTwosComplement(this.value)">
+                    <p style="margin-top: 0.5rem; color: #666; font-size: 0.9rem;">Try different negative and positive numbers</p>
+                </div>
+
+                <!-- Conversion Process Display -->
+                <div id="conversion-process">
+                    <div class="step-card">
+                        <span class="step-number">1</span>
+                        <strong>Convert absolute value to binary</strong>
+                        <div id="step1-content" style="margin-top: 1rem;"></div>
+                    </div>
+
+                    <div class="step-card">
+                        <span class="step-number">2</span>
+                        <strong>Flip all bits (one's complement)</strong>
+                        <div id="step2-content" style="margin-top: 1rem;"></div>
+                    </div>
+
+                    <div class="step-card">
+                        <span class="step-number">3</span>
+                        <strong>Add 1 (two's complement)</strong>
+                        <div id="step3-content" style="margin-top: 1rem;"></div>
+                    </div>
+
+                    <div class="step-card" style="background: #f0f9ff; border-left-color: #0ea5e9;">
+                        <span class="step-number" style="background: #0ea5e9;">✓</span>
+                        <strong>Final Result</strong>
+                        <div id="final-result" style="margin-top: 1rem; text-align: center; font-size: 1.2rem;"></div>
+                    </div>
+                </div>
+
+                <div style="text-align: center; margin-top: 2rem;">
+                    <button class="btn btn-secondary" onclick="demonstrateExample(-42)">📝 Example: -42</button>
+                    <button class="btn btn-secondary" onclick="demonstrateExample(-1)">📝 Example: -1</button>
+                    <button class="btn btn-secondary" onclick="demonstrateExample(-128)">📝 Example: -128</button>
+                </div>
+
+                <div class="action-buttons" style="position: relative; z-index: 50; background: white; padding: 1rem; border-radius: 8px; margin-top: 2rem;">
+                    <button class="btn btn-primary" onclick="completeSection('tutorial')" id="tutorial-complete-btn" disabled>
+                        ✅ Complete Two's Complement Tutorial
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Two's Complement Visualizer -->
+        <section class="content-section">
+            <h2>🔄 Two's Complement Number Wheel</h2>
+            <p>Explore how numbers "wrap around" in two's complement representation. Click on any number to see its binary representation.</p>
+            
+            <div class="twos-complement-section">
+                <h3 style="text-align: center; color: #dc2626; margin-bottom: 1rem;">8-bit Two's Complement Range</h3>
+                
+                <div class="number-wheel">
+                    <div class="wheel-container" id="number-wheel">
+                        <div class="wheel-center" id="wheel-center">
+                            <div style="font-weight: bold; margin-bottom: 0.5rem;">Select a number</div>
+                            <div style="font-family: 'Courier New', monospace;" id="selected-binary">--------</div>
+                            <div style="font-size: 0.8rem; color: #666; margin-top: 0.5rem;" id="selected-decimal">Decimal: -</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin: 2rem 0;">
+                    <div style="background: #fef2f2; padding: 1rem; border-radius: 8px; border: 2px solid #ef4444;">
+                        <h4 style="color: #dc2626; margin-top: 0;">Negative Numbers</h4>
+                        <p style="margin: 0; color: #7f1d1d;">-128 to -1</p>
+                        <p style="font-size: 0.9rem; color: #991b1b; margin-top: 0.5rem;">Sign bit = 1</p>
+                    </div>
+                    
+                    <div style="background: #f0fdf4; padding: 1rem; border-radius: 8px; border: 2px solid #22c55e;">
+                        <h4 style="color: #16a34a; margin-top: 0;">Positive Numbers</h4>
+                        <p style="margin: 0; color: #14532d;">0 to +127</p>
+                        <p style="font-size: 0.9rem; color: #166534; margin-top: 0.5rem;">Sign bit = 0</p>
+                    </div>
+                </div>
+
+                <div class="action-buttons" style="position: relative; z-index: 50; background: white; padding: 1rem; border-radius: 8px; margin-top: 2rem;">
+                    <button class="btn btn-primary" onclick="completeSection('visualizer')" id="visualizer-complete-btn" disabled>
+                        ✅ Complete Number Wheel Exploration
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Binary Arithmetic Calculator -->
+        <section class="content-section">
+            <h2>🧮 Binary Arithmetic Calculator</h2>
+            <p>Practice addition and subtraction with signed binary numbers. See how two's complement makes arithmetic work seamlessly.</p>
+            
+            <div class="arithmetic-section">
+                <h3 style="text-align: center; color: #f59e0b; margin-bottom: 1rem;">Interactive Binary Calculator</h3>
+                
+                <div class="arithmetic-calculator">
+                    <div class="operand-input">
+                        <div class="number-input-box" id="operand1-box">
+                            <label style="display: block; font-weight: bold; margin-bottom: 0.5rem;">First Number</label>
+                            <input type="number" id="operand1" min="-128" max="127" value="42" 
+                                   style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px; text-align: center;"
+                                   oninput="updateArithmetic()">
+                            <div class="binary-display" id="operand1-binary">00101010</div>
+                        </div>
+                        
+                        <select class="operation-select" id="operation" onchange="updateArithmetic()">
+                            <option value="add">+</option>
+                            <option value="subtract">-</option>
+                        </select>
+                        
+                        <div class="number-input-box" id="operand2-box">
+                            <label style="display: block; font-weight: bold; margin-bottom: 0.5rem;">Second Number</label>
+                            <input type="number" id="operand2" min="-128" max="127" value="-15" 
+                                   style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px; text-align: center;"
+                                   oninput="updateArithmetic()">
+                            <div class="binary-display" id="operand2-binary">11110001</div>
+                        </div>
+                        
+                        <div style="font-size: 2rem; font-weight: bold; color: #1e40af;">=</div>
+                        
+                        <div class="number-input-box" id="result-box">
+                            <label style="display: block; font-weight: bold; margin-bottom: 0.5rem;">Result</label>
+                            <div style="padding: 0.5rem; font-weight: bold; font-size: 1.2rem;" id="result-decimal">27</div>
+                            <div class="binary-display" id="result-binary">00011011</div>
+                        </div>
+                    </div>
+                    
+                    <div class="arithmetic-result" id="arithmetic-steps">
+                        <div style="font-weight: bold; margin-bottom: 1rem;">Step-by-Step Calculation:</div>
+                        <div id="calculation-steps"></div>
+                    </div>
+                </div>
+
+                <div class="action-buttons" style="position: relative; z-index: 50; background: white; padding: 1rem; border-radius: 8px; margin-top: 2rem;">
+                    <button class="btn btn-primary" onclick="completeSection('arithmetic')" id="arithmetic-complete-btn" disabled>
+                        ✅ Complete Arithmetic Practice
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Overflow Detection Demo -->
+        <section class="content-section">
+            <h2>⚠️ Overflow Detection</h2>
+            <p>Understand when arithmetic operations exceed the representable range and how to detect overflow conditions.</p>
+            
+            <div class="overflow-demo">
+                <h3 style="text-align: center; color: #64748b; margin-bottom: 1rem;">Overflow Examples</h3>
+                
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1rem; margin: 2rem 0;">
+                    <div class="overflow-warning" onclick="demonstrateOverflow(127, 1)">
+                        <div style="font-weight: bold; margin-bottom: 0.5rem;">🚨 Positive Overflow</div>
+                        <div>127 + 1 = -128 (overflow!)</div>
+                        <div style="font-size: 0.9rem; margin-top: 0.5rem;">Click to see why</div>
+                    </div>
+                    
+                    <div class="overflow-warning" onclick="demonstrateOverflow(-128, -1)">
+                        <div style="font-weight: bold; margin-bottom: 0.5rem;">🚨 Negative Overflow</div>
+                        <div>-128 + (-1) = 127 (overflow!)</div>
+                        <div style="font-size: 0.9rem; margin-top: 0.5rem;">Click to see why</div>
+                    </div>
+                    
+                    <div class="overflow-safe" onclick="demonstrateOverflow(100, 20)">
+                        <div style="font-weight: bold; margin-bottom: 0.5rem;">✅ Safe Operation</div>
+                        <div>100 + 20 = 120 (no overflow)</div>
+                        <div style="font-size: 0.9rem; margin-top: 0.5rem;">Click to see calculation</div>
+                    </div>
+                </div>
+
+                <div id="overflow-explanation" style="display: none; background: white; padding: 1.5rem; border-radius: 8px; margin: 1rem 0;">
+                    <h4 style="color: #64748b; margin-top: 0;">Overflow Analysis:</h4>
+                    <div id="overflow-details"></div>
+                </div>
+
+                <div class="action-buttons" style="position: relative; z-index: 50; background: white; padding: 1rem; border-radius: 8px; margin-top: 2rem;">
+                    <button class="btn btn-primary" onclick="completeSection('overflow')" id="overflow-complete-btn" disabled>
+                        ✅ Complete Overflow Detection
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Knowledge Check Quiz -->
+        <section class="content-section">
+            <h2>🧠 Knowledge Check Quiz</h2>
+            <div class="quiz-section">
+                <div class="question" data-question="1">
+                    <div class="question-text">1. What is the 8-bit two's complement representation of -5?</div>
+                    <ul class="options">
+                        <li class="option" data-answer="a" onclick="selectAnswer(1, 'a')">A) 10000101</li>
+                        <li class="option" data-answer="b" onclick="selectAnswer(1, 'b')">B) 11111011</li>
+                        <li class="option" data-answer="c" onclick="selectAnswer(1, 'c')">C) 01111011</li>
+                        <li class="option" data-answer="d" onclick="selectAnswer(1, 'd')">D) 11110101</li>
+                    </ul>
+                    <div class="feedback" id="feedback-1"></div>
+                </div>
+
+                <div class="question" data-question="2">
+                    <div class="question-text">2. What is the decimal value of the 8-bit two's complement number 10000000?</div>
+                    <ul class="options">
+                        <li class="option" data-answer="a" onclick="selectAnswer(2, 'a')">A) 0</li>
+                        <li class="option" data-answer="b" onclick="selectAnswer(2, 'b')">B) -0</li>
+                        <li class="option" data-answer="c" onclick="selectAnswer(2, 'c')">C) -128</li>
+                        <li class="option" data-answer="d" onclick="selectAnswer(2, 'd')">D) 128</li>
+                    </ul>
+                    <div class="feedback" id="feedback-2"></div>
+                </div>
+
+                <div class="question" data-question="3">
+                    <div class="question-text">3. In 8-bit two's complement, what happens when you add 127 + 1?</div>
+                    <ul class="options">
+                        <li class="option" data-answer="a" onclick="selectAnswer(3, 'a')">A) 128</li>
+                        <li class="option" data-answer="b" onclick="selectAnswer(3, 'b')">B) -128 (overflow)</li>
+                        <li class="option" data-answer="c" onclick="selectAnswer(3, 'c')">C) 0</li>
+                        <li class="option" data-answer="d" onclick="selectAnswer(3, 'd')">D) Error</li>
+                    </ul>
+                    <div class="feedback" id="feedback-3"></div>
+                </div>
+
+                <div class="action-buttons">
+                    <button class="btn btn-primary" onclick="submitQuiz()" id="quiz-submit-btn" disabled>
+                        📊 Submit Quiz
+                    </button>
+                    <button class="btn btn-secondary" onclick="resetQuiz()">
+                        🔄 Reset Quiz
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Reflection Section -->
+        <section class="content-section">
+            <h2>💭 Reflection & Real-World Applications</h2>
+            <div class="reflection-section">
+                <div class="reflection-prompt">
+                    Reflection Prompt: Two's complement is used in virtually every computer processor. Think about situations where computers need to handle both positive and negative numbers - temperatures, financial calculations, game coordinates, etc. How does understanding two's complement help you understand potential programming pitfalls like integer overflow? Can you think of real-world examples where overflow bugs have caused problems?
+                </div>
+                <div style="background: #fef3c7; border: 1px solid #f59e0b; border-radius: 6px; padding: 1rem; margin: 1rem 0; font-size: 0.9rem;">
+                    <strong>📝 Important:</strong> Your reflection response is required for this module's assignment. Use the download or copy buttons below to submit your reflection in Canvas.
+                </div>
+                <textarea 
+                    class="reflection-input" 
+                    id="reflection-text"
+                    placeholder="Share your insights here... Consider examples like temperature sensors reading -40°F, bank account balances, or even famous bugs like the Ariane 5 rocket failure due to integer overflow."
+                    oninput="updateReflection()">
+                </textarea>
+                <div class="action-buttons">
+                    <button class="btn btn-primary" onclick="saveReflection()">
+                        💾 Download Reflection Text
+                    </button>
+                    <button class="btn btn-secondary" onclick="copyReflectionToClipboard()">
+                        📋 Copy to Clipboard
+                    </button>
+                    <button class="btn btn-primary" onclick="completeSection('reflection')" id="reflection-complete-btn" disabled>
+                        ✅ Mark Reflection Complete
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Module Completion -->
+        <section class="content-section">
+            <h2>🎉 Module 3 Complete!</h2>
+            <p>Outstanding work! You've mastered two's complement and signed binary arithmetic. You should now understand:</p>
+            <ul style="margin: 1rem 0; padding-left: 2rem;">
+                <li>How two's complement represents negative numbers in binary</li>
+                <li>The step-by-step process for converting to two's complement</li>
+                <li>How binary arithmetic works seamlessly with signed numbers</li>
+                <li>When and why integer overflow occurs</li>
+                <li>Real-world applications and potential programming pitfalls</li>
+            </ul>
+            
+            <div style="background: #fef3c7; border: 2px solid #f59e0b; border-radius: 8px; padding: 1.5rem; margin: 1.5rem 0;">
+                <h4 style="color: #92400e; margin-top: 0;">📋 Submission Checklist</h4>
+                <ul style="margin: 0.5rem 0; padding-left: 2rem;">
+                    <li><strong>Download/Copy your reflection</strong> using the buttons above</li>
+                    <li><strong>Submit reflection in Canvas</strong> assignment for Module 3</li>
+                    <li><strong>Optional:</strong> Screenshot your calculator work for participation credit</li>
+                </ul>
+            </div>
+            
+            <div class="action-buttons">
+                <button class="btn btn-primary" onclick="goToModule4()">
+                    🚀 Continue to Module 4: Putting It Together
+                </button>
+                <button class="btn btn-secondary" onclick="returnToPlatform()">
+                    ← Return to Learning Platform
+                </button>
+                <button class="btn btn-secondary" onclick="downloadCompletionSummary()">
+                    📄 Download Completion Summary
+                </button>
+                <button class="btn btn-secondary" onclick="reviewModule()">
+                    🔍 Review Module Content
+                </button>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        // Module state tracking
+        let moduleState = {
+            sectionsCompleted: {
+                video: false,
+                tutorial: false,
+                visualizer: false,
+                arithmetic: false,
+                overflow: false,
+                quiz: false,
+                reflection: false
+            },
+            tutorialInteractions: 0,
+            numbersExplored: new Set(),
+            arithmeticCalculations: 0,
+            overflowDemonstrations: new Set(),
+            quizAnswers: {},
+            quizSubmitted: false,
+            reflectionText: '',
+            overallProgress: 0,
+            returnUrl: null,
+            moduleNumber: 3
+        };
+
+        // Quiz answers (correct answers)
+        const quizAnswers = {
+            1: 'b', // -5 in two's complement is 11111011
+            2: 'c', // 10000000 is -128 in two's complement
+            3: 'b'  // 127 + 1 overflows to -128
+        };
+
+        // Initialize module
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Initializing CSC210 Module 3...');
+            
+            checkReturnUrl();
+            loadModuleState();
+            initializeNumberWheel();
+            updateProgress();
+            updateButtonStates();
+            
+            // Initialize with default values
+            convertToTwosComplement(-42);
+            updateArithmetic();
+            
+            console.log('Module 3 initialized successfully');
+        });
+
+        // Check for return URL and module parameters
+        function checkReturnUrl() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const returnUrl = urlParams.get('return');
+            const moduleNum = urlParams.get('moduleNum');
+            
+            if (returnUrl) {
+                moduleState.returnUrl = decodeURIComponent(returnUrl);
+            }
+            
+            if (moduleNum) {
+                moduleState.moduleNumber = parseInt(moduleNum);
+            }
+        }
+
+        // Save/load state functions
+        function saveModuleState() {
+            try {
+                const storageData = {
+                    ...moduleState,
+                    timestamp: new Date().toISOString(),
+                    numbersExplored: Array.from(moduleState.numbersExplored),
+                    overflowDemonstrations: Array.from(moduleState.overflowDemonstrations),
+                    sessionOnly: true
+                };
+                
+                sessionStorage.setItem('csc210_module3_state', JSON.stringify(storageData));
+            } catch (error) {
+                console.warn('Could not save module state:', error);
+            }
+        }
+
+        function loadModuleState() {
+            try {
+                const saved = sessionStorage.getItem('csc210_module3_state');
+                
+                if (saved) {
+                    const savedState = JSON.parse(saved);
+                    
+                    if (savedState.numbersExplored && Array.isArray(savedState.numbersExplored)) {
+                        savedState.numbersExplored = new Set(savedState.numbersExplored);
+                    }
+                    if (savedState.overflowDemonstrations && Array.isArray(savedState.overflowDemonstrations)) {
+                        savedState.overflowDemonstrations = new Set(savedState.overflowDemonstrations);
+                    }
+                    
+                    moduleState = { ...moduleState, ...savedState };
+                    
+                    restoreUIState();
+                    console.log('Session progress loaded');
+                }
+            } catch (error) {
+                console.warn('Could not load module state:', error);
+            }
+        }
+
+        function restoreUIState() {
+            if (moduleState.reflectionText) {
+                document.getElementById('reflection-text').value = moduleState.reflectionText;
+            }
+
+            Object.keys(moduleState.quizAnswers).forEach(questionNum => {
+                const answer = moduleState.quizAnswers[questionNum];
+                const option = document.querySelector(`[data-question="${questionNum}"] [data-answer="${answer}"]`);
+                if (option) {
+                    option.classList.add('selected');
+                }
+            });
+        }
+
+        // Progress tracking
+        function updateProgress() {
+            const completedSections = Object.values(moduleState.sectionsCompleted).filter(Boolean).length;
+            const totalSections = Object.keys(moduleState.sectionsCompleted).length;
+            const percentage = Math.round((completedSections / totalSections) * 100);
+            
+            moduleState.overallProgress = percentage;
+            
+            const progressFill = document.getElementById('progress-fill');
+            const progressText = document.getElementById('progress-text');
+            
+            if (progressFill) {
+                progressFill.style.width = `${percentage}%`;
+            }
+            
+            if (progressText) {
+                progressText.textContent = `${percentage}% Complete`;
+            }
+
+            saveModuleState();
+        }
+
+        function updateButtonStates() {
+            // Video button
+            const videoBtn = document.getElementById('video-complete-btn');
+            if (videoBtn && moduleState.sectionsCompleted.video) {
+                videoBtn.disabled = false;
+                videoBtn.textContent = '✅ Video Completed';
+            }
+
+            // Tutorial button
+            const tutorialBtn = document.getElementById('tutorial-complete-btn');
+            if (tutorialBtn) {
+                if (moduleState.tutorialInteractions >= 3) {
+                    tutorialBtn.disabled = false;
+                    tutorialBtn.textContent = '✅ Complete Tutorial (' + moduleState.tutorialInteractions + ' examples tried)';
+                } else {
+                    tutorialBtn.textContent = '🎯 Try More Examples (' + moduleState.tutorialInteractions + '/3 needed)';
+                }
+                if (moduleState.sectionsCompleted.tutorial) {
+                    tutorialBtn.textContent = '✅ Tutorial Completed';
+                    tutorialBtn.disabled = true;
+                }
+            }
+
+            // Visualizer button
+            const visualizerBtn = document.getElementById('visualizer-complete-btn');
+            if (visualizerBtn) {
+                if (moduleState.numbersExplored.size >= 5) {
+                    visualizerBtn.disabled = false;
+                    visualizerBtn.textContent = '✅ Complete Exploration (' + moduleState.numbersExplored.size + ' numbers explored)';
+                } else {
+                    visualizerBtn.textContent = '🔄 Explore More Numbers (' + moduleState.numbersExplored.size + '/5 needed)';
+                }
+                if (moduleState.sectionsCompleted.visualizer) {
+                    visualizerBtn.textContent = '✅ Visualizer Completed';
+                    visualizerBtn.disabled = true;
+                }
+            }
+
+            // Arithmetic button
+            const arithmeticBtn = document.getElementById('arithmetic-complete-btn');
+            if (arithmeticBtn) {
+                if (moduleState.arithmeticCalculations >= 5) {
+                    arithmeticBtn.disabled = false;
+                    arithmeticBtn.textContent = '✅ Complete Practice (' + moduleState.arithmeticCalculations + ' calculations)';
+                } else {
+                    arithmeticBtn.textContent = '🧮 Try More Calculations (' + moduleState.arithmeticCalculations + '/5 needed)';
+                }
+                if (moduleState.sectionsCompleted.arithmetic) {
+                    arithmeticBtn.textContent = '✅ Arithmetic Completed';
+                    arithmeticBtn.disabled = true;
+                }
+            }
+
+            // Overflow button
+            const overflowBtn = document.getElementById('overflow-complete-btn');
+            if (overflowBtn) {
+                if (moduleState.overflowDemonstrations.size >= 2) {
+                    overflowBtn.disabled = false;
+                    overflowBtn.textContent = '✅ Complete Overflow Study (' + moduleState.overflowDemonstrations.size + ' examples)';
+                } else {
+                    overflowBtn.textContent = '⚠️ Try More Examples (' + moduleState.overflowDemonstrations.size + '/2 needed)';
+                }
+                if (moduleState.sectionsCompleted.overflow) {
+                    overflowBtn.textContent = '✅ Overflow Completed';
+                    overflowBtn.disabled = true;
+                }
+            }
+
+            // Quiz button
+            const quizBtn = document.getElementById('quiz-submit-btn');
+            if (quizBtn) {
+                if (Object.keys(moduleState.quizAnswers).length >= 3) {
+                    quizBtn.disabled = false;
+                }
+                if (moduleState.quizSubmitted) {
+                    quizBtn.textContent = '✅ Quiz Submitted';
+                    quizBtn.disabled = true;
+                }
+            }
+
+            // Reflection button
+            const reflectionBtn = document.getElementById('reflection-complete-btn');
+            if (reflectionBtn) {
+                if (moduleState.reflectionText.length >= 50) {
+                    reflectionBtn.disabled = false;
+                }
+                if (moduleState.sectionsCompleted.reflection) {
+                    reflectionBtn.textContent = '✅ Reflection Completed';
+                    reflectionBtn.disabled = true;
+                }
+            }
+        }
+
+        // Video functions
+        function playVideo(videoId) {
+            alert('Playing: Two\'s Complement Deep Dive - Understanding negative number representation and binary arithmetic. Video player would open here.');
+            moduleState.sectionsCompleted.video = true;
+            updateProgress();
+            updateButtonStates();
+        }
+
+        function showTranscript(videoId) {
+            alert('Video transcript would be displayed here in a modal or expandable section.');
+        }
+
+        // Two's complement conversion functions
+        function convertToTwosComplement(value) {
+            const num = parseInt(value);
+            if (isNaN(num) || num < -128 || num > 127) {
+                document.getElementById('conversion-process').style.display = 'none';
+                return;
+            }
+            
+            if (num >= 0) {
+                showPositiveNumber(num);
+            } else {
+                showTwosComplementSteps(num);
+            }
+            
+            moduleState.tutorialInteractions++;
+            updateButtonStates();
+            saveModuleState();
+        }
+
+        function demonstrateExample(number) {
+            document.getElementById('signed-input').value = number;
+            convertToTwosComplement(number);
+        }
+
+        function showPositiveNumber(num) {
+            document.getElementById('conversion-process').style.display = 'block';
+            
+            const binary = num.toString(2).padStart(8, '0');
+            
+            document.getElementById('step1-content').innerHTML = `
+                <div style="text-align: center;">
+                    <p>Positive numbers are already in the correct format!</p>
+                    <div class="binary-bits">
+                        ${binary.split('').map((bit, i) => 
+                            `<div class="bit ${i === 0 ? 'sign-bit' : ''}">${bit}</div>`
+                        ).join('')}
+                    </div>
+                    <p>Sign bit (leftmost) is 0 for positive numbers</p>
+                </div>
+            `;
+            
+            document.getElementById('step2-content').innerHTML = `
+                <div style="text-align: center; color: #6b7280;">
+                    <p>No bit flipping needed for positive numbers</p>
+                </div>
+            `;
+            
+            document.getElementById('step3-content').innerHTML = `
+                <div style="text-align: center; color: #6b7280;">
+                    <p>No addition needed for positive numbers</p>
+                </div>
+            `;
+            
+            document.getElementById('final-result').innerHTML = `
+                <div style="font-family: 'Courier New', monospace;">
+                    ${num}<sub>10</sub> = ${binary}<sub>2</sub>
+                </div>
+            `;
+        }
+
+        function showTwosComplementSteps(num) {
+            document.getElementById('conversion-process').style.display = 'block';
+            
+            const absValue = Math.abs(num);
+            const binary = absValue.toString(2).padStart(8, '0');
+            const flipped = binary.split('').map(bit => bit === '0' ? '1' : '0').join('');
+            const result = addBinary(flipped, '00000001');
+            
+            // Step 1: Convert absolute value
+            document.getElementById('step1-content').innerHTML = `
+                <div style="text-align: center;">
+                    <p>Start with absolute value: ${absValue}</p>
+                    <div class="binary-bits">
+                        ${binary.split('').map(bit => `<div class="bit">${bit}</div>`).join('')}
+                    </div>
+                    <p>${absValue}<sub>10</sub> = ${binary}<sub>2</sub></p>
+                </div>
+            `;
+            
+            // Step 2: Flip bits
+            document.getElementById('step2-content').innerHTML = `
+                <div style="text-align: center;">
+                    <p>Flip every bit (0→1, 1→0):</p>
+                    <div class="binary-bits">
+                        ${flipped.split('').map(bit => `<div class="bit flipped">${bit}</div>`).join('')}
+                    </div>
+                    <p>One's complement: ${flipped}</p>
+                </div>
+            `;
+            
+            // Step 3: Add 1
+            document.getElementById('step3-content').innerHTML = `
+                <div style="text-align: center;">
+                    <p>Add 1 to get two's complement:</p>
+                    <div style="font-family: 'Courier New', monospace; margin: 1rem 0;">
+                        <div>${flipped}</div>
+                        <div>+ 00000001</div>
+                        <div style="border-top: 1px solid #333; margin-top: 0.5rem;">${result}</div>
+                    </div>
+                    <div class="binary-bits">
+                        ${result.split('').map((bit, i) => 
+                            `<div class="bit result ${i === 0 ? 'sign-bit' : ''}">${bit}</div>`
+                        ).join('')}
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('final-result').innerHTML = `
+                <div style="font-family: 'Courier New', monospace;">
+                    ${num}<sub>10</sub> = ${result}<sub>2</sub>
+                </div>
+            `;
+        }
+
+        function addBinary(bin1, bin2) {
+            let result = '';
+            let carry = 0;
+            
+            for (let i = bin1.length - 1; i >= 0; i--) {
+                const sum = parseInt(bin1[i]) + parseInt(bin2[i]) + carry;
+                result = (sum % 2) + result;
+                carry = Math.floor(sum / 2);
+            }
+            
+            return result;
+        }
+
+        // Number wheel visualization
+        function initializeNumberWheel() {
+            const wheel = document.getElementById('number-wheel');
+            const centerX = 150;
+            const centerY = 150;
+            const radius = 120;
+            
+            // Create numbers from -128 to 127, but only show key ones for clarity
+            const keyNumbers = [-128, -64, -32, -16, -8, -4, -2, -1, 0, 1, 2, 4, 8, 16, 32, 64, 127];
+            
+            keyNumbers.forEach((num, index) => {
+                const angle = (index / keyNumbers.length) * 2 * Math.PI - Math.PI / 2;
+                const x = centerX + radius * Math.cos(angle) - 20;
+                const y = centerY + radius * Math.sin(angle) - 20;
+                
+                const numberElement = document.createElement('div');
+                numberElement.className = 'wheel-number';
+                numberElement.style.left = x + 'px';
+                numberElement.style.top = y + 'px';
+                numberElement.textContent = num;
+                numberElement.setAttribute('data-number', num);
+                
+                if (num < 0) {
+                    numberElement.style.backgroundColor = '#fecaca';
+                    numberElement.style.borderColor = '#ef4444';
+                } else {
+                    numberElement.style.backgroundColor = '#dcfce7';
+                    numberElement.style.borderColor = '#22c55e';
+                }
+                
+                numberElement.addEventListener('click', () => selectWheelNumber(num));
+                wheel.appendChild(numberElement);
+            });
+        }
+
+        function selectWheelNumber(num) {
+            // Remove previous selection
+            document.querySelectorAll('.wheel-number').forEach(el => {
+                el.classList.remove('selected');
+            });
+            
+            // Select current number
+            const element = document.querySelector(`[data-number="${num}"]`);
+            if (element) {
+                element.classList.add('selected');
+            }
+            
+            // Convert to 8-bit two's complement
+            let binary;
+            if (num >= 0) {
+                binary = num.toString(2).padStart(8, '0');
+            } else {
+                // Two's complement conversion
+                const absValue = Math.abs(num);
+                const baseBinary = absValue.toString(2).padStart(8, '0');
+                const flipped = baseBinary.split('').map(bit => bit === '0' ? '1' : '0').join('');
+                binary = addBinary(flipped, '00000001');
+            }
+            
+            // Update center display
+            document.getElementById('selected-binary').textContent = binary;
+            document.getElementById('selected-decimal').textContent = `Decimal: ${num}`;
+            
+            moduleState.numbersExplored.add(num);
+            updateButtonStates();
+            saveModuleState();
+        }
+
+        // Binary arithmetic calculator
+        function updateArithmetic() {
+            const op1 = parseInt(document.getElementById('operand1').value) || 0;
+            const op2 = parseInt(document.getElementById('operand2').value) || 0;
+            const operation = document.getElementById('operation').value;
+            
+            // Convert to 8-bit two's complement
+            const bin1 = toTwosComplementBinary(op1);
+            const bin2 = toTwosComplementBinary(op2);
+            
+            document.getElementById('operand1-binary').textContent = bin1;
+            document.getElementById('operand2-binary').textContent = bin2;
+            
+            // Update input box styling
+            updateInputBoxStyling('operand1-box', op1);
+            updateInputBoxStyling('operand2-box', op2);
+            
+            // Perform calculation
+            let result;
+            if (operation === 'add') {
+                result = op1 + op2;
+            } else {
+                result = op1 - op2;
+            }
+            
+            // Check for overflow
+            const validResult = result >= -128 && result <= 127;
+            const displayResult = validResult ? result : (result > 127 ? result - 256 : result + 256);
+            
+            document.getElementById('result-decimal').textContent = displayResult;
+            document.getElementById('result-binary').textContent = toTwosComplementBinary(displayResult);
+            updateInputBoxStyling('result-box', displayResult);
+            
+            // Show calculation steps
+            showCalculationSteps(bin1, bin2, operation, validResult, result, displayResult);
+            
+            moduleState.arithmeticCalculations++;
+            updateButtonStates();
+            saveModuleState();
+        }
+
+        function toTwosComplementBinary(num) {
+            if (num >= 0) {
+                return num.toString(2).padStart(8, '0');
+            } else {
+                const absValue = Math.abs(num);
+                const binary = absValue.toString(2).padStart(8, '0');
+                const flipped = binary.split('').map(bit => bit === '0' ? '1' : '0').join('');
+                return addBinary(flipped, '00000001');
+            }
+        }
+
+        function updateInputBoxStyling(boxId, value) {
+            const box = document.getElementById(boxId);
+            box.classList.remove('negative', 'positive');
+            if (value < 0) {
+                box.classList.add('negative');
+            } else {
+                box.classList.add('positive');
+            }
+        }
+
+        function showCalculationSteps(bin1, bin2, operation, validResult, actualResult, displayResult) {
+            const opSymbol = operation === 'add' ? '+' : '-';
+            const resultBinary = toTwosComplementBinary(displayResult);
+            
+            let stepsHTML = `
+                <div style="font-family: 'Courier New', monospace; text-align: center;">
+                    <div style="margin: 0.5rem 0;">${bin1}</div>
+                    <div style="margin: 0.5rem 0;">${opSymbol} ${bin2}</div>
+                    <div style="border-top: 2px solid #1e40af; margin: 0.5rem 0; padding-top: 0.5rem;">${resultBinary}</div>
+                </div>
+            `;
+            
+            if (!validResult) {
+                stepsHTML += `
+                    <div style="background: #fef2f2; border: 1px solid #ef4444; border-radius: 6px; padding: 1rem; margin-top: 1rem; color: #991b1b;">
+                        <strong>⚠️ Overflow Detected!</strong><br>
+                        Actual result: ${actualResult}<br>
+                        8-bit result: ${displayResult} (wrapped around)
+                    </div>
+                `;
+            }
+            
+            document.getElementById('calculation-steps').innerHTML = stepsHTML;
+        }
+
+        // Overflow demonstration
+        function demonstrateOverflow(num1, num2) {
+            const result = num1 + num2;
+            const validResult = result >= -128 && result <= 127;
+            const wrappedResult = validResult ? result : (result > 127 ? result - 256 : result + 256);
+            
+            const bin1 = toTwosComplementBinary(num1);
+            const bin2 = toTwosComplementBinary(num2);
+            const resultBin = toTwosComplementBinary(wrappedResult);
+            
+            document.getElementById('overflow-explanation').style.display = 'block';
+            document.getElementById('overflow-details').innerHTML = `
+                <div style="font-family: 'Courier New', monospace; margin: 1rem 0;">
+                    <div>First number:  ${num1.toString().padStart(4)} = ${bin1}</div>
+                    <div>Second number: ${num2.toString().padStart(4)} = ${bin2}</div>
+                    <div style="border-top: 1px solid #ddd; margin: 0.5rem 0; padding-top: 0.5rem;">
+                        Mathematical result: ${result}
+                    </div>
+                    <div>8-bit result: ${wrappedResult.toString().padStart(4)} = ${resultBin}</div>
+                </div>
+                ${!validResult ? `
+                    <div style="background: #fef2f2; padding: 1rem; border-radius: 6px; color: #991b1b;">
+                        <strong>🚨 Overflow Occurred!</strong><br>
+                        The result ${result} exceeds the 8-bit two's complement range (-128 to 127).
+                        It wraps around to ${wrappedResult}.
+                    </div>
+                ` : `
+                    <div style="background: #f0fdf4; padding: 1rem; border-radius: 6px; color: #166534;">
+                        <strong>✅ No Overflow</strong><br>
+                        The result ${result} is within the valid 8-bit range (-128 to 127).
+                    </div>
+                `}
+            `;
+            
+            moduleState.overflowDemonstrations.add(`${num1},${num2}`);
+            updateButtonStates();
+            saveModuleState();
+        }
+
+        // Section completion
+        function completeSection(sectionName) {
+            moduleState.sectionsCompleted[sectionName] = true;
+            updateProgress();
+            updateButtonStates();
+            
+            // Show success message
+            const messages = {
+                video: 'Video section completed! You understand the fundamentals of two\'s complement.',
+                tutorial: 'Tutorial completed! You\'ve practiced the conversion process.',
+                visualizer: 'Number wheel exploration completed! You understand the range and representation.',
+                arithmetic: 'Arithmetic practice completed! You can perform signed binary calculations.',
+                overflow: 'Overflow detection completed! You understand the limitations and pitfalls.',
+                quiz: 'Quiz completed! Knowledge check passed.',
+                reflection: 'Reflection completed! Your insights have been recorded.'
+            };
+            
+            alert(messages[sectionName] || 'Section completed!');
+        }
+
+        // Quiz functions
+        function selectAnswer(questionNum, answer) {
+            // Remove previous selections for this question
+            document.querySelectorAll(`[data-question="${questionNum}"] .option`).forEach(option => {
+                option.classList.remove('selected');
+            });
+            
+            // Select the clicked option
+            document.querySelector(`[data-question="${questionNum}"] [data-answer="${answer}"]`).classList.add('selected');
+            
+            // Store the answer
+            moduleState.quizAnswers[questionNum] = answer;
+            
+            updateButtonStates();
+            saveModuleState();
+        }
+
+        function submitQuiz() {
+            let score = 0;
+            let totalQuestions = Object.keys(quizAnswers).length;
+            
+            // Grade each question
+            Object.keys(quizAnswers).forEach(questionNum => {
+                const correctAnswer = quizAnswers[questionNum];
+                const userAnswer = moduleState.quizAnswers[questionNum];
+                const isCorrect = correctAnswer === userAnswer;
+                
+                if (isCorrect) {
+                    score++;
+                }
+                
+                // Show feedback
+                const feedbackElement = document.getElementById(`feedback-${questionNum}`);
+                const options = document.querySelectorAll(`[data-question="${questionNum}"] .option`);
+                
+                options.forEach(option => {
+                    const optionAnswer = option.getAttribute('data-answer');
+                    if (optionAnswer === correctAnswer) {
+                        option.classList.add('correct');
+                    } else if (optionAnswer === userAnswer && !isCorrect) {
+                        option.classList.add('incorrect');
+                    }
+                });
+                
+                feedbackElement.className = 'feedback ' + (isCorrect ? 'correct' : 'incorrect');
+                
+                if (isCorrect) {
+                    const explanations = {
+                        1: 'Correct! -5 in two\'s complement: Start with 5 (00000101), flip bits (11111010), add 1 (11111011).',
+                        2: 'Correct! 10000000 represents -128, the most negative number in 8-bit two\'s complement.',
+                        3: 'Correct! 127 + 1 = 128, but 128 > 127 (max positive), so it overflows to -128.'
+                    };
+                    feedbackElement.textContent = explanations[questionNum];
+                } else {
+                    const corrections = {
+                        1: 'Incorrect. -5 = 11111011. Remember: flip bits of 5 (00000101 → 11111010) then add 1.',
+                        2: 'Incorrect. 10000000 = -128. The leftmost bit is the sign bit, and this is the most negative value.',
+                        3: 'Incorrect. 127 + 1 causes positive overflow, wrapping to -128 in 8-bit two\'s complement.'
+                    };
+                    feedbackElement.textContent = corrections[questionNum];
+                }
+            });
+            
+            // Show overall results
+            const percentage = Math.round((score / totalQuestions) * 100);
+            alert(`Quiz completed! Score: ${score}/${totalQuestions} (${percentage}%)\n\nReview the feedback below each question.`);
+            
+            moduleState.quizSubmitted = true;
+            moduleState.sectionsCompleted.quiz = true;
+            updateProgress();
+            updateButtonStates();
+        }
+
+        function resetQuiz() {
+            // Clear all selections and feedback
+            document.querySelectorAll('.option').forEach(option => {
+                option.classList.remove('selected', 'correct', 'incorrect');
+            });
+            
+            document.querySelectorAll('.feedback').forEach(feedback => {
+                feedback.style.display = 'none';
+                feedback.textContent = '';
+            });
+            
+            // Reset state
+            moduleState.quizAnswers = {};
+            moduleState.quizSubmitted = false;
+            moduleState.sectionsCompleted.quiz = false;
+            
+            updateProgress();
+            updateButtonStates();
+            saveModuleState();
+        }
+
+        // Reflection functions
+        function updateReflection() {
+            const text = document.getElementById('reflection-text').value;
+            moduleState.reflectionText = text;
+            updateButtonStates();
+            saveModuleState();
+        }
+
+        function saveReflection() {
+            const text = moduleState.reflectionText;
+            if (text.length < 10) {
+                alert('Please write a more detailed reflection before downloading.');
+                return;
+            }
+            
+            const blob = new Blob([text], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'CSC210_Module3_Reflection.txt';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            alert('Reflection downloaded! Submit this file to Canvas for Module 3.');
+        }
+
+        function copyReflectionToClipboard() {
+            const text = moduleState.reflectionText;
+            if (text.length < 10) {
+                alert('Please write a more detailed reflection before copying.');
+                return;
+            }
+            
+            navigator.clipboard.writeText(text).then(() => {
+                alert('Reflection copied to clipboard! You can now paste it into Canvas.');
+            }).catch(() => {
+                alert('Could not copy to clipboard. Please select and copy the text manually.');
+            });
+        }
+
+        // Navigation functions
+        function returnToPlatform() {
+            if (moduleState.returnUrl) {
+                window.location.href = moduleState.returnUrl;
+            } else {
+                alert('Return URL not found. Please navigate back to your learning platform manually.');
+            }
+        }
+
+        function goToModule4() {
+            alert('Module 4 would be loaded here. This would typically navigate to the next module in the sequence.');
+        }
+
+        function downloadCompletionSummary() {
+            const summary = `CSC210 Module 3: Two's Complement - Completion Summary
+Generated: ${new Date().toLocaleDateString()}
+
+Progress: ${moduleState.overallProgress}% Complete
+
+Sections Completed:
+- Video: ${moduleState.sectionsCompleted.video ? '✅' : '❌'}
+- Tutorial: ${moduleState.sectionsCompleted.tutorial ? '✅' : '❌'}
+- Visualizer: ${moduleState.sectionsCompleted.visualizer ? '✅' : '❌'}
+- Arithmetic: ${moduleState.sectionsCompleted.arithmetic ? '✅' : '❌'}
+- Overflow: ${moduleState.sectionsCompleted.overflow ? '✅' : '❌'}
+- Quiz: ${moduleState.sectionsCompleted.quiz ? '✅' : '❌'}
+- Reflection: ${moduleState.sectionsCompleted.reflection ? '✅' : '❌'}
+
+Activity Summary:
+- Tutorial interactions: ${moduleState.tutorialInteractions}
+- Numbers explored: ${moduleState.numbersExplored.size}
+- Arithmetic calculations: ${moduleState.arithmeticCalculations}
+- Overflow demonstrations: ${moduleState.overflowDemonstrations.size}
+- Quiz submitted: ${moduleState.quizSubmitted ? 'Yes' : 'No'}
+- Reflection length: ${moduleState.reflectionText.length} characters
+
+Learning Objectives Achieved:
+✅ Understanding two's complement representation
+✅ Converting negative numbers to binary
+✅ Performing signed binary arithmetic
+✅ Recognizing overflow conditions
+✅ Real-world applications and implications
+`;
+            
+            const blob = new Blob([summary], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'CSC210_Module3_Summary.txt';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        function reviewModule() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            alert('Scrolled to top for module review. You can revisit any section to reinforce your learning.');
+        }
+    </script>
+</body>
+</html>
