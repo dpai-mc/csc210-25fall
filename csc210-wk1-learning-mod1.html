@@ -712,6 +712,9 @@
                 <div class="reflection-prompt">
                     Reflection Prompt: Think about a smartphone or computer you use regularly. Can you identify examples of the different abstraction layers we discussed? How does understanding these layers change your perspective on how technology works?
                 </div>
+                <div style="background: #fef3c7; border: 1px solid #f59e0b; border-radius: 6px; padding: 1rem; margin: 1rem 0; font-size: 0.9rem;">
+                    <strong>📝 Important:</strong> Your reflection response is required for this module's assignment. Use the download or copy buttons below to submit your reflection in Canvas.
+                </div>
                 <textarea 
                     class="reflection-input" 
                     id="reflection-text"
@@ -1286,6 +1289,21 @@ Note: This summary shows session progress only. Submit required work in Canvas f
             } else {
                 // Fallback: return to main platform
                 window.location.href = 'https://dpai-mc.github.io/csc210-25fall/csc210-wk1-learning-platform.html?completed=1';
+            }
+        }
+
+        function goToModule2() {
+            // Navigate to Module 2 using the same URL pattern
+            const currentUrl = window.location.href;
+            const module2Url = currentUrl.replace('mod1.html', 'mod2.html');
+            
+            // Add return URL parameter if we have one
+            if (moduleState.returnUrl) {
+                const separator = module2Url.includes('?') ? '&' : '?';
+                const urlWithReturn = `${module2Url}${separator}return=${encodeURIComponent(moduleState.returnUrl)}&moduleNum=2`;
+                window.location.href = urlWithReturn;
+            } else {
+                window.location.href = module2Url;
             }
         }
 
