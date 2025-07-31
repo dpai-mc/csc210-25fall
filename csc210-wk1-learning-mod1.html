@@ -476,12 +476,15 @@
         <!-- Progress Tracking -->
         <div class="progress-container">
             <div class="progress-header">
-                <span style="font-weight: bold; color: #1e3a8a;">Module 1 Progress</span>
+                <span style="font-weight: bold; color: #1e3a8a;">Module 1 Progress (This Session)</span>
                 <span id="progress-text">0% Complete</span>
             </div>
             <div class="progress-bar">
                 <div class="progress-fill" id="progress-fill"></div>
             </div>
+            <p style="font-size: 0.9rem; color: #6b7280; margin-top: 0.5rem;">
+                ⓘ Progress resets when you close your browser. Download your reflection before leaving.
+            </p>
         </div>
 
         <!-- Introduction Video Section -->
@@ -572,7 +575,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="action-buttons">
+                <div class="action-buttons" style="position: relative; z-index: 50; background: white; padding: 1rem; border-radius: 8px; margin-top: 2rem;">
                     <button class="btn btn-primary" onclick="completeSection('components')" id="components-complete-btn" disabled>
                         ✅ Complete Component Exploration
                     </button>
@@ -646,7 +649,7 @@
                     </div>
                 </div>
 
-                <div class="action-buttons">
+                <div class="action-buttons" style="position: relative; z-index: 50; background: white; padding: 1rem; border-radius: 8px; margin-top: 2rem;">
                     <button class="btn btn-primary" onclick="completeSection('layers')" id="layers-complete-btn" disabled>
                         ✅ Complete Abstraction Layers
                     </button>
@@ -716,11 +719,14 @@
                     oninput="updateReflection()">
                 </textarea>
                 <div class="action-buttons">
-                    <button class="btn btn-primary" onclick="completeSection('reflection')" id="reflection-complete-btn" disabled>
-                        ✅ Complete Reflection
+                    <button class="btn btn-primary" onclick="saveReflection()">
+                        💾 Download Reflection Text
                     </button>
-                    <button class="btn btn-secondary" onclick="saveReflection()">
-                        💾 Save Draft
+                    <button class="btn btn-secondary" onclick="copyReflectionToClipboard()">
+                        📋 Copy to Clipboard
+                    </button>
+                    <button class="btn btn-primary" onclick="completeSection('reflection')" id="reflection-complete-btn" disabled>
+                        ✅ Mark Reflection Complete
                     </button>
                 </div>
             </div>
@@ -809,25 +815,46 @@
             }
         }
 
-        // Save state to localStorage
+        // Save state with session-only storage
         function saveModuleState() {
             try {
-                localStorage.setItem('csc210_module1_state', JSON.stringify(moduleState));
+                const storageData = {
+                    ...moduleState,
+                    timestamp: new Date().toISOString(),
+                    componentsExplored: Array.from(moduleState.componentsExplored),
+                    layersExplored: Array.from(moduleState.layersExplored),
+                    sessionOnly: true
+                };
+                
+                // Use sessionStorage only for privacy
+                sessionStorage.setItem('csc210_module1_state', JSON.stringify(storageData));
             } catch (error) {
                 console.warn('Could not save module state:', error);
             }
         }
 
-        // Load state from localStorage
+        // Load state from session storage only
         function loadModuleState() {
             try {
-                const saved = localStorage.getItem('csc210_module1_state');
+                const saved = sessionStorage.getItem('csc210_module1_state');
+                
                 if (saved) {
                     const savedState = JSON.parse(saved);
+                    
+                    // Restore Sets from arrays
+                    if (savedState.componentsExplored && Array.isArray(savedState.componentsExplored)) {
+                        savedState.componentsExplored = new Set(savedState.componentsExplored);
+                    }
+                    if (savedState.layersExplored && Array.isArray(savedState.layersExplored)) {
+                        savedState.layersExplored = new Set(savedState.layersExplored);
+                    }
+                    
                     moduleState = { ...moduleState, ...savedState };
                     
                     // Restore UI state
                     restoreUIState();
+                    
+                    console.log('Session progress loaded');
                 }
             } catch (error) {
                 console.warn('Could not load module state:', error);
@@ -900,22 +927,30 @@
             // Components completion button
             const componentsBtn = document.getElementById('components-complete-btn');
             if (componentsBtn) {
-                if (moduleState.componentsExplored.size >= 3) {
+                if (moduleState.componentsExplored.size >= 4) { // Require exploring at least 4 of 6 components
                     componentsBtn.disabled = false;
+                    componentsBtn.textContent = '✅ Complete Component Exploration (Explored ' + moduleState.componentsExplored.size + '/6)';
+                } else {
+                    componentsBtn.textContent = '🔍 Explore More Components (' + moduleState.componentsExplored.size + '/4 required)';
                 }
                 if (moduleState.sectionsCompleted.components) {
                     componentsBtn.textContent = '✅ Components Completed';
+                    componentsBtn.disabled = true;
                 }
             }
 
             // Layers completion button
             const layersBtn = document.getElementById('layers-complete-btn');
             if (layersBtn) {
-                if (moduleState.layersExplored.size >= 3) {
+                if (moduleState.layersExplored.size >= 4) { // Require exploring at least 4 of 6 layers
                     layersBtn.disabled = false;
+                    layersBtn.textContent = '✅ Complete Abstraction Layers (Explored ' + moduleState.layersExplored.size + '/6)';
+                } else {
+                    layersBtn.textContent = '🔍 Explore More Layers (' + moduleState.layersExplored.size + '/4 required)';
                 }
                 if (moduleState.sectionsCompleted.layers) {
                     layersBtn.textContent = '✅ Layers Completed';
+                    layersBtn.disabled = true;
                 }
             }
 
@@ -1123,10 +1158,92 @@
             if (reflectionText.trim().length > 0) {
                 moduleState.reflectionText = reflectionText;
                 saveModuleState();
-                alert('Reflection saved successfully!');
+                
+                // Create downloadable file
+                const content = `CSC210 Module 1 Reflection
+Student: [Enter your name]
+Date: ${new Date().toLocaleDateString()}
+
+Reflection Question:
+Think about a smartphone or computer you use regularly. Can you identify examples of the different abstraction layers we discussed? How does understanding these layers change your perspective on how technology works?
+
+Response:
+${reflectionText}
+
+---
+Instructions: Copy this text and submit it in the Canvas assignment for Week 1 Module 1 Reflection.
+`;
+                
+                const blob = new Blob([content], { type: 'text/plain' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'CSC210_Module1_Reflection.txt';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                
+                alert('Reflection downloaded! Submit this file content in Canvas.');
             } else {
-                alert('Please write some reflection before saving.');
+                alert('Please write your reflection before downloading.');
             }
+        }
+
+        function copyReflectionToClipboard() {
+            const reflectionText = document.getElementById('reflection-text').value;
+            if (reflectionText.trim().length > 0) {
+                navigator.clipboard.writeText(reflectionText).then(() => {
+                    alert('Reflection copied to clipboard! Paste it into the Canvas assignment.');
+                }).catch(() => {
+                    // Fallback for older browsers
+                    const textArea = document.createElement('textarea');
+                    textArea.value = reflectionText;
+                    document.body.appendChild(textArea);
+                    textArea.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(textArea);
+                    alert('Reflection copied to clipboard! Paste it into the Canvas assignment.');
+                });
+            } else {
+                alert('Please write your reflection before copying.');
+            }
+        }
+
+        function downloadCompletionSummary() {
+            const completedSections = Object.values(moduleState.sectionsCompleted).filter(Boolean).length;
+            const totalSections = Object.keys(moduleState.sectionsCompleted).length;
+            
+            const summary = `CSC210 Module 1 Completion Summary
+Student: [Enter your name]
+Date: ${new Date().toLocaleDateString()}
+Session Progress: ${Math.round((completedSections / totalSections) * 100)}%
+
+Completed Activities:
+✓ Video: ${moduleState.sectionsCompleted.video ? 'Yes' : 'No'}
+✓ Components Explored: ${moduleState.componentsExplored.size}/6 (${Array.from(moduleState.componentsExplored).join(', ')})
+✓ Abstraction Layers: ${moduleState.layersExplored.size}/6 (${Array.from(moduleState.layersExplored).join(', ')})
+✓ Knowledge Quiz: ${moduleState.sectionsCompleted.quiz ? 'Yes' : 'No'}
+✓ Reflection: ${moduleState.sectionsCompleted.reflection ? 'Yes' : 'No'}
+
+Next Steps:
+1. Submit reflection in Canvas assignment
+2. Take Canvas quiz for Week 1
+3. Review any incomplete activities if needed
+
+---
+Note: This summary shows session progress only. Submit required work in Canvas for grading.
+`;
+            
+            const blob = new Blob([summary], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'CSC210_Module1_Completion_Summary.txt';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
         }
 
         // Section completion functions
