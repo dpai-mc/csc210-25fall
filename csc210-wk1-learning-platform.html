@@ -649,10 +649,10 @@
                         </div>
                     </div>
 
-                    <div class="module-card locked" tabindex="0" data-module="2">
+                    <div class="module-card" tabindex="0" data-module="2" onclick="openModule(2)">
                         <div class="module-header">
                             <div class="module-title">Module 2: Number Systems</div>
-                            <div class="module-status status-locked">Locked</div>
+                            <div class="module-status status-available">Available</div>
                         </div>
                         <div class="module-description">
                             Binary, decimal, and hexadecimal fundamentals. Master conversions between number systems with interactive tools.
@@ -663,10 +663,10 @@
                         </div>
                     </div>
 
-                    <div class="module-card locked" tabindex="0" data-module="3">
+                    <div class="module-card" tabindex="0" data-module="3" onclick="openModule(3)">
                         <div class="module-header">
                             <div class="module-title">Module 3: Two's Complement</div>
-                            <div class="module-status status-locked">Locked</div>
+                            <div class="module-status status-available">Available</div>
                         </div>
                         <div class="module-description">
                             Signed number representation and binary arithmetic. Understand how computers handle negative numbers.
@@ -677,10 +677,10 @@
                         </div>
                     </div>
 
-                    <div class="module-card locked" tabindex="0" data-module="4">
+                    <div class="module-card" tabindex="0" data-module="4" onclick="openModule(4)">
                         <div class="module-header">
                             <div class="module-title">Module 4: Putting It Together</div>
-                            <div class="module-status status-locked">Locked</div>
+                            <div class="module-status status-available">Available</div>
                         </div>
                         <div class="module-description">
                             Synthesis and application. Connect concepts and prepare for Week 2. Complete the comprehensive assignment.
@@ -695,6 +695,9 @@
                 <div class="action-buttons">
                     <button class="btn btn-primary" onclick="openModule(1)">
                         ▶️ Start Module 1
+                    </button>
+                    <button class="btn btn-primary" onclick="openModule(2)">
+                        ▶️ Start Module 2
                     </button>
                     <button class="btn btn-secondary" onclick="downloadSchedule()">
                         📅 Download Study Schedule
@@ -889,9 +892,9 @@
         let currentTab = 'overview';
         let moduleProgress = {
             1: { completed: false, unlocked: true },
-            2: { completed: false, unlocked: false },
-            3: { completed: false, unlocked: false },
-            4: { completed: false, unlocked: false }
+            2: { completed: false, unlocked: true },
+            3: { completed: false, unlocked: true },
+            4: { completed: false, unlocked: true }
         };
         let overallProgress = 0;
 
@@ -992,11 +995,6 @@
 
         // Module management
         function openModule(moduleNumber) {
-            if (!moduleProgress[moduleNumber].unlocked) {
-                alert('Complete previous modules to unlock this content.');
-                return;
-            }
-
             // Save current platform state
             saveProgress();
             
@@ -1038,29 +1036,20 @@
                 // Remove all status classes
                 card.classList.remove('completed', 'locked');
                 
-                // Update status
+                // Update status - all modules are now available
                 const statusElement = card.querySelector('.module-status');
                 if (module.completed) {
                     card.classList.add('completed');
                     statusElement.textContent = 'Completed';
                     statusElement.className = 'module-status status-completed';
-                } else if (module.unlocked) {
+                } else {
                     statusElement.textContent = 'Available';
                     statusElement.className = 'module-status status-available';
-                } else {
-                    card.classList.add('locked');
-                    statusElement.textContent = 'Locked';
-                    statusElement.className = 'module-status status-locked';
                 }
 
-                // Update click handler
-                if (module.unlocked) {
-                    card.style.cursor = 'pointer';
-                    card.onclick = () => openModule(moduleNum);
-                } else {
-                    card.style.cursor = 'not-allowed';
-                    card.onclick = null;
-                }
+                // All modules are clickable
+                card.style.cursor = 'pointer';
+                card.onclick = () => openModule(moduleNum);
             });
         }
 
