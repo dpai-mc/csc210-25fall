@@ -130,18 +130,21 @@
             cursor: pointer;
             transition: all 0.3s ease;
             position: relative;
+            z-index: 1;
         }
 
         .component:hover {
             transform: translateY(-4px);
             box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
             border-color: #3b82f6;
+            z-index: 10;
         }
 
         .component.active {
             border-color: #1e40af;
             background: #dbeafe;
             transform: scale(1.05);
+            z-index: 20;
         }
 
         .component-icon {
@@ -173,7 +176,8 @@
             opacity: 0;
             transform: translateY(-10px);
             transition: all 0.3s ease;
-            z-index: 10;
+            z-index: 30;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
         }
 
         .component.active .component-details {
