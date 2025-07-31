@@ -694,6 +694,13 @@
                 <div class="phase-container">
                     <p>A summary of helpful resources for students can be found at <a href="https://www.mendocino.edu/student-services/student-resources/student-resource-summary" style="color: #1e3a8a;" target="_blank" rel="noopener">Student Resources</a> and in Spanish at <a href="https://www.mendocino.edu/ayuda-para-estudiantes" style="color: #1e3a8a;" target="_blank" rel="noopener">Ayuda para estudiantes</a>.</p>
                 </div>
+
+                <div style="text-align: center; margin-top: 2rem; padding-top: 2rem; border-top: 2px solid #e5e7eb;">
+                    <button class="btn btn-primary" onclick="downloadSyllabusAsPDF()" style="font-size: 1.1rem; padding: 1rem 2rem;">
+                        📄 Download Syllabus as PDF
+                    </button>
+                    <p style="margin-top: 0.5rem; font-size: 0.9rem; color: #6b7280;">Save or print this syllabus for your records</p>
+                </div>
             </section>
         </div>
     </main>
@@ -758,6 +765,44 @@
                     }
                 });
             });
+        }
+
+        // Download syllabus as PDF function
+        function downloadSyllabusAsPDF() {
+            // Create a clean version for PDF generation
+            const printContent = document.documentElement.cloneNode(true);
+            
+            // Remove interactive elements that don't work in PDF
+            const elementsToRemove = printContent.querySelectorAll('.nav-tabs, .tab-content:not(.active), .collapsible::after, button, .skip-link');
+            elementsToRemove.forEach(el => el.remove());
+            
+            // Show all tab content for PDF
+            const tabContents = printContent.querySelectorAll('.tab-content');
+            tabContents.forEach(content => {
+                content.style.display = 'block';
+                content.classList.add('active');
+            });
+            
+            // Open all collapsible content
+            const collapsibleContents = printContent.querySelectorAll('.collapsible-content');
+            collapsibleContents.forEach(content => {
+                content.style.maxHeight = 'none';
+                content.style.display = 'block';
+                content.classList.add('active');
+            });
+            
+            // Create print window
+            const printWindow = window.open('', '_blank');
+            printWindow.document.write(printContent.outerHTML);
+            printWindow.document.close();
+            
+            // Wait for content to load, then print
+            printWindow.onload = function() {
+                printWindow.document.title = 'CSC210 Syllabus - Computer Organization & Architecture';
+                setTimeout(() => {
+                    printWindow.print();
+                }, 500);
+            };
         }
 
         // Initialize all interactive elements when page loads
