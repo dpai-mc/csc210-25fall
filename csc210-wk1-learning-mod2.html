@@ -562,6 +562,91 @@
             </div>
         </section>
 
+        <!-- Step-by-Step Conversion Tutorial -->
+        <section class="content-section">
+            <h2>🎯 Step-by-Step Conversion Tutorial</h2>
+            <p>Learn how number systems work and master the conversion process with this interactive guide.</p>
+            
+            <div style="background: linear-gradient(135deg, #e0f2fe 0%, #b3e5fc 100%); border: 2px solid #0288d1; border-radius: 12px; padding: 2rem; margin: 2rem 0;">
+                <h3 style="text-align: center; color: #0277bd; margin-bottom: 2rem;">Understanding Number Bases</h3>
+                
+                <!-- Base Explanation -->
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin: 2rem 0;">
+                    <div style="background: white; border-radius: 8px; padding: 1.5rem; border-left: 4px solid #0288d1;">
+                        <h4 style="color: #0277bd; margin-top: 0;">Base 10 (Decimal)</h4>
+                        <p style="margin: 0.5rem 0;"><strong>Digits:</strong> 0, 1, 2, 3, 4, 5, 6, 7, 8, 9</p>
+                        <p style="margin: 0.5rem 0;"><strong>Columns:</strong> ...10³, 10², 10¹, 10⁰</p>
+                        <p style="margin: 0.5rem 0;"><strong>Values:</strong> ...1000, 100, 10, 1</p>
+                        <p style="font-size: 0.9rem; color: #666;">The system we use every day!</p>
+                    </div>
+                    
+                    <div style="background: white; border-radius: 8px; padding: 1.5rem; border-left: 4px solid #16a34a;">
+                        <h4 style="color: #15803d; margin-top: 0;">Base 2 (Binary)</h4>
+                        <p style="margin: 0.5rem 0;"><strong>Digits:</strong> 0, 1</p>
+                        <p style="margin: 0.5rem 0;"><strong>Columns:</strong> ...2³, 2², 2¹, 2⁰</p>
+                        <p style="margin: 0.5rem 0;"><strong>Values:</strong> ...8, 4, 2, 1</p>
+                        <p style="font-size: 0.9rem; color: #666;">What computers use internally!</p>
+                    </div>
+                    
+                    <div style="background: white; border-radius: 8px; padding: 1.5rem; border-left: 4px solid #7c3aed;">
+                        <h4 style="color: #6d28d9; margin-top: 0;">Base 16 (Hexadecimal)</h4>
+                        <p style="margin: 0.5rem 0;"><strong>Digits:</strong> 0-9, A, B, C, D, E, F</p>
+                        <p style="margin: 0.5rem 0;"><strong>Columns:</strong> ...16³, 16², 16¹, 16⁰</p>
+                        <p style="margin: 0.5rem 0;"><strong>Values:</strong> ...4096, 256, 16, 1</p>
+                        <p style="font-size: 0.9rem; color: #666;">Shorthand for binary!</p>
+                    </div>
+                </div>
+
+                <!-- Interactive Conversion Demo -->
+                <div style="background: white; border-radius: 12px; padding: 2rem; margin: 2rem 0;">
+                    <h3 style="color: #0277bd; text-align: center; margin-bottom: 1.5rem;">Interactive Decimal to Binary Conversion</h3>
+                    
+                    <div style="text-align: center; margin-bottom: 2rem;">
+                        <label style="display: block; font-weight: bold; margin-bottom: 0.5rem;">Enter a decimal number to convert:</label>
+                        <input type="number" id="demo-input" min="0" max="255" value="42" 
+                               style="padding: 0.8rem; font-size: 1.2rem; border: 2px solid #0288d1; border-radius: 6px; text-align: center; width: 120px;"
+                               oninput="startConversion(this.value)">
+                        <p style="margin-top: 0.5rem; color: #666; font-size: 0.9rem;">Try numbers between 0 and 255</p>
+                    </div>
+
+                    <!-- Conversion Steps Display -->
+                    <div id="conversion-steps" style="display: none;">
+                        <h4 style="color: #0277bd; margin-bottom: 1rem;">Step-by-Step Conversion Process:</h4>
+                        
+                        <!-- Division Steps -->
+                        <div id="division-steps" style="background: #f8fafc; padding: 1rem; border-radius: 8px; margin: 1rem 0;">
+                            <h5 style="color: #374151; margin-bottom: 0.5rem;">Method 1: Division by 2 (Recommended)</h5>
+                            <div id="division-table" style="font-family: 'Courier New', monospace;"></div>
+                        </div>
+
+                        <!-- Binary Place Values -->
+                        <div id="place-values" style="background: #f0fdf4; padding: 1rem; border-radius: 8px; margin: 1rem 0;">
+                            <h5 style="color: #166534; margin-bottom: 0.5rem;">Method 2: Binary Place Values</h5>
+                            <div id="place-value-table"></div>
+                        </div>
+
+                        <!-- Final Result -->
+                        <div id="final-result" style="background: #eff6ff; padding: 1.5rem; border-radius: 8px; margin: 1rem 0; text-align: center;">
+                            <h5 style="color: #1d4ed8; margin-bottom: 0.5rem;">Final Result:</h5>
+                            <div style="font-size: 1.5rem; font-weight: bold; font-family: 'Courier New', monospace;" id="result-display"></div>
+                        </div>
+                    </div>
+
+                    <div style="text-align: center; margin-top: 2rem;">
+                        <button class="btn btn-secondary" onclick="showExample(42)">📝 Show Example (42)</button>
+                        <button class="btn btn-secondary" onclick="showExample(100)">📝 Show Example (100)</button>
+                        <button class="btn btn-secondary" onclick="showExample(255)">📝 Show Example (255)</button>
+                    </div>
+                </div>
+
+                <div class="action-buttons" style="position: relative; z-index: 50; background: white; padding: 1rem; border-radius: 8px; margin-top: 2rem;">
+                    <button class="btn btn-primary" onclick="completeSection('tutorial')" id="tutorial-complete-btn" disabled>
+                        ✅ Complete Conversion Tutorial
+                    </button>
+                </div>
+            </div>
+        </section>
+
         <!-- Practice Problems -->
         <section class="content-section">
             <h2>📝 Practice Problems</h2>
@@ -773,12 +858,14 @@
             sectionsCompleted: {
                 video: false,
                 converter: false,
+                tutorial: false,
                 practice: false,
                 patterns: false,
                 quiz: false,
                 reflection: false
             },
             conversionsPerformed: 0,
+            tutorialInteractions: 0,
             problemsSolved: new Set(),
             patternsCompleted: new Set(),
             quizAnswers: {},
@@ -924,7 +1011,20 @@
                 videoBtn.textContent = '✅ Videos Completed';
             }
 
-            // Converter completion button
+            // Tutorial completion button
+            const tutorialBtn = document.getElementById('tutorial-complete-btn');
+            if (tutorialBtn) {
+                if (moduleState.tutorialInteractions >= 3) {
+                    tutorialBtn.disabled = false;
+                    tutorialBtn.textContent = '✅ Complete Tutorial (' + moduleState.tutorialInteractions + ' examples tried)';
+                } else {
+                    tutorialBtn.textContent = '🎯 Try More Examples (' + moduleState.tutorialInteractions + '/3 needed)';
+                }
+                if (moduleState.sectionsCompleted.tutorial) {
+                    tutorialBtn.textContent = '✅ Tutorial Completed';
+                    tutorialBtn.disabled = true;
+                }
+            }
             const converterBtn = document.getElementById('converter-complete-btn');
             if (converterBtn) {
                 if (moduleState.conversionsPerformed >= 5) {
@@ -1011,7 +1111,111 @@
             updateButtonStates();
         }
 
-        // Number converter functions
+        // Step-by-step conversion functions
+        function startConversion(value) {
+            const num = parseInt(value);
+            if (isNaN(num) || num < 0 || num > 255) {
+                document.getElementById('conversion-steps').style.display = 'none';
+                return;
+            }
+            
+            showConversionSteps(num);
+            moduleState.tutorialInteractions++;
+            updateButtonStates();
+            saveModuleState();
+        }
+
+        function showExample(number) {
+            document.getElementById('demo-input').value = number;
+            startConversion(number);
+        }
+
+        function showConversionSteps(decimal) {
+            document.getElementById('conversion-steps').style.display = 'block';
+            
+            // Method 1: Division by 2
+            showDivisionMethod(decimal);
+            
+            // Method 2: Place values
+            showPlaceValueMethod(decimal);
+            
+            // Final result
+            const binary = decimal.toString(2);
+            document.getElementById('result-display').innerHTML = 
+                `${decimal}<sub>10</sub> = ${binary}<sub>2</sub>`;
+        }
+
+        function showDivisionMethod(decimal) {
+            let num = decimal;
+            let steps = [];
+            let remainders = [];
+            
+            if (num === 0) {
+                steps.push('0 ÷ 2 = 0 remainder 0');
+                remainders.push('0');
+            } else {
+                while (num > 0) {
+                    const quotient = Math.floor(num / 2);
+                    const remainder = num % 2;
+                    steps.push(`${num} ÷ 2 = ${quotient} remainder ${remainder}`);
+                    remainders.push(remainder.toString());
+                    num = quotient;
+                }
+            }
+            
+            const tableHTML = `
+                <div style="margin: 1rem 0;">
+                    <p style="margin-bottom: 1rem; color: #374151;">Divide by 2 repeatedly and collect remainders:</p>
+                    ${steps.map(step => `<div style="margin: 0.3rem 0; padding: 0.3rem; background: white; border-radius: 4px;">${step}</div>`).join('')}
+                    <div style="margin-top: 1rem; padding: 1rem; background: #dbeafe; border-radius: 6px;">
+                        <strong>Read remainders from bottom to top:</strong><br>
+                        ${remainders.reverse().join(' → ')} = <strong>${remainders.join('')}</strong>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('division-table').innerHTML = tableHTML;
+        }
+
+        function showPlaceValueMethod(decimal) {
+            const binary = decimal.toString(2);
+            const positions = [];
+            
+            // Create place value breakdown
+            for (let i = 0; i < binary.length; i++) {
+                const position = binary.length - 1 - i;
+                const bit = binary[i];
+                const value = Math.pow(2, position);
+                positions.push({
+                    bit: bit,
+                    position: position,
+                    value: value,
+                    contribution: bit === '1' ? value : 0
+                });
+            }
+            
+            const tableHTML = `
+                <div style="margin: 1rem 0;">
+                    <p style="margin-bottom: 1rem; color: #374151;">Break down using powers of 2:</p>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(80px, 1fr)); gap: 0.5rem; margin: 1rem 0;">
+                        ${positions.map(pos => `
+                            <div style="text-align: center; padding: 0.8rem; background: ${pos.bit === '1' ? '#dcfce7' : '#f9fafb'}; border-radius: 6px; border: 2px solid ${pos.bit === '1' ? '#16a34a' : '#e5e7eb'};">
+                                <div style="font-weight: bold; color: #374151;">2<sup>${pos.position}</sup></div>
+                                <div style="font-size: 0.9rem; color: #6b7280;">${pos.value}</div>
+                                <div style="font-size: 1.2rem; font-weight: bold; color: ${pos.bit === '1' ? '#16a34a' : '#6b7280'};">${pos.bit}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                    <div style="margin-top: 1rem; padding: 1rem; background: #f0fdf4; border-radius: 6px;">
+                        <strong>Add up the values where bit = 1:</strong><br>
+                        ${positions.filter(p => p.bit === '1').map(p => p.value).join(' + ')} = <strong>${decimal}</strong><br>
+                        <strong>Binary result:</strong> ${binary}
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('place-value-table').innerHTML = tableHTML;
+        }
         function convertFromDecimal(value) {
             if (!value.trim()) return;
             
@@ -1295,6 +1499,7 @@ Session Progress: ${Math.round((completedSections / totalSections) * 100)}%
 Completed Activities:
 ✓ Videos: ${moduleState.sectionsCompleted.video ? 'Yes' : 'No'}
 ✓ Converter Practice: ${moduleState.conversionsPerformed} conversions performed
+✓ Tutorial Interactions: ${moduleState.tutorialInteractions} examples tried
 ✓ Practice Problems: ${moduleState.problemsSolved.size}/4 solved
 ✓ Pattern Recognition: ${moduleState.patternsCompleted.size}/2 completed
 ✓ Knowledge Quiz: ${moduleState.sectionsCompleted.quiz ? 'Yes' : 'No'}
