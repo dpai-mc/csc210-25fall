@@ -746,20 +746,20 @@
                 <li>Why understanding computer architecture is important for software developers</li>
             </ul>
             
-                <div class="action-buttons">
-                    <button class="btn btn-primary" onclick="returnToPlatformWithCompletion()" id="module-complete-btn" disabled>
-                        🚀 Complete Module & Return to Platform
-                    </button>
-                    <button class="btn btn-secondary" onclick="returnToPlatform()">
-                        ← Return to Learning Platform
-                    </button>
-                    <button class="btn btn-secondary" onclick="reviewModule()">
-                        🔍 Review Module Content
-                    </button>
-                    <button class="btn btn-secondary" onclick="downloadNotes()">
-                        📝 Download Study Notes
-                    </button>
-                </div>
+            <div class="action-buttons">
+                <button class="btn btn-primary" onclick="goToModule2()">
+                    🚀 Continue to Module 2: Number Systems
+                </button>
+                <button class="btn btn-secondary" onclick="returnToPlatform()">
+                    ← Return to Learning Platform
+                </button>
+                <button class="btn btn-secondary" onclick="downloadCompletionSummary()">
+                    📄 Download Completion Summary
+                </button>
+                <button class="btn btn-secondary" onclick="reviewModule()">
+                    🔍 Review Module Content
+                </button>
+            </div>
         </section>
     </main>
 
@@ -1332,50 +1332,8 @@ Note: This summary shows session progress only. Submit required work in Canvas f
         }
 
         function downloadNotes() {
-            // Create a summary of the module content
-            const notes = `
-CSC210 Module 1: The Big Picture - Study Notes
-
-KEY CONCEPTS:
-1. Computer Components:
-   - CPU: Central Processing Unit (the "brain")
-   - Memory: RAM and storage for programs and data
-   - I/O Devices: Input and output interfaces
-   - System Bus: Connects all components
-   - Motherboard: Main circuit board
-   - Power Supply: Provides electrical power
-
-2. Abstraction Layers (from top to bottom):
-   - Applications & User Programs
-   - High-Level Languages (Java, Python, C++)
-   - Assembly Language & Machine Code
-   - Microarchitecture & Hardware
-   - Digital Logic & Gates
-   - Physics & Transistors
-
-3. Why Abstraction Matters:
-   - Hides complexity
-   - Enables specialization
-   - Makes systems manageable
-   - Allows higher-level thinking
-
-REFLECTION:
-${moduleState.reflectionText || 'No reflection recorded yet.'}
-
-Module completed: ${Object.values(moduleState.sectionsCompleted).every(Boolean) ? 'Yes' : 'No'}
-Progress: ${moduleState.overallProgress}%
-            `;
-
-            // Create and download the file
-            const blob = new Blob([notes], { type: 'text/plain' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'CSC210_Module1_Notes.txt';
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
+            // Redirect to the completion summary function
+            downloadCompletionSummary();
         }
 
         // Keyboard accessibility
