@@ -829,9 +829,27 @@
                     <p>Don't miss out on available financial aid, visit <a href="https://www.mendocino.edu/financial-aid" style="color: #1e3a8a;" target="_blank" rel="noopener">https://www.mendocino.edu/financial-aid</a> to apply today! To receive financial aid, you must meet the Satisfactory Academic Progress (SAP) requirements. If you have questions, please contact financial aid at <a href="mailto:financialaid@mendocino.edu" style="color: #1e3a8a;">financialaid@mendocino.edu</a>.</p>
                 </div>
 
+                <h3>Privacy & Session Tracking</h3>
+                <div class="description-box">
+                    <p><strong>Interactive Learning Modules:</strong> This course uses interactive web-based learning modules to enhance your educational experience. These modules track your progress during each session to provide personalized feedback and ensure you complete required activities.</p>
+                    
+                    <p><strong>Session-Only Tracking:</strong> All progress tracking is limited to your current browser session only. No data persists after you close your browser, and no information is stored on external servers.</p>
+                    
+                    <p><strong>No Personal Data Collection:</strong> The learning modules do not collect, store, or transmit any personally identifiable information. Progress tracking is anonymous and used solely to enhance your learning experience during each session.</p>
+                    
+                    <p><strong>Student Privacy:</strong> Your privacy is protected - no tracking data is shared with third parties, and no permanent records of your session activity are maintained outside of work you voluntarily submit through Canvas assignments.</p>
+                </div>
+
                 <h3>Student Resources</h3>
                 <div class="slo-list">
                     <p>A summary of helpful resources for students can be found at <a href="https://www.mendocino.edu/student-services/student-resources/student-resource-summary" style="color: #1e3a8a;" target="_blank" rel="noopener">Student Resources</a> and in Spanish at <a href="https://www.mendocino.edu/ayuda-para-estudiantes" style="color: #1e3a8a;" target="_blank" rel="noopener">Ayuda para estudiantes</a>.</p>
+                </div>
+
+                <div style="text-align: center; margin-top: 2rem; padding-top: 2rem; border-top: 2px solid #e5e7eb;">
+                    <button class="btn btn-primary" onclick="downloadSyllabusAsPDF()" style="font-size: 1.1rem; padding: 1rem 2rem;">
+                        📄 Download Syllabus as PDF
+                    </button>
+                    <p style="margin-top: 0.5rem; font-size: 0.9rem; color: #6b7280;">Save or print this syllabus for your records</p>
                 </div>
 
                 <h3>Lab Safety & Best Practices</h3>
@@ -908,8 +926,43 @@
             });
         }
 
-        // Initialize all interactive elements when page loads
-        document.addEventListener('DOMContentLoaded', function() {
+        // Download syllabus as PDF function
+        function downloadSyllabusAsPDF() {
+            // Create a clean version for PDF generation
+            const printContent = document.documentElement.cloneNode(true);
+            
+            // Remove interactive elements that don't work in PDF
+            const elementsToRemove = printContent.querySelectorAll('.nav-tabs, .tab-content:not(.active), .collapsible::after, button, .skip-link');
+            elementsToRemove.forEach(el => el.remove());
+            
+            // Show all tab content for PDF
+            const tabContents = printContent.querySelectorAll('.tab-content');
+            tabContents.forEach(content => {
+                content.style.display = 'block';
+                content.classList.add('active');
+            });
+            
+            // Open all collapsible content
+            const collapsibleContents = printContent.querySelectorAll('.collapsible-content');
+            collapsibleContents.forEach(content => {
+                content.style.maxHeight = 'none';
+                content.style.display = 'block';
+                content.classList.add('active');
+            });
+            
+            // Create print window
+            const printWindow = window.open('', '_blank');
+            printWindow.document.write(printContent.outerHTML);
+            printWindow.document.close();
+            
+            // Wait for content to load, then print
+            printWindow.onload = function() {
+                printWindow.document.title = 'CSC210L Syllabus - Computer Organization Lab';
+                setTimeout(() => {
+                    printWindow.print();
+                }, 500);
+            };
+        }
             initializeTabs();
             initializeCollapsibles();
         });
