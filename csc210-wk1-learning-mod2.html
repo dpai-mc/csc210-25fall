@@ -1,0 +1,1386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSC210 Module 2: Number Systems</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f8fafc;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header */
+        header {
+            background: linear-gradient(135deg, #065f46 0%, #059669 100%);
+            color: white;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .module-subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            background: white;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            background: #e5e7eb;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #16a34a 0%, #22c55e 100%);
+            border-radius: 5px;
+            transition: width 0.8s ease;
+            width: 0%;
+        }
+
+        /* Content Sections */
+        .content-section {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            color: #065f46;
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            border-bottom: 3px solid #e5e7eb;
+            padding-bottom: 0.5rem;
+        }
+
+        h3 {
+            color: #374151;
+            font-size: 1.4rem;
+            margin: 1.5rem 0 1rem 0;
+        }
+
+        h4 {
+            color: #4b5563;
+            font-size: 1.2rem;
+            margin: 1rem 0 0.5rem 0;
+        }
+
+        /* Number System Converter */
+        .converter-section {
+            background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
+            border: 2px solid #10b981;
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+
+        .converter-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .number-input {
+            background: white;
+            border: 2px solid #d1d5db;
+            border-radius: 8px;
+            padding: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .number-input:focus-within {
+            border-color: #10b981;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(16, 185, 129, 0.2);
+        }
+
+        .input-label {
+            font-weight: bold;
+            color: #065f46;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 1.1rem;
+            font-family: 'Courier New', monospace;
+        }
+
+        .input-field:focus {
+            outline: 2px solid #10b981;
+            border-color: #10b981;
+        }
+
+        .input-help {
+            font-size: 0.8rem;
+            color: #6b7280;
+            margin-top: 0.3rem;
+        }
+
+        /* Practice Problems */
+        .practice-section {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            border: 2px solid #f59e0b;
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+
+        .problem-card {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+            border-left: 4px solid #f59e0b;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .problem-text {
+            font-weight: bold;
+            margin-bottom: 1rem;
+            color: #92400e;
+        }
+
+        .answer-input {
+            width: 100%;
+            padding: 0.8rem;
+            border: 2px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-family: 'Courier New', monospace;
+            margin-bottom: 1rem;
+        }
+
+        .check-answer-btn {
+            background: #f59e0b;
+            color: white;
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .check-answer-btn:hover {
+            background: #d97706;
+            transform: translateY(-1px);
+        }
+
+        .feedback {
+            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: 6px;
+            display: none;
+        }
+
+        .feedback.correct {
+            background: #dcfce7;
+            color: #166534;
+            border: 1px solid #16a34a;
+        }
+
+        .feedback.incorrect {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #ef4444;
+        }
+
+        /* Pattern Recognition Game */
+        .pattern-game {
+            background: linear-gradient(135deg, #f0f9ff 0%, #dbeafe 100%);
+            border: 2px solid #3b82f6;
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+
+        .pattern-sequence {
+            display: flex;
+            gap: 0.5rem;
+            margin: 1rem 0;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .pattern-number {
+            background: white;
+            border: 2px solid #3b82f6;
+            border-radius: 8px;
+            padding: 1rem;
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+            min-width: 80px;
+            text-align: center;
+        }
+
+        .pattern-missing {
+            background: #dbeafe;
+            border: 2px dashed #3b82f6;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: #3b82f6;
+        }
+
+        /* Video Container */
+        .video-container {
+            background: #1f2937;
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+            text-align: center;
+        }
+
+        .video-placeholder {
+            background: #374151;
+            border-radius: 8px;
+            padding: 3rem;
+            color: white;
+            margin-bottom: 1rem;
+        }
+
+        /* Quiz Components */
+        .quiz-section {
+            background: #f0fdf4;
+            border: 2px solid #16a34a;
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+
+        .question {
+            margin-bottom: 2rem;
+        }
+
+        .question-text {
+            font-weight: bold;
+            margin-bottom: 1rem;
+            color: #166534;
+        }
+
+        .options {
+            list-style: none;
+            padding: 0;
+        }
+
+        .option {
+            background: white;
+            border: 2px solid #d1d5db;
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 0.5rem 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .option:hover {
+            border-color: #9ca3af;
+            background: #f9fafb;
+        }
+
+        .option.selected {
+            border-color: #3b82f6;
+            background: #dbeafe;
+        }
+
+        .option.correct {
+            border-color: #16a34a;
+            background: #dcfce7;
+        }
+
+        .option.incorrect {
+            border-color: #ef4444;
+            background: #fee2e2;
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #065f46 0%, #059669 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(6, 95, 70, 0.3);
+        }
+
+        .btn-secondary {
+            background: #f3f4f6;
+            color: #374151;
+            border: 1px solid #d1d5db;
+        }
+
+        .btn-secondary:hover {
+            background: #e5e7eb;
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        /* Reflection Section */
+        .reflection-section {
+            background: #faf5ff;
+            border: 2px solid #a855f7;
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+
+        .reflection-prompt {
+            font-weight: bold;
+            color: #7c3aed;
+            margin-bottom: 1rem;
+        }
+
+        .reflection-input {
+            width: 100%;
+            min-height: 120px;
+            padding: 1rem;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-family: inherit;
+            resize: vertical;
+        }
+
+        .reflection-input:focus {
+            outline: 2px solid #3b82f6;
+            border-color: #3b82f6;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+
+            h1 {
+                font-size: 1.8rem;
+            }
+
+            .converter-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .pattern-sequence {
+                justify-content: flex-start;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+        }
+
+        /* Accessibility */
+        .btn:focus,
+        .input-field:focus,
+        .option:focus {
+            outline: 3px solid #3b82f6;
+            outline-offset: 2px;
+        }
+
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Module 2: Number Systems</h1>
+            <p class="module-subtitle">Binary, Decimal, and Hexadecimal Fundamentals • Estimated Time: 3 hours</p>
+            <div style="margin-top: 1rem;">
+                <button class="btn btn-secondary" onclick="returnToPlatform()" style="font-size: 0.9rem; padding: 0.5rem 1rem; background: rgba(255,255,255,0.2); border: 2px solid rgba(255,255,255,0.5); color: white;">
+                    ← Return to Learning Platform
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <!-- Progress Tracking -->
+        <div class="progress-container">
+            <div class="progress-header">
+                <span style="font-weight: bold; color: #065f46;">Module 2 Progress (This Session)</span>
+                <span id="progress-text">0% Complete</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-fill"></div>
+            </div>
+            <p style="font-size: 0.9rem; color: #6b7280; margin-top: 0.5rem;">
+                ⓘ Progress resets when you close your browser. Download your work before leaving.
+            </p>
+        </div>
+
+        <!-- Introduction Video Section -->
+        <section class="content-section">
+            <h2>🎥 Number Systems Fundamentals</h2>
+            <div class="video-container">
+                <div class="video-placeholder">
+                    <h3 style="margin-bottom: 1rem;">Binary and Hexadecimal Deep Dive</h3>
+                    <p style="margin-bottom: 1rem;">Duration: 45 minutes (4 part series)</p>
+                    <div style="font-size: 4rem; margin: 1rem 0;">▶️</div>
+                    <p style="font-size: 0.9rem; opacity: 0.8;">Why computers use binary • Converting between systems • Patterns and shortcuts</p>
+                </div>
+                <div style="display: flex; justify-content: center; gap: 1rem; margin-top: 1rem; flex-wrap: wrap;">
+                    <button class="btn btn-primary" onclick="playVideo('binary-intro')">
+                        ▶️ Part 1: Why Binary?
+                    </button>
+                    <button class="btn btn-secondary" onclick="playVideo('conversions')">
+                        ▶️ Part 2: Conversions
+                    </button>
+                    <button class="btn btn-secondary" onclick="playVideo('hex')">
+                        ▶️ Part 3: Hexadecimal
+                    </button>
+                    <button class="btn btn-secondary" onclick="playVideo('patterns')">
+                        ▶️ Part 4: Patterns
+                    </button>
+                </div>
+            </div>
+            <div class="action-buttons">
+                <button class="btn btn-primary" onclick="completeSection('video')" id="video-complete-btn" disabled>
+                    ✅ Mark Videos Complete
+                </button>
+            </div>
+        </section>
+
+        <!-- Interactive Number Converter -->
+        <section class="content-section">
+            <h2>🔢 Interactive Number System Converter</h2>
+            <p>Convert numbers between decimal, binary, and hexadecimal. Type a number in any base and see it automatically converted to the others.</p>
+            
+            <div class="converter-section">
+                <h3 style="text-align: center; color: #10b981; margin-bottom: 1rem;">Live Number Converter</h3>
+                <div class="converter-grid">
+                    <div class="number-input">
+                        <label class="input-label">Decimal (Base 10)</label>
+                        <input type="text" class="input-field" id="decimal-input" placeholder="Enter decimal number" oninput="convertFromDecimal(this.value)">
+                        <div class="input-help">Examples: 42, 255, 1024</div>
+                    </div>
+
+                    <div class="number-input">
+                        <label class="input-label">Binary (Base 2)</label>
+                        <input type="text" class="input-field" id="binary-input" placeholder="Enter binary number" oninput="convertFromBinary(this.value)">
+                        <div class="input-help">Examples: 101010, 11111111, 10000000000</div>
+                    </div>
+
+                    <div class="number-input">
+                        <label class="input-label">Hexadecimal (Base 16)</label>
+                        <input type="text" class="input-field" id="hex-input" placeholder="Enter hex number" oninput="convertFromHex(this.value)">
+                        <div class="input-help">Examples: 2A, FF, 400 (no 0x prefix needed)</div>
+                    </div>
+                </div>
+                
+                <div style="text-align: center; margin-top: 1rem;">
+                    <button class="btn btn-secondary" onclick="clearConverter()">🗑️ Clear All</button>
+                    <button class="btn btn-secondary" onclick="generateRandomNumber()">🎲 Random Number</button>
+                </div>
+
+                <div class="action-buttons" style="position: relative; z-index: 50; background: white; padding: 1rem; border-radius: 8px; margin-top: 2rem;">
+                    <button class="btn btn-primary" onclick="completeSection('converter')" id="converter-complete-btn" disabled>
+                        ✅ Complete Converter Practice
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Practice Problems -->
+        <section class="content-section">
+            <h2>📝 Practice Problems</h2>
+            <p>Test your understanding with these conversion problems. Work through them step by step!</p>
+            
+            <div class="practice-section">
+                <h3 style="text-align: center; color: #f59e0b; margin-bottom: 1rem;">Conversion Challenges</h3>
+                
+                <div class="problem-card" data-problem="1">
+                    <div class="problem-text">Problem 1: Convert decimal 42 to binary</div>
+                    <input type="text" class="answer-input" id="answer-1" placeholder="Enter your binary answer">
+                    <button class="check-answer-btn" onclick="checkAnswer(1, '101010')">Check Answer</button>
+                    <div class="feedback" id="feedback-1"></div>
+                </div>
+
+                <div class="problem-card" data-problem="2">
+                    <div class="problem-text">Problem 2: Convert binary 11111111 to decimal</div>
+                    <input type="text" class="answer-input" id="answer-2" placeholder="Enter your decimal answer">
+                    <button class="check-answer-btn" onclick="checkAnswer(2, '255')">Check Answer</button>
+                    <div class="feedback" id="feedback-2"></div>
+                </div>
+
+                <div class="problem-card" data-problem="3">
+                    <div class="problem-text">Problem 3: Convert decimal 255 to hexadecimal</div>
+                    <input type="text" class="answer-input" id="answer-3" placeholder="Enter your hex answer (no 0x prefix)">
+                    <button class="check-answer-btn" onclick="checkAnswer(3, 'FF')">Check Answer</button>
+                    <div class="feedback" id="feedback-3"></div>
+                </div>
+
+                <div class="problem-card" data-problem="4">
+                    <div class="problem-text">Problem 4: Convert hexadecimal A0 to binary</div>
+                    <input type="text" class="answer-input" id="answer-4" placeholder="Enter your binary answer">
+                    <button class="check-answer-btn" onclick="checkAnswer(4, '10100000')">Check Answer</button>
+                    <div class="feedback" id="feedback-4"></div>
+                </div>
+
+                <div class="action-buttons" style="position: relative; z-index: 50; background: white; padding: 1rem; border-radius: 8px; margin-top: 2rem;">
+                    <button class="btn btn-primary" onclick="completeSection('practice')" id="practice-complete-btn" disabled>
+                        ✅ Complete Practice Problems
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Pattern Recognition Game -->
+        <section class="content-section">
+            <h2>🧩 Pattern Recognition</h2>
+            <p>Understand the patterns in number systems. Can you identify what comes next in these sequences?</p>
+            
+            <div class="pattern-game">
+                <h3 style="text-align: center; color: #3b82f6; margin-bottom: 1rem;">Number Patterns</h3>
+                
+                <div style="margin: 2rem 0;">
+                    <h4>Pattern 1: Powers of 2 in Decimal</h4>
+                    <div class="pattern-sequence">
+                        <div class="pattern-number">1</div>
+                        <div class="pattern-number">2</div>
+                        <div class="pattern-number">4</div>
+                        <div class="pattern-number">8</div>
+                        <div class="pattern-number">16</div>
+                        <div class="pattern-missing">?</div>
+                    </div>
+                    <input type="text" placeholder="What comes next?" id="pattern-1" style="width: 100px; padding: 0.5rem; margin: 0.5rem;">
+                    <button onclick="checkPattern(1, '32')" class="check-answer-btn">Check</button>
+                    <div class="feedback" id="pattern-feedback-1"></div>
+                </div>
+
+                <div style="margin: 2rem 0;">
+                    <h4>Pattern 2: Counting in Binary</h4>
+                    <div class="pattern-sequence">
+                        <div class="pattern-number">0</div>
+                        <div class="pattern-number">1</div>
+                        <div class="pattern-number">10</div>
+                        <div class="pattern-number">11</div>
+                        <div class="pattern-number">100</div>
+                        <div class="pattern-missing">?</div>
+                    </div>
+                    <input type="text" placeholder="What comes next?" id="pattern-2" style="width: 100px; padding: 0.5rem; margin: 0.5rem;">
+                    <button onclick="checkPattern(2, '101')" class="check-answer-btn">Check</button>
+                    <div class="feedback" id="pattern-feedback-2"></div>
+                </div>
+
+                <div class="action-buttons" style="position: relative; z-index: 50; background: white; padding: 1rem; border-radius: 8px; margin-top: 2rem;">
+                    <button class="btn btn-primary" onclick="completeSection('patterns')" id="patterns-complete-btn" disabled>
+                        ✅ Complete Pattern Recognition
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Knowledge Check Quiz -->
+        <section class="content-section">
+            <h2>🧠 Knowledge Check Quiz</h2>
+            <div class="quiz-section">
+                <div class="question" data-question="1">
+                    <div class="question-text">1. What is the decimal value of binary 1010?</div>
+                    <ul class="options">
+                        <li class="option" data-answer="a" onclick="selectAnswer(1, 'a')">A) 8</li>
+                        <li class="option" data-answer="b" onclick="selectAnswer(1, 'b')">B) 10</li>
+                        <li class="option" data-answer="c" onclick="selectAnswer(1, 'c')">C) 12</li>
+                        <li class="option" data-answer="d" onclick="selectAnswer(1, 'd')">D) 16</li>
+                    </ul>
+                    <div class="feedback" id="feedback-1"></div>
+                </div>
+
+                <div class="question" data-question="2">
+                    <div class="question-text">2. Which hexadecimal digit represents decimal 15?</div>
+                    <ul class="options">
+                        <li class="option" data-answer="a" onclick="selectAnswer(2, 'a')">A) E</li>
+                        <li class="option" data-answer="b" onclick="selectAnswer(2, 'b')">B) F</li>
+                        <li class="option" data-answer="c" onclick="selectAnswer(2, 'c')">C) 15</li>
+                        <li class="option" data-answer="d" onclick="selectAnswer(2, 'd')">D) G</li>
+                    </ul>
+                    <div class="feedback" id="feedback-2"></div>
+                </div>
+
+                <div class="question" data-question="3">
+                    <div class="question-text">3. How many bits are needed to represent decimal numbers 0-255?</div>
+                    <ul class="options">
+                        <li class="option" data-answer="a" onclick="selectAnswer(3, 'a')">A) 7 bits</li>
+                        <li class="option" data-answer="b" onclick="selectAnswer(3, 'b')">B) 8 bits</li>
+                        <li class="option" data-answer="c" onclick="selectAnswer(3, 'c')">C) 9 bits</li>
+                        <li class="option" data-answer="d" onclick="selectAnswer(3, 'd')">D) 16 bits</li>
+                    </ul>
+                    <div class="feedback" id="feedback-3"></div>
+                </div>
+
+                <div class="action-buttons">
+                    <button class="btn btn-primary" onclick="submitQuiz()" id="quiz-submit-btn" disabled>
+                        📊 Submit Quiz
+                    </button>
+                    <button class="btn btn-secondary" onclick="resetQuiz()">
+                        🔄 Reset Quiz
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Reflection Section -->
+        <section class="content-section">
+            <h2>💭 Reflection & Application</h2>
+            <div class="reflection-section">
+                <div class="reflection-prompt">
+                    Reflection Prompt: Now that you understand different number systems, look around you and identify where these concepts appear in real life. Consider file sizes (bytes), colors (RGB values), IP addresses, or memory addresses. How does understanding binary and hexadecimal change your perspective on digital technology?
+                </div>
+                <div style="background: #fef3c7; border: 1px solid #f59e0b; border-radius: 6px; padding: 1rem; margin: 1rem 0; font-size: 0.9rem;">
+                    <strong>📝 Important:</strong> Your reflection response is required for this module's assignment. Use the download or copy buttons below to submit your reflection in Canvas.
+                </div>
+                <textarea 
+                    class="reflection-input" 
+                    id="reflection-text"
+                    placeholder="Share your insights here... Think about specific examples like how a web color #FF0000 represents red, or how your computer's 8GB of RAM relates to powers of 2."
+                    oninput="updateReflection()">
+                </textarea>
+                <div class="action-buttons">
+                    <button class="btn btn-primary" onclick="saveReflection()">
+                        💾 Download Reflection Text
+                    </button>
+                    <button class="btn btn-secondary" onclick="copyReflectionToClipboard()">
+                        📋 Copy to Clipboard
+                    </button>
+                    <button class="btn btn-primary" onclick="completeSection('reflection')" id="reflection-complete-btn" disabled>
+                        ✅ Mark Reflection Complete
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Module Completion -->
+        <section class="content-section">
+            <h2>🎉 Module 2 Complete!</h2>
+            <p>Excellent work! You've mastered number systems fundamentals. You should now understand:</p>
+            <ul style="margin: 1rem 0; padding-left: 2rem;">
+                <li>How to convert between decimal, binary, and hexadecimal number systems</li>
+                <li>Why computers use binary and how it relates to digital circuits</li>
+                <li>Patterns in number systems and shortcuts for quick conversions</li>
+                <li>Real-world applications of different number systems in computing</li>
+            </ul>
+            
+            <div style="background: #fef3c7; border: 2px solid #f59e0b; border-radius: 8px; padding: 1.5rem; margin: 1.5rem 0;">
+                <h4 style="color: #92400e; margin-top: 0;">📋 Submission Checklist</h4>
+                <ul style="margin: 0.5rem 0; padding-left: 2rem;">
+                    <li><strong>Download/Copy your reflection</strong> using the buttons above</li>
+                    <li><strong>Submit reflection in Canvas</strong> assignment for Module 2</li>
+                    <li><strong>Optional:</strong> Screenshot your converter work for participation credit</li>
+                </ul>
+            </div>
+            
+            <div class="action-buttons">
+                <button class="btn btn-primary" onclick="goToModule3()">
+                    🚀 Continue to Module 3: Two's Complement
+                </button>
+                <button class="btn btn-secondary" onclick="returnToPlatform()">
+                    ← Return to Learning Platform
+                </button>
+                <button class="btn btn-secondary" onclick="downloadCompletionSummary()">
+                    📄 Download Completion Summary
+                </button>
+                <button class="btn btn-secondary" onclick="reviewModule()">
+                    🔍 Review Module Content
+                </button>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        // Module state tracking
+        let moduleState = {
+            sectionsCompleted: {
+                video: false,
+                converter: false,
+                practice: false,
+                patterns: false,
+                quiz: false,
+                reflection: false
+            },
+            conversionsPerformed: 0,
+            problemsSolved: new Set(),
+            patternsCompleted: new Set(),
+            quizAnswers: {},
+            quizSubmitted: false,
+            reflectionText: '',
+            overallProgress: 0,
+            returnUrl: null,
+            moduleNumber: 2
+        };
+
+        // Quiz answers (correct answers)
+        const quizAnswers = {
+            1: 'b', // 1010 binary = 10 decimal
+            2: 'b', // F represents 15
+            3: 'b'  // 8 bits for 0-255
+        };
+
+        // Practice problem answers
+        const practiceAnswers = {
+            1: '101010',    // 42 decimal to binary
+            2: '255',       // 11111111 binary to decimal
+            3: 'FF',        // 255 decimal to hex
+            4: '10100000'   // A0 hex to binary
+        };
+
+        // Initialize module
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Initializing CSC210 Module 2...');
+            
+            checkReturnUrl();
+            loadModuleState();
+            updateProgress();
+            updateButtonStates();
+            
+            console.log('Module 2 initialized successfully');
+        });
+
+        // Check for return URL and module parameters
+        function checkReturnUrl() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const returnUrl = urlParams.get('return');
+            const moduleNum = urlParams.get('moduleNum');
+            
+            if (returnUrl) {
+                moduleState.returnUrl = decodeURIComponent(returnUrl);
+            }
+            
+            if (moduleNum) {
+                moduleState.moduleNumber = parseInt(moduleNum);
+            }
+        }
+
+        // Save state with session-only storage
+        function saveModuleState() {
+            try {
+                const storageData = {
+                    ...moduleState,
+                    timestamp: new Date().toISOString(),
+                    problemsSolved: Array.from(moduleState.problemsSolved),
+                    patternsCompleted: Array.from(moduleState.patternsCompleted),
+                    sessionOnly: true
+                };
+                
+                sessionStorage.setItem('csc210_module2_state', JSON.stringify(storageData));
+            } catch (error) {
+                console.warn('Could not save module state:', error);
+            }
+        }
+
+        // Load state from session storage only
+        function loadModuleState() {
+            try {
+                const saved = sessionStorage.getItem('csc210_module2_state');
+                
+                if (saved) {
+                    const savedState = JSON.parse(saved);
+                    
+                    // Restore Sets from arrays
+                    if (savedState.problemsSolved && Array.isArray(savedState.problemsSolved)) {
+                        savedState.problemsSolved = new Set(savedState.problemsSolved);
+                    }
+                    if (savedState.patternsCompleted && Array.isArray(savedState.patternsCompleted)) {
+                        savedState.patternsCompleted = new Set(savedState.patternsCompleted);
+                    }
+                    
+                    moduleState = { ...moduleState, ...savedState };
+                    
+                    // Restore UI state
+                    restoreUIState();
+                    
+                    console.log('Session progress loaded');
+                }
+            } catch (error) {
+                console.warn('Could not load module state:', error);
+            }
+        }
+
+        // Restore UI based on saved state
+        function restoreUIState() {
+            // Restore reflection text
+            if (moduleState.reflectionText) {
+                document.getElementById('reflection-text').value = moduleState.reflectionText;
+            }
+
+            // Restore quiz answers
+            Object.keys(moduleState.quizAnswers).forEach(questionNum => {
+                const answer = moduleState.quizAnswers[questionNum];
+                const option = document.querySelector(`[data-question="${questionNum}"] [data-answer="${answer}"]`);
+                if (option) {
+                    option.classList.add('selected');
+                }
+            });
+        }
+
+        // Update progress bar
+        function updateProgress() {
+            const completedSections = Object.values(moduleState.sectionsCompleted).filter(Boolean).length;
+            const totalSections = Object.keys(moduleState.sectionsCompleted).length;
+            const percentage = Math.round((completedSections / totalSections) * 100);
+            
+            moduleState.overallProgress = percentage;
+            
+            const progressFill = document.getElementById('progress-fill');
+            const progressText = document.getElementById('progress-text');
+            
+            if (progressFill) {
+                progressFill.style.width = `${percentage}%`;
+            }
+            
+            if (progressText) {
+                progressText.textContent = `${percentage}% Complete`;
+            }
+
+            saveModuleState();
+        }
+
+        // Update button states based on completion
+        function updateButtonStates() {
+            // Video completion button
+            const videoBtn = document.getElementById('video-complete-btn');
+            if (videoBtn && moduleState.sectionsCompleted.video) {
+                videoBtn.disabled = false;
+                videoBtn.textContent = '✅ Videos Completed';
+            }
+
+            // Converter completion button
+            const converterBtn = document.getElementById('converter-complete-btn');
+            if (converterBtn) {
+                if (moduleState.conversionsPerformed >= 5) {
+                    converterBtn.disabled = false;
+                    converterBtn.textContent = '✅ Complete Converter Practice (' + moduleState.conversionsPerformed + ' conversions)';
+                } else {
+                    converterBtn.textContent = '🔢 Try More Conversions (' + moduleState.conversionsPerformed + '/5 needed)';
+                }
+                if (moduleState.sectionsCompleted.converter) {
+                    converterBtn.textContent = '✅ Converter Completed';
+                    converterBtn.disabled = true;
+                }
+            }
+
+            // Practice completion button
+            const practiceBtn = document.getElementById('practice-complete-btn');
+            if (practiceBtn) {
+                if (moduleState.problemsSolved.size >= 3) {
+                    practiceBtn.disabled = false;
+                    practiceBtn.textContent = '✅ Complete Practice (' + moduleState.problemsSolved.size + '/4 solved)';
+                } else {
+                    practiceBtn.textContent = '📝 Solve More Problems (' + moduleState.problemsSolved.size + '/3 required)';
+                }
+                if (moduleState.sectionsCompleted.practice) {
+                    practiceBtn.textContent = '✅ Practice Completed';
+                    practiceBtn.disabled = true;
+                }
+            }
+
+            // Patterns completion button
+            const patternsBtn = document.getElementById('patterns-complete-btn');
+            if (patternsBtn) {
+                if (moduleState.patternsCompleted.size >= 1) {
+                    patternsBtn.disabled = false;
+                    patternsBtn.textContent = '✅ Complete Patterns (' + moduleState.patternsCompleted.size + '/2 solved)';
+                } else {
+                    patternsBtn.textContent = '🧩 Solve Pattern (' + moduleState.patternsCompleted.size + '/1 required)';
+                }
+                if (moduleState.sectionsCompleted.patterns) {
+                    patternsBtn.textContent = '✅ Patterns Completed';
+                    patternsBtn.disabled = true;
+                }
+            }
+
+            // Quiz submit button
+            const quizBtn = document.getElementById('quiz-submit-btn');
+            if (quizBtn) {
+                if (Object.keys(moduleState.quizAnswers).length >= 3) {
+                    quizBtn.disabled = false;
+                }
+                if (moduleState.quizSubmitted) {
+                    quizBtn.textContent = '✅ Quiz Submitted';
+                    quizBtn.disabled = true;
+                }
+            }
+
+            // Reflection completion button
+            const reflectionBtn = document.getElementById('reflection-complete-btn');
+            if (reflectionBtn) {
+                if (moduleState.reflectionText.length >= 50) {
+                    reflectionBtn.disabled = false;
+                }
+                if (moduleState.sectionsCompleted.reflection) {
+                    reflectionBtn.textContent = '✅ Reflection Completed';
+                    reflectionBtn.disabled = true;
+                }
+            }
+        }
+
+        // Video functions
+        function playVideo(videoId) {
+            const videoTitles = {
+                'binary-intro': 'Why Binary? - Understanding the foundation of digital computing',
+                'conversions': 'Conversion Techniques - Step-by-step methods',
+                'hex': 'Hexadecimal System - Shorthand for binary',
+                'patterns': 'Number Patterns - Shortcuts and recognition'
+            };
+            
+            alert(`Playing: ${videoTitles[videoId] || videoId}. Video player would open here.`);
+            
+            // Mark videos as watched after playing any one
+            moduleState.sectionsCompleted.video = true;
+            updateProgress();
+            updateButtonStates();
+        }
+
+        // Number converter functions
+        function convertFromDecimal(value) {
+            if (!value.trim()) return;
+            
+            const decimal = parseInt(value, 10);
+            if (isNaN(decimal) || decimal < 0) {
+                clearOtherInputs('decimal');
+                return;
+            }
+
+            document.getElementById('binary-input').value = decimal.toString(2);
+            document.getElementById('hex-input').value = decimal.toString(16).toUpperCase();
+            
+            moduleState.conversionsPerformed++;
+            updateButtonStates();
+            saveModuleState();
+        }
+
+        function convertFromBinary(value) {
+            if (!value.trim()) return;
+            
+            // Validate binary input
+            if (!/^[01]+$/.test(value)) {
+                clearOtherInputs('binary');
+                return;
+            }
+
+            const decimal = parseInt(value, 2);
+            document.getElementById('decimal-input').value = decimal;
+            document.getElementById('hex-input').value = decimal.toString(16).toUpperCase();
+            
+            moduleState.conversionsPerformed++;
+            updateButtonStates();
+            saveModuleState();
+        }
+
+        function convertFromHex(value) {
+            if (!value.trim()) return;
+            
+            // Validate hex input
+            if (!/^[0-9A-Fa-f]+$/.test(value)) {
+                clearOtherInputs('hex');
+                return;
+            }
+
+            const decimal = parseInt(value, 16);
+            document.getElementById('decimal-input').value = decimal;
+            document.getElementById('binary-input').value = decimal.toString(2);
+            
+            moduleState.conversionsPerformed++;
+            updateButtonStates();
+            saveModuleState();
+        }
+
+        function clearOtherInputs(source) {
+            if (source !== 'decimal') document.getElementById('decimal-input').value = '';
+            if (source !== 'binary') document.getElementById('binary-input').value = '';
+            if (source !== 'hex') document.getElementById('hex-input').value = '';
+        }
+
+        function clearConverter() {
+            document.getElementById('decimal-input').value = '';
+            document.getElementById('binary-input').value = '';
+            document.getElementById('hex-input').value = '';
+        }
+
+        function generateRandomNumber() {
+            const randomNum = Math.floor(Math.random() * 256); // 0-255
+            document.getElementById('decimal-input').value = randomNum;
+            convertFromDecimal(randomNum.toString());
+        }
+
+        // Practice problem functions
+        function checkAnswer(problemNum, correctAnswer) {
+            const userAnswer = document.getElementById(`answer-${problemNum}`).value.trim();
+            const feedback = document.getElementById(`feedback-${problemNum}`);
+            
+            // Normalize answers for comparison
+            const normalizedUser = userAnswer.toUpperCase();
+            const normalizedCorrect = correctAnswer.toUpperCase();
+            
+            const isCorrect = normalizedUser === normalizedCorrect;
+            
+            if (isCorrect) {
+                feedback.className = 'feedback correct';
+                feedback.textContent = '✅ Correct! Well done.';
+                moduleState.problemsSolved.add(problemNum);
+            } else {
+                feedback.className = 'feedback incorrect';
+                feedback.textContent = `❌ Incorrect. The correct answer is ${correctAnswer}. Try to understand the conversion process.`;
+            }
+            
+            feedback.style.display = 'block';
+            updateButtonStates();
+            saveModuleState();
+        }
+
+        // Pattern recognition functions
+        function checkPattern(patternNum, correctAnswer) {
+            const userAnswer = document.getElementById(`pattern-${patternNum}`).value.trim();
+            const feedback = document.getElementById(`pattern-feedback-${patternNum}`);
+            
+            const isCorrect = userAnswer === correctAnswer;
+            
+            if (isCorrect) {
+                feedback.className = 'feedback correct';
+                feedback.textContent = '✅ Correct! You identified the pattern.';
+                moduleState.patternsCompleted.add(patternNum);
+            } else {
+                feedback.className = 'feedback incorrect';
+                feedback.textContent = `❌ Incorrect. The answer is ${correctAnswer}. Look for the pattern in powers of 2 or counting sequences.`;
+            }
+            
+            feedback.style.display = 'block';
+            updateButtonStates();
+            saveModuleState();
+        }
+
+        // Quiz functions
+        function selectAnswer(questionNum, answer) {
+            const question = document.querySelector(`[data-question="${questionNum}"]`);
+            question.querySelectorAll('.option').forEach(opt => {
+                opt.classList.remove('selected');
+            });
+
+            const selectedOption = question.querySelector(`[data-answer="${answer}"]`);
+            selectedOption.classList.add('selected');
+
+            moduleState.quizAnswers[questionNum] = answer;
+            updateButtonStates();
+            saveModuleState();
+        }
+
+        function submitQuiz() {
+            if (Object.keys(moduleState.quizAnswers).length < 3) {
+                alert('Please answer all questions before submitting.');
+                return;
+            }
+
+            let score = 0;
+            const totalQuestions = Object.keys(quizAnswers).length;
+
+            Object.keys(quizAnswers).forEach(questionNum => {
+                const userAnswer = moduleState.quizAnswers[questionNum];
+                const correctAnswer = quizAnswers[questionNum];
+                const isCorrect = userAnswer === correctAnswer;
+
+                if (isCorrect) score++;
+
+                const question = document.querySelector(`[data-question="${questionNum}"]`);
+                const userOption = question.querySelector(`[data-answer="${userAnswer}"]`);
+                const correctOption = question.querySelector(`[data-answer="${correctAnswer}"]`);
+
+                if (isCorrect) {
+                    userOption.classList.add('correct');
+                } else {
+                    userOption.classList.add('incorrect');
+                    correctOption.classList.add('correct');
+                }
+
+                const feedback = document.getElementById(`feedback-${questionNum}`);
+                if (feedback) {
+                    feedback.style.display = 'block';
+                    if (isCorrect) {
+                        feedback.className = 'feedback correct';
+                        feedback.textContent = '✅ Correct! Well done.';
+                    } else {
+                        feedback.className = 'feedback incorrect';
+                        feedback.textContent = getFeedbackMessage(questionNum, correctAnswer);
+                    }
+                }
+            });
+
+            const percentage = Math.round((score / totalQuestions) * 100);
+            alert(`Quiz completed! You scored ${score}/${totalQuestions} (${percentage}%). ${percentage >= 70 ? 'Great job!' : 'Review the material and try again if needed.'}`);
+
+            moduleState.quizSubmitted = true;
+            moduleState.sectionsCompleted.quiz = true;
+            updateProgress();
+            updateButtonStates();
+        }
+
+        function getFeedbackMessage(questionNum, correctAnswer) {
+            const messages = {
+                1: '❌ Binary 1010 = (1×8) + (0×4) + (1×2) + (0×1) = 8 + 0 + 2 + 0 = 10 decimal.',
+                2: '❌ Hexadecimal uses digits 0-9 and letters A-F, where F represents 15.',
+                3: '❌ 8 bits can represent 2^8 = 256 different values (0 through 255).'
+            };
+            return messages[questionNum] || '❌ Incorrect. Please review the material.';
+        }
+
+        function resetQuiz() {
+            document.querySelectorAll('.option').forEach(opt => {
+                opt.classList.remove('selected', 'correct', 'incorrect');
+            });
+
+            document.querySelectorAll('.feedback').forEach(feedback => {
+                feedback.style.display = 'none';
+            });
+
+            moduleState.quizAnswers = {};
+            moduleState.quizSubmitted = false;
+            moduleState.sectionsCompleted.quiz = false;
+
+            updateProgress();
+            updateButtonStates();
+            saveModuleState();
+        }
+
+        // Reflection functions
+        function updateReflection() {
+            const reflectionText = document.getElementById('reflection-text').value;
+            moduleState.reflectionText = reflectionText;
+            updateButtonStates();
+            saveModuleState();
+        }
+
+        function saveReflection() {
+            const reflectionText = document.getElementById('reflection-text').value;
+            if (reflectionText.trim().length > 0) {
+                moduleState.reflectionText = reflectionText;
+                saveModuleState();
+                
+                const content = `CSC210 Module 2 Reflection
+Student: [Enter your name]
+Date: ${new Date().toLocaleDateString()}
+
+Reflection Question:
+Now that you understand different number systems, look around you and identify where these concepts appear in real life. Consider file sizes (bytes), colors (RGB values), IP addresses, or memory addresses. How does understanding binary and hexadecimal change your perspective on digital technology?
+
+Response:
+${reflectionText}
+
+---
+Instructions: Copy this text and submit it in the Canvas assignment for Week 1 Module 2 Reflection.
+`;
+                
+                const blob = new Blob([content], { type: 'text/plain' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'CSC210_Module2_Reflection.txt';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                
+                alert('Reflection downloaded! Submit this file content in Canvas.');
+            } else {
+                alert('Please write your reflection before downloading.');
+            }
+        }
+
+        function copyReflectionToClipboard() {
+            const reflectionText = document.getElementById('reflection-text').value;
+            if (reflectionText.trim().length > 0) {
+                navigator.clipboard.writeText(reflectionText).then(() => {
+                    alert('Reflection copied to clipboard! Paste it into the Canvas assignment.');
+                }).catch(() => {
+                    const textArea = document.createElement('textarea');
+                    textArea.value = reflectionText;
+                    document.body.appendChild(textArea);
+                    textArea.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(textArea);
+                    alert('Reflection copied to clipboard! Paste it into the Canvas assignment.');
+                });
+            } else {
+                alert('Please write your reflection before copying.');
+            }
+        }
+
+        function downloadCompletionSummary() {
+            const completedSections = Object.values(moduleState.sectionsCompleted).filter(Boolean).length;
+            const totalSections = Object.keys(moduleState.sectionsCompleted).length;
+            
+            const summary = `CSC210 Module 2 Completion Summary
+Student: [Enter your name]
+Date: ${new Date().toLocaleDateString()}
+Session Progress: ${Math.round((completedSections / totalSections) * 100)}%
+
+Completed Activities:
+✓ Videos: ${moduleState.sectionsCompleted.video ? 'Yes' : 'No'}
+✓ Converter Practice: ${moduleState.conversionsPerformed} conversions performed
+✓ Practice Problems: ${moduleState.problemsSolved.size}/4 solved
+✓ Pattern Recognition: ${moduleState.patternsCompleted.size}/2 completed
+✓ Knowledge Quiz: ${moduleState.sectionsCompleted.quiz ? 'Yes' : 'No'}
+✓ Reflection: ${moduleState.sectionsCompleted.reflection ? 'Yes' : 'No'}
+
+Next Steps:
+1. Submit reflection in Canvas assignment
+2. Continue to Module 3: Two's Complement
+3. Review any incomplete activities if needed
+
+---
+Note: This summary shows session progress only. Submit required work in Canvas for grading.
+`;
+            
+            const blob = new Blob([summary], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'CSC210_Module2_Completion_Summary.txt';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        // Section completion functions
+        function completeSection(sectionName) {
+            moduleState.sectionsCompleted[sectionName] = true;
+            updateProgress();
+            updateButtonStates();
+            
+            const messages = {
+                video: 'Video series completed! 🎥',
+                converter: 'Number converter practice completed! 🔢',
+                practice: 'Practice problems completed! 📝',
+                patterns: 'Pattern recognition completed! 🧩',
+                quiz: 'Knowledge check completed! 🧠',
+                reflection: 'Reflection completed! 💭'
+            };
+            
+            alert(messages[sectionName] || 'Section completed!');
+        }
+
+        // Module navigation
+        function goToModule3() {
+            const currentUrl = window.location.href;
+            const module3Url = currentUrl.replace('mod2.html', 'mod3.html');
+            
+            if (moduleState.returnUrl) {
+                const separator = module3Url.includes('?') ? '&' : '?';
+                const urlWithReturn = `${module3Url}${separator}return=${encodeURIComponent(moduleState.returnUrl)}&moduleNum=3`;
+                window.location.href = urlWithReturn;
+            } else {
+                window.location.href = module3Url;
+            }
+        }
+
+        function returnToPlatform() {
+            if (moduleState.returnUrl) {
+                window.location.href = moduleState.returnUrl;
+            } else {
+                window.location.href = 'https://dpai-mc.github.io/csc210-25fall/csc210-wk1-learning-platform.html';
+            }
+        }
+
+        function reviewModule() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            
+            const incomplete = Object.entries(moduleState.sectionsCompleted)
+                .filter(([section, completed]) => !completed)
+                .map(([section]) => section);
+            
+            if (incomplete.length > 0) {
+                alert(`Review needed for: ${incomplete.join(', ')}`);
+            } else {
+                alert('All sections completed! Great job!');
+            }
+        }
+
+        // Auto-save on page unload
+        window.addEventListener('beforeunload', function() {
+            saveModuleState();
+        });
+
+        // Periodic auto-save
+        setInterval(saveModuleState, 30000);
+    </script>
+</body>
+</html>
