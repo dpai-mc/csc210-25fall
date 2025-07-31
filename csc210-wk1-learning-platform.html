@@ -555,12 +555,15 @@
         <!-- Progress Tracking -->
         <div class="progress-container">
             <div class="progress-header">
-                <span class="progress-title">Week 1 Progress</span>
+                <span class="progress-title">Week 1 Progress (Session Only)</span>
                 <span class="progress-percentage" id="progress-text">0% Complete</span>
             </div>
             <div class="progress-bar">
                 <div class="progress-fill" id="progress-fill"></div>
             </div>
+            <p style="font-size: 0.9rem; color: #6b7280; margin-top: 0.5rem;">
+                ⓘ Progress tracks during this session only. Submit completed work to instructor for grading.
+            </p>
         </div>
 
         <!-- Navigation Tabs -->
@@ -740,51 +743,77 @@
                 <div class="module-grid">
                     <div class="module-card">
                         <div class="module-header">
-                            <div class="module-title">Formative Assessment</div>
-                            <div class="module-status status-available">Ongoing</div>
+                            <div class="module-title">Interactive Learning</div>
+                            <div class="module-status status-available">Self-Paced</div>
                         </div>
                         <div class="module-description">
-                            Practice quizzes, self-check questions, and interactive exercises throughout each module. Unlimited attempts with immediate feedback.
+                            Engage with interactive content, practice activities, and self-check questions throughout each module. No submission required - focus on learning.
                         </div>
                         <div class="module-meta">
-                            <div class="module-duration">📝 Self-paced</div>
-                            <div class="module-difficulty">0 points</div>
+                            <div class="module-duration">📚 Continuous</div>
+                            <div class="module-difficulty">Formative</div>
                         </div>
                     </div>
 
                     <div class="module-card">
                         <div class="module-header">
-                            <div class="module-title">Summative Assignment</div>
-                            <div class="module-status status-locked">Due Friday</div>
+                            <div class="module-title">Reflection Assignment</div>
+                            <div class="module-status status-available">Submit to Canvas</div>
                         </div>
                         <div class="module-description">
-                            Comprehensive problem set covering number conversions, two's complement, binary arithmetic, and real-world applications.
+                            Complete thoughtful reflection responses in Module 1. Copy/paste your responses and submit via Canvas assignment for instructor feedback.
                         </div>
                         <div class="module-meta">
-                            <div class="module-duration">📊 90 minutes</div>
-                            <div class="module-difficulty">100 points</div>
+                            <div class="module-duration">📝 Written</div>
+                            <div class="module-difficulty">25 points</div>
+                        </div>
+                    </div>
+
+                    <div class="module-card">
+                        <div class="module-header">
+                            <div class="module-title">Week 1 Quiz</div>
+                            <div class="module-status status-available">Canvas Quiz</div>
+                        </div>
+                        <div class="module-description">
+                            Separate Canvas quiz covering Week 1 concepts. Take after completing all learning modules for best preparation.
+                        </div>
+                        <div class="module-meta">
+                            <div class="module-duration">⏱️ 30 minutes</div>
+                            <div class="module-difficulty">75 points</div>
                         </div>
                     </div>
                 </div>
 
-                <div class="collapsible" tabindex="0" role="button" aria-expanded="false" aria-controls="grading-breakdown">
-                    <h3>Grading Breakdown</h3>
+                <div class="collapsible" tabindex="0" role="button" aria-expanded="false" aria-controls="submission-process">
+                    <h3>Submission Process</h3>
                 </div>
-                <div class="collapsible-content" id="grading-breakdown">
+                <div class="collapsible-content" id="submission-process">
+                    <h4>What to Submit:</h4>
                     <ul style="margin: 1rem 0; padding-left: 2rem;">
-                        <li><strong>Basic Conversions (40 points):</strong> Decimal ↔ Binary ↔ Hexadecimal</li>
-                        <li><strong>Two's Complement (30 points):</strong> Signed number representation and arithmetic</li>
-                        <li><strong>Binary Arithmetic (20 points):</strong> Addition, subtraction, overflow detection</li>
-                        <li><strong>Applications (10 points):</strong> RGB colors, IP addresses, memory addresses</li>
+                        <li><strong>Module 1 Reflection:</strong> Copy your reflection text from the module and submit via Canvas assignment</li>
+                        <li><strong>Learning Module Screenshots (Optional):</strong> Screenshots showing completion of interactive activities for participation credit</li>
+                    </ul>
+                    
+                    <h4>Canvas Submissions:</h4>
+                    <ul style="margin: 1rem 0; padding-left: 2rem;">
+                        <li><strong>Week 1 Reflection Assignment:</strong> Submit reflection text + any insights from interactive exploration</li>
+                        <li><strong>Week 1 Knowledge Quiz:</strong> Traditional Canvas quiz based on learning objectives</li>
+                    </ul>
+                    
+                    <h4>Grading Method:</h4>
+                    <ul style="margin: 1rem 0; padding-left: 2rem;">
+                        <li><strong>Automated:</strong> Canvas quiz auto-graded</li>
+                        <li><strong>Manual:</strong> Instructor grades reflection for depth and understanding</li>
+                        <li><strong>Participation:</strong> Completion evidence (screenshots) for engagement credit</li>
                     </ul>
                 </div>
 
                 <div class="action-buttons">
-                    <button class="btn btn-secondary" onclick="viewRubric()">
-                        📋 View Detailed Rubric
+                    <button class="btn btn-secondary" onclick="openCanvasAssignment()">
+                        📝 Submit Reflection in Canvas
                     </button>
-                    <button class="btn btn-secondary" onclick="viewSampleProblems()">
-                        🔍 Sample Problems
+                    <button class="btn btn-secondary" onclick="openCanvasQuiz()">
+                        📊 Take Canvas Quiz
                     </button>
                 </div>
             </div>
@@ -1056,29 +1085,29 @@
             }
         }
 
-        // Placeholder functions for future implementation
+        // Placeholder functions updated for Canvas workflow
+        function openCanvasAssignment() {
+            alert('This will open the Canvas assignment where students submit their reflection responses. Instructor: Create a Canvas text entry assignment for Module 1 reflections.');
+        }
+
+        function openCanvasQuiz() {
+            alert('This will open the Canvas quiz for Week 1. Instructor: Create a Canvas quiz covering learning objectives from all modules.');
+        }
+
         function downloadSchedule() {
             alert('Study schedule download will be implemented in Phase 2');
         }
 
         function openSelfAssessment() {
-            alert('Self-assessment tool will be implemented in Phase 3');
-        }
-
-        function viewRubric() {
-            alert('Detailed rubric will be implemented in Phase 2');
-        }
-
-        function viewSampleProblems() {
-            alert('Sample problems will be implemented in Phase 3');
+            alert('Self-assessment activities are embedded within each learning module');
         }
 
         function openDiscussion() {
-            alert('Discussion forum will be implemented in Phase 2');
+            alert('Discussion forum available in Canvas course');
         }
 
         function accessHelp() {
-            alert('Help system will be implemented in Phase 4');
+            alert('Help available through Canvas messaging, discussion forums, and virtual office hours');
         }
 
         // Accessibility enhancements
@@ -1129,24 +1158,26 @@
             }
         }
 
-        // Local storage for progress persistence
+        // Local storage for progress persistence (session-only approach)
         function saveProgress() {
             try {
                 const progressData = {
                     moduleProgress: moduleProgress,
                     overallProgress: overallProgress,
                     currentTab: currentTab,
-                    timestamp: new Date().toISOString()
+                    timestamp: new Date().toISOString(),
+                    sessionOnly: true
                 };
-                localStorage.setItem('csc210_week1_progress', JSON.stringify(progressData));
+                // Use sessionStorage only - no persistent cookies
+                sessionStorage.setItem('csc210_week1_progress', JSON.stringify(progressData));
             } catch (error) {
-                console.warn('Could not save progress to local storage:', error);
+                console.warn('Could not save progress to session storage:', error);
             }
         }
 
         function loadProgress() {
             try {
-                const saved = localStorage.getItem('csc210_week1_progress');
+                const saved = sessionStorage.getItem('csc210_week1_progress');
                 if (saved) {
                     const progressData = JSON.parse(saved);
                     moduleProgress = progressData.moduleProgress || moduleProgress;
@@ -1155,10 +1186,10 @@
                     updateModuleDisplay();
                     updateProgress();
                     
-                    console.log('Progress loaded from local storage');
+                    console.log('Session progress loaded');
                 }
             } catch (error) {
-                console.warn('Could not load progress from local storage:', error);
+                console.warn('Could not load progress from session storage:', error);
             }
         }
 
