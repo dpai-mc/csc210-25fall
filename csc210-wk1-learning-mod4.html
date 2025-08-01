@@ -1,0 +1,1409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSC210 Module 4: Putting It Together</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f8fafc;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header */
+        header {
+            background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%);
+            color: white;
+            padding: 2rem 0;
+            margin-bottom: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-content {
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .module-subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-bottom: 1rem;
+        }
+
+        .module-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-top: 1.5rem;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+        }
+
+        .info-item {
+            text-align: center;
+        }
+
+        .info-label {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            margin-bottom: 0.3rem;
+        }
+
+        .info-value {
+            font-size: 1.1rem;
+            font-weight: bold;
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            background: white;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .progress-title {
+            font-weight: bold;
+            color: #7c3aed;
+        }
+
+        .progress-percentage {
+            color: #6b7280;
+            font-size: 0.9rem;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e5e7eb;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #7c3aed 0%, #a855f7 100%);
+            border-radius: 4px;
+            transition: width 0.5s ease;
+            width: 0%;
+        }
+
+        /* Navigation */
+        .navigation {
+            background: white;
+            border-radius: 12px;
+            padding: 1rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        /* Content Sections */
+        .content-section {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            color: #7c3aed;
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            border-bottom: 3px solid #e5e7eb;
+            padding-bottom: 0.5rem;
+        }
+
+        h3 {
+            color: #374151;
+            font-size: 1.4rem;
+            margin: 1.5rem 0 1rem 0;
+        }
+
+        h4 {
+            color: #4b5563;
+            font-size: 1.2rem;
+            margin: 1rem 0 0.5rem 0;
+        }
+
+        /* Interactive Elements */
+        .interactive-panel {
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border: 2px solid #e5e7eb;
+        }
+
+        .calculator-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin: 1.5rem 0;
+        }
+
+        .calculator-section {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            border: 1px solid #e5e7eb;
+        }
+
+        .input-group {
+            margin-bottom: 1rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+            color: #374151;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 0.8rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 6px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #7c3aed;
+            box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
+        }
+
+        /* Results Display */
+        .result-display {
+            background: #f0fdf4;
+            border: 2px solid #16a34a;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-top: 1rem;
+            font-family: monospace;
+            font-size: 1.1rem;
+        }
+
+        .error-display {
+            background: #fef2f2;
+            border: 2px solid #dc2626;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-top: 1rem;
+            color: #dc2626;
+        }
+
+        /* Assignment Sections */
+        .assignment-part {
+            background: linear-gradient(135deg, #fefce8 0%, #fef3c7 100%);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-left: 4px solid #f59e0b;
+        }
+
+        .assignment-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .assignment-title {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #92400e;
+        }
+
+        .assignment-points {
+            background: #f59e0b;
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: bold;
+        }
+
+        .problem-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .problem-item {
+            background: white;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border: 1px solid #e5e7eb;
+            position: relative;
+        }
+
+        .problem-number {
+            background: #7c3aed;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            position: absolute;
+            top: -10px;
+            left: -10px;
+            font-size: 0.9rem;
+        }
+
+        .answer-box {
+            background: #f8fafc;
+            border: 2px dashed #cbd5e1;
+            border-radius: 6px;
+            padding: 1rem;
+            margin-top: 1rem;
+            min-height: 60px;
+            position: relative;
+        }
+
+        .answer-placeholder {
+            color: #9ca3af;
+            font-style: italic;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(124, 58, 237, 0.3);
+        }
+
+        .btn-secondary {
+            background: #f3f4f6;
+            color: #374151;
+            border: 1px solid #d1d5db;
+        }
+
+        .btn-secondary:hover {
+            background: #e5e7eb;
+            border-color: #9ca3af;
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #16a34a 0%, #22c55e 100%);
+            color: white;
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%);
+            color: white;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        /* Reflection Section */
+        .reflection-section {
+            background: linear-gradient(135deg, #ede9fe 0%, #ddd6fe 100%);
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+            border-left: 4px solid #7c3aed;
+        }
+
+        .reflection-prompt {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+            border: 1px solid #e5e7eb;
+        }
+
+        .reflection-input {
+            margin-top: 1rem;
+        }
+
+        /* Real-world Applications */
+        .application-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .application-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            border: 2px solid #e5e7eb;
+            transition: all 0.3s ease;
+        }
+
+        .application-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            border-color: #7c3aed;
+        }
+
+        .application-icon {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .application-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #7c3aed;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            .calculator-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .application-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .navigation {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            .module-info {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Accessibility */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+
+        /* Focus styles */
+        button:focus,
+        input:focus,
+        select:focus,
+        textarea:focus {
+            outline: 3px solid #7c3aed;
+            outline-offset: 2px;
+        }
+
+        /* Completion tracking */
+        .completed {
+            opacity: 0.7;
+        }
+
+        .completed::after {
+            content: " ✓";
+            color: #16a34a;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <h1>Module 4: Putting It Together</h1>
+                <p class="module-subtitle">Synthesis, Application & Comprehensive Assessment</p>
+                
+                <div class="module-info">
+                    <div class="info-item">
+                        <div class="info-label">Duration</div>
+                        <div class="info-value">2 hours</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Difficulty</div>
+                        <div class="info-value">Advanced</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Assignment</div>
+                        <div class="info-value">100 points</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Prerequisites</div>
+                        <div class="info-value">Modules 1-3</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <!-- Progress Tracking -->
+        <div class="progress-container">
+            <div class="progress-header">
+                <span class="progress-title">Module 4 Progress</span>
+                <span class="progress-percentage" id="progress-text">0% Complete</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-fill"></div>
+            </div>
+        </div>
+
+        <!-- Navigation -->
+        <nav class="navigation">
+            <button class="btn btn-secondary" onclick="goBack()">← Back to Overview</button>
+            <span>Module 4 of 4</span>
+            <button class="btn btn-success" onclick="completeModule()" id="complete-btn" disabled>Complete Module 4</button>
+        </nav>
+
+        <!-- Introduction Section -->
+        <section class="content-section">
+            <h2>🎯 Module Overview</h2>
+            <p>Welcome to the final module of Week 1! You've learned about abstraction layers, mastered number system conversions, and understood two's complement representation. Now it's time to synthesize these concepts and see how they connect to real-world computing applications.</p>
+            
+            <h3>What You'll Accomplish</h3>
+            <ul style="margin: 1rem 0; padding-left: 2rem;">
+                <li>Connect number systems to practical computing applications</li>
+                <li>Complete a comprehensive assignment demonstrating mastery</li>
+                <li>Reflect on the connections between bits and programs</li>
+                <li>Prepare for Week 2: Logic Gates and Digital Circuits</li>
+            </ul>
+
+            <div class="action-buttons">
+                <button class="btn btn-primary" onclick="scrollToSection('synthesis')">
+                    🚀 Start Synthesis Video
+                </button>
+                <button class="btn btn-secondary" onclick="scrollToSection('applications')">
+                    🌍 Explore Applications
+                </button>
+            </div>
+        </section>
+
+        <!-- Synthesis Video Section -->
+        <section class="content-section" id="synthesis">
+            <h2>🎬 Synthesis: From Bits to Programs</h2>
+            <div class="interactive-panel">
+                <h3>Video: Connecting the Concepts (15 minutes)</h3>
+                <p>This synthesis video ties together everything you've learned this week and shows how number representation enables computation.</p>
+                
+                <div style="background: #1f2937; color: white; padding: 2rem; border-radius: 8px; text-align: center; margin: 1rem 0;">
+                    <p>🎥 <strong>Video Player Placeholder</strong></p>
+                    <p>Synthesis Video: From Bits to Programs</p>
+                    <p style="font-size: 0.9rem; opacity: 0.8;">Duration: 15 minutes | Includes closed captions</p>
+                    <button class="btn btn-primary" onclick="markVideoWatched('synthesis')" id="synthesis-video-btn">
+                        ▶️ Watch Synthesis Video
+                    </button>
+                </div>
+
+                <div id="synthesis-notes" style="display: none;">
+                    <h4>Key Takeaways</h4>
+                    <ul style="margin: 1rem 0; padding-left: 2rem;">
+                        <li>Binary representation is the foundation for all digital computation</li>
+                        <li>Number systems enable computers to store and manipulate any type of data</li>
+                        <li>Abstraction layers hide complexity while maintaining precision</li>
+                        <li>Two's complement enables efficient arithmetic in hardware</li>
+                        <li>Next week: How logic gates use these binary values to make decisions</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Real-World Applications -->
+        <section class="content-section" id="applications">
+            <h2>🌍 Real-World Applications</h2>
+            <p>Let's explore how the number systems you've learned are used in everyday computing scenarios.</p>
+
+            <div class="application-grid">
+                <div class="application-card">
+                    <div class="application-icon">🎨</div>
+                    <div class="application-title">RGB Color Representation</div>
+                    <p>Colors on your screen are represented using three 8-bit values (0-255) for Red, Green, and Blue components.</p>
+                    
+                    <div class="interactive-panel" style="margin-top: 1rem;">
+                        <h4>Color Converter</h4>
+                        <div class="input-group">
+                            <label for="rgb-red">Red (0-255):</label>
+                            <input type="number" id="rgb-red" min="0" max="255" value="128" onchange="updateColor()">
+                        </div>
+                        <div class="input-group">
+                            <label for="rgb-green">Green (0-255):</label>
+                            <input type="number" id="rgb-green" min="0" max="255" value="64" onchange="updateColor()">
+                        </div>
+                        <div class="input-group">
+                            <label for="rgb-blue">Blue (0-255):</label>
+                            <input type="number" id="rgb-blue" min="0" max="255" value="192" onchange="updateColor()">
+                        </div>
+                        <div id="color-display" style="width: 100%; height: 60px; border-radius: 6px; margin-top: 1rem; border: 2px solid #e5e7eb;"></div>
+                        <div id="color-values" style="margin-top: 1rem; font-family: monospace;"></div>
+                    </div>
+                </div>
+
+                <div class="application-card">
+                    <div class="application-icon">🌐</div>
+                    <div class="application-title">IP Address Format</div>
+                    <p>Internet Protocol addresses are four 8-bit numbers (0-255) that identify devices on networks.</p>
+                    
+                    <div class="interactive-panel" style="margin-top: 1rem;">
+                        <h4>IP Address Converter</h4>
+                        <div class="input-group">
+                            <label for="ip-address">IP Address (e.g., 192.168.1.1):</label>
+                            <input type="text" id="ip-address" value="192.168.1.1" onchange="convertIP()">
+                        </div>
+                        <div id="ip-result" class="result-display" style="display: none;"></div>
+                    </div>
+                </div>
+
+                <div class="application-card">
+                    <div class="application-icon">💾</div>
+                    <div class="application-title">Memory Addresses</div>
+                    <p>Computer memory locations are identified using hexadecimal addresses, making them easier to read than binary.</p>
+                    
+                    <div class="interactive-panel" style="margin-top: 1rem;">
+                        <h4>Memory Address Calculator</h4>
+                        <div class="input-group">
+                            <label for="memory-hex">Hex Address (e.g., 0x1A2B):</label>
+                            <input type="text" id="memory-hex" value="0x1A2B" onchange="convertMemory()">
+                        </div>
+                        <div id="memory-result" class="result-display" style="display: none;"></div>
+                    </div>
+                </div>
+
+                <div class="application-card">
+                    <div class="application-icon">🔢</div>
+                    <div class="application-title">Binary File Sizes</div>
+                    <p>File sizes and storage capacities use powers of 2, connecting directly to binary representation.</p>
+                    
+                    <div class="interactive-panel" style="margin-top: 1rem;">
+                        <h4>Storage Calculator</h4>
+                        <div class="input-group">
+                            <label for="storage-bytes">Size in Bytes:</label>
+                            <input type="number" id="storage-bytes" value="1048576" onchange="convertStorage()">
+                        </div>
+                        <div id="storage-result" class="result-display" style="display: none;"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Comprehensive Assignment -->
+        <section class="content-section" id="assignment">
+            <h2>📝 Assignment 1: Number Systems Mastery</h2>
+            <p>This comprehensive assignment demonstrates your mastery of all Week 1 concepts. Complete all sections and copy your answers to submit via Canvas.</p>
+
+            <!-- Part A: Basic Conversions -->
+            <div class="assignment-part">
+                <div class="assignment-header">
+                    <div class="assignment-title">Part A: Number Conversions</div>
+                    <div class="assignment-points">40 points</div>
+                </div>
+                <p>Convert between decimal, binary, and hexadecimal representations.</p>
+
+                <ol class="problem-list">
+                    <li class="problem-item">
+                        <div class="problem-number">1</div>
+                        <p><strong>Convert decimal 156 to binary and hexadecimal.</strong></p>
+                        <div class="answer-box" contenteditable="true" data-problem="1a">
+                            <span class="answer-placeholder">Type your answer here...</span>
+                        </div>
+                    </li>
+
+                    <li class="problem-item">
+                        <div class="problem-number">2</div>
+                        <p><strong>Convert binary 11010110 to decimal and hexadecimal.</strong></p>
+                        <div class="answer-box" contenteditable="true" data-problem="2a">
+                            <span class="answer-placeholder">Type your answer here...</span>
+                        </div>
+                    </li>
+
+                    <li class="problem-item">
+                        <div class="problem-number">3</div>
+                        <p><strong>Convert hexadecimal 0x3F to decimal and binary.</strong></p>
+                        <div class="answer-box" contenteditable="true" data-problem="3a">
+                            <span class="answer-placeholder">Type your answer here...</span>
+                        </div>
+                    </li>
+
+                    <li class="problem-item">
+                        <div class="problem-number">4</div>
+                        <p><strong>What is the largest 8-bit unsigned binary number in decimal and hex?</strong></p>
+                        <div class="answer-box" contenteditable="true" data-problem="4a">
+                            <span class="answer-placeholder">Type your answer here...</span>
+                        </div>
+                    </li>
+
+                    <li class="problem-item">
+                        <div class="problem-number">5</div>
+                        <p><strong>Convert decimal 240 to binary and verify using hexadecimal.</strong></p>
+                        <div class="answer-box" contenteditable="true" data-problem="5a">
+                            <span class="answer-placeholder">Type your answer here...</span>
+                        </div>
+                    </li>
+                </ol>
+            </div>
+
+            <!-- Part B: Two's Complement -->
+            <div class="assignment-part">
+                <div class="assignment-header">
+                    <div class="assignment-title">Part B: Two's Complement</div>
+                    <div class="assignment-points">30 points</div>
+                </div>
+                <p>Work with signed binary numbers using two's complement notation.</p>
+
+                <ol class="problem-list" start="6">
+                    <li class="problem-item">
+                        <div class="problem-number">6</div>
+                        <p><strong>Convert decimal -42 to 8-bit two's complement binary.</strong></p>
+                        <div class="answer-box" contenteditable="true" data-problem="6b">
+                            <span class="answer-placeholder">Type your answer here...</span>
+                        </div>
+                    </li>
+
+                    <li class="problem-item">
+                        <div class="problem-number">7</div>
+                        <p><strong>What decimal value does the 8-bit binary 10110100 represent in two's complement?</strong></p>
+                        <div class="answer-box" contenteditable="true" data-problem="7b">
+                            <span class="answer-placeholder">Type your answer here...</span>
+                        </div>
+                    </li>
+
+                    <li class="problem-item">
+                        <div class="problem-number">8</div>
+                        <p><strong>What is the range of values that can be represented in 8-bit two's complement?</strong></p>
+                        <div class="answer-box" contenteditable="true" data-problem="8b">
+                            <span class="answer-placeholder">Type your answer here...</span>
+                        </div>
+                    </li>
+
+                    <li class="problem-item">
+                        <div class="problem-number">9</div>
+                        <p><strong>Perform binary addition: 01011010 + 11100110 (interpret as 8-bit two's complement).</strong></p>
+                        <div class="answer-box" contenteditable="true" data-problem="9b">
+                            <span class="answer-placeholder">Type your answer here...</span>
+                        </div>
+                    </li>
+                </ol>
+            </div>
+
+            <!-- Part C: Binary Arithmetic -->
+            <div class="assignment-part">
+                <div class="assignment-header">
+                    <div class="assignment-title">Part C: Binary Arithmetic</div>
+                    <div class="assignment-points">20 points</div>
+                </div>
+                <p>Perform arithmetic operations in binary and identify overflow conditions.</p>
+
+                <ol class="problem-list" start="10">
+                    <li class="problem-item">
+                        <div class="problem-number">10</div>
+                        <p><strong>Add 01110011 + 00101101 (show work and identify any overflow).</strong></p>
+                        <div class="answer-box" contenteditable="true" data-problem="10c">
+                            <span class="answer-placeholder">Type your answer here...</span>
+                        </div>
+                    </li>
+
+                    <li class="problem-item">
+                        <div class="problem-number">11</div>
+                        <p><strong>Subtract 00110110 - 01010010 using two's complement addition.</strong></p>
+                        <div class="answer-box" contenteditable="true" data-problem="11c">
+                            <span class="answer-placeholder">Type your answer here...</span>
+                        </div>
+                    </li>
+
+                    <li class="problem-item">
+                        <div class="problem-number">12</div>
+                        <p><strong>Multiply 1011 × 0110 using binary multiplication.</strong></p>
+                        <div class="answer-box" contenteditable="true" data-problem="12c">
+                            <span class="answer-placeholder">Type your answer here...</span>
+                        </div>
+                    </li>
+                </ol>
+            </div>
+
+            <!-- Part D: Real-World Applications -->
+            <div class="assignment-part">
+                <div class="assignment-header">
+                    <div class="assignment-title">Part D: Real-World Applications</div>
+                    <div class="assignment-points">10 points</div>
+                </div>
+                <p>Apply number system knowledge to practical computing scenarios.</p>
+
+                <ol class="problem-list" start="13">
+                    <li class="problem-item">
+                        <div class="problem-number">13</div>
+                        <p><strong>An RGB color has values Red=204, Green=51, Blue=153. Express this color as a 6-digit hexadecimal value (format: #RRGGBB).</strong></p>
+                        <div class="answer-box" contenteditable="true" data-problem="13d">
+                            <span class="answer-placeholder">Type your answer here...</span>
+                        </div>
+                    </li>
+
+                    <li class="problem-item">
+                        <div class="problem-number">14</div>
+                        <p><strong>The IP address 192.168.1.100 can be represented as a 32-bit binary number. Show the binary representation for each octet.</strong></p>
+                        <div class="answer-box" contenteditable="true" data-problem="14d">
+                            <span class="answer-placeholder">Type your answer here...</span>
+                        </div>
+                    </li>
+
+                    <li class="problem-item">
+                        <div class="problem-number">15</div>
+                        <p><strong>A computer has 16 GB of RAM. Express this capacity in bytes using both decimal and binary (powers of 2).</strong></p>
+                        <div class="answer-box" contenteditable="true" data-problem="15d">
+                            <span class="answer-placeholder">Type your answer here...</span>
+                        </div>
+                    </li>
+                </ol>
+            </div>
+
+            <div class="action-buttons">
+                <button class="btn btn-success" onclick="exportAnswers()">
+                    📄 Export Answers for Canvas
+                </button>
+                <button class="btn btn-warning" onclick="validateAnswers()">
+                    ✅ Check My Work
+                </button>
+                <button class="btn btn-secondary" onclick="clearAllAnswers()">
+                    🗑️ Clear All Answers
+                </button>
+            </div>
+        </section>
+
+        <!-- Reflection Section -->
+        <section class="content-section">
+            <h2>🤔 Reflection & Synthesis</h2>
+            <div class="reflection-section">
+                <h3>Connect the Concepts</h3>
+                <p>Complete these reflection prompts to demonstrate your understanding of how this week's concepts connect to broader computer science principles.</p>
+
+                <div class="reflection-prompt">
+                    <h4>Reflection 1: Abstraction in Computing</h4>
+                    <p>How do the number systems you've learned this week relate to the concept of abstraction layers in computer systems? Give specific examples.</p>
+                    <div class="reflection-input">
+                        <textarea id="reflection1" rows="4" placeholder="Type your reflection here..." onchange="saveReflection(1)"></textarea>
+                    </div>
+                </div>
+
+                <div class="reflection-prompt">
+                    <h4>Reflection 2: Why Two's Complement?</h4>
+                    <p>Explain why computers use two's complement representation for negative numbers instead of simpler methods like sign-magnitude. What advantages does this provide?</p>
+                    <div class="reflection-input">
+                        <textarea id="reflection2" rows="4" placeholder="Type your reflection here..." onchange="saveReflection(2)"></textarea>
+                    </div>
+                </div>
+
+                <div class="reflection-prompt">
+                    <h4>Reflection 3: Real-World Impact</h4>
+                    <p>Choose one real-world application from this module (RGB colors, IP addresses, memory addresses, or file sizes) and explain how understanding binary/hex representation helps in that domain.</p>
+                    <div class="reflection-input">
+                        <textarea id="reflection3" rows="4" placeholder="Type your reflection here..." onchange="saveReflection(3)"></textarea>
+                    </div>
+                </div>
+
+                <div class="reflection-prompt">
+                    <h4>Reflection 4: Looking Ahead</h4>
+                    <p>How do you think the number systems we've studied this week will connect to logic gates and digital circuits (Week 2 topic)? What role might binary play in decision-making circuits?</p>
+                    <div class="reflection-input">
+                        <textarea id="reflection4" rows="4" placeholder="Type your reflection here..." onchange="saveReflection(4)"></textarea>
+                    </div>
+                </div>
+
+                <div class="action-buttons">
+                    <button class="btn btn-primary" onclick="exportReflections()">
+                        📝 Export Reflections for Canvas
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Looking Ahead -->
+        <section class="content-section">
+            <h2>🔮 Looking Ahead: Week 2 Preview</h2>
+            <div class="interactive-panel">
+                <h3>From Numbers to Logic</h3>
+                <p>Next week, you'll discover how computers use the binary numbers you've mastered to make decisions through logic gates. Here's a preview of what's coming:</p>
+                
+                <div class="application-grid">
+                    <div class="application-card">
+                        <div class="application-icon">⚡</div>
+                        <div class="application-title">Logic Gates</div>
+                        <p>AND, OR, NOT gates that process binary inputs to produce binary outputs</p>
+                    </div>
+                    
+                    <div class="application-card">
+                        <div class="application-icon">🔗</div>
+                        <div class="application-title">Boolean Algebra</div>
+                        <p>Mathematical framework for designing and analyzing digital circuits</p>
+                    </div>
+                    
+                    <div class="application-card">
+                        <div class="application-icon">🏗️</div>
+                        <div class="application-title">Building Blocks</div>
+                        <p>How simple gates combine to create complex computational structures</p>
+                    </div>
+                    
+                    <div class="application-card">
+                        <div class="application-icon">🎯</div>
+                        <div class="application-title">Truth Tables</div>
+                        <p>Systematic way to describe how logic circuits behave with different inputs</p>
+                    </div>
+                </div>
+
+                <h3>Connection to This Week</h3>
+                <p>The binary numbers you've learned are the inputs and outputs of logic gates. Two's complement arithmetic happens inside circuits built from these gates. Every conversion you practiced this week represents data flowing through logical operations in a real computer!</p>
+            </div>
+        </section>
+
+        <!-- Course Progress & Navigation -->
+        <section class="content-section">
+            <h2>🎉 Module 4 Complete!</h2>
+            <p>Congratulations! You've completed the final module of Week 1. You now have a solid foundation in:</p>
+            
+            <ul style="margin: 1rem 0; padding-left: 2rem;">
+                <li>✅ Computer architecture abstraction layers</li>
+                <li>✅ Binary, decimal, and hexadecimal number systems</li>
+                <li>✅ Two's complement signed number representation</li>
+                <li>✅ Binary arithmetic and overflow detection</li>
+                <li>✅ Real-world applications of number systems</li>
+            </ul>
+
+            <div class="interactive-panel">
+                <h3>Next Steps</h3>
+                <ol style="margin: 1rem 0; padding-left: 2rem;">
+                    <li><strong>Submit your assignment:</strong> Export your answers and submit via Canvas</li>
+                    <li><strong>Submit your reflections:</strong> Copy reflection responses to Canvas assignment</li>
+                    <li><strong>Take the Week 1 quiz:</strong> Available in Canvas after completing all modules</li>
+                    <li><strong>Review concepts:</strong> Use practice tools as needed before the quiz</li>
+                    <li><strong>Prepare for Week 2:</strong> Logic Gates and Boolean Algebra</li>
+                </ol>
+            </div>
+
+            <div class="action-buttons">
+                <button class="btn btn-success" onclick="returnToOverview()">
+                    🏠 Return to Week 1 Overview
+                </button>
+                <button class="btn btn-primary" onclick="goToWeek2()">
+                    ➡️ Preview Week 2
+                </button>
+                <button class="btn btn-secondary" onclick="downloadCertificate()">
+                    🏆 Download Completion Certificate
+                </button>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        // Global state management
+        let moduleProgress = {
+            videoWatched: false,
+            applicationsExplored: 0,
+            assignmentStarted: false,
+            reflectionsCompleted: 0,
+            moduleCompleted: false
+        };
+
+        let savedAnswers = {};
+        let savedReflections = {};
+
+        // Initialize the module
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Initializing Module 4...');
+            loadSavedData();
+            updateProgress();
+            initializeInteractiveElements();
+            
+            // Handle return from other modules
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('from')) {
+                console.log('Returned from:', urlParams.get('from'));
+            }
+        });
+
+        // Progress tracking
+        function updateProgress() {
+            let completedTasks = 0;
+            let totalTasks = 6; // video, 4 applications, assignment sections, reflections
+
+            if (moduleProgress.videoWatched) completedTasks++;
+            completedTasks += Math.min(moduleProgress.applicationsExplored, 4);
+            if (moduleProgress.assignmentStarted) completedTasks++;
+            if (moduleProgress.reflectionsCompleted >= 4) completedTasks++;
+
+            const percentage = Math.round((completedTasks / totalTasks) * 100);
+            
+            document.getElementById('progress-fill').style.width = `${percentage}%`;
+            document.getElementById('progress-text').textContent = `${percentage}% Complete`;
+
+            // Enable completion button when sufficient progress
+            const completeBtn = document.getElementById('complete-btn');
+            if (percentage >= 80) {
+                completeBtn.disabled = false;
+                completeBtn.textContent = 'Complete Module 4';
+            }
+
+            saveProgress();
+        }
+
+        // Video tracking
+        function markVideoWatched(videoId) {
+            moduleProgress.videoWatched = true;
+            document.getElementById('synthesis-notes').style.display = 'block';
+            document.getElementById('synthesis-video-btn').textContent = '✅ Video Watched';
+            document.getElementById('synthesis-video-btn').classList.remove('btn-primary');
+            document.getElementById('synthesis-video-btn').classList.add('btn-success');
+            updateProgress();
+        }
+
+        // Interactive application functions
+        function updateColor() {
+            const red = parseInt(document.getElementById('rgb-red').value) || 0;
+            const green = parseInt(document.getElementById('rgb-green').value) || 0;
+            const blue = parseInt(document.getElementById('rgb-blue').value) || 0;
+
+            // Update color display
+            const colorDisplay = document.getElementById('color-display');
+            colorDisplay.style.backgroundColor = `rgb(${red}, ${green}, ${blue})`;
+
+            // Show conversions
+            const hexRed = red.toString(16).padStart(2, '0').toUpperCase();
+            const hexGreen = green.toString(16).padStart(2, '0').toUpperCase();
+            const hexBlue = blue.toString(16).padStart(2, '0').toUpperCase();
+            
+            const binRed = red.toString(2).padStart(8, '0');
+            const binGreen = green.toString(2).padStart(8, '0');
+            const binBlue = blue.toString(2).padStart(8, '0');
+
+            document.getElementById('color-values').innerHTML = `
+                <strong>Hex:</strong> #${hexRed}${hexGreen}${hexBlue}<br>
+                <strong>Binary:</strong> ${binRed} ${binGreen} ${binBlue}<br>
+                <strong>Decimal:</strong> ${red}, ${green}, ${blue}
+            `;
+
+            moduleProgress.applicationsExplored = Math.max(moduleProgress.applicationsExplored, 1);
+            updateProgress();
+        }
+
+        function convertIP() {
+            const ipInput = document.getElementById('ip-address').value;
+            const ipPattern = /^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/;
+            const match = ipInput.match(ipPattern);
+            
+            const resultDiv = document.getElementById('ip-result');
+            
+            if (match) {
+                const octets = match.slice(1).map(Number);
+                const valid = octets.every(octet => octet >= 0 && octet <= 255);
+                
+                if (valid) {
+                    const binary = octets.map(octet => octet.toString(2).padStart(8, '0')).join('.');
+                    const hex = octets.map(octet => '0x' + octet.toString(16).toUpperCase().padStart(2, '0')).join(' ');
+                    
+                    resultDiv.innerHTML = `
+                        <strong>Decimal:</strong> ${ipInput}<br>
+                        <strong>Binary:</strong> ${binary}<br>
+                        <strong>Hexadecimal:</strong> ${hex}
+                    `;
+                    resultDiv.style.display = 'block';
+                    resultDiv.className = 'result-display';
+                } else {
+                    resultDiv.innerHTML = 'Invalid IP address: Each octet must be 0-255';
+                    resultDiv.style.display = 'block';
+                    resultDiv.className = 'error-display';
+                }
+            } else {
+                resultDiv.innerHTML = 'Invalid format: Use xxx.xxx.xxx.xxx';
+                resultDiv.style.display = 'block';
+                resultDiv.className = 'error-display';
+            }
+
+            moduleProgress.applicationsExplored = Math.max(moduleProgress.applicationsExplored, 2);
+            updateProgress();
+        }
+
+        function convertMemory() {
+            const hexInput = document.getElementById('memory-hex').value.trim();
+            const resultDiv = document.getElementById('memory-result');
+            
+            try {
+                // Remove 0x prefix if present
+                const cleanHex = hexInput.replace(/^0x/i, '');
+                
+                // Validate hex
+                if (!/^[0-9A-Fa-f]+$/.test(cleanHex)) {
+                    throw new Error('Invalid hexadecimal format');
+                }
+                
+                const decimal = parseInt(cleanHex, 16);
+                const binary = decimal.toString(2);
+                const paddedBinary = binary.padStart(Math.ceil(binary.length / 4) * 4, '0');
+                
+                resultDiv.innerHTML = `
+                    <strong>Hexadecimal:</strong> 0x${cleanHex.toUpperCase()}<br>
+                    <strong>Decimal:</strong> ${decimal}<br>
+                    <strong>Binary:</strong> ${paddedBinary}<br>
+                    <strong>Address Range:</strong> Byte ${decimal}
+                `;
+                resultDiv.style.display = 'block';
+                resultDiv.className = 'result-display';
+            } catch (error) {
+                resultDiv.innerHTML = 'Invalid hexadecimal address format';
+                resultDiv.style.display = 'block';
+                resultDiv.className = 'error-display';
+            }
+
+            moduleProgress.applicationsExplored = Math.max(moduleProgress.applicationsExplored, 3);
+            updateProgress();
+        }
+
+        function convertStorage() {
+            const bytes = parseInt(document.getElementById('storage-bytes').value) || 0;
+            const resultDiv = document.getElementById('storage-result');
+            
+            const kb = bytes / 1024;
+            const mb = bytes / (1024 * 1024);
+            const gb = bytes / (1024 * 1024 * 1024);
+            
+            const kbBinary = bytes / 1000;
+            const mbBinary = bytes / (1000 * 1000);
+            const gbBinary = bytes / (1000 * 1000 * 1000);
+            
+            resultDiv.innerHTML = `
+                <strong>Binary (Powers of 2):</strong><br>
+                ${kb.toFixed(2)} KiB (1024 bytes)<br>
+                ${mb.toFixed(2)} MiB (1024² bytes)<br>
+                ${gb.toFixed(6)} GiB (1024³ bytes)<br><br>
+                <strong>Decimal (Powers of 10):</strong><br>
+                ${kbBinary.toFixed(2)} KB (1000 bytes)<br>
+                ${mbBinary.toFixed(2)} MB (1000² bytes)<br>
+                ${gbBinary.toFixed(6)} GB (1000³ bytes)
+            `;
+            resultDiv.style.display = 'block';
+            resultDiv.className = 'result-display';
+
+            moduleProgress.applicationsExplored = Math.max(moduleProgress.applicationsExplored, 4);
+            updateProgress();
+        }
+
+        // Answer box management
+        function initializeInteractiveElements() {
+            // Initialize answer boxes
+            document.querySelectorAll('.answer-box').forEach(box => {
+                box.addEventListener('focus', function() {
+                    if (this.textContent.trim() === 'Type your answer here...') {
+                        this.textContent = '';
+                        this.style.color = '#333';
+                    }
+                    moduleProgress.assignmentStarted = true;
+                    updateProgress();
+                });
+
+                box.addEventListener('blur', function() {
+                    if (this.textContent.trim() === '') {
+                        this.innerHTML = '<span class="answer-placeholder">Type your answer here...</span>';
+                    } else {
+                        const problemId = this.getAttribute('data-problem');
+                        savedAnswers[problemId] = this.textContent.trim();
+                        saveProgress();
+                    }
+                });
+
+                box.addEventListener('input', function() {
+                    const problemId = this.getAttribute('data-problem');
+                    savedAnswers[problemId] = this.textContent.trim();
+                    saveProgress();
+                });
+            });
+
+            // Initialize color converter
+            updateColor();
+        }
+
+        // Reflection management
+        function saveReflection(number) {
+            const textarea = document.getElementById(`reflection${number}`);
+            savedReflections[number] = textarea.value;
+            
+            // Count completed reflections
+            moduleProgress.reflectionsCompleted = Object.keys(savedReflections).filter(
+                key => savedReflections[key] && savedReflections[key].trim().length > 50
+            ).length;
+            
+            updateProgress();
+            saveProgress();
+        }
+
+        // Export functions
+        function exportAnswers() {
+            let exportText = "CSC210 Week 1 Assignment - Number Systems Mastery\n";
+            exportText += "=" * 50 + "\n\n";
+            
+            // Part A
+            exportText += "PART A: NUMBER CONVERSIONS (40 points)\n";
+            exportText += "-" * 40 + "\n";
+            for (let i = 1; i <= 5; i++) {
+                exportText += `Problem ${i}: ${savedAnswers[i + 'a'] || '[Not answered]'}\n\n`;
+            }
+            
+            // Part B
+            exportText += "PART B: TWO'S COMPLEMENT (30 points)\n";
+            exportText += "-" * 40 + "\n";
+            for (let i = 6; i <= 9; i++) {
+                exportText += `Problem ${i}: ${savedAnswers[i + 'b'] || '[Not answered]'}\n\n`;
+            }
+            
+            // Part C
+            exportText += "PART C: BINARY ARITHMETIC (20 points)\n";
+            exportText += "-" * 40 + "\n";
+            for (let i = 10; i <= 12; i++) {
+                exportText += `Problem ${i}: ${savedAnswers[i + 'c'] || '[Not answered]'}\n\n`;
+            }
+            
+            // Part D
+            exportText += "PART D: REAL-WORLD APPLICATIONS (10 points)\n";
+            exportText += "-" * 40 + "\n";
+            for (let i = 13; i <= 15; i++) {
+                exportText += `Problem ${i}: ${savedAnswers[i + 'd'] || '[Not answered]'}\n\n`;
+            }
+            
+            // Create and download file
+            const blob = new Blob([exportText], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'CSC210_Week1_Assignment_Answers.txt';
+            a.click();
+            URL.revokeObjectURL(url);
+            
+            alert('Assignment answers exported! Submit this file via Canvas.');
+        }
+
+        function exportReflections() {
+            let exportText = "CSC210 Week 1 Module 4 - Reflection Responses\n";
+            exportText += "=" * 50 + "\n\n";
+            
+            for (let i = 1; i <= 4; i++) {
+                exportText += `REFLECTION ${i}:\n`;
+                exportText += savedReflections[i] || '[Not completed]';
+                exportText += "\n\n" + "-" * 40 + "\n\n";
+            }
+            
+            const blob = new Blob([exportText], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'CSC210_Week1_Reflections.txt';
+            a.click();
+            URL.revokeObjectURL(url);
+            
+            alert('Reflections exported! Submit this file via Canvas.');
+        }
+
+        function validateAnswers() {
+            let completedAnswers = Object.keys(savedAnswers).filter(
+                key => savedAnswers[key] && savedAnswers[key].trim().length > 0
+            ).length;
+            
+            alert(`You have completed ${completedAnswers} out of 15 assignment problems. Make sure to complete all problems before submitting!`);
+        }
+
+        function clearAllAnswers() {
+            if (confirm('Are you sure you want to clear all answers? This cannot be undone.')) {
+                savedAnswers = {};
+                document.querySelectorAll('.answer-box').forEach(box => {
+                    box.innerHTML = '<span class="answer-placeholder">Type your answer here...</span>';
+                });
+                saveProgress();
+            }
+        }
+
+        // Navigation functions
+        function goBack() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const returnUrl = urlParams.get('return');
+            
+            if (returnUrl) {
+                window.location.href = decodeURIComponent(returnUrl);
+            } else {
+                // Default return to main platform
+                window.location.href = 'csc210-wk1-learning-platform.html';
+            }
+        }
+
+        function completeModule() {
+            moduleProgress.moduleCompleted = true;
+            saveProgress();
+            
+            alert('Module 4 completed! Great work on finishing Week 1. Don\'t forget to submit your assignment and reflections via Canvas.');
+            
+            // Mark completion in parent platform if possible
+            if (window.opener) {
+                try {
+                    window.opener.markModuleComplete(4);
+                } catch (e) {
+                    console.log('Could not communicate with parent window');
+                }
+            }
+        }
+
+        function returnToOverview() {
+            goBack();
+        }
+
+        function goToWeek2() {
+            alert('Week 2 content will be available soon! Check the course schedule for release dates.');
+        }
+
+        function downloadCertificate() {
+            alert('Completion certificates will be available after all assignments are graded.');
+        }
+
+        // Utility functions
+        function scrollToSection(sectionId) {
+            document.getElementById(sectionId).scrollIntoView({ 
+                behavior: 'smooth',
+                block: 'start'
+            });
+        }
+
+        // Data persistence
+        function saveProgress() {
+            const progressData = {
+                moduleProgress: moduleProgress,
+                savedAnswers: savedAnswers,
+                savedReflections: savedReflections,
+                timestamp: new Date().toISOString()
+            };
+            
+            try {
+                sessionStorage.setItem('csc210_module4_progress', JSON.stringify(progressData));
+            } catch (error) {
+                console.warn('Could not save progress:', error);
+            }
+        }
+
+        function loadSavedData() {
+            try {
+                const saved = sessionStorage.getItem('csc210_module4_progress');
+                if (saved) {
+                    const data = JSON.parse(saved);
+                    moduleProgress = { ...moduleProgress, ...data.moduleProgress };
+                    savedAnswers = data.savedAnswers || {};
+                    savedReflections = data.savedReflections || {};
+                    
+                    // Restore answer boxes
+                    Object.keys(savedAnswers).forEach(problemId => {
+                        const box = document.querySelector(`[data-problem="${problemId}"]`);
+                        if (box && savedAnswers[problemId]) {
+                            box.textContent = savedAnswers[problemId];
+                            box.style.color = '#333';
+                        }
+                    });
+                    
+                    // Restore reflections
+                    Object.keys(savedReflections).forEach(number => {
+                        const textarea = document.getElementById(`reflection${number}`);
+                        if (textarea && savedReflections[number]) {
+                            textarea.value = savedReflections[number];
+                        }
+                    });
+                    
+                    console.log('Module 4 progress loaded');
+                }
+            } catch (error) {
+                console.warn('Could not load saved progress:', error);
+            }
+        }
+
+        // Save progress before leaving
+        window.addEventListener('beforeunload', saveProgress);
+
+        // Accessibility enhancements
+        document.addEventListener('keydown', function(e) {
+            // Add keyboard shortcuts
+            if (e.ctrlKey || e.metaKey) {
+                switch(e.key) {
+                    case 's':
+                        e.preventDefault();
+                        saveProgress();
+                        alert('Progress saved!');
+                        break;
+                    case 'e':
+                        e.preventDefault();
+                        exportAnswers();
+                        break;
+                }
+            }
+        });
+    </script>
+</body>
+</html>
