@@ -1000,7 +1000,10 @@
             let totalTasks = 6; // video, 4 applications, assignment sections, reflections
 
             if (moduleProgress.videoWatched) completedTasks++;
-            completedTasks += Math.min(moduleProgress.applicationsExplored, 4);
+            if (moduleProgress.applicationsExplored >= 1) completedTasks++;
+            if (moduleProgress.applicationsExplored >= 2) completedTasks++;
+            if (moduleProgress.applicationsExplored >= 3) completedTasks++;
+            if (moduleProgress.applicationsExplored >= 4) completedTasks++;
             if (moduleProgress.assignmentStarted) completedTasks++;
             if (moduleProgress.reflectionsCompleted >= 4) completedTasks++;
 
