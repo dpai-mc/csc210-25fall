@@ -981,7 +981,11 @@
         // Initialize the module
         document.addEventListener('DOMContentLoaded', function() {
             console.log('Initializing Module 4 (Session-only tracking)...');
+            console.log('Initial moduleProgress:', moduleProgress);
+            
             loadSavedData();
+            console.log('After loading saved data:', moduleProgress);
+            
             updateProgress();
             initializeInteractiveElements();
             
@@ -1009,12 +1013,21 @@
 
             const percentage = Math.round((completedTasks / totalTasks) * 100);
             
-            document.getElementById('progress-fill').style.width = `${percentage}%`;
-            document.getElementById('progress-text').textContent = `${percentage}% Complete`;
+            // Make sure DOM elements exist before updating
+            const progressFill = document.getElementById('progress-fill');
+            const progressText = document.getElementById('progress-text');
+            
+            if (progressFill) {
+                progressFill.style.width = `${percentage}%`;
+            }
+            
+            if (progressText) {
+                progressText.textContent = `${percentage}% Complete`;
+            }
 
             // Enable completion button when sufficient progress
             const completeBtn = document.getElementById('complete-btn');
-            if (percentage >= 80) {
+            if (completeBtn && percentage >= 80) {
                 completeBtn.disabled = false;
                 completeBtn.textContent = 'Complete Module 4';
             }
@@ -1057,8 +1070,9 @@
                 <strong>Decimal:</strong> ${red}, ${green}, ${blue}
             `;
 
-            moduleProgress.applicationsExplored = Math.max(moduleProgress.applicationsExplored, 1);
-            updateProgress();
+            // Don't update progress automatically - only when user actually interacts
+            // moduleProgress.applicationsExplored = Math.max(moduleProgress.applicationsExplored, 1);
+            // updateProgress();
         }
 
         function convertIP() {
@@ -1192,8 +1206,27 @@
                 });
             });
 
-            // Initialize color converter
+            // Initialize color converter display (without tracking progress)
             updateColor();
+            
+            // Add event listeners to track user interaction with color converter
+            document.getElementById('rgb-red').addEventListener('change', function() {
+                updateColor();
+                moduleProgress.applicationsExplored = Math.max(moduleProgress.applicationsExplored, 1);
+                updateProgress();
+            });
+            
+            document.getElementById('rgb-green').addEventListener('change', function() {
+                updateColor();
+                moduleProgress.applicationsExplored = Math.max(moduleProgress.applicationsExplored, 1);
+                updateProgress();
+            });
+            
+            document.getElementById('rgb-blue').addEventListener('change', function() {
+                updateColor();
+                moduleProgress.applicationsExplored = Math.max(moduleProgress.applicationsExplored, 1);
+                updateProgress();
+            });
         }
 
         // Reflection management
