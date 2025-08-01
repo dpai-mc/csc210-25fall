@@ -513,12 +513,15 @@
         <!-- Progress Tracking -->
         <div class="progress-container">
             <div class="progress-header">
-                <span class="progress-title">Module 4 Progress</span>
+                <span class="progress-title">Module 4 Progress (Session Only)</span>
                 <span class="progress-percentage" id="progress-text">0% Complete</span>
             </div>
             <div class="progress-bar">
                 <div class="progress-fill" id="progress-fill"></div>
             </div>
+            <p style="font-size: 0.9rem; color: #6b7280; margin-top: 0.5rem;">
+                ⓘ Progress tracks during this session only. Export your work to save answers permanently.
+            </p>
         </div>
 
         <!-- Navigation -->
@@ -977,7 +980,7 @@
 
         // Initialize the module
         document.addEventListener('DOMContentLoaded', function() {
-            console.log('Initializing Module 4...');
+            console.log('Initializing Module 4 (Session-only tracking)...');
             loadSavedData();
             updateProgress();
             initializeInteractiveElements();
@@ -987,6 +990,8 @@
             if (urlParams.get('from')) {
                 console.log('Returned from:', urlParams.get('from'));
             }
+            
+            console.log('Module 4 initialized - session progress only');
         });
 
         // Progress tracking
@@ -1244,7 +1249,7 @@
             a.click();
             URL.revokeObjectURL(url);
             
-            alert('Assignment answers exported! Submit this file via Canvas.');
+            alert('Assignment answers exported! Submit this file via Canvas. Note: Progress resets when you close this page.');
         }
 
         function exportReflections() {
@@ -1265,7 +1270,7 @@
             a.click();
             URL.revokeObjectURL(url);
             
-            alert('Reflections exported! Submit this file via Canvas.');
+            alert('Reflections exported! Submit this file via Canvas. Note: Progress resets when you close this page.');
         }
 
         function validateAnswers() {
@@ -1303,16 +1308,12 @@
             moduleProgress.moduleCompleted = true;
             saveProgress();
             
-            alert('Module 4 completed! Great work on finishing Week 1. Don\'t forget to submit your assignment and reflections via Canvas.');
+            alert('Module 4 session completed! Remember to export and submit your assignment and reflections via Canvas before closing this page.');
             
-            // Mark completion in parent platform if possible
-            if (window.opener) {
-                try {
-                    window.opener.markModuleComplete(4);
-                } catch (e) {
-                    console.log('Could not communicate with parent window');
-                }
-            }
+            // Note: No cross-session completion tracking for Canvas iframe integration
+            document.getElementById('complete-btn').textContent = '✅ Session Complete';
+            document.getElementById('complete-btn').classList.remove('btn-success');
+            document.getElementById('complete-btn').classList.add('btn-secondary');
         }
 
         function returnToOverview() {
@@ -1335,19 +1336,21 @@
             });
         }
 
-        // Data persistence
+        // Data persistence (session-only for Canvas iframe integration)
         function saveProgress() {
             const progressData = {
                 moduleProgress: moduleProgress,
                 savedAnswers: savedAnswers,
                 savedReflections: savedReflections,
-                timestamp: new Date().toISOString()
+                timestamp: new Date().toISOString(),
+                sessionOnly: true
             };
             
             try {
+                // Use sessionStorage only - no persistent data across sessions
                 sessionStorage.setItem('csc210_module4_progress', JSON.stringify(progressData));
             } catch (error) {
-                console.warn('Could not save progress:', error);
+                console.warn('Could not save session progress:', error);
             }
         }
 
@@ -1377,10 +1380,10 @@
                         }
                     });
                     
-                    console.log('Module 4 progress loaded');
+                    console.log('Session progress restored');
                 }
             } catch (error) {
-                console.warn('Could not load saved progress:', error);
+                console.warn('Could not load session progress:', error);
             }
         }
 
