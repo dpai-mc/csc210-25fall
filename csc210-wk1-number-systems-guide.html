@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Guide to Number Systems</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Calm Neutrals -->
+    <!-- Application Structure Plan: The application is structured as a single-page, scrollable tutorial. A sticky top navigation bar allows users to jump between thematic sections. The flow is designed to be pedagogical: starting with the 'Why' (Introduction), moving to foundational concepts (Decimal, Binary, Hexadecimal), providing hands-on practice with a central 'Interactive Converters' tool, and finishing with 'Real-World Uses'. This structure was chosen because it guides the user through a logical learning path from theory to practice, making complex information digestible and accessible for beginners. -->
+    <!-- Visualization & Content Choices: Instead of traditional charts, the app uses custom interactive elements better suited for explaining concepts. 1) Decimal Breakdown: An input field dynamically shows place values (Goal: Inform, Method: HTML/JS). 2) Binary 'Light Bulbs': Clickable divs simulate bits to show binary-to-decimal conversion (Goal: Relationships, Method: HTML/JS). 3) Central Converter Tool: A three-way converter provides instant feedback for practice (Goal: Compare/Practice, Method: HTML/JS). 4) Color Picker: Demonstrates real-world hex usage (Goal: Inform, Method: HTML/JS). These choices prioritize hands-on engagement over passive data viewing. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #FDFBF6;
+            color: #3C3633;
+        }
+        .nav-link {
+            transition: color 0.3s, border-bottom-color 0.3s;
+            border-bottom: 2px solid transparent;
+        }
+        .nav-link:hover, .nav-link.active {
+            color: #748E63;
+            border-bottom-color: #748E63;
+        }
+        .card {
+            background-color: #FFFFFF;
+            border: 1px solid #E0D8B0;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        .input-field {
+            background-color: #FDFBF6;
+            border: 1px solid #E0D8B0;
+        }
+        .input-field:focus, .bit:focus, .nav-link:focus, #color-picker:focus, #mobile-menu-button:focus {
+            outline: none;
+            border-color: #748E63;
+            box-shadow: 0 0 0 3px rgba(116, 142, 99, 0.4);
+        }
+        .bit {
+            cursor: pointer;
+            border: 2px solid #E0D8B0;
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+        .bit.on {
+            background-color: #90A955;
+            border-color: #748E63;
+            color: white;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <header class="bg-white/80 backdrop-blur-md sticky top-0 z-50 border-b border-gray-200">
+        <nav class="container mx-auto px-4">
+            <div class="flex items-center justify-between h-16">
+                <h1 class="text-xl font-bold text-gray-800">Number Systems Guide</h1>
+                <div class="hidden md:flex items-center space-x-8" id="desktop-menu">
+                    <a href="#intro" class="nav-link px-2 py-1">Introduction</a>
+                    <a href="#decimal" class="nav-link px-2 py-1">Decimal</a>
+                    <a href="#binary" class="nav-link px-2 py-1">Binary</a>
+                    <a href="#hexadecimal" class="nav-link px-2 py-1">Hexadecimal</a>
+                    <a href="#converters" class="nav-link px-2 py-1">Converters</a>
+                    <a href="#real-world" class="nav-link px-2 py-1">Real World</a>
+                </div>
+                <div class="md:hidden">
+                    <button id="mobile-menu-button" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-menu" class="p-2 rounded-md">
+                        <span class="block w-6 h-0.5 bg-gray-600 mb-1"></span>
+                        <span class="block w-6 h-0.5 bg-gray-600 mb-1"></span>
+                        <span class="block w-6 h-0.5 bg-gray-600"></span>
+                    </button>
+                </div>
+            </div>
+            <div class="hidden md:hidden" id="mobile-menu">
+                <a href="#intro" class="block py-2 px-4 text-sm nav-link">Introduction</a>
+                <a href="#decimal" class="block py-2 px-4 text-sm nav-link">Decimal</a>
+                <a href="#binary" class="block py-2 px-4 text-sm nav-link">Binary</a>
+                <a href="#hexadecimal" class="block py-2 px-4 text-sm nav-link">Hexadecimal</a>
+                <a href="#converters" class="block py-2 px-4 text-sm nav-link">Converters</a>
+                <a href="#real-world" class="block py-2 px-4 text-sm nav-link">Real World</a>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container mx-auto px-4 py-8 md:py-12">
+
+        <section id="intro" aria-labelledby="intro-heading" class="text-center mb-16 md:mb-24 scroll-mt-20">
+            <h2 id="intro-heading" class="text-3xl md:text-4xl font-bold mb-4">The Language of Computers</h2>
+            <p class="max-w-3xl mx-auto text-lg text-gray-600">
+                Ever wondered how computers, which only understand "on" and "off", handle complex tasks? It's all thanks to different number systems. This guide will walk you through Decimal (the one we know), Binary (the computer's language), and Hexadecimal (the programmer's shorthand).
+            </p>
+        </section>
+
+        <section id="decimal" aria-labelledby="decimal-heading" class="mb-16 md:mb-24 scroll-mt-20">
+            <h2 id="decimal-heading" class="text-2xl md:text-3xl font-bold mb-6 text-center">Part 1: Back to Basics - Decimal (Base-10)</h2>
+            <div class="card max-w-2xl mx-auto p-6 md:p-8 rounded-lg">
+                <p class="text-gray-600 mb-6">Everything starts with what we already know. The decimal system uses ten digits (0-9). The position of each digit determines its value (place value). Let's break it down interactively.</p>
+                <div class="mb-4">
+                    <label for="decimal-input" class="block font-medium mb-2">Enter a number (e.g., 253):</label>
+                    <input type="number" id="decimal-input" value="253" class="w-full p-2 rounded-md input-field">
+                </div>
+                <div id="decimal-breakdown" class="space-y-2 text-center bg-gray-50 p-4 rounded-md" aria-live="polite"></div>
+            </div>
+        </section>
+
+        <section id="binary" aria-labelledby="binary-heading" class="mb-16 md:mb-24 scroll-mt-20">
+            <h2 id="binary-heading" class="text-2xl md:text-3xl font-bold mb-6 text-center">Part 2: Speaking Computer - Binary (Base-2)</h2>
+            <div class="card max-w-3xl mx-auto p-6 md:p-8 rounded-lg">
+                <p class="text-gray-600 mb-6">Binary is the computer's native language, using only two digits: 0 (off) and 1 (on). Each position represents a power of 2. Click or use the space/enter key on the "bulbs" below to turn bits on or off and see how they add up!</p>
+                <div class="flex flex-wrap justify-center items-center gap-2 md:gap-4 mb-4" id="binary-bulbs">
+                </div>
+                <div class="text-center mt-4 bg-gray-50 p-4 rounded-md" aria-live="polite">
+                    <p class="text-lg">Binary Value: <code id="binary-value" class="font-mono font-bold">00000000</code></p>
+                    <p class="text-lg mt-2">Decimal Value: <span id="binary-decimal-value" class="font-bold text-2xl text-green-700">0</span></p>
+                </div>
+            </div>
+        </section>
+
+        <section id="hexadecimal" aria-labelledby="hexadecimal-heading" class="mb-16 md:mb-24 scroll-mt-20">
+            <h2 id="hexadecimal-heading" class="text-2xl md:text-3xl font-bold mb-6 text-center">Part 3: The Programmer's Shorthand - Hexadecimal (Base-16)</h2>
+            <div class="grid md:grid-cols-2 gap-8 items-start">
+                <div class="card p-6 md:p-8 rounded-lg">
+                    <p class="text-gray-600 mb-4">Long binary strings are hard for humans to read. Hexadecimal (Base-16) solves this by using 16 digits: 0-9 and A-F. It's a compact way to represent binary data.</p>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-center">
+                            <thead>
+                                <tr class="bg-gray-50">
+                                    <th class="p-2 font-medium">Hex</th><th class="p-2 font-medium">Decimal</th><th class="p-2 font-medium">Binary</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr><td>8</td><td>8</td><td>1000</td></tr>
+                                <tr><td>9</td><td>9</td><td>1001</td></tr>
+                                <tr><td>A</td><td>10</td><td>1010</td></tr>
+                                <tr><td>B</td><td>11</td><td>1011</td></tr>
+                                <tr><td>C</td><td>12</td><td>1100</td></tr>
+                                <tr><td>D</td><td>13</td><td>1101</td></tr>
+                                <tr><td>E</td><td>14</td><td>1110</td></tr>
+                                <tr><td>F</td><td>15</td><td>1111</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="card p-6 md:p-8 rounded-lg">
+                    <h3 class="font-bold text-lg mb-2">The Magic Bridge</h3>
+                    <p class="text-gray-600">The key is that **one hex digit represents exactly four binary digits** (a "nibble"). This makes conversion between them incredibly fast.</p>
+                    <p class="text-gray-600 mt-2">For example, the binary string <code class="font-mono">11010110</code> can be split into <code class="font-mono">1101</code> and <code class="font-mono">0110</code>. This translates to <code class="font-mono">D</code> and <code class="font-mono">6</code>, giving you <code class="font-mono">D6</code> in hex.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="converters" aria-labelledby="converters-heading" class="mb-16 md:mb-24 scroll-mt-20">
+            <h2 id="converters-heading" class="text-2xl md:text-3xl font-bold mb-6 text-center">Practice: Interactive Converters</h2>
+            <div class="card max-w-2xl mx-auto p-6 md:p-8 rounded-lg">
+                <p class="text-gray-600 mb-6">Time to practice! Type a value in any field, and the others will update instantly. This is the best way to see the relationships between the systems.</p>
+                <div class="space-y-4">
+                    <div>
+                        <label for="conv-decimal" class="block font-medium mb-1">Decimal (Base-10)</label>
+                        <input id="conv-decimal" type="text" class="w-full p-3 rounded-md input-field font-mono text-lg" placeholder="e.g., 255">
+                    </div>
+                    <div>
+                        <label for="conv-binary" class="block font-medium mb-1">Binary (Base-2)</label>
+                        <input id="conv-binary" type="text" class="w-full p-3 rounded-md input-field font-mono text-lg" placeholder="e.g., 11111111">
+                    </div>
+                    <div>
+                        <label for="conv-hex" class="block font-medium mb-1">Hexadecimal (Base-16)</label>
+                        <input id="conv-hex" type="text" class="w-full p-3 rounded-md input-field font-mono text-lg" placeholder="e.g., FF">
+                    </div>
+                </div>
+                <div id="converter-error" class="text-red-600 mt-4 text-center font-medium" role="alert" aria-live="assertive"></div>
+            </div>
+        </section>
+        
+        <section id="real-world" aria-labelledby="real-world-heading" class="scroll-mt-20">
+            <h2 id="real-world-heading" class="text-2xl md:text-3xl font-bold mb-6 text-center">Part 4: Real-World Uses</h2>
+            <p class="max-w-3xl mx-auto text-lg text-gray-600 text-center mb-8">These systems aren't just academic; they're everywhere in the digital world. Here are a few common examples where you'll see hexadecimal in action.</p>
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="card p-6 rounded-lg">
+                    <h3 class="font-bold text-xl mb-2">Web Colors</h3>
+                    <p class="text-gray-600 mb-4">Hex codes are used to define colors in web design. The format is #RRGGBB, where each pair represents the intensity of Red, Green, and Blue.</p>
+                    <div class="flex items-center gap-4">
+                        <input type="color" id="color-picker" value="#748E63" class="w-16 h-16 rounded-md cursor-pointer" aria-label="Color picker">
+                        <div class="font-mono text-lg" id="color-code" aria-live="polite">#748E63</div>
+                    </div>
+                </div>
+                <div class="card p-6 rounded-lg">
+                    <h3 class="font-bold text-xl mb-2">MAC Addresses</h3>
+                    <p class="text-gray-600">Every network-connected device has a unique Media Access Control (MAC) address, written as six pairs of hexadecimal digits, like <code class="font-mono">00:1A:2B:3C:4D:5E</code>.</p>
+                </div>
+                <div class="card p-6 rounded-lg">
+                    <h3 class="font-bold text-xl mb-2">Error Codes</h3>
+                    <p class="text-gray-600">Many system error codes, like the infamous Windows "Blue Screen of Death" stop codes, are represented in hexadecimal, such as <code class="font-mono">0x0000007B</code>.</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-white border-t border-gray-200 mt-16">
+        <div class="container mx-auto px-4 py-6 text-center text-gray-500">
+            <p>&copy; 2024 Interactive Number Systems Guide</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const sections = document.querySelectorAll('section');
+            const navLinks = document.querySelectorAll('.nav-link');
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+
+            mobileMenuButton.addEventListener('click', () => {
+                const isExpanded = mobileMenuButton.getAttribute('aria-expanded') === 'true';
+                mobileMenuButton.setAttribute('aria-expanded', !isExpanded);
+                mobileMenu.classList.toggle('hidden');
+            });
+
+            const observerOptions = { root: null, rootMargin: '0px', threshold: 0.5 };
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const id = entry.target.getAttribute('id');
+                        navLinks.forEach(link => {
+                            link.classList.toggle('active', link.getAttribute('href') === `#${id}`);
+                        });
+                    }
+                });
+            }, observerOptions);
+            sections.forEach(section => observer.observe(section));
+
+            const decimalInput = document.getElementById('decimal-input');
+            const decimalBreakdown = document.getElementById('decimal-breakdown');
+
+            function updateDecimalBreakdown() {
+                const numStr = decimalInput.value;
+                if (!/^\d+$/.test(numStr) && numStr !== '') {
+                    decimalBreakdown.innerHTML = '<p>Please enter a valid positive number.</p>';
+                    return;
+                }
+                const num = parseInt(numStr) || 0;
+                const s = num.toString();
+                decimalBreakdown.innerHTML = '';
+                if (s.length > 8) {
+                    decimalBreakdown.innerHTML = '<p>Number is too large to display breakdown.</p>';
+                    return;
+                }
+                let total = 0;
+                let breakdownHtml = '<div class="flex flex-col items-center">';
+                for (let i = 0; i < s.length; i++) {
+                    const digit = parseInt(s[i]);
+                    const placeValue = Math.pow(10, s.length - 1 - i);
+                    const value = digit * placeValue;
+                    total += value;
+                    breakdownHtml += `<p class="text-lg">${digit} × ${placeValue} = <span class="font-bold">${value}</span></p>`;
+                }
+                breakdownHtml += `<hr class="w-1/2 my-2 border-gray-300" aria-hidden="true"><p class="text-xl font-bold">Total: ${total}</p></div>`;
+                decimalBreakdown.innerHTML = breakdownHtml;
+            }
+            decimalInput.addEventListener('input', updateDecimalBreakdown);
+            updateDecimalBreakdown();
+
+            const binaryBulbsContainer = document.getElementById('binary-bulbs');
+            const binaryValueEl = document.getElementById('binary-value');
+            const binaryDecimalValueEl = document.getElementById('binary-decimal-value');
+            let bits = [0, 0, 0, 0, 0, 0, 0, 0];
+
+            function toggleBit(index) {
+                bits[index] = bits[index] === 0 ? 1 : 0;
+                renderBinaryBulbs();
+                updateBinaryValues();
+            }
+
+            function renderBinaryBulbs() {
+                binaryBulbsContainer.innerHTML = '';
+                for (let i = 0; i < 8; i++) {
+                    const placeValue = Math.pow(2, 7 - i);
+                    const bitEl = document.createElement('div');
+                    bitEl.className = 'bit w-12 h-12 md:w-16 md:h-16 flex flex-col items-center justify-center rounded-full font-bold text-lg';
+                    bitEl.innerHTML = `<span>${bits[i]}</span><span class="text-xs font-normal">${placeValue}</span>`;
+                    if (bits[i] === 1) bitEl.classList.add('on');
+                    bitEl.dataset.index = i;
+                    bitEl.setAttribute('role', 'button');
+                    bitEl.setAttribute('tabindex', '0');
+                    bitEl.setAttribute('aria-label', `Toggle bit for place value ${placeValue}. Current value is ${bits[i]}`);
+                    bitEl.addEventListener('click', () => toggleBit(i));
+                    bitEl.addEventListener('keydown', (e) => {
+                        if (e.key === ' ' || e.key === 'Enter') {
+                            e.preventDefault();
+                            toggleBit(i);
+                        }
+                    });
+                    binaryBulbsContainer.appendChild(bitEl);
+                }
+            }
+
+            function updateBinaryValues() {
+                const binaryString = bits.join('');
+                const decimalValue = parseInt(binaryString, 2);
+                binaryValueEl.textContent = binaryString;
+                binaryDecimalValueEl.textContent = decimalValue;
+            }
+            renderBinaryBulbs();
+            updateBinaryValues();
+
+            const convDecimal = document.getElementById('conv-decimal');
+            const convBinary = document.getElementById('conv-binary');
+            const convHex = document.getElementById('conv-hex');
+            const converterError = document.getElementById('converter-error');
+            let lastChanged = null;
+
+            function clearError() { converterError.textContent = ''; }
+            function showError(msg) { converterError.textContent = msg; }
+
+            function updateConverters(source) {
+                if (source === lastChanged) return;
+                lastChanged = source;
+                
+                clearError();
+                let decValue;
+
+                try {
+                    if (source === 'dec') {
+                        const val = convDecimal.value.trim();
+                        if (val === '') { resetConverters(); return; }
+                        if (!/^\d+$/.test(val)) throw new Error('Invalid decimal number');
+                        decValue = parseInt(val, 10);
+                        if (isNaN(decValue)) { resetConverters(); return; }
+                        convBinary.value = decValue.toString(2);
+                        convHex.value = decValue.toString(16).toUpperCase();
+                    } else if (source === 'bin') {
+                        const val = convBinary.value.trim();
+                        if (val === '') { resetConverters(); return; }
+                        if (!/^[01]+$/.test(val)) throw new Error('Invalid binary number');
+                        decValue = parseInt(val, 2);
+                        if (isNaN(decValue)) { resetConverters(); return; }
+                        convDecimal.value = decValue;
+                        convHex.value = decValue.toString(16).toUpperCase();
+                    } else if (source === 'hex') {
+                        const val = convHex.value.trim();
+                        if (val === '') { resetConverters(); return; }
+                        if (!/^[0-9a-fA-F]+$/.test(val)) throw new Error('Invalid hexadecimal number');
+                        decValue = parseInt(val, 16);
+                        if (isNaN(decValue)) { resetConverters(); return; }
+                        convDecimal.value = decValue;
+                        convBinary.value = decValue.toString(2);
+                    }
+                } catch (e) {
+                    showError(e.message);
+                }
+                lastChanged = null;
+            }
+
+            function resetConverters() {
+                convDecimal.value = '';
+                convBinary.value = '';
+                convHex.value = '';
+                clearError();
+            }
+
+            convDecimal.addEventListener('input', () => updateConverters('dec'));
+            convBinary.addEventListener('input', () => updateConverters('bin'));
+            convHex.addEventListener('input', () => updateConverters('hex'));
+
+            const colorPicker = document.getElementById('color-picker');
+            const colorCode = document.getElementById('color-code');
+            colorPicker.addEventListener('input', (e) => {
+                colorCode.textContent = e.target.value.toUpperCase();
+            });
+        });
+    </script>
+</body>
+</html>
