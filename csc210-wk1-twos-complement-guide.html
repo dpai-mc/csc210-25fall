@@ -191,7 +191,11 @@
             const recipeStepsContainer = document.getElementById('recipe-steps');
 
             function toBinary(dec, bits) {
-                return (dec >>> 0).toString(2).padStart(bits, '0');
+                if (dec >= 0) {
+                    return dec.toString(2).padStart(bits, '0');
+                } else {
+                    return (Math.pow(2, bits) + dec).toString(2).padStart(bits, '0');
+                }
             }
 
             function updateRecipe() {
