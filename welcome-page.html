@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSC210: Computer Organization and Architecture</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+            max-width: 800px;
+            width: 100%;
+            overflow: hidden;
+            animation: fadeInUp 0.8s ease-out;
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #2c5aa0 0%, #1e3d72 100%);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: repeating-linear-gradient(
+                45deg,
+                transparent,
+                transparent 10px,
+                rgba(255, 255, 255, 0.05) 10px,
+                rgba(255, 255, 255, 0.05) 20px
+            );
+            animation: movePattern 20s linear infinite;
+        }
+        
+        @keyframes movePattern {
+            0% { transform: translateX(-50px) translateY(-50px); }
+            100% { transform: translateX(0px) translateY(0px); }
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .header h2 {
+            font-size: 1.3rem;
+            font-weight: 300;
+            opacity: 0.9;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .content {
+            padding: 40px 30px;
+        }
+        
+        .welcome-message {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-left: 5px solid #2c5aa0;
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+        
+        .welcome-message h3 {
+            color: #2c5aa0;
+            margin-bottom: 15px;
+            font-size: 1.4rem;
+        }
+        
+        .welcome-message p {
+            line-height: 1.6;
+            color: #495057;
+            margin-bottom: 10px;
+        }
+        
+        .status-card {
+            background: linear-gradient(135deg, #fff3cd 0%, #fef7e0 100%);
+            border: 1px solid #ffeaa7;
+            border-radius: 12px;
+            padding: 25px;
+            margin: 25px 0;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .status-card::before {
+            content: '⏰';
+            font-size: 3rem;
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            opacity: 0.3;
+        }
+        
+        .status-title {
+            color: #b8860b;
+            font-weight: bold;
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .status-title::before {
+            content: '📋';
+            margin-right: 10px;
+            font-size: 1.3rem;
+        }
+        
+        .countdown {
+            background: #2c5aa0;
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 1.1rem;
+            margin: 20px 0;
+        }
+        
+        .syllabus-section {
+            background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+            border: 1px solid #b8dabc;
+            border-radius: 12px;
+            padding: 25px;
+            margin: 25px 0;
+        }
+        
+        .syllabus-section h4 {
+            color: #155724;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+        }
+        
+        .syllabus-section h4::before {
+            content: '📄';
+            margin-right: 10px;
+            font-size: 1.3rem;
+        }
+        
+        .syllabus-link {
+            display: inline-block;
+            background: #28a745;
+            color: white;
+            padding: 12px 24px;
+            text-decoration: none;
+            border-radius: 25px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+        
+        .syllabus-link:hover {
+            background: #218838;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(40, 167, 69, 0.3);
+        }
+        
+        .footer {
+            background: #f8f9fa;
+            padding: 20px 30px;
+            text-align: center;
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+        
+        .icon {
+            display: inline-block;
+            margin-right: 8px;
+            font-size: 1.2rem;
+        }
+        
+        @media (max-width: 600px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .header h2 {
+                font-size: 1.1rem;
+            }
+            
+            .content {
+                padding: 30px 20px;
+            }
+            
+            .welcome-message, .status-card, .syllabus-section {
+                padding: 20px;
+            }
+        }
+        
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>CSC210</h1>
+            <h2>Computer Organization and Architecture</h2>
+        </div>
+        
+        <div class="content">
+            <div class="welcome-message">
+                <h3>🎓 Welcome to CSC210!</h3>
+                <p>Hello and welcome to Computer Organization and Architecture! I'm excited to have you in this course where we'll explore the fascinating world of how computers work at the hardware level.</p>
+                <p>This course will give you a deep understanding of computer systems, from basic digital logic to processor design and memory hierarchies.</p>
+            </div>
+            
+            <div class="status-card">
+                <div class="status-title">Course Content Status</div>
+                <p><strong>Current Status:</strong> Course materials are being finalized and will be available soon.</p>
+                <p><strong>Expected Availability:</strong> The first week's module will be posted by the end of the day on <strong>Monday, August 18th, 2025</strong>, and all other modules will be opened as we progress to them each week.</p>
+            </div>
+            
+            <div class="syllabus-section">
+                <h4>Draft Syllabus Available</h4>
+                <p>While the full course content is being prepared, you can review the draft syllabus to get an overview of what we'll be covering this semester. Please note that this syllabus is still being refined and may undergo minor changes.</p>
+                <p><strong>Topics we'll explore include:</strong> Digital logic, processor architecture, assembly language, memory systems, and computer performance analysis.</p>
+                
+                <a href="https://mendocino.instructure.com/courses/19705/pages/draft-syllabus-in-work?module_item_id=1117299" 
+                   class="syllabus-link" target="_blank">
+                    📄 View Draft Syllabus
+                </a>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>🕒 Last updated: <span id="lastUpdated"></span></p>
+            <p>Thank you for your patience as we prepare an excellent learning experience for you!</p>
+        </div>
+    </div>
+
+    <script>
+        // Update the last updated time
+        document.getElementById('lastUpdated').textContent = new Date().toLocaleDateString('en-US', {
+            weekday: 'long',
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+
+        // Add some interactive effects
+        document.querySelectorAll('.syllabus-link').forEach(link => {
+            link.addEventListener('click', function(e) {
+                // Add a small delay for the animation effect
+                this.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    this.style.transform = 'translateY(-2px)';
+                }, 100);
+            });
+        });
+    </script>
+</body>
+</html>
