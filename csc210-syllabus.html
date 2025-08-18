@@ -235,6 +235,22 @@
             display: block;
         }
 
+        .btn {
+            background: rgba(255,255,255,0.2);
+            border: 2px solid rgba(255,255,255,0.5);
+            color: white;
+            font-size: 1rem;
+            padding: 0.8rem 1.5rem;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            background: rgba(255,255,255,0.3);
+            transform: translateY(-2px);
+        }
+
         @media (max-width: 768px) {
             .container {
                 padding: 15px;
@@ -301,6 +317,62 @@
         .skip-link:focus {
             top: 6px;
         }
+
+        /* PDF styles for printing */
+        @media print {
+            body {
+                font-family: Arial, sans-serif;
+                font-size: 12px;
+                line-height: 1.4;
+                color: #000;
+            }
+            
+            .container {
+                max-width: none;
+                padding: 0;
+            }
+            
+            header {
+                background: none !important;
+                color: #000 !important;
+                padding: 1rem 0;
+                border-bottom: 2px solid #000;
+            }
+            
+            .nav-tabs, .btn, .collapsible::after {
+                display: none !important;
+            }
+            
+            .tab-content {
+                display: block !important;
+            }
+            
+            .collapsible-content {
+                max-height: none !important;
+                overflow: visible !important;
+            }
+            
+            .phase-container, .description-box, .slo-list {
+                border: 1px solid #ccc;
+                background: none;
+                break-inside: avoid;
+            }
+            
+            .week-item {
+                border: 1px solid #ccc;
+                break-inside: avoid;
+                margin: 0.5rem 0;
+            }
+            
+            h2 {
+                page-break-after: avoid;
+                border-bottom: 2px solid #000;
+            }
+            
+            .page-break {
+                page-break-before: always;
+            }
+        }
     </style>
 </head>
 <body>
@@ -311,7 +383,7 @@
             <h1>CSC210: Computer Organization & Architecture</h1>
             <p class="course-subtitle">3-Credit Online Lecture Course</p>
             <div style="margin-top: 1.5rem;">
-                <button class="btn btn-secondary" onclick="downloadSyllabusAsPDF()" style="background: rgba(255,255,255,0.2); border: 2px solid rgba(255,255,255,0.5); color: white; font-size: 1rem; padding: 0.8rem 1.5rem;">
+                <button class="btn" onclick="downloadSyllabusAsPDF()">
                     📄 Download Complete Syllabus as PDF
                 </button>
             </div>
@@ -386,7 +458,7 @@
                 <h2>Class Meeting Information</h2>
                 <div class="slo-list">
                     <p><strong>Format:</strong> Online<br>
-                    <strong>Credit Hours:</strong> 3 (2hr Lecture, 3hr Lab per week)</p>
+                    <strong>Credit Hours:</strong> 3 lecture hours</p>
                 </div>
 
                 <h2>Contact Hours</h2>
@@ -402,14 +474,14 @@
                     </ul>
                     
                     <h4>Other</h4>
-                    <p>By appointment via online schedule</p>
+                    <p>By appointment via <a href="https://calendly.com/dpai/" style="color: #1e3a8a;" target="_blank" rel="noopener">online schedule</a></p>
                 </div>
 
                 <h2>Recommended Materials</h2>
                 <div class="description-box">
                     <p><strong>All primary materials are provided free of charge:</strong></p>
                     <ul style="list-style-type: disc; padding-left: 2rem; margin: 1rem 0;">
-                        <li>"But How Do It Know?" by J. Clark Scott</li>
+                        <li>"But How Do It Know?" by J. Clark Scott (copy in Ukiah Campus Library)</li>
                         <li>MIPS Assembly Language Programming Materials</li>
                         <li><strong>Logisim 2.7.1:</strong> Circuit design software (Free)<br>
                             <a href="https://mendocinocollege-my.sharepoint.com/:u:/g/personal/dpai_mendocino_edu/ETE3bbN1a1tPrHQzXB8cLqcB5zOZSBuM9BrdcxuGxJghDw?e=fkGhtZ" style="color: #1e3a8a;" target="_blank" rel="noopener">Download Logisim 2.7.1 for Windows</a><br>
@@ -442,7 +514,378 @@
                         <div class="collapsible-content">
                             <div class="week-topics"><strong>Topics:</strong> Course overview, levels of abstraction, number systems</div>
                             <div class="week-details">
-                                <strong>Reference Chapters:</strong> "But How Do It Know?" Ch. 1-2 + supplementary materials<br>
+                                <strong>Reference Chapters:</strong> "But How Do It Know?" Ch. 14-15<br>
+                                <strong>Assignment:</strong> Memory system design problems
+                            </div>
+                            <div class="quiz-exam"><strong>Quiz 2:</strong> Covers weeks 9-12</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="phase-container">
+                    <div class="phase-header">Phase 4: Integration & Modern Topics (Weeks 13-17)</div>
+                    
+                    <div class="week-item">
+                        <div class="week-title collapsible" tabindex="0" role="button" aria-expanded="false">Week 13: Complete CPU Integration</div>
+                        <div class="collapsible-content">
+                            <div class="week-topics"><strong>Topics:</strong> Connecting all components, instruction implementation</div>
+                            <div class="week-details">
+                                <strong>Reference Chapters:</strong> "But How Do It Know?" Ch. 16-17<br>
+                                <strong>Assignment:</strong> CPU design documentation, instruction set planning<br>
+                                <strong>Videos:</strong> Complete CPU walkthroughs
+                            </div>
+                            <div class="checkpoint"><strong>Checkpoint 6:</strong> Basic CPU with MOV, ADD, SUB working</div>
+                        </div>
+                    </div>
+
+                    <div class="week-item">
+                        <div class="week-title collapsible" tabindex="0" role="button" aria-expanded="false">Week 14: Advanced Instructions & Testing</div>
+                        <div class="collapsible-content">
+                            <div class="week-topics"><strong>Topics:</strong> Implementing jumps, branches, and I/O instructions</div>
+                            <div class="week-details">
+                                <strong>Reading:</strong> Supplementary materials on instruction implementation<br>
+                                <strong>Assignment:</strong> Test program development<br>
+                                <strong>Project Progress:</strong> Instructor feedback on checkpoint 6
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="week-item">
+                        <div class="week-title collapsible" tabindex="0" role="button" aria-expanded="false">Week 15: Performance Basics (Shortened Week - 2 days)</div>
+                        <div class="collapsible-content">
+                            <div class="week-topics"><strong>Topics:</strong> CPI, clock rate, basic performance metrics</div>
+                            <div class="week-details">
+                                <strong>Reference Chapters:</strong> Performance measurement introduction<br>
+                                <strong>Light Assignment:</strong> Performance calculation worksheet
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="week-item">
+                        <div class="week-title collapsible" tabindex="0" role="button" aria-expanded="false">Week 16: Modern Architecture Topics</div>
+                        <div class="collapsible-content">
+                            <div class="week-topics"><strong>Topics:</strong> Cache basics, pipelining introduction, multicore concepts</div>
+                            <div class="week-details">
+                                <strong>Reference Chapters:</strong> Selected modern architecture articles<br>
+                                <strong>Assignment:</strong> Research paper on modern CPU feature
+                            </div>
+                            <div class="checkpoint"><strong>Checkpoint 7:</strong> Full CPU with 10+ instructions</div>
+                        </div>
+                    </div>
+
+                    <div class="week-item">
+                        <div class="week-title collapsible" tabindex="0" role="button" aria-expanded="false">Week 17: Course Synthesis & Final Project</div>
+                        <div class="collapsible-content">
+                            <div class="week-topics"><strong>Topics:</strong> Review, industry applications, future directions</div>
+                            <div class="week-details">
+                                <strong>Final Project Due:</strong> Complete CPU simulation with documentation
+                            </div>
+                            <div class="quiz-exam"><strong>Final Exam:</strong> Comprehensive exam (proctored online)</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <div id="policies-tab" class="tab-content" role="tabpanel" aria-labelledby="policies-btn">
+            <section>
+                <h2>Course Policies & Student Support</h2>
+                
+                <h3>Assignments & Late Submissions</h3>
+                <div class="description-box">
+                    <p>All assignments are expected to be submitted as defined in the assignment description and NO LATER THAN the provided Due Date. For major exams and the final project, NO LATE SUBMISSIONS will be accepted. For all other lab assignments, submissions will remain open however if submission is completed after we have reviewed the assignment in class (generally will review first class after due date), a 15% reduction in your score will be applied. If you are having difficulties, please communicate with the instructor before the deadline.</p>
+                </div>
+
+                <h3>Student Conduct & Academic Honesty</h3>
+                <div class="phase-container">
+                    <p>Students are expected to behave in a courteous and respectful manner which is conducive to learning. Students should not engage in academic misconduct. For specific guidelines please refer to <a href="https://www.mendocino.edu/sites/default/files/docs/BOT/Procedures/ap5500.1_.pdf" style="color: #1e3a8a;" target="_blank" rel="noopener">Admin Procedure 5500.1</a> for the Student Conduct Guidelines and <a href="https://www.mendocino.edu/sites/default/files/docs/BOT/Procedures/ap5500.2.pdf" style="color: #1e3a8a;" target="_blank" rel="noopener">Admin Procedure 5500.2</a> on academic honesty. These standards will be the expectation in this class.</p>
+                </div>
+
+                <h3>Students with Disabilities</h3>
+                <div class="slo-list">
+                    <p>The College is committed to creating a learning environment that meets the needs of its diverse student body. If you have a disability, or think you may have one, please meet with the Disability Resource Center to request an official accommodation. The staff can be reached at (707) 468-3031 or <a href="mailto:drc@mendocino.edu" style="color: #1e3a8a;">drc@mendocino.edu</a>. It is my goal to create a learning experience that is as accessible as possible.</p>
+                </div>
+
+                <h3>Financial Aid</h3>
+                <div class="description-box">
+                    <p>Don't miss out on available financial aid, visit <a href="https://www.mendocino.edu/financial-aid" style="color: #1e3a8a;" target="_blank" rel="noopener">https://www.mendocino.edu/financial-aid</a> to apply today! To receive financial aid, you must meet the Satisfactory Academic Progress (SAP) requirements. If you have questions, please contact financial aid at <a href="mailto:financialaid@mendocino.edu" style="color: #1e3a8a;">financialaid@mendocino.edu</a>.</p>
+                </div>
+
+                <h3>Privacy & Session Tracking</h3>
+                <div class="description-box">
+                    <p><strong>Interactive Learning Modules:</strong> This course uses interactive web-based learning modules to enhance your educational experience. These modules track your progress during each session to provide personalized feedback and ensure you complete required activities.</p>
+                    
+                    <p><strong>Session-Only Tracking:</strong> All progress tracking is limited to your current browser session only. No data persists after you close your browser, and no information is stored on external servers.</p>
+                    
+                    <p><strong>No Personal Data Collection:</strong> The learning modules do not collect, store, or transmit any personally identifiable information. Progress tracking is anonymous and used solely to enhance your learning experience during each session.</p>
+                    
+                    <p><strong>Student Privacy:</strong> Your privacy is protected - no tracking data is shared with third parties, and no permanent records of your session activity are maintained outside of work you voluntarily submit through Canvas assignments.</p>
+                </div>
+
+                <h3>Student Resources</h3>
+                <div class="phase-container">
+                    <p>A summary of helpful resources for students can be found at <a href="https://mendocinocollege-my.sharepoint.com/:w:/g/personal/rmontes_mendocino_edu/EXsIVHBUzapFt8HHipDwbecB1u_mMiBL87F9YJJRXrbQyw?e=ZRAkDZ&xsdata=MDV8MDJ8ZHBhaUBtZW5kb2Npbm8uZWR1fDI4YTExMzJlZjQ3YjQ0NmM5NGQ1MDhkZGRjNGU4NmFlfGRkNzI5OTg4YTY4MzQxOWFiOWI0MGUzY2M0OGYxNWU0fDB8MHw2Mzg5MDg5NTIxODA4NTI5MDB8VW5rbm93bnxUV0ZwYkdac2IzZDhleUpGYlhCMGVVMWhjR2tpT25SeWRXVXNJbFlpT2lJd0xqQXVNREF3TUNJc0lsQWlPaUpYYVc0ek1pSXNJa0ZPSWpvaVRXRnBiQ0lzSWxkVUlqb3lmUT09fDB8fHw%3d&sdata=NUtpaGRtYmNrUGFhVEN4bGtRUTBWdFVtd3dhOXFVRzNLSWRGbE9FenFNND0%3d" style="color: #1e3a8a;" target="_blank" rel="noopener">Student Resources</a> and in Spanish at <a href="https://mendocinocollege-my.sharepoint.com/:w:/g/personal/rmontes_mendocino_edu/EcBFAFTUzxlAgOXegs0Bys0B1wpBYRlPyVcseBRNvR874Q?e=6qqc9b&xsdata=MDV8MDJ8ZHBhaUBtZW5kb2Npbm8uZWR1fDI4YTExMzJlZjQ3YjQ0NmM5NGQ1MDhkZGRjNGU4NmFlfGRkNzI5OTg4YTY4MzQxOWFiOWI0MGUzY2M0OGYxNWU0fDB8MHw2Mzg5MDg5NTIxODA4NDM2NzJ8VW5rbm93bnxUV0ZwYkdac2IzZDhleUpGYlhCMGVVMWhjR2tpT25SeWRXVXNJbllpT2lJd0xqQXVNREF3TUNJc0lsQWlPaUpYYVc0ek1pSXNJa0ZPSWpvaVRXRnBiQ0lzSWxkVUlqb3lmUT09fDB8fHw%3d&sdata=V1IyK0tRYUtVSFdpOFM2aTYrK2NCdklzRzBsc1p1aS9hSzk3bjByQms4ST0%3d" style="color: #1e3a8a;" target="_blank" rel="noopener">Ayuda para estudiantes</a>.</p>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <script>
+        // Tab functionality
+        function initializeTabs() {
+            const tabButtons = document.querySelectorAll('.nav-tab');
+            const tabContents = document.querySelectorAll('.tab-content');
+
+            tabButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    // Remove active class from all tabs and contents
+                    tabButtons.forEach(tab => {
+                        tab.classList.remove('active');
+                        tab.setAttribute('aria-selected', 'false');
+                    });
+                    tabContents.forEach(content => {
+                        content.classList.remove('active');
+                    });
+
+                    // Add active class to clicked tab and corresponding content
+                    button.classList.add('active');
+                    button.setAttribute('aria-selected', 'true');
+                    const targetTab = button.getAttribute('aria-controls');
+                    document.getElementById(targetTab).classList.add('active');
+                });
+
+                // Keyboard navigation for tabs
+                button.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        button.click();
+                    }
+                });
+            });
+        }
+
+        // Collapsible functionality
+        function initializeCollapsibles() {
+            const collapsibles = document.querySelectorAll('.collapsible');
+
+            collapsibles.forEach(collapsible => {
+                collapsible.addEventListener('click', function() {
+                    this.classList.toggle('active');
+                    const content = this.nextElementSibling;
+                    
+                    if (content.classList.contains('active')) {
+                        content.classList.remove('active');
+                        this.setAttribute('aria-expanded', 'false');
+                    } else {
+                        content.classList.add('active');
+                        this.setAttribute('aria-expanded', 'true');
+                    }
+                });
+
+                // Keyboard support for collapsibles
+                collapsible.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        this.click();
+                    }
+                });
+            });
+        }
+
+        // Download syllabus as PDF function
+        function downloadSyllabusAsPDF() {
+            // Create a new window for printing
+            const printWindow = window.open('', '_blank', 'width=800,height=600');
+            
+            // Get all the content from each tab
+            const overviewContent = document.getElementById('overview-tab').innerHTML;
+            const instructorContent = document.getElementById('instructor-tab').innerHTML;
+            const outlineContent = document.getElementById('outline-tab').innerHTML;
+            const policiesContent = document.getElementById('policies-tab').innerHTML;
+            
+            // Create the complete HTML document for PDF
+            const htmlContent = `
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <title>CSC210 Syllabus - Computer Organization & Architecture</title>
+                    <meta charset="UTF-8">
+                    <style>
+                        body { 
+                            font-family: Arial, sans-serif; 
+                            line-height: 1.4; 
+                            color: #000; 
+                            max-width: 800px; 
+                            margin: 0 auto; 
+                            padding: 20px;
+                            font-size: 12px;
+                        }
+                        h1 { 
+                            color: #1e3a8a; 
+                            font-size: 24px; 
+                            margin-bottom: 10px; 
+                            text-align: center; 
+                            border-bottom: 3px solid #1e3a8a;
+                            padding-bottom: 10px;
+                        }
+                        h2 { 
+                            color: #1e3a8a; 
+                            font-size: 18px; 
+                            margin: 20px 0 10px 0; 
+                            border-bottom: 2px solid #1e3a8a; 
+                            padding-bottom: 5px;
+                            page-break-after: avoid;
+                        }
+                        h3 { 
+                            color: #374151; 
+                            font-size: 16px; 
+                            margin: 15px 0 8px 0; 
+                        }
+                        h4 { 
+                            color: #4b5563; 
+                            font-size: 14px; 
+                            margin: 10px 0 5px 0; 
+                        }
+                        .course-subtitle { 
+                            text-align: center; 
+                            font-size: 14px; 
+                            margin-bottom: 20px; 
+                            color: #6b7280; 
+                        }
+                        .description-box, .slo-list, .phase-container { 
+                            border: 1px solid #ccc; 
+                            padding: 10px; 
+                            margin: 10px 0; 
+                            background: #f9f9f9;
+                            break-inside: avoid;
+                        }
+                        .week-item { 
+                            border: 1px solid #ddd; 
+                            padding: 8px; 
+                            margin: 8px 0; 
+                            background: white;
+                            break-inside: avoid;
+                        }
+                        .week-title { 
+                            font-weight: bold; 
+                            color: #1e3a8a; 
+                            margin-bottom: 5px;
+                        }
+                        .week-topics, .week-details { 
+                            margin: 5px 0; 
+                            font-size: 11px;
+                        }
+                        .checkpoint { 
+                            background-color: #fff3cd; 
+                            border-left: 4px solid #ffc107; 
+                            padding: 8px; 
+                            margin: 5px 0;
+                            font-size: 11px;
+                        }
+                        .quiz-exam { 
+                            background-color: #f8d7da; 
+                            border-left: 4px solid #dc3545; 
+                            padding: 8px; 
+                            margin: 5px 0;
+                            font-size: 11px;
+                        }
+                        .phase-header { 
+                            background-color: #1e3a8a; 
+                            color: white; 
+                            padding: 8px; 
+                            margin-bottom: 10px; 
+                            font-weight: bold; 
+                            text-align: center;
+                        }
+                        ul { 
+                            margin: 10px 0; 
+                            padding-left: 20px; 
+                        }
+                        li { 
+                            margin: 5px 0; 
+                        }
+                        a { 
+                            color: #1e3a8a; 
+                            text-decoration: underline;
+                        }
+                        .page-break { 
+                            page-break-before: always; 
+                        }
+                        .collapsible-content {
+                            display: block !important;
+                            max-height: none !important;
+                            overflow: visible !important;
+                        }
+                        /* Hide interactive elements */
+                        .collapsible::after,
+                        .nav-tabs,
+                        button:not(.print-button) {
+                            display: none !important;
+                        }
+                    </style>
+                </head>
+                <body>
+                    <h1>CSC210: Computer Organization & Architecture</h1>
+                    <p class="course-subtitle">3-Credit Online Lecture Course</p>
+                    
+                    <h2>Course Overview</h2>
+                    ${overviewContent.replace(/<section>/g, '<div>').replace(/<\/section>/g, '</div>')}
+                    
+                    <div class="page-break"></div>
+                    <h2>Instructor & Course Information</h2>
+                    ${instructorContent.replace(/<section>/g, '<div>').replace(/<\/section>/g, '</div>')}
+                    
+                    <div class="page-break"></div>
+                    <h2>Course Outline</h2>
+                    ${outlineContent.replace(/<section>/g, '<div>').replace(/<\/section>/g, '</div>')}
+                    
+                    <div class="page-break"></div>
+                    <h2>Policies & Resources</h2>
+                    ${policiesContent.replace(/<section>/g, '<div>').replace(/<\/section>/g, '</div>')}
+                    
+                    <div style="margin-top: 30px; text-align: center; font-size: 10px; color: #666;">
+                        <p>Generated on ${new Date().toLocaleDateString()} | CSC210 Syllabus | Mendocino College</p>
+                    </div>
+                </body>
+                </html>
+            `;
+            
+            // Write the content to the new window
+            printWindow.document.open();
+            printWindow.document.write(htmlContent);
+            printWindow.document.close();
+            
+            // Wait for content to load, then trigger print dialog
+            printWindow.onload = function() {
+                setTimeout(() => {
+                    printWindow.print();
+                }, 500);
+            };
+        }
+
+        // Initialize all interactive elements when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeTabs();
+            initializeCollapsibles();
+        });
+
+        // Smooth scrolling for skip link
+        document.addEventListener('DOMContentLoaded', function() {
+            const skipLink = document.querySelector('.skip-link');
+            if (skipLink) {
+                skipLink.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({ behavior: 'smooth' });
+                        target.focus();
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html> Do It Know?" Ch. 1-2 + supplementary materials<br>
                                 <strong>Assignment:</strong> Number conversion problems, reflection on hardware-software interface<br>
                                 <strong>Videos:</strong> Introduction to binary/hex, computer abstraction layers
                             </div>
@@ -587,290 +1030,4 @@
                         <div class="collapsible-content">
                             <div class="week-topics"><strong>Topics:</strong> Memory addressing, I/O mechanisms, memory-mapped I/O</div>
                             <div class="week-details">
-                                <strong>Reference Chapters:</strong> "But How Do It Know?" Ch. 14-15<br>
-                                <strong>Assignment:</strong> Memory system design problems
-                            </div>
-                            <div class="quiz-exam"><strong>Quiz 2:</strong> Covers weeks 9-12</div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="phase-container">
-                    <div class="phase-header">Phase 4: Integration & Modern Topics (Weeks 13-17)</div>
-                    
-                    <div class="week-item">
-                        <div class="week-title collapsible" tabindex="0" role="button" aria-expanded="false">Week 13: Complete CPU Integration</div>
-                        <div class="collapsible-content">
-                            <div class="week-topics"><strong>Topics:</strong> Connecting all components, instruction implementation</div>
-                            <div class="week-details">
-                                <strong>Reference Chapters:</strong> "But How Do It Know?" Ch. 16-17<br>
-                                <strong>Assignment:</strong> CPU design documentation, instruction set planning<br>
-                                <strong>Videos:</strong> Complete CPU walkthroughs
-                            </div>
-                            <div class="checkpoint"><strong>Checkpoint 6:</strong> Basic CPU with MOV, ADD, SUB working</div>
-                        </div>
-                    </div>
-
-                    <div class="week-item">
-                        <div class="week-title collapsible" tabindex="0" role="button" aria-expanded="false">Week 14: Advanced Instructions & Testing</div>
-                        <div class="collapsible-content">
-                            <div class="week-topics"><strong>Topics:</strong> Implementing jumps, branches, and I/O instructions</div>
-                            <div class="week-details">
-                                <strong>Reading:</strong> Supplementary materials on instruction implementation<br>
-                                <strong>Assignment:</strong> Test program development<br>
-                                <strong>Project Progress:</strong> Instructor feedback on checkpoint 6
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="week-item">
-                        <div class="week-title collapsible" tabindex="0" role="button" aria-expanded="false">Week 15: Performance Basics (Shortened Week - 2 days)</div>
-                        <div class="collapsible-content">
-                            <div class="week-topics"><strong>Topics:</strong> CPI, clock rate, basic performance metrics</div>
-                            <div class="week-details">
-                                <strong>Reference Chapters:</strong> Performance measurement introduction<br>
-                                <strong>Light Assignment:</strong> Performance calculation worksheet
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="week-item">
-                        <div class="week-title collapsible" tabindex="0" role="button" aria-expanded="false">Week 16: Modern Architecture Topics</div>
-                        <div class="collapsible-content">
-                            <div class="week-topics"><strong>Topics:</strong> Cache basics, pipelining introduction, multicore concepts</div>
-                            <div class="week-details">
-                                <strong>Reference Chapters:</strong> Selected modern architecture articles<br>
-                                <strong>Assignment:</strong> Research paper on modern CPU feature
-                            </div>
-                            <div class="checkpoint"><strong>Checkpoint 7:</strong> Full CPU with 10+ instructions</div>
-                        </div>
-                    </div>
-
-                    <div class="week-item">
-                        <div class="week-title collapsible" tabindex="0" role="button" aria-expanded="false">Week 17: Course Synthesis & Final Project</div>
-                        <div class="collapsible-content">
-                            <div class="week-topics"><strong>Topics:</strong> Review, industry applications, future directions</div>
-                            <div class="week-details">
-                                <strong>Final Project Due:</strong> Complete CPU simulation with documentation
-                            </div>
-                            <div class="quiz-exam"><strong>Final Exam:</strong> Comprehensive exam (proctored online)</div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-        </div>
-
-        <div id="policies-tab" class="tab-content" role="tabpanel" aria-labelledby="policies-btn">
-            <section>
-                <h2>Course Policies & Student Support</h2>
-                
-                <h3>Assignments & Late Submissions</h3>
-                <div class="description-box">
-                    <p>All assignments are expected to be submitted as defined in the assignment description and NO LATER THAN the provided Due Date. For major exams and the final project, NO LATE SUBMISSIONS will be accepted. For all other lab assignments, submissions will remain open however if submission is completed after we have reviewed the assignment in class (generally will review first class after due date), a 15% reduction in your score will be applied. If you are having difficulties, please communicate with the instructor before the deadline.</p>
-                </div>
-
-                <h3>Student Conduct & Academic Honesty</h3>
-                <div class="phase-container">
-                    <p>Students are expected to behave in a courteous and respectful manner which is conducive to learning. Students should not engage in academic misconduct. For specific guidelines please refer to <a href="https://www.mendocino.edu/sites/default/files/docs/BOT/Procedures/ap5500.1_.pdf" style="color: #1e3a8a;" target="_blank" rel="noopener">Admin Procedure 5500.1</a> for the Student Conduct Guidelines and <a href="https://www.mendocino.edu/sites/default/files/docs/BOT/Procedures/ap5500.2.pdf" style="color: #1e3a8a;" target="_blank" rel="noopener">Admin Procedure 5500.2</a> on academic honesty. These standards will be the expectation in this class.</p>
-                </div>
-
-                <h3>Students with Disabilities</h3>
-                <div class="slo-list">
-                    <p>The College is committed to creating a learning environment that meets the needs of its diverse student body. If you have a disability, or think you may have one, please meet with the Disability Resource Center to request an official accommodation. The staff can be reached at (707) 468-3031 or <a href="mailto:drc@mendocino.edu" style="color: #1e3a8a;">drc@mendocino.edu</a>. It is my goal to create a learning experience that is as accessible as possible.</p>
-                </div>
-
-                <h3>Financial Aid</h3>
-                <div class="description-box">
-                    <p>Don't miss out on available financial aid, visit <a href="https://www.mendocino.edu/financial-aid" style="color: #1e3a8a;" target="_blank" rel="noopener">https://www.mendocino.edu/financial-aid</a> to apply today! To receive financial aid, you must meet the Satisfactory Academic Progress (SAP) requirements. If you have questions, please contact financial aid at <a href="mailto:financialaid@mendocino.edu" style="color: #1e3a8a;">financialaid@mendocino.edu</a>.</p>
-                </div>
-
-                <h3>Privacy & Session Tracking</h3>
-                <div class="description-box">
-                    <p><strong>Interactive Learning Modules:</strong> This course uses interactive web-based learning modules to enhance your educational experience. These modules track your progress during each session to provide personalized feedback and ensure you complete required activities.</p>
-                    
-                    <p><strong>Session-Only Tracking:</strong> All progress tracking is limited to your current browser session only. No data persists after you close your browser, and no information is stored on external servers.</p>
-                    
-                    <p><strong>No Personal Data Collection:</strong> The learning modules do not collect, store, or transmit any personally identifiable information. Progress tracking is anonymous and used solely to enhance your learning experience during each session.</p>
-                    
-                    <p><strong>Student Privacy:</strong> Your privacy is protected - no tracking data is shared with third parties, and no permanent records of your session activity are maintained outside of work you voluntarily submit through Canvas assignments.</p>
-                </div>
-
-                <h3>Student Resources</h3>
-                <div class="phase-container">
-                    <p>A summary of helpful resources for students can be found at <a href="https://www.mendocino.edu/student-services/student-resources/student-resource-summary" style="color: #1e3a8a;" target="_blank" rel="noopener">Student Resources</a> and in Spanish at <a href="https://www.mendocino.edu/ayuda-para-estudiantes" style="color: #1e3a8a;" target="_blank" rel="noopener">Ayuda para estudiantes</a>.</p>
-                </div>
-            </section>
-        </div>
-    </main>
-
-    <script>
-        // Tab functionality
-        function initializeTabs() {
-            const tabButtons = document.querySelectorAll('.nav-tab');
-            const tabContents = document.querySelectorAll('.tab-content');
-
-            tabButtons.forEach(button => {
-                button.addEventListener('click', () => {
-                    // Remove active class from all tabs and contents
-                    tabButtons.forEach(tab => {
-                        tab.classList.remove('active');
-                        tab.setAttribute('aria-selected', 'false');
-                    });
-                    tabContents.forEach(content => {
-                        content.classList.remove('active');
-                    });
-
-                    // Add active class to clicked tab and corresponding content
-                    button.classList.add('active');
-                    button.setAttribute('aria-selected', 'true');
-                    const targetTab = button.getAttribute('aria-controls');
-                    document.getElementById(targetTab).classList.add('active');
-                });
-
-                // Keyboard navigation for tabs
-                button.addEventListener('keydown', (e) => {
-                    if (e.key === 'Enter' || e.key === ' ') {
-                        e.preventDefault();
-                        button.click();
-                    }
-                });
-            });
-        }
-
-        // Collapsible functionality
-        function initializeCollapsibles() {
-            const collapsibles = document.querySelectorAll('.collapsible');
-
-            collapsibles.forEach(collapsible => {
-                collapsible.addEventListener('click', function() {
-                    this.classList.toggle('active');
-                    const content = this.nextElementSibling;
-                    
-                    if (content.classList.contains('active')) {
-                        content.classList.remove('active');
-                        this.setAttribute('aria-expanded', 'false');
-                    } else {
-                        content.classList.add('active');
-                        this.setAttribute('aria-expanded', 'true');
-                    }
-                });
-
-                // Keyboard support for collapsibles
-                collapsible.addEventListener('keydown', function(e) {
-                    if (e.key === 'Enter' || e.key === ' ') {
-                        e.preventDefault();
-                        this.click();
-                    }
-                });
-            });
-        }
-
-        // Download syllabus as PDF function
-        function downloadSyllabusAsPDF() {
-            // Create a new document for PDF that includes all content
-            const printDocument = document.createElement('html');
-            printDocument.innerHTML = `
-                <head>
-                    <title>CSC210 Syllabus - Computer Organization & Architecture</title>
-                    <meta charset="UTF-8">
-                    <style>
-                        body { 
-                            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; 
-                            line-height: 1.6; 
-                            color: #333; 
-                            max-width: 800px; 
-                            margin: 0 auto; 
-                            padding: 20px;
-                        }
-                        h1 { color: #1e3a8a; font-size: 2rem; margin-bottom: 1rem; text-align: center; }
-                        h2 { color: #1e3a8a; font-size: 1.5rem; margin: 2rem 0 1rem 0; border-bottom: 2px solid #1e3a8a; padding-bottom: 0.5rem; }
-                        h3 { color: #374151; font-size: 1.3rem; margin: 1.5rem 0 1rem 0; }
-                        h4 { color: #4b5563; font-size: 1.1rem; margin: 1rem 0 0.5rem 0; }
-                        .course-subtitle { text-align: center; font-size: 1.1rem; margin-bottom: 2rem; color: #6b7280; }
-                        .content-box { background: #f8fafc; border-left: 4px solid #1e3a8a; padding: 1rem; margin: 1rem 0; }
-                        .info-box { background: #f1f5f9; padding: 1rem; border-radius: 8px; margin: 1rem 0; }
-                        ul { margin: 1rem 0; padding-left: 2rem; }
-                        li { margin: 0.5rem 0; }
-                        .page-break { page-break-before: always; }
-                        table { width: 100%; border-collapse: collapse; margin: 1rem 0; }
-                        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
-                        th { background-color: #1e3a8a; color: white; }
-                        a { color: #1e3a8a; }
-                    </style>
-                </head>
-                <body>
-                    <h1>CSC210: Computer Organization & Architecture</h1>
-                    <p class="course-subtitle">3-Credit Online Lecture Course</p>
-                    
-                    <h2>Course Overview</h2>
-                    ${document.querySelector('#overview-tab .content-section:first-child').innerHTML}
-                    
-                    <div class="page-break"></div>
-                    <h2>Instructor & Course Information</h2>
-                    ${document.querySelector('#instructor-tab').innerHTML.replace(/<section>/g, '<div>').replace(/<\/section>/g, '</div>')}
-                    
-                    <div class="page-break"></div>
-                    <h2>Course Outline</h2>
-                    ${document.querySelector('#outline-tab').innerHTML.replace(/<section>/g, '<div>').replace(/<\/section>/g, '</div>')}
-                    
-                    <div class="page-break"></div>
-                    <h2>Policies & Resources</h2>
-                    ${document.querySelector('#policies-tab').innerHTML.replace(/<section>/g, '<div>').replace(/<\/section>/g, '</div>')}
-                    
-                    <div style="margin-top: 3rem; text-align: center; font-size: 0.9rem; color: #6b7280;">
-                        <p>Generated on ${new Date().toLocaleDateString()} | CSC210 Syllabus</p>
-                    </div>
-                </body>
-            `;
-            
-            // Clean up the content for PDF
-            const tempDiv = document.createElement('div');
-            tempDiv.innerHTML = printDocument.innerHTML;
-            
-            // Remove interactive elements
-            const elementsToRemove = tempDiv.querySelectorAll('button, .collapsible::after, .nav-tab, script');
-            elementsToRemove.forEach(el => el.remove());
-            
-            // Show all collapsible content
-            const collapsibleContents = tempDiv.querySelectorAll('.collapsible-content');
-            collapsibleContents.forEach(content => {
-                content.style.display = 'block';
-                content.style.maxHeight = 'none';
-            });
-            
-            // Create print window with complete content
-            const printWindow = window.open('', '_blank');
-            printWindow.document.write('<!DOCTYPE html>' + tempDiv.innerHTML);
-            printWindow.document.close();
-            
-            // Wait for content to load, then trigger print dialog
-            printWindow.onload = function() {
-                setTimeout(() => {
-                    printWindow.print();
-                }, 500);
-            };
-        }
-
-        // Initialize all interactive elements when page loads
-        document.addEventListener('DOMContentLoaded', function() {
-            initializeTabs();
-            initializeCollapsibles();
-        });
-
-        // Smooth scrolling for skip link
-        document.addEventListener('DOMContentLoaded', function() {
-            const skipLink = document.querySelector('.skip-link');
-            if (skipLink) {
-                skipLink.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    const target = document.querySelector(this.getAttribute('href'));
-                    if (target) {
-                        target.scrollIntoView({ behavior: 'smooth' });
-                        target.focus();
-                    }
-                });
-            }
-        });
-    </script>
-</body>
-</html>
+                                <strong>Reference Chapters:</strong> "But How
