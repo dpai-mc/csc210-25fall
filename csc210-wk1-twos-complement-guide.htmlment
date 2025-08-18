@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Guide to Two's Complement</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Warm Neutrals -->
+    <!-- Application Structure Plan: The application is a single-page, scrollable tutorial designed to follow a logical learning path. A sticky navigation bar allows users to jump between sections. The structure is: 1) The Problem (demonstrating why a simple 'sign bit' fails), 2) The Recipe (an interactive tool to perform the two's complement conversion step-by-step), 3) Why it Works (visualizing the 'wrap-around' concept and proving the math), and 4) The Range (showing how bit-depth affects the range of representable numbers). This thematic, guided structure was chosen to build the concept from the ground up, making it easier for users to understand the 'why' behind the 'how'. -->
+    <!-- Visualization & Content Choices: The app avoids traditional charts in favor of custom interactive elements. 1) 'Broken Math' Demo (Goal: Inform): Uses styled HTML divs to visually represent a failed binary addition. 2) Step-by-Step Converter (Goal: Organize/Inform): An input field drives a visual, multi-step process showing bit inversion and addition. 3) 'Number Odometer' (Goal: Relationships): A simplified HTML/CSS visual demonstrates the wrap-around from 0 to -1. 4) Range Calculator (Goal: Compare): A dropdown dynamically updates text to show the min/max values for different bit depths. These choices prioritize hands-on learning and conceptual understanding over data presentation. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F8F4E1;
+            color: #594545;
+        }
+        .nav-link {
+            transition: color 0.3s, border-bottom-color 0.3s;
+            border-bottom: 2px solid transparent;
+        }
+        .nav-link:hover, .nav-link.active {
+            color: #9E7676;
+            border-bottom-color: #9E7676;
+        }
+        .card {
+            background-color: #FFFFFF;
+            border: 1px solid #DED0B6;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        .input-field {
+            background-color: #F8F4E1;
+            border: 1px solid #DED0B6;
+        }
+        .input-field:focus {
+            outline: none;
+            border-color: #9E7676;
+            box-shadow: 0 0 0 3px rgba(158, 118, 118, 0.3);
+        }
+        .bit-display {
+            font-family: 'monospace';
+            letter-spacing: 0.15em;
+            background-color: #F8F4E1;
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+            border: 1px solid #DED0B6;
+        }
+        .bit-animation {
+            transition: all 0.3s ease-in-out;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <header class="bg-white/80 backdrop-blur-md sticky top-0 z-50 border-b border-gray-200">
+        <nav class="container mx-auto px-4">
+            <div class="flex items-center justify-between h-16">
+                <h1 class="text-xl font-bold text-gray-800">Two's Complement Guide</h1>
+                <div class="hidden md:flex items-center space-x-6">
+                    <a href="#problem" class="nav-link px-2 py-1">The Problem</a>
+                    <a href="#recipe" class="nav-link px-2 py-1">The Recipe</a>
+                    <a href="#why" class="nav-link px-2 py-1">Why it Works</a>
+                    <a href="#range" class="nav-link px-2 py-1">The Range</a>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container mx-auto px-4 py-8 md:py-12">
+
+        <section id="intro" class="text-center mb-16 md:mb-24">
+            <h2 class="text-3xl md:text-4xl font-bold mb-4">Understanding Negative Numbers</h2>
+            <p class="max-w-3xl mx-auto text-lg text-gray-600">
+                We know `00000111` is 7 in binary, but how does a computer represent **-7**? It uses a clever system called **Two's Complement** that makes math simple and efficient. This guide will show you how it works, step by step.
+            </p>
+        </section>
+
+        <section id="problem" class="mb-16 md:mb-24 scroll-mt-20">
+            <h2 class="text-2xl md:text-3xl font-bold mb-6 text-center">Part 1: The Problem with a "Sign Bit"</h2>
+            <div class="card max-w-2xl mx-auto p-6 md:p-8 rounded-lg">
+                <p class="text-gray-600 mb-6">The first idea you might have is to use the first bit as a sign: `0` for positive, `1` for negative. This is called **Sign and Magnitude**. While simple, it has two major flaws that make it impractical for computers.</p>
+                <div class="bg-red-50 border-l-4 border-red-400 p-4 rounded-r-lg">
+                    <h3 class="font-bold text-lg mb-2">Flaw: Broken Math</h3>
+                    <p class="mb-4">Adding `+7` and `-7` should equal zero. With a simple sign bit, the math doesn't work. The computer would need separate, complex hardware just for subtraction.</p>
+                    <div class="text-center text-lg">
+                        <div class="bit-display inline-block">00000111</div> <span class="mx-2 font-bold">(+7)</span><br>
+                        <span class="font-bold text-xl">+</span><br>
+                        <div class="bit-display inline-block">10000111</div> <span class="mx-2 font-bold">(-7)</span><br>
+                        <hr class="my-2 border-gray-400 w-48 mx-auto">
+                        <div class="bit-display inline-block bg-red-200">10001110</div> <span class="mx-2 font-bold text-red-700">(-14) Wrong!</span>
+                    </div>
+                    <p class="mt-4 text-sm text-gray-700">The other flaw is that this system has two ways to represent zero: `00000000` (+0) and `10000000` (-0), which is inefficient.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="recipe" class="mb-16 md:mb-24 scroll-mt-20">
+            <h2 class="text-2xl md:text-3xl font-bold mb-6 text-center">Part 2: The Two's Complement Recipe</h2>
+            <div class="card max-w-2xl mx-auto p-6 md:p-8 rounded-lg">
+                <p class="text-gray-600 mb-6">To solve these problems, computers use a simple two-step process to find the negative representation of a number. Enter a positive number below (0-127) to see it in action.</p>
+                <div>
+                    <label for="recipe-input" class="block font-medium mb-2">Enter a positive number:</label>
+                    <input type="number" id="recipe-input" value="7" min="0" max="127" class="w-full p-2 rounded-md input-field">
+                </div>
+                <div id="recipe-steps" class="mt-6 space-y-4" aria-live="polite">
+                </div>
+            </div>
+        </section>
+
+        <section id="why" class="mb-16 md:mb-24 scroll-mt-20">
+            <h2 class="text-2xl md:text-3xl font-bold mb-6 text-center">Part 3: Why This "Magic" Works</h2>
+            <div class="grid md:grid-cols-2 gap-8 items-start">
+                <div class="card p-6 md:p-8 rounded-lg">
+                    <h3 class="font-bold text-lg mb-2">The Odometer Analogy</h3>
+                    <p class="text-gray-600 mb-4">Think of an odometer. If you're at 0001 and go back one, you hit 0000. Go back one more, and it "wraps around" to 9999. Binary works the same way. Going back one from `0000` wraps to `1111`, which we can think of as -1.</p>
+                    <div class="text-center space-y-1">
+                        <div class="bit-display">... 0010 (+2)</div>
+                        <div class="bit-display">... 0001 (+1)</div>
+                        <div class="bit-display font-bold bg-yellow-100">... 0000 (0)</div>
+                        <div class="bit-display">... 1111 (-1)</div>
+                        <div class="bit-display">... 1110 (-2)</div>
+                    </div>
+                </div>
+                <div class="card p-6 md:p-8 rounded-lg">
+                    <h3 class="font-bold text-lg mb-2">The Math Now Works!</h3>
+                    <p class="text-gray-600 mb-4">With Two's Complement, subtraction becomes simple addition. Let's try `+7 + (-7)` again.</p>
+                     <div class="text-center text-lg">
+                        <div class="bit-display inline-block">00000111</div> <span class="mx-2 font-bold">(+7)</span><br>
+                        <span class="font-bold text-xl">+</span><br>
+                        <div class="bit-display inline-block">11111001</div> <span class="mx-2 font-bold">(-7)</span><br>
+                        <hr class="my-2 border-gray-400 w-48 mx-auto">
+                        <div class="bit-display inline-block bg-green-200"><span class="text-gray-400">1</span>00000000</div> <span class="mx-2 font-bold text-green-700">(0) Correct!</span>
+                    </div>
+                    <p class="mt-4 text-sm text-gray-700">In an 8-bit system, the 9th bit (the carry-out bit) is simply discarded, leaving the correct answer: 0.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="range" class="scroll-mt-20">
+            <h2 class="text-2xl md:text-3xl font-bold mb-6 text-center">Part 4: The Range of Numbers</h2>
+            <div class="card max-w-2xl mx-auto p-6 md:p-8 rounded-lg">
+                <p class="text-gray-600 mb-6">Because there is only one representation for zero, Two's Complement gives us an asymmetrical range of numbers, with one more negative number than positive. Select a bit depth to see the range.</p>
+                <div>
+                    <label for="bit-depth-select" class="block font-medium mb-2">Select Bit Depth:</label>
+                    <select id="bit-depth-select" class="w-full p-2 rounded-md input-field">
+                        <option value="4">4-bit</option>
+                        <option value="8" selected>8-bit</option>
+                        <option value="16">16-bit</option>
+                        <option value="32">32-bit</option>
+                    </select>
+                </div>
+                <div id="range-display" class="mt-6 text-center bg-gray-50 p-4 rounded-md" aria-live="polite">
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-white border-t border-gray-200 mt-16">
+        <div class="container mx-auto px-4 py-6 text-center text-gray-500">
+            <p>Interactive Two's Complement Guide</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const sections = document.querySelectorAll('section');
+            const navLinks = document.querySelectorAll('.nav-link');
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const id = entry.target.getAttribute('id');
+                        navLinks.forEach(link => {
+                            link.classList.toggle('active', link.getAttribute('href') === `#${id}`);
+                        });
+                    }
+                });
+            }, { root: null, rootMargin: '0px', threshold: 0.6 });
+
+            sections.forEach(section => observer.observe(section));
+
+            const recipeInput = document.getElementById('recipe-input');
+            const recipeStepsContainer = document.getElementById('recipe-steps');
+
+            function toBinary(dec, bits) {
+                return (dec >>> 0).toString(2).padStart(bits, '0');
+            }
+
+            function updateRecipe() {
+                let num = parseInt(recipeInput.value);
+                if (isNaN(num) || num < 0 || num > 127) {
+                    recipeStepsContainer.innerHTML = `<p class="text-red-600 text-center">Please enter a number between 0 and 127.</p>`;
+                    return;
+                }
+
+                const positiveBinary = toBinary(num, 8);
+                const invertedBinary = positiveBinary.split('').map(bit => bit === '1' ? '0' : '1').join('');
+                const negativeDecimal = -num;
+                const finalBinary = toBinary(negativeDecimal, 8);
+
+                recipeStepsContainer.innerHTML = `
+                    <div class="bit-animation">
+                        <p class="font-medium">Step 0: Start with the positive number (${num})</p>
+                        <div class="bit-display mt-1">${positiveBinary}</div>
+                    </div>
+                    <div class="bit-animation" style="transition-delay: 150ms;">
+                        <p class="font-medium">Step 1: Invert all the bits (One's Complement)</p>
+                        <div class="bit-display mt-1">${invertedBinary}</div>
+                    </div>
+                    <div class="bit-animation" style="transition-delay: 300ms;">
+                        <p class="font-medium">Step 2: Add one</p>
+                        <div class="bit-display mt-1">${finalBinary}</div>
+                    </div>
+                    <div class="mt-4 text-center font-bold text-lg bg-green-50 p-3 rounded-md bit-animation" style="transition-delay: 450ms;">
+                        Result: <span class="font-mono">${finalBinary}</span> represents ${negativeDecimal}
+                    </div>
+                `;
+            }
+            recipeInput.addEventListener('input', updateRecipe);
+            updateRecipe();
+
+            const bitDepthSelect = document.getElementById('bit-depth-select');
+            const rangeDisplay = document.getElementById('range-display');
+
+            function updateRange() {
+                const bits = parseInt(bitDepthSelect.value);
+                const max = Math.pow(2, bits - 1) - 1;
+                const min = -Math.pow(2, bits - 1);
+
+                rangeDisplay.innerHTML = `
+                    <p class="text-lg">Range: <span class="font-bold">${min.toLocaleString()}</span> to <span class="font-bold">+${max.toLocaleString()}</span></p>
+                    <p class="text-sm text-gray-600 mt-2">Total representable numbers: ${Math.pow(2, bits).toLocaleString()}</p>
+                `;
+            }
+            bitDepthSelect.addEventListener('change', updateRange);
+            updateRange();
+        });
+    </script>
+</body>
+</html>
