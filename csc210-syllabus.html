@@ -384,7 +384,7 @@
             <p class="course-subtitle">3-Credit Online Lecture Course</p>
             <div style="margin-top: 1.5rem;">
                 <button class="btn" onclick="downloadSyllabusAsPDF()">
-                    📄 Download Complete Syllabus as PDF
+                    📄 Download Syllabus (pdf)
                 </button>
             </div>
         </div>
@@ -507,225 +507,229 @@
                 <h2>17-Week Course Outline</h2>
                 
                 <div class="phase-container">
-                    <div class="phase-header">Phase 1: Digital Foundations (Weeks 1-4)</div>
-                    
-                    <div class="week-item">
-                        <div class="week-title collapsible" tabindex="0" role="button" aria-expanded="false">Week 1: Introduction to Computer Architecture</div>
-                        <div class="collapsible-content">
-                            <div class="week-topics"><strong>Topics:</strong> Course overview, levels of abstraction, number systems</div>
-                            <div class="week-details">
-                                <strong>Reference Chapters:</strong> "But How Do It Know?" Ch. 1-2 + supplementary materials<br>
-                                <strong>Assignment:</strong> Number conversion problems, reflection on hardware-software interface<br>
-                                <strong>Videos:</strong> Introduction to binary/hex, computer abstraction layers
+                    <div class="phase-header collapsible" tabindex="0" role="button" aria-expanded="false">Phase 1: Digital Foundations (Weeks 1-4)</div>
+                    <div class="collapsible-content">
+                        <div class="week-item">
+                            <div class="week-title collapsible" tabindex="0" role="button" aria-expanded="false">Week 1: Introduction to Computer Architecture</div>
+                            <div class="collapsible-content">
+                                <div class="week-topics"><strong>Topics:</strong> Course overview, levels of abstraction, number systems</div>
+                                <div class="week-details">
+                                    <strong>Reference Chapters:</strong> "But How Do It Know?" Ch. 1-2 + supplementary materials<br>
+                                    <strong>Assignment:</strong> Number conversion problems, reflection on hardware-software interface<br>
+                                    <strong>Videos:</strong> Introduction to binary/hex, computer abstraction layers
+                                </div>
                             </div>
                         </div>
-                    </div>
 
-                    <div class="week-item">
-                        <div class="week-title collapsible" tabindex="0" role="button" aria-expanded="false">Week 2: Boolean Logic & Gates</div>
-                        <div class="collapsible-content">
-                            <div class="week-topics"><strong>Topics:</strong> Boolean algebra, truth tables, basic logic gates</div>
-                            <div class="week-details">
-                                <strong>Reference Chapters:</strong> "But How Do It Know?" Ch. 3-4<br>
-                                <strong>Assignment:</strong> Boolean expression simplification, gate-level design problems<br>
-                                <strong>Videos:</strong> Logic gate operations, Boolean algebra rules
-                            </div>
-                            <div class="checkpoint"><strong>Checkpoint 1:</strong> Simple gate combinations in Logisim (verify understanding)</div>
-                        </div>
-                    </div>
-
-                    <div class="week-item">
-                        <div class="week-title collapsible" tabindex="0" role="button" aria-expanded="false">Week 3: Combinational Logic Design</div>
-                        <div class="collapsible-content">
-                            <div class="week-topics"><strong>Topics:</strong> Adders, multiplexers, decoders, encoders</div>
-                            <div class="week-details">
-                                <strong>Reading:</strong> Supplementary materials on combinational circuits<br>
-                                <strong>Assignment:</strong> Design problems for arithmetic circuits<br>
-                                <strong>Videos:</strong> Building complex circuits from gates
+                        <div class="week-item">
+                            <div class="week-title collapsible" tabindex="0" role="button" aria-expanded="false">Week 2: Boolean Logic & Gates</div>
+                            <div class="collapsible-content">
+                                <div class="week-topics"><strong>Topics:</strong> Boolean algebra, truth tables, basic logic gates</div>
+                                <div class="week-details">
+                                    <strong>Reference Chapters:</strong> "But How Do It Know?" Ch. 3-4<br>
+                                    <strong>Assignment:</strong> Boolean expression simplification, gate-level design problems<br>
+                                    <strong>Videos:</strong> Logic gate operations, Boolean algebra rules
+                                </div>
+                                <div class="checkpoint"><strong>Checkpoint 1:</strong> Simple gate combinations in Logisim (verify understanding)</div>
                             </div>
                         </div>
-                    </div>
 
-                    <div class="week-item">
-                        <div class="week-title collapsible" tabindex="0" role="button" aria-expanded="false">Week 4: Sequential Logic & Memory Basics</div>
-                        <div class="collapsible-content">
-                            <div class="week-topics"><strong>Topics:</strong> Latches, flip-flops, registers, RAM concepts</div>
-                            <div class="week-details">
-                                <strong>Reference Chapters:</strong> "But How Do It Know?" Ch. 5-6<br>
-                                <strong>Assignment:</strong> Sequential circuit analysis, memory organization problems
-                            </div>
-                            <div class="quiz-exam"><strong>Quiz 1:</strong> Covers weeks 1-4</div>
-                            <div class="checkpoint"><strong>Checkpoint 2:</strong> 8-bit register design submission</div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="phase-container">
-                    <div class="phase-header">Phase 2: Assembly Language (Weeks 5-8)</div>
-                    
-                    <div class="week-item">
-                        <div class="week-title collapsible" tabindex="0" role="button" aria-expanded="false">Week 5: Introduction to MIPS Architecture</div>
-                        <div class="collapsible-content">
-                            <div class="week-topics"><strong>Topics:</strong> ISA concepts, MIPS registers, instruction formats</div>
-                            <div class="week-details">
-                                <strong>Reference Chapters:</strong> MIPS reference materials, instruction set overview<br>
-                                <strong>Assignment:</strong> Instruction encoding/decoding exercises<br>
-                                <strong>Videos:</strong> MIPS architecture overview, MARS tutorial
+                        <div class="week-item">
+                            <div class="week-title collapsible" tabindex="0" role="button" aria-expanded="false">Week 3: Combinational Logic Design</div>
+                            <div class="collapsible-content">
+                                <div class="week-topics"><strong>Topics:</strong> Adders, multiplexers, decoders, encoders</div>
+                                <div class="week-details">
+                                    <strong>Reading:</strong> Supplementary materials on combinational circuits<br>
+                                    <strong>Assignment:</strong> Design problems for arithmetic circuits<br>
+                                    <strong>Videos:</strong> Building complex circuits from gates
+                                </div>
                             </div>
                         </div>
-                    </div>
 
-                    <div class="week-item">
-                        <div class="week-title collapsible" tabindex="0" role="button" aria-expanded="false">Week 6: MIPS Arithmetic & Logic Instructions</div>
-                        <div class="collapsible-content">
-                            <div class="week-topics"><strong>Topics:</strong> R-type instructions, immediate operations, logical operations</div>
-                            <div class="week-details">
-                                <strong>Reference Chapters:</strong> MIPS programming guide (arithmetic/logic sections)<br>
-                                <strong>Assignment:</strong> Write simple MIPS programs, trace execution<br>
-                                <strong>Videos:</strong> Step-by-step MIPS programming examples
+                        <div class="week-item">
+                            <div class="week-title collapsible" tabindex="0" role="button" aria-expanded="false">Week 4: Sequential Logic & Memory Basics</div>
+                            <div class="collapsible-content">
+                                <div class="week-topics"><strong>Topics:</strong> Latches, flip-flops, registers, RAM concepts</div>
+                                <div class="week-details">
+                                    <strong>Reference Chapters:</strong> "But How Do It Know?" Ch. 5-6<br>
+                                    <strong>Assignment:</strong> Sequential circuit analysis, memory organization problems
+                                </div>
+                                <div class="quiz-exam"><strong>Quiz 1:</strong> Covers weeks 1-4</div>
+                                <div class="checkpoint"><strong>Checkpoint 2:</strong> 8-bit register design submission</div>
                             </div>
-                            <div class="checkpoint"><strong>Checkpoint 3:</strong> 8-bit ALU simulation due (matching "But How Do It Know?" specs)</div>
-                        </div>
-                    </div>
-
-                    <div class="week-item">
-                        <div class="week-title collapsible" tabindex="0" role="button" aria-expanded="false">Week 7: MIPS Control Flow & Procedures</div>
-                        <div class="collapsible-content">
-                            <div class="week-topics"><strong>Topics:</strong> Branches, jumps, procedure calls, stack usage</div>
-                            <div class="week-details">
-                                <strong>Reference Chapters:</strong> MIPS programming guide (control flow sections)<br>
-                                <strong>Assignment:</strong> Convert Java methods to MIPS procedures<br>
-                                <strong>Videos:</strong> Stack operations, procedure calling conventions
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="week-item">
-                        <div class="week-title collapsible" tabindex="0" role="button" aria-expanded="false">Week 8: MIPS Memory & Arrays</div>
-                        <div class="collapsible-content">
-                            <div class="week-topics"><strong>Topics:</strong> Load/store instructions, addressing modes, array manipulation</div>
-                            <div class="week-details">
-                                <strong>Reference Chapters:</strong> MIPS memory model documentation<br>
-                                <strong>Assignment:</strong> Array processing programs in MIPS
-                            </div>
-                            <div class="quiz-exam"><strong>Midterm Exam:</strong> Comprehensive exam on weeks 1-8</div>
                         </div>
                     </div>
                 </div>
 
                 <div class="phase-container">
-                    <div class="phase-header">Phase 3: CPU Design Theory (Weeks 9-12)</div>
-                    
-                    <div class="week-item">
-                        <div class="week-title collapsible" tabindex="0" role="button" aria-expanded="false">Week 9: CPU Architecture Overview</div>
-                        <div class="collapsible-content">
-                            <div class="week-topics"><strong>Topics:</strong> Von Neumann model, datapath components, fetch-decode-execute</div>
-                            <div class="week-details">
-                                <strong>Reference Chapters:</strong> "But How Do It Know?" Ch. 7-9<br>
-                                <strong>Assignment:</strong> Datapath tracing exercises, component identification<br>
-                                <strong>Videos:</strong> CPU simulation walkthroughs
-                            </div>
-                            <div class="checkpoint"><strong>Checkpoint 4:</strong> Complete RAM module with MAR (256 bytes)</div>
-                        </div>
-                    </div>
-
-                    <div class="week-item">
-                        <div class="week-title collapsible" tabindex="0" role="button" aria-expanded="false">Week 10: The ALU & Register File</div>
-                        <div class="collapsible-content">
-                            <div class="week-topics"><strong>Topics:</strong> ALU design, operation selection, register file organization</div>
-                            <div class="week-details">
-                                <strong>Reference Chapters:</strong> "But How Do It Know?" Ch. 10-11<br>
-                                <strong>Assignment:</strong> ALU operation analysis, design modifications<br>
-                                <strong>Project Planning:</strong> Submit CPU implementation plan
+                    <div class="phase-header collapsible" tabindex="0" role="button" aria-expanded="false">Phase 2: Assembly Language (Weeks 5-8)</div>
+                    <div class="collapsible-content">
+                        <div class="week-item">
+                            <div class="week-title collapsible" tabindex="0" role="button" aria-expanded="false">Week 5: Introduction to MIPS Architecture</div>
+                            <div class="collapsible-content">
+                                <div class="week-topics"><strong>Topics:</strong> ISA concepts, MIPS registers, instruction formats</div>
+                                <div class="week-details">
+                                    <strong>Reference Chapters:</strong> MIPS reference materials, instruction set overview<br>
+                                    <strong>Assignment:</strong> Instruction encoding/decoding exercises<br>
+                                    <strong>Videos:</strong> MIPS architecture overview, MARS tutorial
+                                </div>
                             </div>
                         </div>
-                    </div>
 
-                    <div class="week-item">
-                        <div class="week-title collapsible" tabindex="0" role="button" aria-expanded="false">Week 11: Control Unit Design</div>
-                        <div class="collapsible-content">
-                            <div class="week-topics"><strong>Topics:</strong> Instruction decoding, control signals, microprogramming basics</div>
-                            <div class="week-details">
-                                <strong>Reference Chapters:</strong> "But How Do It Know?" Ch. 12-13<br>
-                                <strong>Assignment:</strong> Control signal generation for instruction subset<br>
-                                <strong>Videos:</strong> Control unit implementation strategies
+                        <div class="week-item">
+                            <div class="week-title collapsible" tabindex="0" role="button" aria-expanded="false">Week 6: MIPS Arithmetic & Logic Instructions</div>
+                            <div class="collapsible-content">
+                                <div class="week-topics"><strong>Topics:</strong> R-type instructions, immediate operations, logical operations</div>
+                                <div class="week-details">
+                                    <strong>Reference Chapters:</strong> MIPS programming guide (arithmetic/logic sections)<br>
+                                    <strong>Assignment:</strong> Write simple MIPS programs, trace execution<br>
+                                    <strong>Videos:</strong> Step-by-step MIPS programming examples
+                                </div>
+                                <div class="checkpoint"><strong>Checkpoint 3:</strong> 8-bit ALU simulation due (matching "But How Do It Know?" specs)</div>
                             </div>
-                            <div class="checkpoint"><strong>Checkpoint 5:</strong> Register file with bus connections (R0-R3, PC, MAR, etc.)</div>
                         </div>
-                    </div>
 
-                    <div class="week-item">
-                        <div class="week-title collapsible" tabindex="0" role="button" aria-expanded="false">Week 12: Memory Interface & I/O</div>
-                        <div class="collapsible-content">
-                            <div class="week-topics"><strong>Topics:</strong> Memory addressing, I/O mechanisms, memory-mapped I/O</div>
-                            <div class="week-details">
-                                <strong>Reference Chapters:</strong> "But How Do It Know?" Ch. 14-15<br>
-                                <strong>Assignment:</strong> Memory system design problems
+                        <div class="week-item">
+                            <div class="week-title collapsible" tabindex="0" role="button" aria-expanded="false">Week 7: MIPS Control Flow & Procedures</div>
+                            <div class="collapsible-content">
+                                <div class="week-topics"><strong>Topics:</strong> Branches, jumps, procedure calls, stack usage</div>
+                                <div class="week-details">
+                                    <strong>Reference Chapters:</strong> MIPS programming guide (control flow sections)<br>
+                                    <strong>Assignment:</strong> Convert Java methods to MIPS procedures<br>
+                                    <strong>Videos:</strong> Stack operations, procedure calling conventions
+                                </div>
                             </div>
-                            <div class="quiz-exam"><strong>Quiz 2:</strong> Covers weeks 9-12</div>
+                        </div>
+
+                        <div class="week-item">
+                            <div class="week-title collapsible" tabindex="0" role="button" aria-expanded="false">Week 8: MIPS Memory & Arrays</div>
+                            <div class="collapsible-content">
+                                <div class="week-topics"><strong>Topics:</strong> Load/store instructions, addressing modes, array manipulation</div>
+                                <div class="week-details">
+                                    <strong>Reference Chapters:</strong> MIPS memory model documentation<br>
+                                    <strong>Assignment:</strong> Array processing programs in MIPS
+                                </div>
+                                <div class="quiz-exam"><strong>Midterm Exam:</strong> Comprehensive exam on weeks 1-8</div>
+                            </div>
                         </div>
                     </div>
                 </div>
 
                 <div class="phase-container">
-                    <div class="phase-header">Phase 4: Integration & Modern Topics (Weeks 13-17)</div>
-                    
-                    <div class="week-item">
-                        <div class="week-title collapsible" tabindex="0" role="button" aria-expanded="false">Week 13: Complete CPU Integration</div>
-                        <div class="collapsible-content">
-                            <div class="week-topics"><strong>Topics:</strong> Connecting all components, instruction implementation</div>
-                            <div class="week-details">
-                                <strong>Reference Chapters:</strong> "But How Do It Know?" Ch. 16-17<br>
-                                <strong>Assignment:</strong> CPU design documentation, instruction set planning<br>
-                                <strong>Videos:</strong> Complete CPU walkthroughs
-                            </div>
-                            <div class="checkpoint"><strong>Checkpoint 6:</strong> Basic CPU with MOV, ADD, SUB working</div>
-                        </div>
-                    </div>
-
-                    <div class="week-item">
-                        <div class="week-title collapsible" tabindex="0" role="button" aria-expanded="false">Week 14: Advanced Instructions & Testing</div>
-                        <div class="collapsible-content">
-                            <div class="week-topics"><strong>Topics:</strong> Implementing jumps, branches, and I/O instructions</div>
-                            <div class="week-details">
-                                <strong>Reading:</strong> Supplementary materials on instruction implementation<br>
-                                <strong>Assignment:</strong> Test program development<br>
-                                <strong>Project Progress:</strong> Instructor feedback on checkpoint 6
+                    <div class="phase-header collapsible" tabindex="0" role="button" aria-expanded="false">Phase 3: CPU Design Theory (Weeks 9-12)</div>
+                    <div class="collapsible-content">
+                        <div class="week-item">
+                            <div class="week-title collapsible" tabindex="0" role="button" aria-expanded="false">Week 9: CPU Architecture Overview</div>
+                            <div class="collapsible-content">
+                                <div class="week-topics"><strong>Topics:</strong> Von Neumann model, datapath components, fetch-decode-execute</div>
+                                <div class="week-details">
+                                    <strong>Reference Chapters:</strong> "But How Do It Know?" Ch. 7-9<br>
+                                    <strong>Assignment:</strong> Datapath tracing exercises, component identification<br>
+                                    <strong>Videos:</strong> CPU simulation walkthroughs
+                                </div>
+                                <div class="checkpoint"><strong>Checkpoint 4:</strong> Complete RAM module with MAR (256 bytes)</div>
                             </div>
                         </div>
-                    </div>
 
-                    <div class="week-item">
-                        <div class="week-title collapsible" tabindex="0" role="button" aria-expanded="false">Week 15: Performance Basics (Shortened Week - 2 days)</div>
-                        <div class="collapsible-content">
-                            <div class="week-topics"><strong>Topics:</strong> CPI, clock rate, basic performance metrics</div>
-                            <div class="week-details">
-                                <strong>Reference Chapters:</strong> Performance measurement introduction<br>
-                                <strong>Light Assignment:</strong> Performance calculation worksheet
+                        <div class="week-item">
+                            <div class="week-title collapsible" tabindex="0" role="button" aria-expanded="false">Week 10: The ALU & Register File</div>
+                            <div class="collapsible-content">
+                                <div class="week-topics"><strong>Topics:</strong> ALU design, operation selection, register file organization</div>
+                                <div class="week-details">
+                                    <strong>Reference Chapters:</strong> "But How Do It Know?" Ch. 10-11<br>
+                                    <strong>Assignment:</strong> ALU operation analysis, design modifications<br>
+                                    <strong>Project Planning:</strong> Submit CPU implementation plan
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="week-item">
+                            <div class="week-title collapsible" tabindex="0" role="button" aria-expanded="false">Week 11: Control Unit Design</div>
+                            <div class="collapsible-content">
+                                <div class="week-topics"><strong>Topics:</strong> Instruction decoding, control signals, microprogramming basics</div>
+                                <div class="week-details">
+                                    <strong>Reference Chapters:</strong> "But How Do It Know?" Ch. 12-13<br>
+                                    <strong>Assignment:</strong> Control signal generation for instruction subset<br>
+                                    <strong>Videos:</strong> Control unit implementation strategies
+                                </div>
+                                <div class="checkpoint"><strong>Checkpoint 5:</strong> Register file with bus connections (R0-R3, PC, MAR, etc.)</div>
+                            </div>
+                        </div>
+
+                        <div class="week-item">
+                            <div class="week-title collapsible" tabindex="0" role="button" aria-expanded="false">Week 12: Memory Interface & I/O</div>
+                            <div class="collapsible-content">
+                                <div class="week-topics"><strong>Topics:</strong> Memory addressing, I/O mechanisms, memory-mapped I/O</div>
+                                <div class="week-details">
+                                    <strong>Reference Chapters:</strong> "But How Do It Know?" Ch. 14-15<br>
+                                    <strong>Assignment:</strong> Memory system design problems
+                                </div>
+                                <div class="quiz-exam"><strong>Quiz 2:</strong> Covers weeks 9-12</div>
                             </div>
                         </div>
                     </div>
+                </div>
 
-                    <div class="week-item">
-                        <div class="week-title collapsible" tabindex="0" role="button" aria-expanded="false">Week 16: Modern Architecture Topics</div>
-                        <div class="collapsible-content">
-                            <div class="week-topics"><strong>Topics:</strong> Cache basics, pipelining introduction, multicore concepts</div>
-                            <div class="week-details">
-                                <strong>Reference Chapters:</strong> Selected modern architecture articles<br>
-                                <strong>Assignment:</strong> Research paper on modern CPU feature
+                <div class="phase-container">
+                    <div class="phase-header collapsible" tabindex="0" role="button" aria-expanded="false">Phase 4: Integration & Modern Topics (Weeks 13-17)</div>
+                    <div class="collapsible-content">
+                        <div class="week-item">
+                            <div class="week-title collapsible" tabindex="0" role="button" aria-expanded="false">Week 13: Complete CPU Integration</div>
+                            <div class="collapsible-content">
+                                <div class="week-topics"><strong>Topics:</strong> Connecting all components, instruction implementation</div>
+                                <div class="week-details">
+                                    <strong>Reference Chapters:</strong> "But How Do It Know?" Ch. 16-17<br>
+                                    <strong>Assignment:</strong> CPU design documentation, instruction set planning<br>
+                                    <strong>Videos:</strong> Complete CPU walkthroughs
+                                </div>
+                                <div class="checkpoint"><strong>Checkpoint 6:</strong> Basic CPU with MOV, ADD, SUB working</div>
                             </div>
-                            <div class="checkpoint"><strong>Checkpoint 7:</strong> Full CPU with 10+ instructions</div>
                         </div>
-                    </div>
 
-                    <div class="week-item">
-                        <div class="week-title collapsible" tabindex="0" role="button" aria-expanded="false">Week 17: Course Synthesis & Final Project</div>
-                        <div class="collapsible-content">
-                            <div class="week-topics"><strong>Topics:</strong> Review, industry applications, future directions</div>
-                            <div class="week-details">
-                                <strong>Final Project Due:</strong> Complete CPU simulation with documentation
+                        <div class="week-item">
+                            <div class="week-title collapsible" tabindex="0" role="button" aria-expanded="false">Week 14: Advanced Instructions & Testing</div>
+                            <div class="collapsible-content">
+                                <div class="week-topics"><strong>Topics:</strong> Implementing jumps, branches, and I/O instructions</div>
+                                <div class="week-details">
+                                    <strong>Reading:</strong> Supplementary materials on instruction implementation<br>
+                                    <strong>Assignment:</strong> Test program development<br>
+                                    <strong>Project Progress:</strong> Instructor feedback on checkpoint 6
+                                </div>
                             </div>
-                            <div class="quiz-exam"><strong>Final Exam:</strong> Comprehensive exam (proctored online)</div>
+                        </div>
+
+                        <div class="week-item">
+                            <div class="week-title collapsible" tabindex="0" role="button" aria-expanded="false">Week 15: Performance Basics (Shortened Week - 2 days)</div>
+                            <div class="collapsible-content">
+                                <div class="week-topics"><strong>Topics:</strong> CPI, clock rate, basic performance metrics</div>
+                                <div class="week-details">
+                                    <strong>Reference Chapters:</strong> Performance measurement introduction<br>
+                                    <strong>Light Assignment:</strong> Performance calculation worksheet
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="week-item">
+                            <div class="week-title collapsible" tabindex="0" role="button" aria-expanded="false">Week 16: Modern Architecture Topics</div>
+                            <div class="collapsible-content">
+                                <div class="week-topics"><strong>Topics:</strong> Cache basics, pipelining introduction, multicore concepts</div>
+                                <div class="week-details">
+                                    <strong>Reference Chapters:</strong> Selected modern architecture articles<br>
+                                    <strong>Assignment:</strong> Research paper on modern CPU feature
+                                </div>
+                                <div class="checkpoint"><strong>Checkpoint 7:</strong> Full CPU with 10+ instructions</div>
+                            </div>
+                        </div>
+
+                        <div class="week-item">
+                            <div class="week-title collapsible" tabindex="0" role="button" aria-expanded="false">Week 17: Course Synthesis & Final Project</div>
+                            <div class="collapsible-content">
+                                <div class="week-topics"><strong>Topics:</strong> Review, industry applications, future directions</div>
+                                <div class="week-details">
+                                    <strong>Final Project Due:</strong> Complete CPU simulation with documentation
+                                </div>
+                                <div class="quiz-exam"><strong>Final Exam:</strong> Comprehensive exam (proctored online)</div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -848,6 +852,30 @@
             const outlineContent = document.getElementById('outline-tab').innerHTML;
             const policiesContent = document.getElementById('policies-tab').innerHTML;
             
+            // Function to expand all collapsible content for PDF
+            function expandAllContent(htmlString) {
+                // Create a temporary element to manipulate the HTML
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = htmlString;
+                
+                // Show all collapsible content
+                const collapsibleContents = tempDiv.querySelectorAll('.collapsible-content');
+                collapsibleContents.forEach(content => {
+                    content.style.display = 'block';
+                    content.style.maxHeight = 'none';
+                    content.style.overflow = 'visible';
+                    content.classList.add('active');
+                });
+                
+                return tempDiv.innerHTML;
+            }
+            
+            // Expand all content before creating PDF
+            const expandedOverview = expandAllContent(overviewContent);
+            const expandedInstructor = expandAllContent(instructorContent);
+            const expandedOutline = expandAllContent(outlineContent);
+            const expandedPolicies = expandAllContent(policiesContent);
+            
             // Create the complete HTML document for PDF
             const htmlContent = `
                 <!DOCTYPE html>
@@ -967,6 +995,10 @@
                         button:not(.print-button) {
                             display: none !important;
                         }
+                        /* Ensure all content is visible */
+                        .collapsible-content.active {
+                            display: block !important;
+                        }
                     </style>
                 </head>
                 <body>
@@ -974,19 +1006,19 @@
                     <p class="course-subtitle">3-Credit Online Lecture Course</p>
                     
                     <h2>Course Overview</h2>
-                    ${overviewContent.replace(/<section>/g, '<div>').replace(/<\/section>/g, '</div>')}
+                    ${expandedOverview.replace(/<section>/g, '<div>').replace(/<\/section>/g, '</div>')}
                     
                     <div class="page-break"></div>
                     <h2>Instructor & Course Information</h2>
-                    ${instructorContent.replace(/<section>/g, '<div>').replace(/<\/section>/g, '</div>')}
+                    ${expandedInstructor.replace(/<section>/g, '<div>').replace(/<\/section>/g, '</div>')}
                     
                     <div class="page-break"></div>
                     <h2>Course Outline</h2>
-                    ${outlineContent.replace(/<section>/g, '<div>').replace(/<\/section>/g, '</div>')}
+                    ${expandedOutline.replace(/<section>/g, '<div>').replace(/<\/section>/g, '</div>')}
                     
                     <div class="page-break"></div>
                     <h2>Policies & Resources</h2>
-                    ${policiesContent.replace(/<section>/g, '<div>').replace(/<\/section>/g, '</div>')}
+                    ${expandedPolicies.replace(/<section>/g, '<div>').replace(/<\/section>/g, '</div>')}
                     
                     <div style="margin-top: 30px; text-align: center; font-size: 10px; color: #666;">
                         <p>Generated on ${new Date().toLocaleDateString()} | CSC210 Syllabus | Mendocino College</p>
