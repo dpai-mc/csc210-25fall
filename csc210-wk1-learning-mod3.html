@@ -105,6 +105,105 @@
             margin: 1rem 0 0.5rem 0;
         }
 
+        /* Video Container - Updated */
+        .video-container {
+            background: #1f2937;
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+            text-align: center;
+        }
+
+        .video-embed {
+            position: relative;
+            width: 100%;
+            height: 0;
+            padding-bottom: 56.25%; /* 16:9 aspect ratio */
+            margin-bottom: 1rem;
+            border-radius: 8px;
+            overflow: hidden;
+            background: #374151;
+        }
+
+        .video-embed iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+            border-radius: 8px;
+        }
+
+        .video-info {
+            color: white;
+            margin-bottom: 1rem;
+        }
+
+        .video-info h3 {
+            color: white;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Transcript Section */
+        .transcript-section {
+            background: #f8fafc;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            margin-top: 1rem;
+            overflow: hidden;
+        }
+
+        .transcript-header {
+            background: #374151;
+            color: white;
+            padding: 1rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background-color 0.3s ease;
+        }
+
+        .transcript-header:hover {
+            background: #4b5563;
+        }
+
+        .transcript-header:focus {
+            outline: 3px solid #3b82f6;
+            outline-offset: 2px;
+        }
+
+        .transcript-content {
+            padding: 1.5rem;
+            max-height: 400px;
+            overflow-y: auto;
+            display: none;
+            background: white;
+        }
+
+        .transcript-content.open {
+            display: block;
+        }
+
+        .transcript-text {
+            line-height: 1.8;
+            font-size: 0.95rem;
+        }
+
+        .transcript-text p {
+            margin-bottom: 1rem;
+        }
+
+        .expand-icon {
+            transition: transform 0.3s ease;
+            font-size: 1.2rem;
+        }
+
+        .expand-icon.rotated {
+            transform: rotate(180deg);
+        }
+
         /* Two's Complement Visualizer */
         .twos-complement-section {
             background: linear-gradient(135deg, #fef2f2 0%, #fecaca 100%);
@@ -149,6 +248,11 @@
             transform: scale(1.2);
             background: #dbeafe;
             border-color: #3b82f6;
+        }
+
+        .wheel-number:focus {
+            outline: 3px solid #3b82f6;
+            outline-offset: 2px;
         }
 
         .wheel-number.selected {
@@ -221,6 +325,11 @@
             font-size: 1.2rem;
             font-weight: bold;
             cursor: pointer;
+        }
+
+        .operation-select:focus {
+            outline: 3px solid #3b82f6;
+            outline-offset: 2px;
         }
 
         .binary-display {
@@ -340,6 +449,11 @@
             box-shadow: 0 4px 8px rgba(239, 68, 68, 0.3);
         }
 
+        .overflow-warning:focus {
+            outline: 3px solid #3b82f6;
+            outline-offset: 2px;
+        }
+
         .overflow-safe {
             background: #f0fdf4;
             border: 2px solid #22c55e;
@@ -355,6 +469,11 @@
         .overflow-safe:hover {
             transform: translateY(-2px);
             box-shadow: 0 4px 8px rgba(34, 197, 94, 0.3);
+        }
+
+        .overflow-safe:focus {
+            outline: 3px solid #3b82f6;
+            outline-offset: 2px;
         }
 
         /* Quiz Components */
@@ -394,6 +513,11 @@
         .option:hover {
             border-color: #9ca3af;
             background: #f9fafb;
+        }
+
+        .option:focus {
+            outline: 3px solid #3b82f6;
+            outline-offset: 2px;
         }
 
         .option.selected {
@@ -454,6 +578,11 @@
             gap: 0.5rem;
         }
 
+        .btn:focus {
+            outline: 3px solid #3b82f6;
+            outline-offset: 2px;
+        }
+
         .btn-primary {
             background: linear-gradient(135deg, #7c2d12 0%, #dc2626 100%);
             color: white;
@@ -478,23 +607,6 @@
             opacity: 0.6;
             cursor: not-allowed;
             transform: none !important;
-        }
-
-        /* Video Container */
-        .video-container {
-            background: #1f2937;
-            border-radius: 12px;
-            padding: 2rem;
-            margin: 2rem 0;
-            text-align: center;
-        }
-
-        .video-placeholder {
-            background: #374151;
-            border-radius: 8px;
-            padding: 3rem;
-            color: white;
-            margin-bottom: 1rem;
         }
 
         /* Reflection Section */
@@ -554,16 +666,13 @@
             .action-buttons {
                 flex-direction: column;
             }
+
+            .video-embed {
+                padding-bottom: 75%; /* Adjust for mobile */
+            }
         }
 
-        /* Accessibility */
-        .btn:focus,
-        .wheel-number:focus,
-        .option:focus {
-            outline: 3px solid #3b82f6;
-            outline-offset: 2px;
-        }
-
+        /* Screen reader only content */
         .sr-only {
             position: absolute;
             width: 1px;
@@ -574,6 +683,29 @@
             clip: rect(0, 0, 0, 0);
             white-space: nowrap;
             border: 0;
+        }
+
+        /* High contrast mode support */
+        @media (prefers-contrast: high) {
+            .btn-primary {
+                background: #000;
+                border: 2px solid #000;
+            }
+            
+            .btn-secondary {
+                background: #fff;
+                border: 2px solid #000;
+                color: #000;
+            }
+        }
+
+        /* Reduced motion support */
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
         }
     </style>
 </head>
@@ -601,7 +733,7 @@
                 <div class="progress-fill" id="progress-fill"></div>
             </div>
             <p style="font-size: 0.9rem; color: #6b7280; margin-top: 0.5rem;">
-                ⓘ Progress resets when you close your browser. Download your work before leaving.
+                ℹ️ Progress resets when you close your browser. Download your work before leaving.
             </p>
         </div>
 
@@ -609,21 +741,64 @@
         <section class="content-section">
             <h2>🎥 Understanding Negative Numbers</h2>
             <div class="video-container">
-                <div class="video-placeholder">
-                    <h3 style="margin-bottom: 1rem;">Two's Complement Deep Dive</h3>
-                    <p style="margin-bottom: 1rem;">Duration: 20 minutes</p>
-                    <div style="font-size: 4rem; margin: 1rem 0;">▶️</div>
+                <div class="video-info">
+                    <h3>Two's Complement Deep Dive</h3>
+                    <p style="margin-bottom: 1rem;">Duration: 15:42</p>
                     <p style="font-size: 0.9rem; opacity: 0.8;">Why two's complement works • Binary arithmetic • Overflow detection</p>
                 </div>
-                <div style="display: flex; justify-content: center; gap: 1rem; margin-top: 1rem; flex-wrap: wrap;">
-                    <button class="btn btn-primary" onclick="playVideo('negative-numbers')">
-                        ▶️ Play Two's Complement Video
-                    </button>
-                    <button class="btn btn-secondary" onclick="showTranscript('negative-numbers')">
-                        📄 View Transcript
-                    </button>
+                
+                <div class="video-embed">
+                    <iframe 
+                        src="https://www.youtube.com/embed/ewXDmO-iDKs" 
+                        title="Two's Complement Deep Dive Video"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowfullscreen
+                        loading="lazy">
+                    </iframe>
+                </div>
+
+                <!-- Transcript Section -->
+                <div class="transcript-section">
+                    <div class="transcript-header" onclick="toggleTranscript()" onkeydown="handleTranscriptToggle(event)" tabindex="0" role="button" aria-expanded="false" aria-controls="transcript-content">
+                        <span>📄 Video Transcript</span>
+                        <span class="expand-icon" id="expand-icon">▼</span>
+                    </div>
+                    <div class="transcript-content" id="transcript-content" aria-hidden="true">
+                        <div class="transcript-text">
+                            <p><strong>Note:</strong> The complete video transcript is available through your course Canvas page. Click the link below to access the full transcript document.</p>
+                            
+                            <div style="background: #e0f2fe; border: 1px solid #0277bd; border-radius: 6px; padding: 1rem; margin: 1rem 0;">
+                                <strong>📋 Access Full Transcript:</strong><br>
+                                <a href="https://mendocino.instructure.com/courses/19705/files/2404937?wrap=1" 
+                                   target="_blank" 
+                                   rel="noopener noreferrer"
+                                   style="color: #0277bd; text-decoration: underline;">
+                                   View Complete Video Transcript (Canvas)
+                                </a>
+                            </div>
+
+                            <p><strong>Video Topics Covered:</strong></p>
+                            <ul style="margin: 1rem 0; padding-left: 2rem;">
+                                <li>Introduction to signed number representation</li>
+                                <li>Why sign-magnitude and one's complement have limitations</li>
+                                <li>Two's complement method step-by-step</li>
+                                <li>How two's complement enables seamless arithmetic</li>
+                                <li>Understanding overflow conditions</li>
+                                <li>Real-world applications and implications</li>
+                            </ul>
+
+                            <p><strong>Key Learning Points:</strong></p>
+                            <ul style="margin: 1rem 0; padding-left: 2rem;">
+                                <li>Two's complement provides a unique representation for each number</li>
+                                <li>Addition and subtraction work the same way for positive and negative numbers</li>
+                                <li>The range for n-bit two's complement is -2^(n-1) to 2^(n-1)-1</li>
+                                <li>Overflow occurs when results exceed the representable range</li>
+                            </ul>
+                        </div>
+                    </div>
                 </div>
             </div>
+            
             <div class="action-buttons">
                 <button class="btn btn-primary" onclick="completeSection('video')" id="video-complete-btn" disabled>
                     ✅ Mark Video Complete
@@ -640,11 +815,12 @@
                 <h3 style="text-align: center; color: #3b82f6; margin-bottom: 2rem;">Interactive Two's Complement Converter</h3>
                 
                 <div style="text-align: center; margin-bottom: 2rem;">
-                    <label style="display: block; font-weight: bold; margin-bottom: 0.5rem;">Enter a signed number to convert (-128 to +127):</label>
+                    <label for="signed-input" style="display: block; font-weight: bold; margin-bottom: 0.5rem;">Enter a signed number to convert (-128 to +127):</label>
                     <input type="number" id="signed-input" min="-128" max="127" value="-42" 
                            style="padding: 0.8rem; font-size: 1.2rem; border: 2px solid #3b82f6; border-radius: 6px; text-align: center; width: 120px;"
-                           oninput="convertToTwosComplement(this.value)">
-                    <p style="margin-top: 0.5rem; color: #666; font-size: 0.9rem;">Try different negative and positive numbers</p>
+                           oninput="convertToTwosComplement(this.value)"
+                           aria-describedby="input-help">
+                    <p id="input-help" style="margin-top: 0.5rem; color: #666; font-size: 0.9rem;">Try different negative and positive numbers</p>
                 </div>
 
                 <!-- Conversion Process Display -->
@@ -675,9 +851,9 @@
                 </div>
 
                 <div style="text-align: center; margin-top: 2rem;">
-                    <button class="btn btn-secondary" onclick="demonstrateExample(-42)">📝 Example: -42</button>
-                    <button class="btn btn-secondary" onclick="demonstrateExample(-1)">📝 Example: -1</button>
-                    <button class="btn btn-secondary" onclick="demonstrateExample(-128)">📝 Example: -128</button>
+                    <button class="btn btn-secondary" onclick="demonstrateExample(-42)">🔍 Example: -42</button>
+                    <button class="btn btn-secondary" onclick="demonstrateExample(-1)">🔍 Example: -1</button>
+                    <button class="btn btn-secondary" onclick="demonstrateExample(-128)">🔍 Example: -128</button>
                 </div>
 
                 <div class="action-buttons" style="position: relative; z-index: 50; background: white; padding: 1rem; border-radius: 8px; margin-top: 2rem;">
@@ -739,27 +915,27 @@
                 <div class="arithmetic-calculator">
                     <div class="operand-input">
                         <div class="number-input-box" id="operand1-box">
-                            <label style="display: block; font-weight: bold; margin-bottom: 0.5rem;">First Number</label>
+                            <label for="operand1" style="display: block; font-weight: bold; margin-bottom: 0.5rem;">First Number</label>
                             <input type="number" id="operand1" min="-128" max="127" value="42" 
                                    style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px; text-align: center;"
                                    oninput="updateArithmetic()">
                             <div class="binary-display" id="operand1-binary">00101010</div>
                         </div>
                         
-                        <select class="operation-select" id="operation" onchange="updateArithmetic()">
+                        <select class="operation-select" id="operation" onchange="updateArithmetic()" aria-label="Operation">
                             <option value="add">+</option>
                             <option value="subtract">-</option>
                         </select>
                         
                         <div class="number-input-box" id="operand2-box">
-                            <label style="display: block; font-weight: bold; margin-bottom: 0.5rem;">Second Number</label>
+                            <label for="operand2" style="display: block; font-weight: bold; margin-bottom: 0.5rem;">Second Number</label>
                             <input type="number" id="operand2" min="-128" max="127" value="-15" 
                                    style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px; text-align: center;"
                                    oninput="updateArithmetic()">
                             <div class="binary-display" id="operand2-binary">11110001</div>
                         </div>
                         
-                        <div style="font-size: 2rem; font-weight: bold; color: #1e40af;">=</div>
+                        <div style="font-size: 2rem; font-weight: bold; color: #1e40af;" aria-hidden="true">=</div>
                         
                         <div class="number-input-box" id="result-box">
                             <label style="display: block; font-weight: bold; margin-bottom: 0.5rem;">Result</label>
@@ -791,19 +967,19 @@
                 <h3 style="text-align: center; color: #64748b; margin-bottom: 1rem;">Overflow Examples</h3>
                 
                 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1rem; margin: 2rem 0;">
-                    <div class="overflow-warning" onclick="demonstrateOverflow(127, 1)">
+                    <div class="overflow-warning" onclick="demonstrateOverflow(127, 1)" onkeydown="handleOverflowDemo(event, 127, 1)" tabindex="0" role="button">
                         <div style="font-weight: bold; margin-bottom: 0.5rem;">🚨 Positive Overflow</div>
                         <div>127 + 1 = -128 (overflow!)</div>
                         <div style="font-size: 0.9rem; margin-top: 0.5rem;">Click to see why</div>
                     </div>
                     
-                    <div class="overflow-warning" onclick="demonstrateOverflow(-128, -1)">
+                    <div class="overflow-warning" onclick="demonstrateOverflow(-128, -1)" onkeydown="handleOverflowDemo(event, -128, -1)" tabindex="0" role="button">
                         <div style="font-weight: bold; margin-bottom: 0.5rem;">🚨 Negative Overflow</div>
                         <div>-128 + (-1) = 127 (overflow!)</div>
                         <div style="font-size: 0.9rem; margin-top: 0.5rem;">Click to see why</div>
                     </div>
                     
-                    <div class="overflow-safe" onclick="demonstrateOverflow(100, 20)">
+                    <div class="overflow-safe" onclick="demonstrateOverflow(100, 20)" onkeydown="handleOverflowDemo(event, 100, 20)" tabindex="0" role="button">
                         <div style="font-weight: bold; margin-bottom: 0.5rem;">✅ Safe Operation</div>
                         <div>100 + 20 = 120 (no overflow)</div>
                         <div style="font-size: 0.9rem; margin-top: 0.5rem;">Click to see calculation</div>
@@ -830,10 +1006,10 @@
                 <div class="question" data-question="1">
                     <div class="question-text">1. What is the 8-bit two's complement representation of -5?</div>
                     <ul class="options">
-                        <li class="option" data-answer="a" onclick="selectAnswer(1, 'a')">A) 10000101</li>
-                        <li class="option" data-answer="b" onclick="selectAnswer(1, 'b')">B) 11111011</li>
-                        <li class="option" data-answer="c" onclick="selectAnswer(1, 'c')">C) 01111011</li>
-                        <li class="option" data-answer="d" onclick="selectAnswer(1, 'd')">D) 11110101</li>
+                        <li class="option" data-answer="a" onclick="selectAnswer(1, 'a')" onkeydown="handleOptionSelect(event, 1, 'a')" tabindex="0" role="button">A) 10000101</li>
+                        <li class="option" data-answer="b" onclick="selectAnswer(1, 'b')" onkeydown="handleOptionSelect(event, 1, 'b')" tabindex="0" role="button">B) 11111011</li>
+                        <li class="option" data-answer="c" onclick="selectAnswer(1, 'c')" onkeydown="handleOptionSelect(event, 1, 'c')" tabindex="0" role="button">C) 01111011</li>
+                        <li class="option" data-answer="d" onclick="selectAnswer(1, 'd')" onkeydown="handleOptionSelect(event, 1, 'd')" tabindex="0" role="button">D) 11110101</li>
                     </ul>
                     <div class="feedback" id="feedback-1"></div>
                 </div>
@@ -841,10 +1017,10 @@
                 <div class="question" data-question="2">
                     <div class="question-text">2. What is the decimal value of the 8-bit two's complement number 10000000?</div>
                     <ul class="options">
-                        <li class="option" data-answer="a" onclick="selectAnswer(2, 'a')">A) 0</li>
-                        <li class="option" data-answer="b" onclick="selectAnswer(2, 'b')">B) -0</li>
-                        <li class="option" data-answer="c" onclick="selectAnswer(2, 'c')">C) -128</li>
-                        <li class="option" data-answer="d" onclick="selectAnswer(2, 'd')">D) 128</li>
+                        <li class="option" data-answer="a" onclick="selectAnswer(2, 'a')" onkeydown="handleOptionSelect(event, 2, 'a')" tabindex="0" role="button">A) 0</li>
+                        <li class="option" data-answer="b" onclick="selectAnswer(2, 'b')" onkeydown="handleOptionSelect(event, 2, 'b')" tabindex="0" role="button">B) -0</li>
+                        <li class="option" data-answer="c" onclick="selectAnswer(2, 'c')" onkeydown="handleOptionSelect(event, 2, 'c')" tabindex="0" role="button">C) -128</li>
+                        <li class="option" data-answer="d" onclick="selectAnswer(2, 'd')" onkeydown="handleOptionSelect(event, 2, 'd')" tabindex="0" role="button">D) 128</li>
                     </ul>
                     <div class="feedback" id="feedback-2"></div>
                 </div>
@@ -852,10 +1028,10 @@
                 <div class="question" data-question="3">
                     <div class="question-text">3. In 8-bit two's complement, what happens when you add 127 + 1?</div>
                     <ul class="options">
-                        <li class="option" data-answer="a" onclick="selectAnswer(3, 'a')">A) 128</li>
-                        <li class="option" data-answer="b" onclick="selectAnswer(3, 'b')">B) -128 (overflow)</li>
-                        <li class="option" data-answer="c" onclick="selectAnswer(3, 'c')">C) 0</li>
-                        <li class="option" data-answer="d" onclick="selectAnswer(3, 'd')">D) Error</li>
+                        <li class="option" data-answer="a" onclick="selectAnswer(3, 'a')" onkeydown="handleOptionSelect(event, 3, 'a')" tabindex="0" role="button">A) 128</li>
+                        <li class="option" data-answer="b" onclick="selectAnswer(3, 'b')" onkeydown="handleOptionSelect(event, 3, 'b')" tabindex="0" role="button">B) -128 (overflow)</li>
+                        <li class="option" data-answer="c" onclick="selectAnswer(3, 'c')" onkeydown="handleOptionSelect(event, 3, 'c')" tabindex="0" role="button">C) 0</li>
+                        <li class="option" data-answer="d" onclick="selectAnswer(3, 'd')" onkeydown="handleOptionSelect(event, 3, 'd')" tabindex="0" role="button">D) Error</li>
                     </ul>
                     <div class="feedback" id="feedback-3"></div>
                 </div>
@@ -876,23 +1052,26 @@
             <h2>💭 Reflection & Real-World Applications</h2>
             <div class="reflection-section">
                 <div class="reflection-prompt">
-                    Reflection Prompt: Two's complement is used in virtually every computer processor. Think about situations where computers need to handle both positive and negative numbers - temperatures, financial calculations, game coordinates, etc. How does understanding two's complement help you understand potential programming pitfalls like integer overflow? Can you think of real-world examples where overflow bugs have caused problems?
+                    <strong>Module 3 Reflection Question:</strong><br><br>
+                    Reflect on the use and importance of two's complement in computer systems. Why is this method of representing negative numbers so widely adopted, and what makes it significant for programmers to understand?
                 </div>
-                <div style="background: #fef3c7; border: 1px solid #f59e0b; border-radius: 6px; padding: 1rem; margin: 1rem 0; font-size: 0.9rem;">
-                    <strong>📝 Important:</strong> Your reflection response is required for this module's assignment. Use the download or copy buttons below to submit your reflection in Canvas.
+                <div style="background: #e0f2fe; border: 1px solid #0277bd; border-radius: 6px; padding: 1rem; margin: 1rem 0; font-size: 0.9rem;">
+                    <strong>📝 Note:</strong> Your reflection responses will be saved during this session and can be copied for inclusion in the Module 4 summary assignment. Make sure to copy your responses before closing your browser.
                 </div>
                 <textarea 
                     class="reflection-input" 
                     id="reflection-text"
-                    placeholder="Share your insights here... Consider examples like temperature sensors reading -40°F, bank account balances, or even famous bugs like the Ariane 5 rocket failure due to integer overflow."
-                    oninput="updateReflection()">
+                    placeholder="Reflect on the use and importance of two's complement in computer systems. Consider why this method is so widely adopted and what makes it significant for programmers to understand..."
+                    oninput="updateReflection()"
+                    aria-describedby="reflection-help">
                 </textarea>
+                <div id="reflection-help" class="sr-only">Reflect on the use and importance of two's complement in computer systems. Your response will be saved for the Module 4 summary assignment.</div>
                 <div class="action-buttons">
-                    <button class="btn btn-primary" onclick="saveReflection()">
-                        💾 Download Reflection Text
+                    <button class="btn btn-primary" onclick="saveReflectionForModule4()">
+                        💾 Copy Reflection for Module 4
                     </button>
-                    <button class="btn btn-secondary" onclick="copyReflectionToClipboard()">
-                        📋 Copy to Clipboard
+                    <button class="btn btn-secondary" onclick="downloadReflectionText()">
+                        📄 Download as Text File
                     </button>
                     <button class="btn btn-primary" onclick="completeSection('reflection')" id="reflection-complete-btn" disabled>
                         ✅ Mark Reflection Complete
@@ -913,13 +1092,9 @@
                 <li>Real-world applications and potential programming pitfalls</li>
             </ul>
             
-            <div style="background: #fef3c7; border: 2px solid #f59e0b; border-radius: 8px; padding: 1.5rem; margin: 1.5rem 0;">
-                <h4 style="color: #92400e; margin-top: 0;">📋 Submission Checklist</h4>
-                <ul style="margin: 0.5rem 0; padding-left: 2rem;">
-                    <li><strong>Download/Copy your reflection</strong> using the buttons above</li>
-                    <li><strong>Submit reflection in Canvas</strong> assignment for Module 3</li>
-                    <li><strong>Optional:</strong> Screenshot your calculator work for participation credit</li>
-                </ul>
+            <div style="background: #e8f5e8; border: 2px solid #4caf50; border-radius: 8px; padding: 1.5rem; margin: 1.5rem 0;">
+                <h4 style="color: #2e7d32; margin-top: 0;">🎯 Module 3 Complete!</h4>
+                <p style="margin: 0.5rem 0; color: #2e7d32;"><strong>Important:</strong> Copy your reflection responses using the button above before proceeding to Module 4. Your responses will be needed for the summary assignment.</p>
             </div>
             
             <div class="action-buttons">
@@ -958,6 +1133,7 @@
             quizAnswers: {},
             quizSubmitted: false,
             reflectionText: '',
+            module3Reflection: '', // Store specifically for Module 4 compilation
             overallProgress: 0,
             returnUrl: null,
             moduleNumber: 3
@@ -986,6 +1162,51 @@
             
             console.log('Module 3 initialized successfully');
         });
+
+        // Accessibility: Handle keyboard events for transcript toggle
+        function handleTranscriptToggle(event) {
+            if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault();
+                toggleTranscript();
+            }
+        }
+
+        // Accessibility: Handle keyboard events for overflow demos
+        function handleOverflowDemo(event, num1, num2) {
+            if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault();
+                demonstrateOverflow(num1, num2);
+            }
+        }
+
+        // Accessibility: Handle keyboard events for quiz options
+        function handleOptionSelect(event, questionNum, answer) {
+            if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault();
+                selectAnswer(questionNum, answer);
+            }
+        }
+
+        // Toggle transcript visibility
+        function toggleTranscript() {
+            const content = document.getElementById('transcript-content');
+            const header = document.querySelector('.transcript-header');
+            const icon = document.getElementById('expand-icon');
+            
+            const isOpen = content.classList.contains('open');
+            
+            if (isOpen) {
+                content.classList.remove('open');
+                content.setAttribute('aria-hidden', 'true');
+                header.setAttribute('aria-expanded', 'false');
+                icon.classList.remove('rotated');
+            } else {
+                content.classList.add('open');
+                content.setAttribute('aria-hidden', 'false');
+                header.setAttribute('aria-expanded', 'true');
+                icon.classList.add('rotated');
+            }
+        }
 
         // Check for return URL and module parameters
         function checkReturnUrl() {
@@ -1080,11 +1301,18 @@
         }
 
         function updateButtonStates() {
-            // Video button
+            // Video button - enable after watching (simulated by clicking complete)
             const videoBtn = document.getElementById('video-complete-btn');
-            if (videoBtn && moduleState.sectionsCompleted.video) {
-                videoBtn.disabled = false;
-                videoBtn.textContent = '✅ Video Completed';
+            if (videoBtn) {
+                if (moduleState.sectionsCompleted.video) {
+                    videoBtn.disabled = true;
+                    videoBtn.textContent = '✅ Video Completed';
+                } else {
+                    // Enable button after a short delay to simulate watching
+                    setTimeout(() => {
+                        videoBtn.disabled = false;
+                    }, 3000);
+                }
             }
 
             // Tutorial button
@@ -1170,18 +1398,6 @@
                     reflectionBtn.disabled = true;
                 }
             }
-        }
-
-        // Video functions
-        function playVideo(videoId) {
-            alert('Playing: Two\'s Complement Deep Dive - Understanding negative number representation and binary arithmetic. Video player would open here.');
-            moduleState.sectionsCompleted.video = true;
-            updateProgress();
-            updateButtonStates();
-        }
-
-        function showTranscript(videoId) {
-            alert('Video transcript would be displayed here in a modal or expandable section.');
         }
 
         // Two's complement conversion functions
@@ -1332,6 +1548,9 @@
                 numberElement.style.top = y + 'px';
                 numberElement.textContent = num;
                 numberElement.setAttribute('data-number', num);
+                numberElement.setAttribute('tabindex', '0');
+                numberElement.setAttribute('role', 'button');
+                numberElement.setAttribute('aria-label', `Select number ${num}`);
                 
                 if (num < 0) {
                     numberElement.style.backgroundColor = '#fecaca';
@@ -1342,6 +1561,13 @@
                 }
                 
                 numberElement.addEventListener('click', () => selectWheelNumber(num));
+                numberElement.addEventListener('keydown', (event) => {
+                    if (event.key === 'Enter' || event.key === ' ') {
+                        event.preventDefault();
+                        selectWheelNumber(num);
+                    }
+                });
+                
                 wheel.appendChild(numberElement);
             });
         }
@@ -1350,12 +1576,14 @@
             // Remove previous selection
             document.querySelectorAll('.wheel-number').forEach(el => {
                 el.classList.remove('selected');
+                el.setAttribute('aria-pressed', 'false');
             });
             
             // Select current number
             const element = document.querySelector(`[data-number="${num}"]`);
             if (element) {
                 element.classList.add('selected');
+                element.setAttribute('aria-pressed', 'true');
             }
             
             // Convert to 8-bit two's complement
@@ -1530,10 +1758,13 @@
             // Remove previous selections for this question
             document.querySelectorAll(`[data-question="${questionNum}"] .option`).forEach(option => {
                 option.classList.remove('selected');
+                option.setAttribute('aria-pressed', 'false');
             });
             
             // Select the clicked option
-            document.querySelector(`[data-question="${questionNum}"] [data-answer="${answer}"]`).classList.add('selected');
+            const selectedOption = document.querySelector(`[data-question="${questionNum}"] [data-answer="${answer}"]`);
+            selectedOption.classList.add('selected');
+            selectedOption.setAttribute('aria-pressed', 'true');
             
             // Store the answer
             moduleState.quizAnswers[questionNum] = answer;
@@ -1564,8 +1795,10 @@
                     const optionAnswer = option.getAttribute('data-answer');
                     if (optionAnswer === correctAnswer) {
                         option.classList.add('correct');
+                        option.setAttribute('aria-label', option.textContent + ' (Correct answer)');
                     } else if (optionAnswer === userAnswer && !isCorrect) {
                         option.classList.add('incorrect');
+                        option.setAttribute('aria-label', option.textContent + ' (Incorrect answer)');
                     }
                 });
                 
@@ -1602,6 +1835,8 @@
             // Clear all selections and feedback
             document.querySelectorAll('.option').forEach(option => {
                 option.classList.remove('selected', 'correct', 'incorrect');
+                option.removeAttribute('aria-pressed');
+                option.removeAttribute('aria-label');
             });
             
             document.querySelectorAll('.feedback').forEach(feedback => {
@@ -1623,18 +1858,63 @@
         function updateReflection() {
             const text = document.getElementById('reflection-text').value;
             moduleState.reflectionText = text;
+            moduleState.module3Reflection = text; // Store for Module 4 compilation
             updateButtonStates();
             saveModuleState();
         }
 
-        function saveReflection() {
+        function saveReflectionForModule4() {
             const text = moduleState.reflectionText;
-            if (text.length < 10) {
-                alert('Please write a more detailed reflection before downloading.');
+            if (text.length < 50) {
+                alert('Please provide a more detailed answer to the reflection question before copying.');
                 return;
             }
             
-            const blob = new Blob([text], { type: 'text/plain' });
+            // Format the reflection with clear headers for Module 4 use
+            const formattedReflection = `MODULE 3: TWO'S COMPLEMENT REFLECTION
+Generated: ${new Date().toLocaleDateString()}
+
+REFLECTION QUESTION:
+Reflect on the use and importance of two's complement in computer systems. Why is this method of representing negative numbers so widely adopted, and what makes it significant for programmers to understand?
+
+STUDENT RESPONSE:
+${text}
+
+---
+[Copy this entire text and save it for your Module 4 summary assignment]`;
+            
+            // Copy to clipboard
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(formattedReflection).then(() => {
+                    alert('Module 3 reflection copied to clipboard! Save this text for your Module 4 summary assignment. You can paste it into a document or text file.');
+                }).catch(() => {
+                    fallbackCopyToClipboard(formattedReflection);
+                });
+            } else {
+                fallbackCopyToClipboard(formattedReflection);
+            }
+        }
+
+        function downloadReflectionText() {
+            const text = moduleState.reflectionText;
+            if (text.length < 10) {
+                alert('Please write a more detailed reflection response before downloading.');
+                return;
+            }
+            
+            const formattedReflection = `MODULE 3: TWO'S COMPLEMENT REFLECTION
+Generated: ${new Date().toLocaleDateString()}
+
+REFLECTION QUESTION:
+Reflect on the use and importance of two's complement in computer systems. Why is this method of representing negative numbers so widely adopted, and what makes it significant for programmers to understand?
+
+STUDENT RESPONSE:
+${text}
+
+---
+Save this file for your Module 4 summary assignment.`;
+            
+            const blob = new Blob([formattedReflection], { type: 'text/plain' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
@@ -1644,21 +1924,50 @@
             document.body.removeChild(a);
             URL.revokeObjectURL(url);
             
-            alert('Reflection downloaded! Submit this file to Canvas for Module 3.');
+            alert('Reflection downloaded! Keep this file for your Module 4 summary assignment.');
+        }
+
+        function extractAnswerSection(fullText, questionNumber) {
+            // Since we now have only one question, just return the full text
+            return fullText.trim() || '[Please provide your reflection response above]';
         }
 
         function copyReflectionToClipboard() {
             const text = moduleState.reflectionText;
             if (text.length < 10) {
-                alert('Please write a more detailed reflection before copying.');
+                alert('Please write more detailed reflection responses before copying.');
                 return;
             }
             
-            navigator.clipboard.writeText(text).then(() => {
-                alert('Reflection copied to clipboard! You can now paste it into Canvas.');
-            }).catch(() => {
-                alert('Could not copy to clipboard. Please select and copy the text manually.');
-            });
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(text).then(() => {
+                    alert('Reflection copied to clipboard! Save this text for your Module 4 summary assignment.');
+                }).catch(() => {
+                    fallbackCopyToClipboard(text);
+                });
+            } else {
+                fallbackCopyToClipboard(text);
+            }
+        }
+
+        function fallbackCopyToClipboard(text) {
+            const textArea = document.createElement('textarea');
+            textArea.value = text;
+            textArea.style.position = 'fixed';
+            textArea.style.left = '-999999px';
+            textArea.style.top = '-999999px';
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            
+            try {
+                document.execCommand('copy');
+                alert('Reflection copied to clipboard! Save this text for your Module 4 summary assignment.');
+            } catch (err) {
+                alert('Could not copy to clipboard. Please select and copy the text manually, or use the download button to save as a text file.');
+            }
+            
+            document.body.removeChild(textArea);
         }
 
         // Navigation functions
@@ -1671,7 +1980,7 @@
         }
 
         function goToModule4() {
-            alert('Module 4 would be loaded here. This would typically navigate to the next module in the sequence.');
+            window.location.href = 'https://dpai-mc.github.io/csc210-25fall/csc210-wk1-learning-mod4.html';
         }
 
         function downloadCompletionSummary() {
