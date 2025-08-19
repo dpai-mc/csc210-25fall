@@ -931,12 +931,12 @@
             <h2>💭 Reflection & Application</h2>
             <div class="reflection-section">
                 <div class="reflection-prompt">
-                    Reflection Prompt: Now that you understand different number systems, look around you and identify where these concepts appear in real life. Consider file sizes (bytes), colors (RGB values), IP addresses, or memory addresses. How does understanding binary and hexadecimal change your perspective on digital technology?
+                    <strong>Module 2 Reflection Question:</strong> Now that you understand different number systems, look around you and identify where these concepts appear in real life. Consider file sizes (bytes), colors (RGB values), IP addresses, or memory addresses. How does understanding binary and hexadecimal change your perspective on digital technology?
                 </div>
-                <div style="background: #fef3c7; border: 1px solid #f59e0b; border-radius: 6px; padding: 1rem; margin: 1rem 0; font-size: 0.9rem;">
-                    <strong>📋 Important:</strong> Your reflection response is required for this module's assignment. Use the download or copy buttons below to submit your reflection in Canvas.
+                <div style="background: #e0f2fe; border: 1px solid #0288d1; border-radius: 6px; padding: 1rem; margin: 1rem 0; font-size: 0.9rem;">
+                    <strong>💾 Note:</strong> Your reflection will be automatically saved and included in your comprehensive reflection assignment in Module 4. Complete all module reflections to build your final submission.
                 </div>
-                <label for="reflection-text" class="sr-only">Your reflection response</label>
+                <label for="reflection-text" class="sr-only">Your Module 2 reflection response</label>
                 <textarea 
                     class="reflection-input" 
                     id="reflection-text"
@@ -948,8 +948,8 @@
                     Write your reflection about how number systems appear in real life and how understanding them changes your perspective on digital technology.
                 </div>
                 <div class="action-buttons">
-                    <button class="btn btn-primary" onclick="saveReflection()">
-                        💾 Download Reflection Text
+                    <button class="btn btn-secondary" onclick="saveReflectionForModule4()">
+                        💾 Save Reflection for Module 4
                     </button>
                     <button class="btn btn-secondary" onclick="copyReflectionToClipboard()">
                         📋 Copy to Clipboard
@@ -958,6 +958,7 @@
                         ✅ Mark Reflection Complete
                     </button>
                 </div>
+                <div id="reflection-save-status" style="margin-top: 1rem; padding: 0.5rem; border-radius: 4px; display: none;"></div>
             </div>
         </section>
 
@@ -972,13 +973,16 @@
                 <li>Real-world applications of different number systems in computing</li>
             </ul>
             
-            <div style="background: #fef3c7; border: 2px solid #f59e0b; border-radius: 8px; padding: 1.5rem; margin: 1.5rem 0;">
-                <h4 style="color: #92400e; margin-top: 0;">📋 Submission Checklist</h4>
+            <div style="background: #e0f2fe; border: 2px solid #0288d1; border-radius: 8px; padding: 1.5rem; margin: 1.5rem 0;">
+                <h4 style="color: #0277bd; margin-top: 0;">📚 Module 2 Summary</h4>
+                <p style="margin: 0.5rem 0;">You have completed Module 2 and gained understanding of:</p>
                 <ul style="margin: 0.5rem 0; padding-left: 2rem;">
-                    <li><strong>Download/Copy your reflection</strong> using the buttons above</li>
-                    <li><strong>Submit reflection in Canvas</strong> assignment for Module 2</li>
-                    <li><strong>Optional:</strong> Screenshot your converter work for participation credit</li>
+                    <li>Converting between decimal, binary, and hexadecimal number systems</li>
+                    <li>Why computers use binary and how it relates to digital circuits</li>
+                    <li>Patterns in number systems and shortcuts for quick conversions</li>
+                    <li>Real-world applications of different number systems in computing</li>
                 </ul>
+                <p style="margin: 0.5rem 0;"><strong>Your reflection has been saved for the comprehensive assignment in Module 4.</strong></p>
             </div>
             
             <div class="action-buttons">
@@ -1017,6 +1021,7 @@
             quizAnswers: {},
             quizSubmitted: false,
             reflectionText: '',
+            reflectionSaved: false,
             overallProgress: 0,
             returnUrl: null,
             moduleNumber: 2
@@ -1249,8 +1254,15 @@
             // Reflection completion button
             const reflectionBtn = document.getElementById('reflection-complete-btn');
             if (reflectionBtn) {
-                if (moduleState.reflectionText.length >= 50) {
+                if (moduleState.reflectionText.length >= 50 && moduleState.reflectionSaved) {
                     reflectionBtn.disabled = false;
+                    reflectionBtn.textContent = '✅ Complete Reflection (Saved for Module 4)';
+                } else if (moduleState.reflectionText.length >= 50) {
+                    reflectionBtn.disabled = true;
+                    reflectionBtn.textContent = '💾 Save Reflection First';
+                } else {
+                    reflectionBtn.disabled = true;
+                    reflectionBtn.textContent = '💭 Write Reflection (50+ characters)';
                 }
                 if (moduleState.sectionsCompleted.reflection) {
                     reflectionBtn.textContent = '✅ Reflection Completed';
@@ -1587,39 +1599,54 @@
             saveModuleState();
         }
 
-        function saveReflection() {
+        function saveReflectionForModule4() {
             const reflectionText = document.getElementById('reflection-text').value;
-            if (reflectionText.trim().length > 0) {
+            if (reflectionText.trim().length < 50) {
+                alert('Please write at least 50 characters for your reflection.');
+                return;
+            }
+
+            // Save to module-specific storage for Module 4 compilation
+            const module2Reflection = {
+                moduleNumber: 2,
+                moduleTitle: 'Number Systems',
+                question: 'Now that you understand different number systems, look around you and identify where these concepts appear in real life. Consider file sizes (bytes), colors (RGB values), IP addresses, or memory addresses. How does understanding binary and hexadecimal change your perspective on digital technology?',
+                response: reflectionText,
+                timestamp: new Date().toISOString(),
+                wordCount: reflectionText.trim().split(/\s+/).length
+            };
+
+            try {
+                // Store for Module 4 compilation
+                let allReflections = JSON.parse(sessionStorage.getItem('csc210_all_reflections') || '{}');
+                allReflections.module2 = module2Reflection;
+                sessionStorage.setItem('csc210_all_reflections', JSON.stringify(allReflections));
+
+                // Update state
                 moduleState.reflectionText = reflectionText;
+                moduleState.reflectionSaved = true;
                 saveModuleState();
-                
-                const content = `CSC210 Module 2 Reflection
-Student: [Enter your name]
-Date: ${new Date().toLocaleDateString()}
 
-Reflection Question:
-Now that you understand different number systems, look around you and identify where these concepts appear in real life. Consider file sizes (bytes), colors (RGB values), IP addresses, or memory addresses. How does understanding binary and hexadecimal change your perspective on digital technology?
+                // Show success message
+                const statusDiv = document.getElementById('reflection-save-status');
+                statusDiv.style.display = 'block';
+                statusDiv.style.background = '#dcfce7';
+                statusDiv.style.color = '#166534';
+                statusDiv.style.border = '1px solid #16a34a';
+                statusDiv.innerHTML = `
+                    <strong>✅ Reflection Saved!</strong><br>
+                    Your Module 2 reflection (${module2Reflection.wordCount} words) has been saved and will be included in your Module 4 comprehensive reflection assignment.
+                `;
 
-Response:
-${reflectionText}
-
----
-Instructions: Copy this text and submit it in the Canvas assignment for Week 1 Module 2 Reflection.
-`;
-                
-                const blob = new Blob([content], { type: 'text/plain' });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = 'CSC210_Module2_Reflection.txt';
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                URL.revokeObjectURL(url);
-                
-                alert('Reflection downloaded! Submit this file content in Canvas.');
-            } else {
-                alert('Please write your reflection before downloading.');
+                updateButtonStates();
+            } catch (error) {
+                console.error('Could not save reflection:', error);
+                const statusDiv = document.getElementById('reflection-save-status');
+                statusDiv.style.display = 'block';
+                statusDiv.style.background = '#fee2e2';
+                statusDiv.style.color = '#991b1b';
+                statusDiv.style.border = '1px solid #ef4444';
+                statusDiv.innerHTML = '<strong>❌ Error:</strong> Could not save reflection. Please try again.';
             }
         }
 
@@ -1628,7 +1655,7 @@ Instructions: Copy this text and submit it in the Canvas assignment for Week 1 M
             if (reflectionText.trim().length > 0) {
                 if (navigator.clipboard && navigator.clipboard.writeText) {
                     navigator.clipboard.writeText(reflectionText).then(() => {
-                        alert('Reflection copied to clipboard! Paste it into the Canvas assignment.');
+                        alert('Reflection copied to clipboard!');
                     }).catch(() => {
                         fallbackCopyToClipboard(reflectionText);
                     });
@@ -1676,15 +1703,21 @@ Completed Activities:
 ✓ Practice Problems: ${moduleState.problemsSolved.size}/4 solved
 ✓ Pattern Recognition: ${moduleState.patternsCompleted.size}/2 completed
 ✓ Knowledge Quiz: ${moduleState.sectionsCompleted.quiz ? 'Yes' : 'No'}
-✓ Reflection: ${moduleState.sectionsCompleted.reflection ? 'Yes' : 'No'}
+✓ Reflection: ${moduleState.sectionsCompleted.reflection ? 'Yes (Saved for Module 4)' : 'No'}
+
+Learning Objectives Mastered:
+• Converting between decimal, binary, and hexadecimal number systems
+• Understanding why computers use binary and how it relates to digital circuits
+• Recognizing patterns in number systems and shortcuts for quick conversions
+• Identifying real-world applications of different number systems in computing
 
 Next Steps:
-1. Submit reflection in Canvas assignment
-2. Continue to Module 3: Two's Complement
+1. Continue to Module 3: Two's Complement
+2. Complete remaining modules to build comprehensive reflection in Module 4
 3. Review any incomplete activities if needed
 
 ---
-Note: This summary shows session progress only. Submit required work in Canvas for grading.
+Note: This summary shows session progress only. Your reflection has been saved for the comprehensive assignment in Module 4.
 `;
             
             const blob = new Blob([summary], { type: 'text/plain' });
