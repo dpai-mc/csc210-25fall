@@ -1975,7 +1975,8 @@ Save this file for your Module 4 summary assignment.`;
             if (moduleState.returnUrl) {
                 window.location.href = moduleState.returnUrl;
             } else {
-                alert('Return URL not found. Please navigate back to your learning platform manually.');
+                // Default to the learning platform URL
+                window.location.href = 'https://dpai-mc.github.io/csc210-25fall/csc210-wk1-learning-platform.html';
             }
         }
 
