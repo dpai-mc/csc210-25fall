@@ -863,7 +863,7 @@ A NAND A = NOT(A AND A) = NOT(A)
             sections.forEach(section => observer.observe(section));
         }
 
-        // Auto-save progress to localStorage (if available)
+        // Auto-save progress to sessionStorage (session-only)
         function saveProgress() {
             try {
                 const progress = {
@@ -874,16 +874,16 @@ A NAND A = NOT(A AND A) = NOT(A)
                     checklistStates: Array.from(document.querySelectorAll('.checklist-item input')).map(checkbox => 
                         checkbox.checked)
                 };
-                localStorage.setItem('csc210_lab1_progress', JSON.stringify(progress));
+                sessionStorage.setItem('csc210_lab1_progress', JSON.stringify(progress));
             } catch (e) {
-                // localStorage not available, continue without saving
+                // sessionStorage not available, continue without saving
             }
         }
 
-        // Load saved progress
+        // Load saved progress (session-only)
         function loadProgress() {
             try {
-                const saved = localStorage.getItem('csc210_lab1_progress');
+                const saved = sessionStorage.getItem('csc210_lab1_progress');
                 if (saved) {
                     const progress = JSON.parse(saved);
                     completedGates = progress.completedGates || 0;
