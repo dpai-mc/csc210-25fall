@@ -105,6 +105,68 @@
             margin: 1rem 0 0.5rem 0;
         }
 
+        /* Video Container */
+        .video-container {
+            background: #1f2937;
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+            text-align: center;
+        }
+
+        .video-embed {
+            position: relative;
+            width: 100%;
+            height: 0;
+            padding-bottom: 56.25%; /* 16:9 aspect ratio */
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 1rem;
+        }
+
+        .video-embed iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
+
+        .video-info {
+            color: white;
+            margin-bottom: 1rem;
+        }
+
+        .video-actions {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .transcript-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.8rem 1.5rem;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.3s ease;
+            font-weight: bold;
+        }
+
+        .transcript-link:hover,
+        .transcript-link:focus {
+            background: rgba(255, 255, 255, 0.3);
+            border-color: rgba(255, 255, 255, 0.5);
+            transform: translateY(-2px);
+        }
+
         /* Number System Converter */
         .converter-section {
             background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
@@ -269,23 +331,6 @@
             color: #3b82f6;
         }
 
-        /* Video Container */
-        .video-container {
-            background: #1f2937;
-            border-radius: 12px;
-            padding: 2rem;
-            margin: 2rem 0;
-            text-align: center;
-        }
-
-        .video-placeholder {
-            background: #374151;
-            border-radius: 8px;
-            padding: 3rem;
-            color: white;
-            margin-bottom: 1rem;
-        }
-
         /* Quiz Components */
         .quiz-section {
             background: #f0fdf4;
@@ -418,6 +463,23 @@
             border-color: #3b82f6;
         }
 
+        /* Skip Link for Accessibility */
+        .skip-link {
+            position: absolute;
+            top: -40px;
+            left: 6px;
+            background: #000;
+            color: #fff;
+            padding: 8px;
+            text-decoration: none;
+            border-radius: 4px;
+            z-index: 1000;
+        }
+
+        .skip-link:focus {
+            top: 6px;
+        }
+
         /* Responsive Design */
         @media (max-width: 768px) {
             .container {
@@ -439,16 +501,50 @@
             .action-buttons {
                 flex-direction: column;
             }
+
+            .video-actions {
+                flex-direction: column;
+                align-items: center;
+            }
         }
 
-        /* Accessibility */
+        /* High Contrast Mode Support */
+        @media (prefers-contrast: high) {
+            .content-section {
+                border: 2px solid #000;
+            }
+
+            .btn-primary {
+                background: #000;
+                border: 2px solid #000;
+            }
+
+            .btn-secondary {
+                background: #fff;
+                border: 2px solid #000;
+                color: #000;
+            }
+        }
+
+        /* Reduced Motion Support */
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+
+        /* Focus Indicators for Accessibility */
         .btn:focus,
         .input-field:focus,
-        .option:focus {
+        .option:focus,
+        .transcript-link:focus {
             outline: 3px solid #3b82f6;
             outline-offset: 2px;
         }
 
+        /* Screen Reader Only Content */
         .sr-only {
             position: absolute;
             width: 1px;
@@ -460,9 +556,22 @@
             white-space: nowrap;
             border: 0;
         }
+
+        /* Video Loading State */
+        .video-loading {
+            background: #374151;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 300px;
+            color: white;
+            border-radius: 8px;
+        }
     </style>
 </head>
 <body>
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+    
     <header>
         <div class="container">
             <h1>Module 2: Number Systems</h1>
@@ -475,7 +584,7 @@
         </div>
     </header>
 
-    <main class="container">
+    <main class="container" id="main-content">
         <!-- Progress Tracking -->
         <div class="progress-container">
             <div class="progress-header">
@@ -486,7 +595,7 @@
                 <div class="progress-fill" id="progress-fill"></div>
             </div>
             <p style="font-size: 0.9rem; color: #6b7280; margin-top: 0.5rem;">
-                ⓘ Progress resets when you close your browser. Download your work before leaving.
+                ℹ Progress resets when you close your browser. Download your work before leaving.
             </p>
         </div>
 
@@ -494,30 +603,40 @@
         <section class="content-section">
             <h2>🎥 Number Systems Fundamentals</h2>
             <div class="video-container">
-                <div class="video-placeholder">
-                    <h3 style="margin-bottom: 1rem;">Binary and Hexadecimal Deep Dive</h3>
-                    <p style="margin-bottom: 1rem;">Duration: 45 minutes (4 part series)</p>
-                    <div style="font-size: 4rem; margin: 1rem 0;">▶️</div>
+                <div class="video-info">
+                    <h3 style="margin-bottom: 1rem; color: white;">Binary and Hexadecimal Deep Dive</h3>
+                    <p style="margin-bottom: 1rem;">Duration: 45 minutes</p>
                     <p style="font-size: 0.9rem; opacity: 0.8;">Why computers use binary • Converting between systems • Patterns and shortcuts</p>
                 </div>
-                <div style="display: flex; justify-content: center; gap: 1rem; margin-top: 1rem; flex-wrap: wrap;">
-                    <button class="btn btn-primary" onclick="playVideo('binary-intro')">
-                        ▶️ Part 1: Why Binary?
-                    </button>
-                    <button class="btn btn-secondary" onclick="playVideo('conversions')">
-                        ▶️ Part 2: Conversions
-                    </button>
-                    <button class="btn btn-secondary" onclick="playVideo('hex')">
-                        ▶️ Part 3: Hexadecimal
-                    </button>
-                    <button class="btn btn-secondary" onclick="playVideo('patterns')">
-                        ▶️ Part 4: Patterns
-                    </button>
+                
+                <div class="video-embed">
+                    <iframe 
+                        src="https://www.youtube.com/embed/S_nY5y34mlQ" 
+                        title="Binary and Hexadecimal Deep Dive - Number Systems Fundamentals"
+                        allowfullscreen
+                        aria-describedby="video-description">
+                    </iframe>
+                </div>
+                
+                <div id="video-description" class="sr-only">
+                    This video covers the fundamentals of number systems including binary, decimal, and hexadecimal. 
+                    It explains why computers use binary, how to convert between different number systems, 
+                    and important patterns to recognize.
+                </div>
+
+                <div class="video-actions">
+                    <a href="https://mendocino.instructure.com/courses/19705/files/2404936?wrap=1" 
+                       target="_blank" 
+                       rel="noopener noreferrer"
+                       class="transcript-link"
+                       aria-label="Open video transcript in new tab">
+                        📄 Video Transcript
+                    </a>
                 </div>
             </div>
             <div class="action-buttons">
-                <button class="btn btn-primary" onclick="completeSection('video')" id="video-complete-btn" disabled>
-                    ✅ Mark Videos Complete
+                <button class="btn btn-primary" onclick="completeSection('video')" id="video-complete-btn">
+                    ✅ Mark Video Complete
                 </button>
             </div>
         </section>
@@ -531,21 +650,36 @@
                 <h3 style="text-align: center; color: #10b981; margin-bottom: 1rem;">Live Number Converter</h3>
                 <div class="converter-grid">
                     <div class="number-input">
-                        <label class="input-label">Decimal (Base 10)</label>
-                        <input type="text" class="input-field" id="decimal-input" placeholder="Enter decimal number" oninput="convertFromDecimal(this.value)">
-                        <div class="input-help">Examples: 42, 255, 1024</div>
+                        <label class="input-label" for="decimal-input">Decimal (Base 10)</label>
+                        <input type="text" 
+                               class="input-field" 
+                               id="decimal-input" 
+                               placeholder="Enter decimal number" 
+                               oninput="convertFromDecimal(this.value)"
+                               aria-describedby="decimal-help">
+                        <div class="input-help" id="decimal-help">Examples: 42, 255, 1024</div>
                     </div>
 
                     <div class="number-input">
-                        <label class="input-label">Binary (Base 2)</label>
-                        <input type="text" class="input-field" id="binary-input" placeholder="Enter binary number" oninput="convertFromBinary(this.value)">
-                        <div class="input-help">Examples: 101010, 11111111, 10000000000</div>
+                        <label class="input-label" for="binary-input">Binary (Base 2)</label>
+                        <input type="text" 
+                               class="input-field" 
+                               id="binary-input" 
+                               placeholder="Enter binary number" 
+                               oninput="convertFromBinary(this.value)"
+                               aria-describedby="binary-help">
+                        <div class="input-help" id="binary-help">Examples: 101010, 11111111, 10000000000</div>
                     </div>
 
                     <div class="number-input">
-                        <label class="input-label">Hexadecimal (Base 16)</label>
-                        <input type="text" class="input-field" id="hex-input" placeholder="Enter hex number" oninput="convertFromHex(this.value)">
-                        <div class="input-help">Examples: 2A, FF, 400 (no 0x prefix needed)</div>
+                        <label class="input-label" for="hex-input">Hexadecimal (Base 16)</label>
+                        <input type="text" 
+                               class="input-field" 
+                               id="hex-input" 
+                               placeholder="Enter hex number" 
+                               oninput="convertFromHex(this.value)"
+                               aria-describedby="hex-help">
+                        <div class="input-help" id="hex-help">Examples: 2A, FF, 400 (no 0x prefix needed)</div>
                     </div>
                 </div>
                 
@@ -602,11 +736,16 @@
                     <h3 style="color: #0277bd; text-align: center; margin-bottom: 1.5rem;">Interactive Decimal to Binary Conversion</h3>
                     
                     <div style="text-align: center; margin-bottom: 2rem;">
-                        <label style="display: block; font-weight: bold; margin-bottom: 0.5rem;">Enter a decimal number to convert:</label>
-                        <input type="number" id="demo-input" min="0" max="255" value="42" 
+                        <label for="demo-input" style="display: block; font-weight: bold; margin-bottom: 0.5rem;">Enter a decimal number to convert:</label>
+                        <input type="number" 
+                               id="demo-input" 
+                               min="0" 
+                               max="255" 
+                               value="42" 
                                style="padding: 0.8rem; font-size: 1.2rem; border: 2px solid #0288d1; border-radius: 6px; text-align: center; width: 120px;"
-                               oninput="startConversion(this.value)">
-                        <p style="margin-top: 0.5rem; color: #666; font-size: 0.9rem;">Try numbers between 0 and 255</p>
+                               oninput="startConversion(this.value)"
+                               aria-describedby="demo-help">
+                        <p id="demo-help" style="margin-top: 0.5rem; color: #666; font-size: 0.9rem;">Try numbers between 0 and 255</p>
                     </div>
 
                     <!-- Conversion Steps Display -->
@@ -633,9 +772,9 @@
                     </div>
 
                     <div style="text-align: center; margin-top: 2rem;">
-                        <button class="btn btn-secondary" onclick="showExample(42)">📝 Show Example (42)</button>
-                        <button class="btn btn-secondary" onclick="showExample(100)">📝 Show Example (100)</button>
-                        <button class="btn btn-secondary" onclick="showExample(255)">📝 Show Example (255)</button>
+                        <button class="btn btn-secondary" onclick="showExample(42)">🔍 Show Example (42)</button>
+                        <button class="btn btn-secondary" onclick="showExample(100)">🔍 Show Example (100)</button>
+                        <button class="btn btn-secondary" onclick="showExample(255)">🔍 Show Example (255)</button>
                     </div>
                 </div>
 
@@ -657,30 +796,30 @@
                 
                 <div class="problem-card" data-problem="1">
                     <div class="problem-text">Problem 1: Convert decimal 42 to binary</div>
-                    <input type="text" class="answer-input" id="answer-1" placeholder="Enter your binary answer">
+                    <input type="text" class="answer-input" id="answer-1" placeholder="Enter your binary answer" aria-label="Answer for problem 1">
                     <button class="check-answer-btn" onclick="checkAnswer(1, '101010')">Check Answer</button>
-                    <div class="feedback" id="feedback-1"></div>
+                    <div class="feedback" id="feedback-1" role="alert"></div>
                 </div>
 
                 <div class="problem-card" data-problem="2">
                     <div class="problem-text">Problem 2: Convert binary 11111111 to decimal</div>
-                    <input type="text" class="answer-input" id="answer-2" placeholder="Enter your decimal answer">
+                    <input type="text" class="answer-input" id="answer-2" placeholder="Enter your decimal answer" aria-label="Answer for problem 2">
                     <button class="check-answer-btn" onclick="checkAnswer(2, '255')">Check Answer</button>
-                    <div class="feedback" id="feedback-2"></div>
+                    <div class="feedback" id="feedback-2" role="alert"></div>
                 </div>
 
                 <div class="problem-card" data-problem="3">
                     <div class="problem-text">Problem 3: Convert decimal 255 to hexadecimal</div>
-                    <input type="text" class="answer-input" id="answer-3" placeholder="Enter your hex answer (no 0x prefix)">
+                    <input type="text" class="answer-input" id="answer-3" placeholder="Enter your hex answer (no 0x prefix)" aria-label="Answer for problem 3">
                     <button class="check-answer-btn" onclick="checkAnswer(3, 'FF')">Check Answer</button>
-                    <div class="feedback" id="feedback-3"></div>
+                    <div class="feedback" id="feedback-3" role="alert"></div>
                 </div>
 
                 <div class="problem-card" data-problem="4">
                     <div class="problem-text">Problem 4: Convert hexadecimal A0 to binary</div>
-                    <input type="text" class="answer-input" id="answer-4" placeholder="Enter your binary answer">
+                    <input type="text" class="answer-input" id="answer-4" placeholder="Enter your binary answer" aria-label="Answer for problem 4">
                     <button class="check-answer-btn" onclick="checkAnswer(4, '10100000')">Check Answer</button>
-                    <div class="feedback" id="feedback-4"></div>
+                    <div class="feedback" id="feedback-4" role="alert"></div>
                 </div>
 
                 <div class="action-buttons" style="position: relative; z-index: 50; background: white; padding: 1rem; border-radius: 8px; margin-top: 2rem;">
@@ -709,9 +848,10 @@
                         <div class="pattern-number">16</div>
                         <div class="pattern-missing">?</div>
                     </div>
-                    <input type="text" placeholder="What comes next?" id="pattern-1" style="width: 100px; padding: 0.5rem; margin: 0.5rem;">
+                    <label for="pattern-1" class="sr-only">Enter the next number in the pattern</label>
+                    <input type="text" placeholder="What comes next?" id="pattern-1" style="width: 100px; padding: 0.5rem; margin: 0.5rem;" aria-label="Pattern 1 answer">
                     <button onclick="checkPattern(1, '32')" class="check-answer-btn">Check</button>
-                    <div class="feedback" id="pattern-feedback-1"></div>
+                    <div class="feedback" id="pattern-feedback-1" role="alert"></div>
                 </div>
 
                 <div style="margin: 2rem 0;">
@@ -724,9 +864,10 @@
                         <div class="pattern-number">100</div>
                         <div class="pattern-missing">?</div>
                     </div>
-                    <input type="text" placeholder="What comes next?" id="pattern-2" style="width: 100px; padding: 0.5rem; margin: 0.5rem;">
+                    <label for="pattern-2" class="sr-only">Enter the next number in the pattern</label>
+                    <input type="text" placeholder="What comes next?" id="pattern-2" style="width: 100px; padding: 0.5rem; margin: 0.5rem;" aria-label="Pattern 2 answer">
                     <button onclick="checkPattern(2, '101')" class="check-answer-btn">Check</button>
-                    <div class="feedback" id="pattern-feedback-2"></div>
+                    <div class="feedback" id="pattern-feedback-2" role="alert"></div>
                 </div>
 
                 <div class="action-buttons" style="position: relative; z-index: 50; background: white; padding: 1rem; border-radius: 8px; margin-top: 2rem;">
@@ -743,35 +884,35 @@
             <div class="quiz-section">
                 <div class="question" data-question="1">
                     <div class="question-text">1. What is the decimal value of binary 1010?</div>
-                    <ul class="options">
-                        <li class="option" data-answer="a" onclick="selectAnswer(1, 'a')">A) 8</li>
-                        <li class="option" data-answer="b" onclick="selectAnswer(1, 'b')">B) 10</li>
-                        <li class="option" data-answer="c" onclick="selectAnswer(1, 'c')">C) 12</li>
-                        <li class="option" data-answer="d" onclick="selectAnswer(1, 'd')">D) 16</li>
+                    <ul class="options" role="radiogroup" aria-labelledby="question-1-text">
+                        <li class="option" data-answer="a" onclick="selectAnswer(1, 'a')" role="radio" tabindex="0" aria-checked="false">A) 8</li>
+                        <li class="option" data-answer="b" onclick="selectAnswer(1, 'b')" role="radio" tabindex="0" aria-checked="false">B) 10</li>
+                        <li class="option" data-answer="c" onclick="selectAnswer(1, 'c')" role="radio" tabindex="0" aria-checked="false">C) 12</li>
+                        <li class="option" data-answer="d" onclick="selectAnswer(1, 'd')" role="radio" tabindex="0" aria-checked="false">D) 16</li>
                     </ul>
-                    <div class="feedback" id="feedback-1"></div>
+                    <div class="feedback" id="quiz-feedback-1" role="alert"></div>
                 </div>
 
                 <div class="question" data-question="2">
                     <div class="question-text">2. Which hexadecimal digit represents decimal 15?</div>
-                    <ul class="options">
-                        <li class="option" data-answer="a" onclick="selectAnswer(2, 'a')">A) E</li>
-                        <li class="option" data-answer="b" onclick="selectAnswer(2, 'b')">B) F</li>
-                        <li class="option" data-answer="c" onclick="selectAnswer(2, 'c')">C) 15</li>
-                        <li class="option" data-answer="d" onclick="selectAnswer(2, 'd')">D) G</li>
+                    <ul class="options" role="radiogroup" aria-labelledby="question-2-text">
+                        <li class="option" data-answer="a" onclick="selectAnswer(2, 'a')" role="radio" tabindex="0" aria-checked="false">A) E</li>
+                        <li class="option" data-answer="b" onclick="selectAnswer(2, 'b')" role="radio" tabindex="0" aria-checked="false">B) F</li>
+                        <li class="option" data-answer="c" onclick="selectAnswer(2, 'c')" role="radio" tabindex="0" aria-checked="false">C) 15</li>
+                        <li class="option" data-answer="d" onclick="selectAnswer(2, 'd')" role="radio" tabindex="0" aria-checked="false">D) G</li>
                     </ul>
-                    <div class="feedback" id="feedback-2"></div>
+                    <div class="feedback" id="quiz-feedback-2" role="alert"></div>
                 </div>
 
                 <div class="question" data-question="3">
                     <div class="question-text">3. How many bits are needed to represent decimal numbers 0-255?</div>
-                    <ul class="options">
-                        <li class="option" data-answer="a" onclick="selectAnswer(3, 'a')">A) 7 bits</li>
-                        <li class="option" data-answer="b" onclick="selectAnswer(3, 'b')">B) 8 bits</li>
-                        <li class="option" data-answer="c" onclick="selectAnswer(3, 'c')">C) 9 bits</li>
-                        <li class="option" data-answer="d" onclick="selectAnswer(3, 'd')">D) 16 bits</li>
+                    <ul class="options" role="radiogroup" aria-labelledby="question-3-text">
+                        <li class="option" data-answer="a" onclick="selectAnswer(3, 'a')" role="radio" tabindex="0" aria-checked="false">A) 7 bits</li>
+                        <li class="option" data-answer="b" onclick="selectAnswer(3, 'b')" role="radio" tabindex="0" aria-checked="false">B) 8 bits</li>
+                        <li class="option" data-answer="c" onclick="selectAnswer(3, 'c')" role="radio" tabindex="0" aria-checked="false">C) 9 bits</li>
+                        <li class="option" data-answer="d" onclick="selectAnswer(3, 'd')" role="radio" tabindex="0" aria-checked="false">D) 16 bits</li>
                     </ul>
-                    <div class="feedback" id="feedback-3"></div>
+                    <div class="feedback" id="quiz-feedback-3" role="alert"></div>
                 </div>
 
                 <div class="action-buttons">
@@ -793,14 +934,19 @@
                     Reflection Prompt: Now that you understand different number systems, look around you and identify where these concepts appear in real life. Consider file sizes (bytes), colors (RGB values), IP addresses, or memory addresses. How does understanding binary and hexadecimal change your perspective on digital technology?
                 </div>
                 <div style="background: #fef3c7; border: 1px solid #f59e0b; border-radius: 6px; padding: 1rem; margin: 1rem 0; font-size: 0.9rem;">
-                    <strong>📝 Important:</strong> Your reflection response is required for this module's assignment. Use the download or copy buttons below to submit your reflection in Canvas.
+                    <strong>📋 Important:</strong> Your reflection response is required for this module's assignment. Use the download or copy buttons below to submit your reflection in Canvas.
                 </div>
+                <label for="reflection-text" class="sr-only">Your reflection response</label>
                 <textarea 
                     class="reflection-input" 
                     id="reflection-text"
                     placeholder="Share your insights here... Think about specific examples like how a web color #FF0000 represents red, or how your computer's 8GB of RAM relates to powers of 2."
-                    oninput="updateReflection()">
+                    oninput="updateReflection()"
+                    aria-describedby="reflection-instructions">
                 </textarea>
+                <div id="reflection-instructions" class="sr-only">
+                    Write your reflection about how number systems appear in real life and how understanding them changes your perspective on digital technology.
+                </div>
                 <div class="action-buttons">
                     <button class="btn btn-primary" onclick="saveReflection()">
                         💾 Download Reflection Text
@@ -899,9 +1045,22 @@
             loadModuleState();
             updateProgress();
             updateButtonStates();
+            addKeyboardListeners();
             
             console.log('Module 2 initialized successfully');
         });
+
+        // Add keyboard navigation for quiz options
+        function addKeyboardListeners() {
+            document.addEventListener('keydown', function(e) {
+                if (e.target.classList.contains('option')) {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        e.target.click();
+                    }
+                }
+            });
+        }
 
         // Check for return URL and module parameters
         function checkReturnUrl() {
@@ -976,6 +1135,7 @@
                 const option = document.querySelector(`[data-question="${questionNum}"] [data-answer="${answer}"]`);
                 if (option) {
                     option.classList.add('selected');
+                    option.setAttribute('aria-checked', 'true');
                 }
             });
         }
@@ -993,6 +1153,7 @@
             
             if (progressFill) {
                 progressFill.style.width = `${percentage}%`;
+                progressFill.setAttribute('aria-valuenow', percentage);
             }
             
             if (progressText) {
@@ -1006,9 +1167,11 @@
         function updateButtonStates() {
             // Video completion button
             const videoBtn = document.getElementById('video-complete-btn');
-            if (videoBtn && moduleState.sectionsCompleted.video) {
-                videoBtn.disabled = false;
-                videoBtn.textContent = '✅ Videos Completed';
+            if (videoBtn) {
+                if (moduleState.sectionsCompleted.video) {
+                    videoBtn.disabled = true;
+                    videoBtn.textContent = '✅ Video Completed';
+                }
             }
 
             // Tutorial completion button
@@ -1016,7 +1179,7 @@
             if (tutorialBtn) {
                 if (moduleState.tutorialInteractions >= 3) {
                     tutorialBtn.disabled = false;
-                    tutorialBtn.textContent = '✅ Complete Tutorial (' + moduleState.tutorialInteractions + ' examples tried)';
+                    tutorialBtn.textContent = 'ℹ Complete Tutorial (' + moduleState.tutorialInteractions + ' examples tried)';
                 } else {
                     tutorialBtn.textContent = '🎯 Try More Examples (' + moduleState.tutorialInteractions + '/3 needed)';
                 }
@@ -1025,6 +1188,8 @@
                     tutorialBtn.disabled = true;
                 }
             }
+
+            // Converter completion button
             const converterBtn = document.getElementById('converter-complete-btn');
             if (converterBtn) {
                 if (moduleState.conversionsPerformed >= 5) {
@@ -1094,24 +1259,7 @@
             }
         }
 
-        // Video functions
-        function playVideo(videoId) {
-            const videoTitles = {
-                'binary-intro': 'Why Binary? - Understanding the foundation of digital computing',
-                'conversions': 'Conversion Techniques - Step-by-step methods',
-                'hex': 'Hexadecimal System - Shorthand for binary',
-                'patterns': 'Number Patterns - Shortcuts and recognition'
-            };
-            
-            alert(`Playing: ${videoTitles[videoId] || videoId}. Video player would open here.`);
-            
-            // Mark videos as watched after playing any one
-            moduleState.sectionsCompleted.video = true;
-            updateProgress();
-            updateButtonStates();
-        }
-
-        // Step-by-step conversion functions
+        // Step-by-Step conversion functions
         function startConversion(value) {
             const num = parseInt(value);
             if (isNaN(num) || num < 0 || num > 255) {
@@ -1169,7 +1317,7 @@
                     ${steps.map(step => `<div style="margin: 0.3rem 0; padding: 0.3rem; background: white; border-radius: 4px;">${step}</div>`).join('')}
                     <div style="margin-top: 1rem; padding: 1rem; background: #dbeafe; border-radius: 6px;">
                         <strong>Read remainders from bottom to top:</strong><br>
-                        ${remainders.reverse().join(' → ')} = <strong>${remainders.join('')}</strong>
+                        ${remainders.reverse().join(' ← ')} = <strong>${remainders.join('')}</strong>
                     </div>
                 </div>
             `;
@@ -1216,6 +1364,8 @@
             
             document.getElementById('place-value-table').innerHTML = tableHTML;
         }
+
+        // Number converter functions
         function convertFromDecimal(value) {
             if (!value.trim()) return;
             
@@ -1336,12 +1486,16 @@
         // Quiz functions
         function selectAnswer(questionNum, answer) {
             const question = document.querySelector(`[data-question="${questionNum}"]`);
+            
+            // Clear previous selections and aria-checked states
             question.querySelectorAll('.option').forEach(opt => {
                 opt.classList.remove('selected');
+                opt.setAttribute('aria-checked', 'false');
             });
 
             const selectedOption = question.querySelector(`[data-answer="${answer}"]`);
             selectedOption.classList.add('selected');
+            selectedOption.setAttribute('aria-checked', 'true');
 
             moduleState.quizAnswers[questionNum] = answer;
             updateButtonStates();
@@ -1375,7 +1529,7 @@
                     correctOption.classList.add('correct');
                 }
 
-                const feedback = document.getElementById(`feedback-${questionNum}`);
+                const feedback = document.getElementById(`quiz-feedback-${questionNum}`);
                 if (feedback) {
                     feedback.style.display = 'block';
                     if (isCorrect) {
@@ -1409,6 +1563,7 @@
         function resetQuiz() {
             document.querySelectorAll('.option').forEach(opt => {
                 opt.classList.remove('selected', 'correct', 'incorrect');
+                opt.setAttribute('aria-checked', 'false');
             });
 
             document.querySelectorAll('.feedback').forEach(feedback => {
@@ -1471,20 +1626,38 @@ Instructions: Copy this text and submit it in the Canvas assignment for Week 1 M
         function copyReflectionToClipboard() {
             const reflectionText = document.getElementById('reflection-text').value;
             if (reflectionText.trim().length > 0) {
-                navigator.clipboard.writeText(reflectionText).then(() => {
-                    alert('Reflection copied to clipboard! Paste it into the Canvas assignment.');
-                }).catch(() => {
-                    const textArea = document.createElement('textarea');
-                    textArea.value = reflectionText;
-                    document.body.appendChild(textArea);
-                    textArea.select();
-                    document.execCommand('copy');
-                    document.body.removeChild(textArea);
-                    alert('Reflection copied to clipboard! Paste it into the Canvas assignment.');
-                });
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    navigator.clipboard.writeText(reflectionText).then(() => {
+                        alert('Reflection copied to clipboard! Paste it into the Canvas assignment.');
+                    }).catch(() => {
+                        fallbackCopyToClipboard(reflectionText);
+                    });
+                } else {
+                    fallbackCopyToClipboard(reflectionText);
+                }
             } else {
                 alert('Please write your reflection before copying.');
             }
+        }
+
+        function fallbackCopyToClipboard(text) {
+            const textArea = document.createElement('textarea');
+            textArea.value = text;
+            textArea.style.position = 'fixed';
+            textArea.style.left = '-999999px';
+            textArea.style.top = '-999999px';
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            
+            try {
+                document.execCommand('copy');
+                alert('Reflection copied to clipboard! Paste it into the Canvas assignment.');
+            } catch (err) {
+                alert('Could not copy to clipboard. Please manually select and copy your reflection text.');
+            }
+            
+            document.body.removeChild(textArea);
         }
 
         function downloadCompletionSummary() {
@@ -1532,8 +1705,9 @@ Note: This summary shows session progress only. Submit required work in Canvas f
             updateButtonStates();
             
             const messages = {
-                video: 'Video series completed! 🎥',
+                video: 'Video completed! 🎥',
                 converter: 'Number converter practice completed! 🔢',
+                tutorial: 'Conversion tutorial completed! 🎯',
                 practice: 'Practice problems completed! 📝',
                 patterns: 'Pattern recognition completed! 🧩',
                 quiz: 'Knowledge check completed! 🧠',
@@ -1586,6 +1760,31 @@ Note: This summary shows session progress only. Submit required work in Canvas f
 
         // Periodic auto-save
         setInterval(saveModuleState, 30000);
+
+        // Error handling for iframe video loading
+        window.addEventListener('load', function() {
+            const iframe = document.querySelector('iframe');
+            if (iframe) {
+                iframe.onerror = function() {
+                    console.warn('Video failed to load');
+                    const videoContainer = document.querySelector('.video-embed');
+                    if (videoContainer) {
+                        videoContainer.innerHTML = `
+                            <div class="video-loading">
+                                <div style="text-align: center;">
+                                    <h4 style="margin-bottom: 1rem;">Video Unavailable</h4>
+                                    <p>The video content could not be loaded.</p>
+                                    <p>Please check your internet connection or try refreshing the page.</p>
+                                    <a href="https://youtu.be/S_nY5y34mlQ" target="_blank" rel="noopener noreferrer" style="color: #60a5fa; text-decoration: underline;">
+                                        Open video in YouTube
+                                    </a>
+                                </div>
+                            </div>
+                        `;
+                    }
+                };
+            }
+        });
     </script>
 </body>
 </html>
