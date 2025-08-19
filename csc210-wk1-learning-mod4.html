@@ -228,30 +228,78 @@
             color: #dc2626;
         }
 
-        /* Assignment Sections */
-        .assignment-part {
-            background: linear-gradient(135deg, #fefce8 0%, #fef3c7 100%);
+        /* Canvas Links Section */
+        .canvas-links {
+            background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+            border-left: 4px solid #3b82f6;
+        }
+
+        .canvas-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .canvas-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            border: 2px solid #e5e7eb;
+            transition: all 0.3s ease;
+        }
+
+        .canvas-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            border-color: #3b82f6;
+        }
+
+        .canvas-card h4 {
+            color: #1e40af;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .canvas-card a {
+            color: #1e40af;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .canvas-card a:hover {
+            text-decoration: underline;
+        }
+
+        /* Review Section */
+        .review-section {
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
             border-radius: 12px;
             padding: 1.5rem;
             margin: 1.5rem 0;
-            border-left: 4px solid #f59e0b;
+            border-left: 4px solid #0ea5e9;
         }
 
-        .assignment-header {
+        .review-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 1rem;
         }
 
-        .assignment-title {
+        .review-title {
             font-size: 1.3rem;
             font-weight: bold;
-            color: #92400e;
+            color: #0369a1;
         }
 
-        .assignment-points {
-            background: #f59e0b;
+        .review-badge {
+            background: #0ea5e9;
             color: white;
             padding: 0.3rem 0.8rem;
             border-radius: 20px;
@@ -274,7 +322,7 @@
         }
 
         .problem-number {
-            background: #7c3aed;
+            background: #0ea5e9;
             color: white;
             width: 30px;
             height: 30px;
@@ -289,7 +337,7 @@
             font-size: 0.9rem;
         }
 
-        .answer-box {
+        .practice-area {
             background: #f8fafc;
             border: 2px dashed #cbd5e1;
             border-radius: 6px;
@@ -299,7 +347,7 @@
             position: relative;
         }
 
-        .answer-placeholder {
+        .practice-placeholder {
             color: #9ca3af;
             font-style: italic;
         }
@@ -347,6 +395,11 @@
 
         .btn-warning {
             background: linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%);
+            color: white;
+        }
+
+        .btn-info {
+            background: linear-gradient(135deg, #0ea5e9 0%, #38bdf8 100%);
             color: white;
         }
 
@@ -432,6 +485,11 @@
                 gap: 1rem;
             }
 
+            .canvas-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
             .navigation {
                 flex-direction: column;
                 text-align: center;
@@ -463,9 +521,26 @@
         button:focus,
         input:focus,
         select:focus,
-        textarea:focus {
+        textarea:focus,
+        a:focus {
             outline: 3px solid #7c3aed;
             outline-offset: 2px;
+        }
+
+        /* High contrast mode support */
+        @media (prefers-contrast: high) {
+            .btn {
+                border: 2px solid currentColor;
+            }
+        }
+
+        /* Reduced motion support */
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
         }
 
         /* Completion tracking */
@@ -485,20 +560,20 @@
         <div class="container">
             <div class="header-content">
                 <h1>Module 4: Putting It Together</h1>
-                <p class="module-subtitle">Synthesis, Application & Comprehensive Assessment</p>
+                <p class="module-subtitle">Synthesis, Application & Review</p>
                 
                 <div class="module-info">
                     <div class="info-item">
                         <div class="info-label">Duration</div>
-                        <div class="info-value">2 hours</div>
+                        <div class="info-value">1.5 hours</div>
                     </div>
                     <div class="info-item">
                         <div class="info-label">Difficulty</div>
-                        <div class="info-value">Advanced</div>
+                        <div class="info-value">Review</div>
                     </div>
                     <div class="info-item">
-                        <div class="info-label">Assignment</div>
-                        <div class="info-value">100 points</div>
+                        <div class="info-label">Assessment</div>
+                        <div class="info-value">Canvas Quiz</div>
                     </div>
                     <div class="info-item">
                         <div class="info-label">Prerequisites</div>
@@ -520,7 +595,7 @@
                 <div class="progress-fill" id="progress-fill"></div>
             </div>
             <p style="font-size: 0.9rem; color: #6b7280; margin-top: 0.5rem;">
-                ⓘ Progress tracks during this session only. Export your work to save answers permanently.
+                ℹ️ Progress tracks during this session only. Complete the Canvas quiz for graded assessment.
             </p>
         </div>
 
@@ -531,6 +606,56 @@
             <button class="btn btn-success" onclick="completeModule()" id="complete-btn" disabled>Complete Module 4</button>
         </nav>
 
+        <!-- Canvas Links Section -->
+        <section class="canvas-links">
+            <h2 style="color: #1e40af; border-bottom: 3px solid #3b82f6;">📚 Canvas Assignments & Quiz</h2>
+            <p>After reviewing the concepts in this module, complete these Canvas assignments:</p>
+            
+            <div class="canvas-grid">
+                <div class="canvas-card">
+                    <h4>📝 Week 1 Quiz</h4>
+                    <p>Test your understanding of number systems, conversions, and two's complement arithmetic.</p>
+                    <div class="action-buttons">
+                        <a href="https://mendocino.instructure.com/courses/19705/quizzes/125348" 
+                           class="btn btn-info" 
+                           target="_blank" 
+                           rel="noopener noreferrer"
+                           aria-label="Open Week 1 Quiz in Canvas (opens in new tab)">
+                            🎯 Take Quiz
+                        </a>
+                    </div>
+                </div>
+
+                <div class="canvas-card">
+                    <h4>💭 Reflection Submission</h4>
+                    <p>Submit your reflections on this week's learning and connections to broader CS concepts.</p>
+                    <div class="action-buttons">
+                        <a href="https://mendocino.instructure.com/courses/19705/assignments/441199?module_item_id=1146660" 
+                           class="btn btn-info" 
+                           target="_blank" 
+                           rel="noopener noreferrer"
+                           aria-label="Open Week 1 Reflection Assignment in Canvas (opens in new tab)">
+                            📝 Submit Reflection
+                        </a>
+                    </div>
+                </div>
+
+                <div class="canvas-card">
+                    <h4>🤝 Participation</h4>
+                    <p>Engage with discussion forums and participate in week 1 learning activities.</p>
+                    <div class="action-buttons">
+                        <a href="https://mendocino.instructure.com/courses/19705/assignments/441204" 
+                           class="btn btn-info" 
+                           target="_blank" 
+                           rel="noopener noreferrer"
+                           aria-label="Open Week 1 Participation Assignment in Canvas (opens in new tab)">
+                            💬 View Participation
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <!-- Introduction Section -->
         <section class="content-section">
             <h2>🎯 Module Overview</h2>
@@ -539,9 +664,9 @@
             <h3>What You'll Accomplish</h3>
             <ul style="margin: 1rem 0; padding-left: 2rem;">
                 <li>Connect number systems to practical computing applications</li>
-                <li>Complete a comprehensive assignment demonstrating mastery</li>
+                <li>Review key concepts through practice problems</li>
                 <li>Reflect on the connections between bits and programs</li>
-                <li>Prepare for Week 2: Logic Gates and Digital Circuits</li>
+                <li>Prepare for the Canvas quiz and Week 2 content</li>
             </ul>
 
             <div class="action-buttons">
@@ -549,7 +674,7 @@
                     🚀 Start Synthesis Video
                 </button>
                 <button class="btn btn-secondary" onclick="scrollToSection('applications')">
-                    🌍 Explore Applications
+                    🌐 Explore Applications
                 </button>
             </div>
         </section>
@@ -585,7 +710,7 @@
 
         <!-- Real-World Applications -->
         <section class="content-section" id="applications">
-            <h2>🌍 Real-World Applications</h2>
+            <h2>🌐 Real-World Applications</h2>
             <p>Let's explore how the number systems you've learned are used in everyday computing scenarios.</p>
 
             <div class="application-grid">
@@ -598,18 +723,21 @@
                         <h4>Color Converter</h4>
                         <div class="input-group">
                             <label for="rgb-red">Red (0-255):</label>
-                            <input type="number" id="rgb-red" min="0" max="255" value="128" onchange="updateColor()">
+                            <input type="number" id="rgb-red" min="0" max="255" value="128" onchange="updateColor()" aria-describedby="rgb-red-desc">
+                            <span id="rgb-red-desc" class="sr-only">Enter a red value between 0 and 255</span>
                         </div>
                         <div class="input-group">
                             <label for="rgb-green">Green (0-255):</label>
-                            <input type="number" id="rgb-green" min="0" max="255" value="64" onchange="updateColor()">
+                            <input type="number" id="rgb-green" min="0" max="255" value="64" onchange="updateColor()" aria-describedby="rgb-green-desc">
+                            <span id="rgb-green-desc" class="sr-only">Enter a green value between 0 and 255</span>
                         </div>
                         <div class="input-group">
                             <label for="rgb-blue">Blue (0-255):</label>
-                            <input type="number" id="rgb-blue" min="0" max="255" value="192" onchange="updateColor()">
+                            <input type="number" id="rgb-blue" min="0" max="255" value="192" onchange="updateColor()" aria-describedby="rgb-blue-desc">
+                            <span id="rgb-blue-desc" class="sr-only">Enter a blue value between 0 and 255</span>
                         </div>
-                        <div id="color-display" style="width: 100%; height: 60px; border-radius: 6px; margin-top: 1rem; border: 2px solid #e5e7eb;"></div>
-                        <div id="color-values" style="margin-top: 1rem; font-family: monospace;"></div>
+                        <div id="color-display" style="width: 100%; height: 60px; border-radius: 6px; margin-top: 1rem; border: 2px solid #e5e7eb;" aria-label="Color preview"></div>
+                        <div id="color-values" style="margin-top: 1rem; font-family: monospace;" aria-live="polite"></div>
                     </div>
                 </div>
 
@@ -622,9 +750,10 @@
                         <h4>IP Address Converter</h4>
                         <div class="input-group">
                             <label for="ip-address">IP Address (e.g., 192.168.1.1):</label>
-                            <input type="text" id="ip-address" value="192.168.1.1" onchange="convertIP()">
+                            <input type="text" id="ip-address" value="192.168.1.1" onchange="convertIP()" aria-describedby="ip-desc">
+                            <span id="ip-desc" class="sr-only">Enter an IP address in dotted decimal notation</span>
                         </div>
-                        <div id="ip-result" class="result-display" style="display: none;"></div>
+                        <div id="ip-result" class="result-display" style="display: none;" aria-live="polite"></div>
                     </div>
                 </div>
 
@@ -637,14 +766,15 @@
                         <h4>Memory Address Calculator</h4>
                         <div class="input-group">
                             <label for="memory-hex">Hex Address (e.g., 0x1A2B):</label>
-                            <input type="text" id="memory-hex" value="0x1A2B" onchange="convertMemory()">
+                            <input type="text" id="memory-hex" value="0x1A2B" onchange="convertMemory()" aria-describedby="memory-desc">
+                            <span id="memory-desc" class="sr-only">Enter a hexadecimal memory address</span>
                         </div>
-                        <div id="memory-result" class="result-display" style="display: none;"></div>
+                        <div id="memory-result" class="result-display" style="display: none;" aria-live="polite"></div>
                     </div>
                 </div>
 
                 <div class="application-card">
-                    <div class="application-icon">🔢</div>
+                    <div class="application-icon">📊</div>
                     <div class="application-title">Binary File Sizes</div>
                     <p>File sizes and storage capacities use powers of 2, connecting directly to binary representation.</p>
                     
@@ -652,24 +782,25 @@
                         <h4>Storage Calculator</h4>
                         <div class="input-group">
                             <label for="storage-bytes">Size in Bytes:</label>
-                            <input type="number" id="storage-bytes" value="1048576" onchange="convertStorage()">
+                            <input type="number" id="storage-bytes" value="1048576" onchange="convertStorage()" aria-describedby="storage-desc">
+                            <span id="storage-desc" class="sr-only">Enter a file size in bytes</span>
                         </div>
-                        <div id="storage-result" class="result-display" style="display: none;"></div>
+                        <div id="storage-result" class="result-display" style="display: none;" aria-live="polite"></div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- Comprehensive Assignment -->
-        <section class="content-section" id="assignment">
-            <h2>📝 Assignment 1: Number Systems Mastery</h2>
-            <p>This comprehensive assignment demonstrates your mastery of all Week 1 concepts. Complete all sections and copy your answers to submit via Canvas.</p>
+        <!-- Review Section (formerly Assignment) -->
+        <section class="content-section" id="review">
+            <h2>📝 Concept Review & Practice</h2>
+            <p>Use these practice problems to review key concepts before taking the Canvas quiz. These are for practice only and not graded.</p>
 
             <!-- Part A: Basic Conversions -->
-            <div class="assignment-part">
-                <div class="assignment-header">
-                    <div class="assignment-title">Part A: Number Conversions</div>
-                    <div class="assignment-points">40 points</div>
+            <div class="review-section">
+                <div class="review-header">
+                    <div class="review-title">Part A: Number Conversions</div>
+                    <div class="review-badge">Practice Problems</div>
                 </div>
                 <p>Convert between decimal, binary, and hexadecimal representations.</p>
 
@@ -677,50 +808,50 @@
                     <li class="problem-item">
                         <div class="problem-number">1</div>
                         <p><strong>Convert decimal 156 to binary and hexadecimal.</strong></p>
-                        <div class="answer-box" contenteditable="true" data-problem="1a">
-                            <span class="answer-placeholder">Type your answer here...</span>
+                        <div class="practice-area" contenteditable="true" data-problem="2a" aria-label="Practice area for problem 2">
+                            <span class="practice-placeholder">Work through this problem here...</span>
                         </div>
                     </li>
 
                     <li class="problem-item">
                         <div class="problem-number">2</div>
                         <p><strong>Convert binary 11010110 to decimal and hexadecimal.</strong></p>
-                        <div class="answer-box" contenteditable="true" data-problem="2a">
-                            <span class="answer-placeholder">Type your answer here...</span>
+                        <div class="practice-area" contenteditable="true" data-problem="1a" aria-label="Practice area for problem 1">
+                            <span class="practice-placeholder">Work through this problem here...</span>
                         </div>
                     </li>
 
                     <li class="problem-item">
                         <div class="problem-number">3</div>
                         <p><strong>Convert hexadecimal 0x3F to decimal and binary.</strong></p>
-                        <div class="answer-box" contenteditable="true" data-problem="3a">
-                            <span class="answer-placeholder">Type your answer here...</span>
+                        <div class="practice-area" contenteditable="true" data-problem="3a" aria-label="Practice area for problem 3">
+                            <span class="practice-placeholder">Work through this problem here...</span>
                         </div>
                     </li>
 
                     <li class="problem-item">
                         <div class="problem-number">4</div>
                         <p><strong>What is the largest 8-bit unsigned binary number in decimal and hex?</strong></p>
-                        <div class="answer-box" contenteditable="true" data-problem="4a">
-                            <span class="answer-placeholder">Type your answer here...</span>
+                        <div class="practice-area" contenteditable="true" data-problem="4a" aria-label="Practice area for problem 4">
+                            <span class="practice-placeholder">Work through this problem here...</span>
                         </div>
                     </li>
 
                     <li class="problem-item">
                         <div class="problem-number">5</div>
                         <p><strong>Convert decimal 240 to binary and verify using hexadecimal.</strong></p>
-                        <div class="answer-box" contenteditable="true" data-problem="5a">
-                            <span class="answer-placeholder">Type your answer here...</span>
+                        <div class="practice-area" contenteditable="true" data-problem="5a" aria-label="Practice area for problem 5">
+                            <span class="practice-placeholder">Work through this problem here...</span>
                         </div>
                     </li>
                 </ol>
             </div>
 
             <!-- Part B: Two's Complement -->
-            <div class="assignment-part">
-                <div class="assignment-header">
-                    <div class="assignment-title">Part B: Two's Complement</div>
-                    <div class="assignment-points">30 points</div>
+            <div class="review-section">
+                <div class="review-header">
+                    <div class="review-title">Part B: Two's Complement</div>
+                    <div class="review-badge">Practice Problems</div>
                 </div>
                 <p>Work with signed binary numbers using two's complement notation.</p>
 
@@ -728,42 +859,42 @@
                     <li class="problem-item">
                         <div class="problem-number">6</div>
                         <p><strong>Convert decimal -42 to 8-bit two's complement binary.</strong></p>
-                        <div class="answer-box" contenteditable="true" data-problem="6b">
-                            <span class="answer-placeholder">Type your answer here...</span>
+                        <div class="practice-area" contenteditable="true" data-problem="6b" aria-label="Practice area for problem 6">
+                            <span class="practice-placeholder">Work through this problem here...</span>
                         </div>
                     </li>
 
                     <li class="problem-item">
                         <div class="problem-number">7</div>
                         <p><strong>What decimal value does the 8-bit binary 10110100 represent in two's complement?</strong></p>
-                        <div class="answer-box" contenteditable="true" data-problem="7b">
-                            <span class="answer-placeholder">Type your answer here...</span>
+                        <div class="practice-area" contenteditable="true" data-problem="7b" aria-label="Practice area for problem 7">
+                            <span class="practice-placeholder">Work through this problem here...</span>
                         </div>
                     </li>
 
                     <li class="problem-item">
                         <div class="problem-number">8</div>
                         <p><strong>What is the range of values that can be represented in 8-bit two's complement?</strong></p>
-                        <div class="answer-box" contenteditable="true" data-problem="8b">
-                            <span class="answer-placeholder">Type your answer here...</span>
+                        <div class="practice-area" contenteditable="true" data-problem="8b" aria-label="Practice area for problem 8">
+                            <span class="practice-placeholder">Work through this problem here...</span>
                         </div>
                     </li>
 
                     <li class="problem-item">
                         <div class="problem-number">9</div>
                         <p><strong>Perform binary addition: 01011010 + 11100110 (interpret as 8-bit two's complement).</strong></p>
-                        <div class="answer-box" contenteditable="true" data-problem="9b">
-                            <span class="answer-placeholder">Type your answer here...</span>
+                        <div class="practice-area" contenteditable="true" data-problem="9b" aria-label="Practice area for problem 9">
+                            <span class="practice-placeholder">Work through this problem here...</span>
                         </div>
                     </li>
                 </ol>
             </div>
 
             <!-- Part C: Binary Arithmetic -->
-            <div class="assignment-part">
-                <div class="assignment-header">
-                    <div class="assignment-title">Part C: Binary Arithmetic</div>
-                    <div class="assignment-points">20 points</div>
+            <div class="review-section">
+                <div class="review-header">
+                    <div class="review-title">Part C: Binary Arithmetic</div>
+                    <div class="review-badge">Practice Problems</div>
                 </div>
                 <p>Perform arithmetic operations in binary and identify overflow conditions.</p>
 
@@ -771,34 +902,34 @@
                     <li class="problem-item">
                         <div class="problem-number">10</div>
                         <p><strong>Add 01110011 + 00101101 (show work and identify any overflow).</strong></p>
-                        <div class="answer-box" contenteditable="true" data-problem="10c">
-                            <span class="answer-placeholder">Type your answer here...</span>
+                        <div class="practice-area" contenteditable="true" data-problem="10c" aria-label="Practice area for problem 10">
+                            <span class="practice-placeholder">Work through this problem here...</span>
                         </div>
                     </li>
 
                     <li class="problem-item">
                         <div class="problem-number">11</div>
                         <p><strong>Subtract 00110110 - 01010010 using two's complement addition.</strong></p>
-                        <div class="answer-box" contenteditable="true" data-problem="11c">
-                            <span class="answer-placeholder">Type your answer here...</span>
+                        <div class="practice-area" contenteditable="true" data-problem="11c" aria-label="Practice area for problem 11">
+                            <span class="practice-placeholder">Work through this problem here...</span>
                         </div>
                     </li>
 
                     <li class="problem-item">
                         <div class="problem-number">12</div>
                         <p><strong>Multiply 1011 × 0110 using binary multiplication.</strong></p>
-                        <div class="answer-box" contenteditable="true" data-problem="12c">
-                            <span class="answer-placeholder">Type your answer here...</span>
+                        <div class="practice-area" contenteditable="true" data-problem="12c" aria-label="Practice area for problem 12">
+                            <span class="practice-placeholder">Work through this problem here...</span>
                         </div>
                     </li>
                 </ol>
             </div>
 
             <!-- Part D: Real-World Applications -->
-            <div class="assignment-part">
-                <div class="assignment-header">
-                    <div class="assignment-title">Part D: Real-World Applications</div>
-                    <div class="assignment-points">10 points</div>
+            <div class="review-section">
+                <div class="review-header">
+                    <div class="review-title">Part D: Real-World Applications</div>
+                    <div class="review-badge">Practice Problems</div>
                 </div>
                 <p>Apply number system knowledge to practical computing scenarios.</p>
 
@@ -806,39 +937,43 @@
                     <li class="problem-item">
                         <div class="problem-number">13</div>
                         <p><strong>An RGB color has values Red=204, Green=51, Blue=153. Express this color as a 6-digit hexadecimal value (format: #RRGGBB).</strong></p>
-                        <div class="answer-box" contenteditable="true" data-problem="13d">
-                            <span class="answer-placeholder">Type your answer here...</span>
+                        <div class="practice-area" contenteditable="true" data-problem="13d" aria-label="Practice area for problem 13">
+                            <span class="practice-placeholder">Work through this problem here...</span>
                         </div>
                     </li>
 
                     <li class="problem-item">
                         <div class="problem-number">14</div>
                         <p><strong>The IP address 192.168.1.100 can be represented as a 32-bit binary number. Show the binary representation for each octet.</strong></p>
-                        <div class="answer-box" contenteditable="true" data-problem="14d">
-                            <span class="answer-placeholder">Type your answer here...</span>
+                        <div class="practice-area" contenteditable="true" data-problem="14d" aria-label="Practice area for problem 14">
+                            <span class="practice-placeholder">Work through this problem here...</span>
                         </div>
                     </li>
 
                     <li class="problem-item">
                         <div class="problem-number">15</div>
                         <p><strong>A computer has 16 GB of RAM. Express this capacity in bytes using both decimal and binary (powers of 2).</strong></p>
-                        <div class="answer-box" contenteditable="true" data-problem="15d">
-                            <span class="answer-placeholder">Type your answer here...</span>
+                        <div class="practice-area" contenteditable="true" data-problem="15d" aria-label="Practice area for problem 15">
+                            <span class="practice-placeholder">Work through this problem here...</span>
                         </div>
                     </li>
                 </ol>
             </div>
 
             <div class="action-buttons">
-                <button class="btn btn-success" onclick="exportAnswers()">
-                    📄 Export Answers for Canvas
+                <button class="btn btn-info" onclick="clearAllPractice()">
+                    🗑️ Clear Practice Work
                 </button>
-                <button class="btn btn-warning" onclick="validateAnswers()">
-                    ✅ Check My Work
+                <button class="btn btn-secondary" onclick="showHints()">
+                    💡 Show Hints
                 </button>
-                <button class="btn btn-secondary" onclick="clearAllAnswers()">
-                    🗑️ Clear All Answers
-                </button>
+                <a href="https://mendocino.instructure.com/courses/19705/quizzes/125348" 
+                   class="btn btn-success" 
+                   target="_blank" 
+                   rel="noopener noreferrer"
+                   aria-label="Open Week 1 Quiz in Canvas (opens in new tab)">
+                    🎯 Take Canvas Quiz
+                </a>
             </div>
         </section>
 
@@ -847,13 +982,14 @@
             <h2>🤔 Reflection & Synthesis</h2>
             <div class="reflection-section">
                 <h3>Connect the Concepts</h3>
-                <p>Complete these reflection prompts to demonstrate your understanding of how this week's concepts connect to broader computer science principles.</p>
+                <p>Complete these reflection prompts to demonstrate your understanding of how this week's concepts connect to broader computer science principles. You can export these to submit in Canvas.</p>
 
                 <div class="reflection-prompt">
                     <h4>Reflection 1: Abstraction in Computing</h4>
                     <p>How do the number systems you've learned this week relate to the concept of abstraction layers in computer systems? Give specific examples.</p>
                     <div class="reflection-input">
-                        <textarea id="reflection1" rows="4" placeholder="Type your reflection here..." onchange="saveReflection(1)"></textarea>
+                        <textarea id="reflection1" rows="4" placeholder="Type your reflection here..." onchange="saveReflection(1)" aria-describedby="reflection1-desc"></textarea>
+                        <span id="reflection1-desc" class="sr-only">Reflection on abstraction in computing</span>
                     </div>
                 </div>
 
@@ -861,7 +997,8 @@
                     <h4>Reflection 2: Why Two's Complement?</h4>
                     <p>Explain why computers use two's complement representation for negative numbers instead of simpler methods like sign-magnitude. What advantages does this provide?</p>
                     <div class="reflection-input">
-                        <textarea id="reflection2" rows="4" placeholder="Type your reflection here..." onchange="saveReflection(2)"></textarea>
+                        <textarea id="reflection2" rows="4" placeholder="Type your reflection here..." onchange="saveReflection(2)" aria-describedby="reflection2-desc"></textarea>
+                        <span id="reflection2-desc" class="sr-only">Reflection on two's complement advantages</span>
                     </div>
                 </div>
 
@@ -869,7 +1006,8 @@
                     <h4>Reflection 3: Real-World Impact</h4>
                     <p>Choose one real-world application from this module (RGB colors, IP addresses, memory addresses, or file sizes) and explain how understanding binary/hex representation helps in that domain.</p>
                     <div class="reflection-input">
-                        <textarea id="reflection3" rows="4" placeholder="Type your reflection here..." onchange="saveReflection(3)"></textarea>
+                        <textarea id="reflection3" rows="4" placeholder="Type your reflection here..." onchange="saveReflection(3)" aria-describedby="reflection3-desc"></textarea>
+                        <span id="reflection3-desc" class="sr-only">Reflection on real-world applications</span>
                     </div>
                 </div>
 
@@ -877,14 +1015,22 @@
                     <h4>Reflection 4: Looking Ahead</h4>
                     <p>How do you think the number systems we've studied this week will connect to logic gates and digital circuits (Week 2 topic)? What role might binary play in decision-making circuits?</p>
                     <div class="reflection-input">
-                        <textarea id="reflection4" rows="4" placeholder="Type your reflection here..." onchange="saveReflection(4)"></textarea>
+                        <textarea id="reflection4" rows="4" placeholder="Type your reflection here..." onchange="saveReflection(4)" aria-describedby="reflection4-desc"></textarea>
+                        <span id="reflection4-desc" class="sr-only">Reflection on connections to future topics</span>
                     </div>
                 </div>
 
                 <div class="action-buttons">
                     <button class="btn btn-primary" onclick="exportReflections()">
-                        📝 Export Reflections for Canvas
+                        📄 Export Reflections for Canvas
                     </button>
+                    <a href="https://mendocino.instructure.com/courses/19705/assignments/441199?module_item_id=1146660" 
+                       class="btn btn-success" 
+                       target="_blank" 
+                       rel="noopener noreferrer"
+                       aria-label="Open Week 1 Reflection Assignment in Canvas (opens in new tab)">
+                        📝 Submit in Canvas
+                    </a>
                 </div>
             </div>
         </section>
@@ -943,24 +1089,28 @@
             <div class="interactive-panel">
                 <h3>Next Steps</h3>
                 <ol style="margin: 1rem 0; padding-left: 2rem;">
-                    <li><strong>Submit your assignment:</strong> Export your answers and submit via Canvas</li>
-                    <li><strong>Submit your reflections:</strong> Copy reflection responses to Canvas assignment</li>
-                    <li><strong>Take the Week 1 quiz:</strong> Available in Canvas after completing all modules</li>
+                    <li><strong>Take the Week 1 quiz:</strong> Complete the Canvas quiz to demonstrate your understanding</li>
+                    <li><strong>Submit your reflections:</strong> Export and submit reflection responses via Canvas</li>
+                    <li><strong>Complete participation:</strong> Engage with discussion forums as assigned</li>
                     <li><strong>Review concepts:</strong> Use practice tools as needed before the quiz</li>
                     <li><strong>Prepare for Week 2:</strong> Logic Gates and Boolean Algebra</li>
                 </ol>
             </div>
 
             <div class="action-buttons">
-                <button class="btn btn-success" onclick="returnToOverview()">
+                <button class="btn btn-secondary" onclick="returnToOverview()">
                     🏠 Return to Week 1 Overview
                 </button>
-                <button class="btn btn-primary" onclick="goToWeek2()">
+                <button class="btn btn-info" onclick="goToWeek2()">
                     ➡️ Preview Week 2
                 </button>
-                <button class="btn btn-secondary" onclick="downloadCertificate()">
-                    🏆 Download Completion Certificate
-                </button>
+                <a href="https://mendocino.instructure.com/courses/19705/quizzes/125348" 
+                   class="btn btn-success" 
+                   target="_blank" 
+                   rel="noopener noreferrer"
+                   aria-label="Open Week 1 Quiz in Canvas (opens in new tab)">
+                    🎯 Take Canvas Quiz
+                </a>
             </div>
         </section>
     </main>
@@ -970,12 +1120,12 @@
         let moduleProgress = {
             videoWatched: false,
             applicationsExplored: 0,
-            assignmentStarted: false,
+            reviewStarted: false,
             reflectionsCompleted: 0,
             moduleCompleted: false
         };
 
-        let savedAnswers = {};
+        let savedPractice = {};
         let savedReflections = {};
 
         // Initialize the module
@@ -1001,15 +1151,15 @@
         // Progress tracking
         function updateProgress() {
             let completedTasks = 0;
-            let totalTasks = 6; // video, 4 applications, assignment sections, reflections
+            let totalTasks = 6; // video, 4 applications, review sections, reflections
 
             if (moduleProgress.videoWatched) completedTasks++;
             if (moduleProgress.applicationsExplored >= 1) completedTasks++;
             if (moduleProgress.applicationsExplored >= 2) completedTasks++;
             if (moduleProgress.applicationsExplored >= 3) completedTasks++;
             if (moduleProgress.applicationsExplored >= 4) completedTasks++;
-            if (moduleProgress.assignmentStarted) completedTasks++;
-            if (moduleProgress.reflectionsCompleted >= 4) completedTasks++;
+            if (moduleProgress.reviewStarted) completedTasks++;
+            if (moduleProgress.reflectionsCompleted >= 2) completedTasks++;
 
             const percentage = Math.round((completedTasks / totalTasks) * 100);
             
@@ -1027,7 +1177,7 @@
 
             // Enable completion button when sufficient progress
             const completeBtn = document.getElementById('complete-btn');
-            if (completeBtn && percentage >= 80) {
+            if (completeBtn && percentage >= 70) {
                 completeBtn.disabled = false;
                 completeBtn.textContent = 'Complete Module 4';
             }
@@ -1070,9 +1220,8 @@
                 <strong>Decimal:</strong> ${red}, ${green}, ${blue}
             `;
 
-            // Don't update progress automatically - only when user actually interacts
-            // moduleProgress.applicationsExplored = Math.max(moduleProgress.applicationsExplored, 1);
-            // updateProgress();
+            moduleProgress.applicationsExplored = Math.max(moduleProgress.applicationsExplored, 1);
+            updateProgress();
         }
 
         function convertIP() {
@@ -1176,57 +1325,38 @@
             updateProgress();
         }
 
-        // Answer box management
+        // Practice area management
         function initializeInteractiveElements() {
-            // Initialize answer boxes
-            document.querySelectorAll('.answer-box').forEach(box => {
-                box.addEventListener('focus', function() {
-                    if (this.textContent.trim() === 'Type your answer here...') {
+            // Initialize practice areas
+            document.querySelectorAll('.practice-area').forEach(area => {
+                area.addEventListener('focus', function() {
+                    if (this.textContent.trim() === 'Work through this problem here...') {
                         this.textContent = '';
                         this.style.color = '#333';
                     }
-                    moduleProgress.assignmentStarted = true;
+                    moduleProgress.reviewStarted = true;
                     updateProgress();
                 });
 
-                box.addEventListener('blur', function() {
+                area.addEventListener('blur', function() {
                     if (this.textContent.trim() === '') {
-                        this.innerHTML = '<span class="answer-placeholder">Type your answer here...</span>';
+                        this.innerHTML = '<span class="practice-placeholder">Work through this problem here...</span>';
                     } else {
                         const problemId = this.getAttribute('data-problem');
-                        savedAnswers[problemId] = this.textContent.trim();
+                        savedPractice[problemId] = this.textContent.trim();
                         saveProgress();
                     }
                 });
 
-                box.addEventListener('input', function() {
+                area.addEventListener('input', function() {
                     const problemId = this.getAttribute('data-problem');
-                    savedAnswers[problemId] = this.textContent.trim();
+                    savedPractice[problemId] = this.textContent.trim();
                     saveProgress();
                 });
             });
 
-            // Initialize color converter display (without tracking progress)
+            // Initialize color converter display
             updateColor();
-            
-            // Add event listeners to track user interaction with color converter
-            document.getElementById('rgb-red').addEventListener('change', function() {
-                updateColor();
-                moduleProgress.applicationsExplored = Math.max(moduleProgress.applicationsExplored, 1);
-                updateProgress();
-            });
-            
-            document.getElementById('rgb-green').addEventListener('change', function() {
-                updateColor();
-                moduleProgress.applicationsExplored = Math.max(moduleProgress.applicationsExplored, 1);
-                updateProgress();
-            });
-            
-            document.getElementById('rgb-blue').addEventListener('change', function() {
-                updateColor();
-                moduleProgress.applicationsExplored = Math.max(moduleProgress.applicationsExplored, 1);
-                updateProgress();
-            });
         }
 
         // Reflection management
@@ -1243,59 +1373,30 @@
             saveProgress();
         }
 
-        // Export functions
-        function exportAnswers() {
-            let exportText = "CSC210 Week 1 Assignment - Number Systems Mastery\n";
-            exportText += "=" * 50 + "\n\n";
-            
-            // Part A
-            exportText += "PART A: NUMBER CONVERSIONS (40 points)\n";
-            exportText += "-" * 40 + "\n";
-            for (let i = 1; i <= 5; i++) {
-                exportText += `Problem ${i}: ${savedAnswers[i + 'a'] || '[Not answered]'}\n\n`;
+        // Practice functions
+        function clearAllPractice() {
+            if (confirm('Are you sure you want to clear all practice work? This cannot be undone.')) {
+                savedPractice = {};
+                document.querySelectorAll('.practice-area').forEach(area => {
+                    area.innerHTML = '<span class="practice-placeholder">Work through this problem here...</span>';
+                });
+                saveProgress();
             }
-            
-            // Part B
-            exportText += "PART B: TWO'S COMPLEMENT (30 points)\n";
-            exportText += "-" * 40 + "\n";
-            for (let i = 6; i <= 9; i++) {
-                exportText += `Problem ${i}: ${savedAnswers[i + 'b'] || '[Not answered]'}\n\n`;
-            }
-            
-            // Part C
-            exportText += "PART C: BINARY ARITHMETIC (20 points)\n";
-            exportText += "-" * 40 + "\n";
-            for (let i = 10; i <= 12; i++) {
-                exportText += `Problem ${i}: ${savedAnswers[i + 'c'] || '[Not answered]'}\n\n`;
-            }
-            
-            // Part D
-            exportText += "PART D: REAL-WORLD APPLICATIONS (10 points)\n";
-            exportText += "-" * 40 + "\n";
-            for (let i = 13; i <= 15; i++) {
-                exportText += `Problem ${i}: ${savedAnswers[i + 'd'] || '[Not answered]'}\n\n`;
-            }
-            
-            // Create and download file
-            const blob = new Blob([exportText], { type: 'text/plain' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'CSC210_Week1_Assignment_Answers.txt';
-            a.click();
-            URL.revokeObjectURL(url);
-            
-            alert('Assignment answers exported! Submit this file via Canvas. Note: Progress resets when you close this page.');
         }
 
+        function showHints() {
+            alert('Hints:\n\n1-5: Remember to use division by 2 for decimal to binary, and powers of 16 for hex conversions.\n\n6-9: For two\'s complement, flip bits and add 1 for negative numbers. Range for 8-bit is -128 to 127.\n\n10-12: Watch for carry bits and overflow when both operands have same sign but result has different sign.\n\n13-15: Use direct conversion - each RGB component is one byte (8 bits), IP octets are also bytes.');
+        }
+
+        // Export functions
         function exportReflections() {
             let exportText = "CSC210 Week 1 Module 4 - Reflection Responses\n";
-            exportText += "=" * 50 + "\n\n";
+            exportText += "=".repeat(50) + "\n\n";
             
             for (let i = 1; i <= 4; i++) {
                 exportText += `REFLECTION ${i}:\n`;
                 exportText += savedReflections[i] || '[Not completed]';
-                exportText += "\n\n" + "-" * 40 + "\n\n";
+                exportText += "\n\n" + "-".repeat(40) + "\n\n";
             }
             
             const blob = new Blob([exportText], { type: 'text/plain' });
@@ -1306,25 +1407,7 @@
             a.click();
             URL.revokeObjectURL(url);
             
-            alert('Reflections exported! Submit this file via Canvas. Note: Progress resets when you close this page.');
-        }
-
-        function validateAnswers() {
-            let completedAnswers = Object.keys(savedAnswers).filter(
-                key => savedAnswers[key] && savedAnswers[key].trim().length > 0
-            ).length;
-            
-            alert(`You have completed ${completedAnswers} out of 15 assignment problems. Make sure to complete all problems before submitting!`);
-        }
-
-        function clearAllAnswers() {
-            if (confirm('Are you sure you want to clear all answers? This cannot be undone.')) {
-                savedAnswers = {};
-                document.querySelectorAll('.answer-box').forEach(box => {
-                    box.innerHTML = '<span class="answer-placeholder">Type your answer here...</span>';
-                });
-                saveProgress();
-            }
+            alert('Reflections exported! Submit this file via the Canvas reflection assignment.');
         }
 
         // Navigation functions
@@ -1344,9 +1427,8 @@
             moduleProgress.moduleCompleted = true;
             saveProgress();
             
-            alert('Module 4 session completed! Remember to export and submit your assignment and reflections via Canvas before closing this page.');
+            alert('Module 4 session completed! Remember to take the Canvas quiz and submit your reflections.');
             
-            // Note: No cross-session completion tracking for Canvas iframe integration
             document.getElementById('complete-btn').textContent = '✅ Session Complete';
             document.getElementById('complete-btn').classList.remove('btn-success');
             document.getElementById('complete-btn').classList.add('btn-secondary');
@@ -1358,10 +1440,6 @@
 
         function goToWeek2() {
             alert('Week 2 content will be available soon! Check the course schedule for release dates.');
-        }
-
-        function downloadCertificate() {
-            alert('Completion certificates will be available after all assignments are graded.');
         }
 
         // Utility functions
@@ -1376,7 +1454,7 @@
         function saveProgress() {
             const progressData = {
                 moduleProgress: moduleProgress,
-                savedAnswers: savedAnswers,
+                savedPractice: savedPractice,
                 savedReflections: savedReflections,
                 timestamp: new Date().toISOString(),
                 sessionOnly: true
@@ -1396,15 +1474,15 @@
                 if (saved) {
                     const data = JSON.parse(saved);
                     moduleProgress = { ...moduleProgress, ...data.moduleProgress };
-                    savedAnswers = data.savedAnswers || {};
+                    savedPractice = data.savedPractice || {};
                     savedReflections = data.savedReflections || {};
                     
-                    // Restore answer boxes
-                    Object.keys(savedAnswers).forEach(problemId => {
-                        const box = document.querySelector(`[data-problem="${problemId}"]`);
-                        if (box && savedAnswers[problemId]) {
-                            box.textContent = savedAnswers[problemId];
-                            box.style.color = '#333';
+                    // Restore practice areas
+                    Object.keys(savedPractice).forEach(problemId => {
+                        const area = document.querySelector(`[data-problem="${problemId}"]`);
+                        if (area && savedPractice[problemId]) {
+                            area.textContent = savedPractice[problemId];
+                            area.style.color = '#333';
                         }
                     });
                     
@@ -1438,11 +1516,299 @@
                         break;
                     case 'e':
                         e.preventDefault();
-                        exportAnswers();
+                        exportReflections();
                         break;
                 }
             }
+            
+            // Navigate with arrow keys when focused on navigation
+            if (e.target.closest('.navigation')) {
+                if (e.key === 'ArrowLeft') {
+                    goBack();
+                } else if (e.key === 'ArrowRight') {
+                    const completeBtn = document.getElementById('complete-btn');
+                    if (!completeBtn.disabled) {
+                        completeModule();
+                    }
+                }
+            }
         });
+
+        // Announce progress updates to screen readers
+        function announceProgress() {
+            const progressText = document.getElementById('progress-text').textContent;
+            const announcement = document.createElement('div');
+            announcement.setAttribute('aria-live', 'polite');
+            announcement.setAttribute('aria-atomic', 'true');
+            announcement.className = 'sr-only';
+            announcement.textContent = `Progress updated: ${progressText}`;
+            document.body.appendChild(announcement);
+            
+            setTimeout(() => {
+                document.body.removeChild(announcement);
+            }, 1000);
+        }
+
+        // Enhanced updateProgress with accessibility
+        const originalUpdateProgress = updateProgress;
+        updateProgress = function() {
+            const oldPercentage = document.getElementById('progress-text').textContent;
+            originalUpdateProgress();
+            const newPercentage = document.getElementById('progress-text').textContent;
+            
+            if (oldPercentage !== newPercentage) {
+                announceProgress();
+            }
+        };
+
+        // Handle reduced motion preferences
+        function respectMotionPreferences() {
+            const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            
+            if (prefersReducedMotion) {
+                // Disable smooth scrolling
+                document.documentElement.style.scrollBehavior = 'auto';
+                
+                // Reduce transition durations
+                const style = document.createElement('style');
+                style.textContent = `
+                    *, *::before, *::after {
+                        animation-duration: 0.01ms !important;
+                        animation-iteration-count: 1 !important;
+                        transition-duration: 0.01ms !important;
+                    }
+                `;
+                document.head.appendChild(style);
+            }
+        }
+
+        // Initialize accessibility features
+        document.addEventListener('DOMContentLoaded', function() {
+            respectMotionPreferences();
+            
+            // Add skip links
+            const skipLink = document.createElement('a');
+            skipLink.href = '#main-content';
+            skipLink.textContent = 'Skip to main content';
+            skipLink.className = 'sr-only';
+            skipLink.style.position = 'absolute';
+            skipLink.style.top = '-40px';
+            skipLink.style.left = '6px';
+            skipLink.style.zIndex = '1000';
+            skipLink.style.padding = '8px';
+            skipLink.style.backgroundColor = '#000';
+            skipLink.style.color = '#fff';
+            skipLink.style.textDecoration = 'none';
+            
+            skipLink.addEventListener('focus', function() {
+                this.style.top = '6px';
+            });
+            
+            skipLink.addEventListener('blur', function() {
+                this.style.top = '-40px';
+            });
+            
+            document.body.insertBefore(skipLink, document.body.firstChild);
+            
+            // Add main content landmark
+            const main = document.querySelector('main');
+            if (main) {
+                main.id = 'main-content';
+                main.setAttribute('role', 'main');
+            }
+        });
+
+        // Enhanced error handling for interactive elements
+        function handleApplicationError(elementId, errorMessage) {
+            const element = document.getElementById(elementId);
+            if (element) {
+                element.innerHTML = `<div class="error-display" role="alert">${errorMessage}</div>`;
+                element.style.display = 'block';
+                
+                // Announce error to screen readers
+                const announcement = document.createElement('div');
+                announcement.setAttribute('aria-live', 'assertive');
+                announcement.className = 'sr-only';
+                announcement.textContent = `Error: ${errorMessage}`;
+                document.body.appendChild(announcement);
+                
+                setTimeout(() => {
+                    document.body.removeChild(announcement);
+                }, 3000);
+            }
+        }
+
+        // Enhanced form validation
+        function validateInput(input, min, max, name) {
+            const value = parseInt(input.value);
+            
+            if (isNaN(value)) {
+                input.setCustomValidity(`Please enter a valid number for ${name}`);
+                input.setAttribute('aria-invalid', 'true');
+                return false;
+            }
+            
+            if (value < min || value > max) {
+                input.setCustomValidity(`${name} must be between ${min} and ${max}`);
+                input.setAttribute('aria-invalid', 'true');
+                return false;
+            }
+            
+            input.setCustomValidity('');
+            input.setAttribute('aria-invalid', 'false');
+            return true;
+        }
+
+        // Add input validation to color inputs
+        document.addEventListener('DOMContentLoaded', function() {
+            ['rgb-red', 'rgb-green', 'rgb-blue'].forEach(id => {
+                const input = document.getElementById(id);
+                if (input) {
+                    input.addEventListener('input', function() {
+                        validateInput(this, 0, 255, this.previousElementSibling.textContent.replace(':', ''));
+                    });
+                }
+            });
+        });
+
+        // Improved color contrast checking
+        function checkColorContrast(r, g, b) {
+            // Calculate relative luminance
+            const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+            
+            // Suggest text color based on background
+            const textColor = luminance > 0.5 ? '#000000' : '#ffffff';
+            
+            return {
+                luminance: luminance,
+                suggestedTextColor: textColor,
+                isLight: luminance > 0.5
+            };
+        }
+
+        // Enhanced updateColor with accessibility feedback
+        const originalUpdateColor = updateColor;
+        updateColor = function() {
+            const redInput = document.getElementById('rgb-red');
+            const greenInput = document.getElementById('rgb-green');
+            const blueInput = document.getElementById('rgb-blue');
+            
+            // Validate inputs
+            const redValid = validateInput(redInput, 0, 255, 'Red');
+            const greenValid = validateInput(greenInput, 0, 255, 'Green');
+            const blueValid = validateInput(blueInput, 0, 255, 'Blue');
+            
+            if (!redValid || !greenValid || !blueValid) {
+                return;
+            }
+            
+            originalUpdateColor();
+            
+            // Add accessibility information
+            const red = parseInt(redInput.value) || 0;
+            const green = parseInt(greenInput.value) || 0;
+            const blue = parseInt(blueInput.value) || 0;
+            
+            const contrastInfo = checkColorContrast(red, green, blue);
+            const colorValues = document.getElementById('color-values');
+            
+            if (colorValues) {
+                const existingContent = colorValues.innerHTML;
+                colorValues.innerHTML = existingContent + `<br><strong>Accessibility:</strong> ${contrastInfo.isLight ? 'Light' : 'Dark'} background, use ${contrastInfo.suggestedTextColor} text`;
+            }
+        };
+
+        // Add ARIA live regions for dynamic content
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add live region for color updates
+            const colorValues = document.getElementById('color-values');
+            if (colorValues) {
+                colorValues.setAttribute('aria-live', 'polite');
+            }
+            
+            // Add live regions for all result displays
+            ['ip-result', 'memory-result', 'storage-result'].forEach(id => {
+                const element = document.getElementById(id);
+                if (element) {
+                    element.setAttribute('aria-live', 'polite');
+                }
+            });
+        });
+
+        // Enhanced keyboard navigation for interactive cards
+        document.addEventListener('DOMContentLoaded', function() {
+            const cards = document.querySelectorAll('.application-card, .canvas-card');
+            
+            cards.forEach((card, index) => {
+                card.setAttribute('tabindex', '0');
+                card.setAttribute('role', 'button');
+                
+                card.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        // Focus on the first interactive element within the card
+                        const firstInput = card.querySelector('input, button, a');
+                        if (firstInput) {
+                            firstInput.focus();
+                        }
+                    }
+                    
+                    // Arrow key navigation between cards
+                    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+                        e.preventDefault();
+                        const nextCard = cards[index + 1];
+                        if (nextCard) {
+                            nextCard.focus();
+                        }
+                    }
+                    
+                    if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+                        e.preventDefault();
+                        const prevCard = cards[index - 1];
+                        if (prevCard) {
+                            prevCard.focus();
+                        }
+                    }
+                });
+            });
+        });
+
+        // Add high contrast mode detection and styling
+        function handleHighContrastMode() {
+            if (window.matchMedia('(prefers-contrast: high)').matches) {
+                document.body.classList.add('high-contrast');
+                
+                // Add additional high contrast styles
+                const style = document.createElement('style');
+                style.textContent = `
+                    .high-contrast .btn {
+                        border: 2px solid currentColor !important;
+                    }
+                    
+                    .high-contrast .progress-fill {
+                        background: currentColor !important;
+                    }
+                    
+                    .high-contrast .application-card:hover,
+                    .high-contrast .canvas-card:hover {
+                        border-color: currentColor !important;
+                    }
+                `;
+                document.head.appendChild(style);
+            }
+        }
+
+        // Initialize high contrast handling
+        document.addEventListener('DOMContentLoaded', handleHighContrastMode);
+
+        // Monitor for contrast preference changes
+        if (window.matchMedia) {
+            window.matchMedia('(prefers-contrast: high)').addEventListener('change', handleHighContrastMode);
+            window.matchMedia('(prefers-reduced-motion: reduce)').addEventListener('change', respectMotionPreferences);
+        }
+
     </script>
 </body>
 </html>
+
+                    
