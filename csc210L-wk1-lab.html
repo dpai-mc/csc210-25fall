@@ -1,0 +1,1069 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSC210L Lab 1: Introduction to Logisim and Basic Logic Gates</title>
+    <style>
+        /* Reset and base styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(45deg, #2c3e50, #3498db);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            position: relative;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="20" cy="20" r="2" fill="rgba(255,255,255,0.1)"/><circle cx="80" cy="80" r="1.5" fill="rgba(255,255,255,0.1)"/><circle cx="60" cy="30" r="1" fill="rgba(255,255,255,0.1)"/></svg>');
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .header .subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            position: relative;
+            z-index: 1;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .overview-card {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border-left: 5px solid #3498db;
+            padding: 20px;
+            margin-bottom: 30px;
+            border-radius: 8px;
+        }
+
+        .objectives {
+            background: linear-gradient(135deg, #e8f5e8, #d4edda);
+            border-left: 5px solid #28a745;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+
+        .warning {
+            background: linear-gradient(135deg, #fff3cd, #ffeaa7);
+            border-left: 5px solid #ffc107;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            border: 1px solid #ffeaa7;
+        }
+
+        .section {
+            margin: 30px 0;
+            padding: 25px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border: 1px solid #e9ecef;
+            transition: all 0.3s ease;
+        }
+
+        .section:hover {
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .section-header {
+            background: linear-gradient(45deg, #495057, #6c757d);
+            color: white;
+            padding: 15px 20px;
+            margin: -25px -25px 20px -25px;
+            border-radius: 8px 8px 0 0;
+            font-weight: bold;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .points-badge {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.9rem;
+            font-weight: normal;
+        }
+
+        .collapsible {
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .collapsible::after {
+            content: '▼';
+            transition: transform 0.3s ease;
+        }
+
+        .collapsible.collapsed::after {
+            transform: rotate(-90deg);
+        }
+
+        .collapsible-content {
+            max-height: 1000px;
+            overflow: hidden;
+            transition: max-height 0.3s ease, opacity 0.3s ease;
+        }
+
+        .collapsible-content.hidden {
+            max-height: 0;
+            opacity: 0;
+        }
+
+        .task-list {
+            background: white;
+            border-radius: 6px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+
+        .task-item {
+            padding: 12px;
+            margin: 8px 0;
+            background: #f8f9fa;
+            border-left: 4px solid #17a2b8;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+        }
+
+        .task-item:hover {
+            background: #e9ecef;
+            transform: translateX(5px);
+        }
+
+        .gate-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .gate-card {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .gate-card:hover {
+            border-color: #3498db;
+            transform: scale(1.05);
+            box-shadow: 0 4px 15px rgba(52, 152, 219, 0.2);
+        }
+
+        .gate-card.completed {
+            background: #d4edda;
+            border-color: #28a745;
+        }
+
+        .gate-name {
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+
+        .gate-description {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .progress-bar {
+            background: #e9ecef;
+            border-radius: 10px;
+            height: 20px;
+            margin: 20px 0;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-fill {
+            background: linear-gradient(45deg, #28a745, #20c997);
+            height: 100%;
+            width: 0%;
+            transition: width 0.5s ease;
+            position: relative;
+        }
+
+        .progress-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, transparent 25%, rgba(255,255,255,0.2) 25%, rgba(255,255,255,0.2) 50%, transparent 50%, transparent 75%, rgba(255,255,255,0.2) 75%);
+            background-size: 20px 20px;
+            animation: progress-animation 1s linear infinite;
+        }
+
+        @keyframes progress-animation {
+            0% { background-position: 0 0; }
+            100% { background-position: 20px 0; }
+        }
+
+        .progress-text {
+            text-align: center;
+            margin-top: 10px;
+            font-weight: bold;
+            color: #495057;
+        }
+
+        .tip-box {
+            background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+            border-left: 5px solid #2196f3;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+
+        .tip-box::before {
+            content: '💡 ';
+            font-size: 1.2rem;
+        }
+
+        .submission-checklist {
+            background: white;
+            border: 2px solid #17a2b8;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .checklist-item {
+            display: flex;
+            align-items: center;
+            padding: 8px 0;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .checklist-item:hover {
+            background: #f8f9fa;
+            border-radius: 4px;
+            padding-left: 10px;
+        }
+
+        .checklist-item input[type="checkbox"] {
+            margin-right: 12px;
+            transform: scale(1.2);
+            accent-color: #28a745;
+        }
+
+        .checklist-item.completed {
+            color: #28a745;
+            text-decoration: line-through;
+        }
+
+        .floating-nav {
+            position: fixed;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: white;
+            border-radius: 25px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            padding: 10px;
+            z-index: 1000;
+            opacity: 0.9;
+            transition: opacity 0.3s ease;
+        }
+
+        .floating-nav:hover {
+            opacity: 1;
+        }
+
+        .nav-item {
+            display: block;
+            padding: 8px 12px;
+            margin: 4px 0;
+            color: #495057;
+            text-decoration: none;
+            border-radius: 15px;
+            transition: all 0.2s ease;
+            font-size: 0.9rem;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            background: #3498db;
+            color: white;
+        }
+
+        .code-snippet {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 15px;
+            border-radius: 6px;
+            font-family: 'Consolas', 'Monaco', monospace;
+            margin: 10px 0;
+            overflow-x: auto;
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+                border-radius: 8px;
+            }
+
+            .header {
+                padding: 20px;
+            }
+
+            .header h1 {
+                font-size: 1.5rem;
+            }
+
+            .content {
+                padding: 20px;
+            }
+
+            .section {
+                padding: 15px;
+            }
+
+            .section-header {
+                margin: -15px -15px 15px -15px;
+                padding: 12px 15px;
+                font-size: 1.1rem;
+            }
+
+            .gate-grid {
+                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+                gap: 10px;
+            }
+
+            .floating-nav {
+                display: none;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+
+            .header h1 {
+                font-size: 1.3rem;
+            }
+
+            .gate-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Focus styles for accessibility */
+        .collapsible:focus,
+        .gate-card:focus,
+        .checklist-item:focus,
+        .nav-item:focus {
+            outline: 3px solid #3498db;
+            outline-offset: 2px;
+        }
+
+        /* High contrast mode support */
+        @media (prefers-contrast: high) {
+            .header {
+                background: #000;
+                color: #fff;
+            }
+
+            .section {
+                border: 2px solid #000;
+            }
+
+            .gate-card {
+                border: 2px solid #000;
+            }
+        }
+
+        /* Reduced motion support */
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+
+        /* Force light mode for consistent colors */
+        .container {
+            background: white !important;
+            color: #333 !important;
+        }
+
+        .section {
+            background: #f8f9fa !important;
+            border-color: #e9ecef !important;
+            color: #333 !important;
+        }
+
+        .task-item {
+            background: #f8f9fa !important;
+            color: #333 !important;
+        }
+
+        .gate-card {
+            background: white !important;
+            border-color: #e9ecef !important;
+            color: #333 !important;
+        }
+
+        .gate-card.completed {
+            background: #d4edda !important;
+            border-color: #28a745 !important;
+            color: #155724 !important;
+        }
+
+        .submission-checklist {
+            background: white !important;
+            color: #333 !important;
+        }
+
+        .floating-nav {
+            background: white !important;
+        }
+
+        .nav-item {
+            color: #495057 !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>CSC210L Lab 1</h1>
+            <div class="subtitle">Introduction to Logisim and Basic Logic Gates</div>
+        </header>
+
+        <main class="content">
+            <section class="overview-card">
+                <h2>Lab Overview</h2>
+                <p><strong>Duration:</strong> 1.5 hours (in-lab) + 1.5 hours (take-home)</p>
+                <p><strong>Total Points:</strong> 100</p>
+                <p>Welcome to your first digital circuits lab! You'll master Logisim 2.7.1 and build fundamental logic gates that will serve as building blocks for an entire 8-bit CPU by semester's end.</p>
+            </section>
+
+            <section class="objectives">
+                <h3>Learning Objectives</h3>
+                <p>By completing this lab, you will be able to:</p>
+                <ul>
+                    <li>Navigate the Logisim 2.7.1 interface and use essential tools</li>
+                    <li>Create, save, and organize circuit files</li>
+                    <li>Build and test basic logic gates (AND, OR, NOT, NAND, NOR, XOR)</li>
+                    <li>Use input pins and output LEDs to verify circuit behavior</li>
+                    <li>Create subcircuits for modular design</li>
+                    <li>Document circuits with labels and text annotations</li>
+                </ul>
+            </section>
+
+            <section class="warning">
+                <h3>⚠️ Important Course Philosophy</h3>
+                <p><strong>We build EVERYTHING from basic gates!</strong> We will NOT use:</p>
+                <ul>
+                    <li>Built-in adders from the Arithmetic library</li>
+                    <li>Built-in multiplexers from the Plexers library</li>
+                    <li>Built-in flip-flops from the Memory library</li>
+                    <li>Any other pre-built complex components</li>
+                </ul>
+                <p>Instead, you'll construct these components yourself, understanding exactly how they work!</p>
+            </section>
+
+            <div class="progress-bar">
+                <div class="progress-fill" id="overallProgress"></div>
+            </div>
+            <div class="progress-text" id="progressText">Lab Progress: 0% Complete</div>
+
+            <section class="section">
+                <div class="section-header collapsible" onclick="toggleSection('prep')" tabindex="0" role="button" aria-expanded="true" aria-controls="prep-content">
+                    Part 0: Installing Logisim 2.7.1
+                    <span class="points-badge">In-Class Activity</span>
+                </div>
+                <div class="collapsible-content" id="prep-content">
+                    <div class="task-list">
+                        <div class="task-item">
+                            Install Logisim 2.7.1 from the course website (not Logisim Evolution)
+                        </div>
+                    </div>
+                    <div class="tip-box">
+                        We will be doing this installation together as the first part of class to ensure everyone has the correct version and setup.
+                    </div>
+                </div>
+            </section>
+
+            <section class="section">
+                <div class="section-header collapsible" onclick="toggleSection('part1')" tabindex="0" role="button" aria-expanded="true" aria-controls="part1-content">
+                    Part 1: Exploring the Logisim Interface
+                    <span class="points-badge">20 points</span>
+                </div>
+                <div class="collapsible-content" id="part1-content">
+                    <h4>1.1 Interface Familiarization (10 points)</h4>
+                    <p>Launch Logisim 2.7.1 and identify these key interface elements:</p>
+                    <div class="task-list">
+                        <div class="task-item"><strong>Toolbar:</strong> Contains the wiring tool, poke tool, text tool, and selection tool</div>
+                        <div class="task-item"><strong>Explorer Pane (left):</strong> Shows your project structure</div>
+                        <div class="task-item"><strong>Attribute Table (bottom-left):</strong> Displays properties of selected components</div>
+                        <div class="task-item"><strong>Canvas (center):</strong> Where you build circuits</div>
+                    </div>
+                    <div class="tip-box">
+                        <strong>Task:</strong> Create a new file called Lab1_[YourName].circ
+                    </div>
+
+                    <h4>1.2 Understanding Libraries (10 points)</h4>
+                    <p>Key libraries for this course:</p>
+                    <div class="task-list">
+                        <div class="task-item"><strong>Wiring:</strong> Pins, constants, probes, and tunnels (these are allowed!)</div>
+                        <div class="task-item"><strong>Gates:</strong> The ONLY logic components we'll use to build everything else</div>
+                        <div class="task-item"><strong>Base:</strong> Contains the text tool for documentation</div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="section">
+                <div class="section-header collapsible" onclick="toggleSection('part2')" tabindex="0" role="button" aria-expanded="true" aria-controls="part2-content">
+                    Part 2: Your First Circuit - NOT Gate
+                    <span class="points-badge">20 points</span>
+                </div>
+                <div class="collapsible-content" id="part2-content">
+                    <h4>2.1 Building a NOT Gate Test Circuit</h4>
+                    <div class="task-list">
+                        <div class="task-item">1. Place a Pin component from the Wiring library</div>
+                        <div class="task-item">2. Right-click the pin → "Edit Attributes" → Change Label to "IN"</div>
+                        <div class="task-item">3. Place a NOT gate from the Gates library</div>
+                        <div class="task-item">4. Add an output Pin, set "Output?" to Yes, Label it "OUT"</div>
+                        <div class="task-item">5. Connect all components with the wiring tool</div>
+                    </div>
+
+                    <h4>2.2 Testing Your Circuit</h4>
+                    <div class="tip-box">
+                        Use the Poke Tool (hand icon) to toggle the input and verify: IN=0 → OUT=1, IN=1 → OUT=0
+                    </div>
+                </div>
+            </section>
+
+            <section class="section">
+                <div class="section-header collapsible" onclick="toggleSection('part3')" tabindex="0" role="button" aria-expanded="true" aria-controls="part3-content">
+                    Part 3: Building Your Logic Gate Portfolio
+                    <span class="points-badge">40 points</span>
+                </div>
+                <div class="collapsible-content" id="part3-content">
+                    <h4>Required Gate Subcircuits (5 points each)</h4>
+                    <p>Create these subcircuits with exact names:</p>
+                    <div class="gate-grid">
+                        <div class="gate-card" onclick="toggleGateComplete(this)" tabindex="0" role="button" aria-pressed="false">
+                            <div class="gate-name">NOT_1</div>
+                            <div class="gate-description">NOT gate (1 input)</div>
+                        </div>
+                        <div class="gate-card" onclick="toggleGateComplete(this)" tabindex="0" role="button" aria-pressed="false">
+                            <div class="gate-name">AND_2</div>
+                            <div class="gate-description">2-input AND gate</div>
+                        </div>
+                        <div class="gate-card" onclick="toggleGateComplete(this)" tabindex="0" role="button" aria-pressed="false">
+                            <div class="gate-name">OR_2</div>
+                            <div class="gate-description">2-input OR gate</div>
+                        </div>
+                        <div class="gate-card" onclick="toggleGateComplete(this)" tabindex="0" role="button" aria-pressed="false">
+                            <div class="gate-name">NAND_2</div>
+                            <div class="gate-description">2-input NAND gate</div>
+                        </div>
+                        <div class="gate-card" onclick="toggleGateComplete(this)" tabindex="0" role="button" aria-pressed="false">
+                            <div class="gate-name">NOR_2</div>
+                            <div class="gate-description">2-input NOR gate</div>
+                        </div>
+                        <div class="gate-card" onclick="toggleGateComplete(this)" tabindex="0" role="button" aria-pressed="false">
+                            <div class="gate-name">XOR_2</div>
+                            <div class="gate-description">2-input XOR gate</div>
+                        </div>
+                        <div class="gate-card" onclick="toggleGateComplete(this)" tabindex="0" role="button" aria-pressed="false">
+                            <div class="gate-name">AND_3</div>
+                            <div class="gate-description">3-input AND gate</div>
+                        </div>
+                        <div class="gate-card" onclick="toggleGateComplete(this)" tabindex="0" role="button" aria-pressed="false">
+                            <div class="gate-name">OR_3</div>
+                            <div class="gate-description">3-input OR gate</div>
+                        </div>
+                    </div>
+
+                    <h4>Circuit Standards</h4>
+                    <div class="task-list">
+                        <div class="task-item">Input pins on the left, output pins on the right</div>
+                        <div class="task-item">Consistent spacing (use grid)</div>
+                        <div class="task-item">Labels must be clear and consistent</div>
+                        <div class="task-item">Test all possible input combinations</div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="section">
+                <div class="section-header collapsible" onclick="toggleSection('part4')" tabindex="0" role="button" aria-expanded="true" aria-controls="part4-content">
+                    Part 4: Universal Gate Demonstration
+                    <span class="points-badge">20 points</span>
+                </div>
+                <div class="collapsible-content" id="part4-content">
+                    <h4>4.1 NAND as a Universal Gate</h4>
+                    <p>Create a circuit called "NAND_universal" demonstrating:</p>
+                    <div class="task-list">
+                        <div class="task-item"><strong>NOT from NAND:</strong> Connect both inputs of a NAND gate together</div>
+                        <div class="task-item"><strong>AND from NAND:</strong> NAND followed by NOT (made from NAND)</div>
+                        <div class="task-item"><strong>OR from NAND:</strong> Use De Morgan's law (requires 3 NAND gates)</div>
+                    </div>
+
+                    <div class="code-snippet">
+NOT using NAND:
+A NAND A = NOT(A AND A) = NOT(A)
+                    </div>
+
+                    <h4>4.2 Documentation Requirements</h4>
+                    <div class="tip-box">
+                        Add clear text labels showing the Boolean expression for each construction and why this proves NAND is "universal"
+                    </div>
+                </div>
+            </section>
+
+            <section class="submission-checklist">
+                <h3>Submission Checklist</h3>
+                <div class="checklist-item" onclick="toggleChecklist(this)">
+                    <input type="checkbox" id="check1" aria-describedby="check1-desc">
+                    <label for="check1" id="check1-desc">Lab1_[YourLastName].circ file with all circuits</label>
+                </div>
+                <div class="checklist-item" onclick="toggleChecklist(this)">
+                    <input type="checkbox" id="check2" aria-describedby="check2-desc">
+                    <label for="check2" id="check2-desc">interface_exploration.png screenshot</label>
+                </div>
+                <div class="checklist-item" onclick="toggleChecklist(this)">
+                    <input type="checkbox" id="check3" aria-describedby="check3-desc">
+                    <label for="check3" id="check3-desc">lab1_reflection.pdf (one page)</label>
+                </div>
+                <div class="checklist-item" onclick="toggleChecklist(this)">
+                    <input type="checkbox" id="check4" aria-describedby="check4-desc">
+                    <label for="check4" id="check4-desc">All 8 subcircuits with exact names</label>
+                </div>
+                <div class="checklist-item" onclick="toggleChecklist(this)">
+                    <input type="checkbox" id="check5" aria-describedby="check5-desc">
+                    <label for="check5" id="check5-desc">NAND_universal demonstration circuit</label>
+                </div>
+            </section>
+
+            <section class="tip-box">
+                <strong>Critical Tips for Success:</strong>
+                <ul>
+                    <li><strong>Connection Points:</strong> Look for small squares on components - click precisely on these attachment points. If you see red wires, your components aren't properly connected!</li>
+                    <li><strong>Wire Connection Verification:</strong> After connecting, check that the wire actually touches the component's connection point. Wires that are close but not connected will cause errors.</li>
+                    <li><strong>Moving Connection Points:</strong> Right-click on a component and select "Edit Attributes" to change which side the inputs/outputs appear on (North, South, East, West)</li>
+                    <li><strong>Wire Colors:</strong> Dark green = 1, Dark gray = 0, Red = error/unconnected, Blue = unknown state</li>
+                    <li><strong>Save frequently:</strong> Logisim 2.7.1 can be unstable</li>
+                    <li><strong>Clean Layout:</strong> Use straight wires, avoid unnecessary crossings</li>
+                </ul>
+            </section>
+
+            <section class="warning">
+                <h3>⚠️ Most Common Error: Wire Connection Issues</h3>
+                <p><strong>Problem:</strong> Red wires appearing on your circuit</p>
+                <p><strong>Cause:</strong> Wires are not properly connected to component attachment points</p>
+                <p><strong>Solution:</strong></p>
+                <ul>
+                    <li>Look for the small square connection points on each component</li>
+                    <li>Click precisely on these squares when wiring</li>
+                    <li>If a wire appears close but the component still shows red, delete the wire and reconnect it properly</li>
+                    <li>Use the magnifying tool (View → Zoom In) if you're having trouble seeing connection points</li>
+                </ul>
+            </section>
+        </main>
+    </div>
+
+    <nav class="floating-nav" aria-label="Quick navigation">
+        <a href="#" class="nav-item" onclick="scrollToSection('prep')">Prep</a>
+        <a href="#" class="nav-item" onclick="scrollToSection('part1')">Part 1</a>
+        <a href="#" class="nav-item" onclick="scrollToSection('part2')">Part 2</a>
+        <a href="#" class="nav-item" onclick="scrollToSection('part3')">Part 3</a>
+        <a href="#" class="nav-item" onclick="scrollToSection('part4')">Part 4</a>
+    </nav>
+
+    <script>
+        // Global variables
+        let completedGates = 0;
+        const totalGates = 8;
+        let checkedItems = 0;
+        const totalChecklistItems = 5;
+
+        // Section toggle functionality
+        function toggleSection(sectionId) {
+            const content = document.getElementById(sectionId + '-content');
+            const header = content.previousElementSibling;
+            
+            content.classList.toggle('hidden');
+            header.classList.toggle('collapsed');
+            
+            // Update ARIA attributes
+            const isExpanded = !content.classList.contains('hidden');
+            header.setAttribute('aria-expanded', isExpanded);
+        }
+
+        // Gate completion toggle
+        function toggleGateComplete(element) {
+            element.classList.toggle('completed');
+            const isCompleted = element.classList.contains('completed');
+            element.setAttribute('aria-pressed', isCompleted);
+            
+            if (isCompleted) {
+                completedGates++;
+                element.innerHTML += ' ✓';
+            } else {
+                completedGates--;
+                element.innerHTML = element.innerHTML.replace(' ✓', '');
+            }
+            
+            updateProgress();
+        }
+
+        // Checklist toggle
+        function toggleChecklist(element) {
+            const checkbox = element.querySelector('input[type="checkbox"]');
+            checkbox.checked = !checkbox.checked;
+            element.classList.toggle('completed', checkbox.checked);
+            
+            if (checkbox.checked) {
+                checkedItems++;
+            } else {
+                checkedItems--;
+            }
+            
+            updateProgress();
+        }
+
+        // Update overall progress
+        function updateProgress() {
+            const gateProgress = (completedGates / totalGates) * 50; // 50% for gates
+            const checklistProgress = (checkedItems / totalChecklistItems) * 50; // 50% for checklist
+            const totalProgress = gateProgress + checklistProgress;
+            
+            const progressFill = document.getElementById('overallProgress');
+            const progressText = document.getElementById('progressText');
+            
+            progressFill.style.width = totalProgress + '%';
+            progressText.textContent = `Lab Progress: ${Math.round(totalProgress)}% Complete`;
+            
+            // Update progress text color based on completion
+            if (totalProgress === 100) {
+                progressText.style.color = '#28a745';
+                progressText.innerHTML += ' 🎉';
+            } else if (totalProgress >= 75) {
+                progressText.style.color = '#ffc107';
+            } else {
+                progressText.style.color = '#495057';
+            }
+        }
+
+        // Smooth scrolling navigation
+        function scrollToSection(sectionId) {
+            const section = document.getElementById(sectionId + '-content');
+            if (section) {
+                section.scrollIntoView({ 
+                    behavior: 'smooth', 
+                    block: 'start' 
+                });
+                
+                // Update active nav item
+                document.querySelectorAll('.nav-item').forEach(item => {
+                    item.classList.remove('active');
+                });
+                event.target.classList.add('active');
+            }
+        }
+
+        // Keyboard navigation support
+        document.addEventListener('keydown', function(event) {
+            // Handle Enter and Space for collapsible sections
+            if ((event.key === 'Enter' || event.key === ' ') && 
+                event.target.classList.contains('collapsible')) {
+                event.preventDefault();
+                event.target.click();
+            }
+            
+            // Handle Enter and Space for gate cards
+            if ((event.key === 'Enter' || event.key === ' ') && 
+                event.target.classList.contains('gate-card')) {
+                event.preventDefault();
+                event.target.click();
+            }
+            
+            // Handle Enter and Space for checklist items
+            if ((event.key === 'Enter' || event.key === ' ') && 
+                event.target.classList.contains('checklist-item')) {
+                event.preventDefault();
+                event.target.click();
+            }
+        });
+
+        // Intersection Observer for nav highlighting
+        function setupScrollSpy() {
+            const sections = document.querySelectorAll('.section');
+            const navItems = document.querySelectorAll('.nav-item');
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const sectionId = entry.target.querySelector('.collapsible').onclick
+                            .toString().match(/toggleSection\('(\w+)'\)/)[1];
+                        
+                        navItems.forEach(item => item.classList.remove('active'));
+                        const activeNav = Array.from(navItems).find(item => 
+                            item.onclick.toString().includes(sectionId));
+                        if (activeNav) activeNav.classList.add('active');
+                    }
+                });
+            }, {
+                threshold: 0.3,
+                rootMargin: '-20% 0px -20% 0px'
+            });
+
+            sections.forEach(section => observer.observe(section));
+        }
+
+        // Auto-save progress to localStorage (if available)
+        function saveProgress() {
+            try {
+                const progress = {
+                    completedGates: completedGates,
+                    checkedItems: checkedItems,
+                    gateStates: Array.from(document.querySelectorAll('.gate-card')).map(card => 
+                        card.classList.contains('completed')),
+                    checklistStates: Array.from(document.querySelectorAll('.checklist-item input')).map(checkbox => 
+                        checkbox.checked)
+                };
+                localStorage.setItem('csc210_lab1_progress', JSON.stringify(progress));
+            } catch (e) {
+                // localStorage not available, continue without saving
+            }
+        }
+
+        // Load saved progress
+        function loadProgress() {
+            try {
+                const saved = localStorage.getItem('csc210_lab1_progress');
+                if (saved) {
+                    const progress = JSON.parse(saved);
+                    completedGates = progress.completedGates || 0;
+                    checkedItems = progress.checkedItems || 0;
+                    
+                    // Restore gate states
+                    const gateCards = document.querySelectorAll('.gate-card');
+                    progress.gateStates?.forEach((isCompleted, index) => {
+                        if (isCompleted && gateCards[index]) {
+                            gateCards[index].classList.add('completed');
+                            gateCards[index].setAttribute('aria-pressed', 'true');
+                            gateCards[index].innerHTML += ' ✓';
+                        }
+                    });
+                    
+                    // Restore checklist states
+                    const checkboxes = document.querySelectorAll('.checklist-item input');
+                    progress.checklistStates?.forEach((isChecked, index) => {
+                        if (isChecked && checkboxes[index]) {
+                            checkboxes[index].checked = true;
+                            checkboxes[index].closest('.checklist-item').classList.add('completed');
+                        }
+                    });
+                    
+                    updateProgress();
+                }
+            } catch (e) {
+                // Error loading progress, continue with defaults
+            }
+        }
+
+        // Add event listeners for auto-saving
+        function setupAutoSave() {
+            document.addEventListener('click', function(event) {
+                if (event.target.classList.contains('gate-card') || 
+                    event.target.closest('.checklist-item')) {
+                    setTimeout(saveProgress, 100); // Small delay to ensure state is updated
+                }
+            });
+        }
+
+        // Print functionality
+        function setupPrintStyles() {
+            const style = document.createElement('style');
+            style.textContent = `
+                @media print {
+                    .floating-nav { display: none !important; }
+                    .collapsible-content.hidden { 
+                        max-height: none !important; 
+                        opacity: 1 !important; 
+                    }
+                    .section { 
+                        break-inside: avoid; 
+                        page-break-inside: avoid; 
+                    }
+                    .gate-grid { 
+                        break-inside: avoid; 
+                    }
+                    body { 
+                        background: white !important; 
+                    }
+                    .container { 
+                        box-shadow: none !important; 
+                    }
+                }
+            `;
+            document.head.appendChild(style);
+        }
+
+        // Accessibility enhancements
+        function enhanceAccessibility() {
+            // Add skip link
+            const skipLink = document.createElement('a');
+            skipLink.href = '#main-content';
+            skipLink.textContent = 'Skip to main content';
+            skipLink.style.cssText = `
+                position: absolute;
+                top: -40px;
+                left: 6px;
+                background: #3498db;
+                color: white;
+                padding: 8px;
+                text-decoration: none;
+                border-radius: 4px;
+                z-index: 1001;
+                transition: top 0.3s;
+            `;
+            skipLink.addEventListener('focus', () => {
+                skipLink.style.top = '6px';
+            });
+            skipLink.addEventListener('blur', () => {
+                skipLink.style.top = '-40px';
+            });
+            document.body.insertBefore(skipLink, document.body.firstChild);
+
+            // Add main content ID
+            document.querySelector('.content').id = 'main-content';
+
+            // Enhance focus management for dynamic content
+            document.addEventListener('click', function(event) {
+                if (event.target.classList.contains('collapsible')) {
+                    setTimeout(() => {
+                        const content = event.target.nextElementSibling;
+                        if (!content.classList.contains('hidden')) {
+                            const firstFocusable = content.querySelector('input, button, [tabindex], a');
+                            if (firstFocusable) {
+                                firstFocusable.focus();
+                            }
+                        }
+                    }, 300); // Wait for animation
+                }
+            });
+        }
+
+        // High contrast mode detection and enhancement
+        function setupHighContrastSupport() {
+            if (window.matchMedia && window.matchMedia('(prefers-contrast: high)').matches) {
+                document.body.classList.add('high-contrast');
+            }
+        }
+
+        // Reduced motion support
+        function setupReducedMotionSupport() {
+            if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.body.classList.add('reduced-motion');
+            }
+        }
+
+        // Error handling for image loading
+        function setupImageErrorHandling() {
+            document.addEventListener('error', function(event) {
+                if (event.target.tagName === 'IMG') {
+                    event.target.alt = 'Image failed to load: ' + (event.target.alt || 'Untitled image');
+                    event.target.style.border = '2px dashed #ccc';
+                    event.target.style.padding = '20px';
+                    event.target.style.textAlign = 'center';
+                }
+            }, true);
+        }
+
+        // Tooltip functionality for complex terms
+        function setupTooltips() {
+            const tooltips = {
+                'Logisim': 'A digital circuit design and simulation software',
+                'NAND': 'NOT AND - a logic gate that outputs false only when all inputs are true',
+                'XOR': 'Exclusive OR - outputs true when inputs are different',
+                'subcircuit': 'A reusable circuit component that can be used in other circuits'
+            };
+
+            Object.keys(tooltips).forEach(term => {
+                const regex = new RegExp(`\\b${term}\\b`, 'gi');
+                document.body.innerHTML = document.body.innerHTML.replace(regex, 
+                    `<span class="tooltip" title="${tooltips[term]}">${term}</span>`);
+            });
+        }
+
+        // Initialize everything when DOM is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            loadProgress();
+            setupScrollSpy();
+            setupAutoSave();
+            setupPrintStyles();
+            enhanceAccessibility();
+            setupHighContrastSupport();
+            setupReducedMotionSupport();
+            setupImageErrorHandling();
+            
+            // Initial progress update
+            updateProgress();
+            
+            // Set initial focus for better accessibility
+            document.querySelector('.container').setAttribute('tabindex', '-1');
+            
+            console.log('CSC210L Lab 1 page initialized successfully');
+        });
+
+        // Cleanup function for when page is unloaded
+        window.addEventListener('beforeunload', function() {
+            saveProgress();
+        });
+    </script>
+</body>
+</html>
