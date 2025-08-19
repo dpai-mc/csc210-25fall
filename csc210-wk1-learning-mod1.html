@@ -105,13 +105,15 @@
             margin: 1rem 0 0.5rem 0;
         }
 
-        /* Interactive Computer Components Explorer */
+        /* Interactive Computer Components Explorer - FIXED LAYOUT */
         .computer-explorer {
             background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
             border: 2px solid #0ea5e9;
             border-radius: 12px;
             padding: 2rem;
             margin: 2rem 0;
+            position: relative;
+            z-index: 1;
         }
 
         .computer-diagram {
@@ -119,6 +121,8 @@
             grid-template-columns: repeat(3, 1fr);
             gap: 1rem;
             margin: 1.5rem 0;
+            /* Ensure enough vertical spacing for detail cards */
+            margin-bottom: 8rem;
         }
 
         .component {
@@ -130,21 +134,26 @@
             cursor: pointer;
             transition: all 0.3s ease;
             position: relative;
-            z-index: 1;
+            z-index: 10;
+            min-height: 120px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
         }
 
         .component:hover {
             transform: translateY(-4px);
             box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
             border-color: #3b82f6;
-            z-index: 10;
+            z-index: 20;
         }
 
         .component.active {
             border-color: #1e40af;
             background: #dbeafe;
-            transform: scale(1.05);
-            z-index: 20;
+            transform: scale(1.02);
+            z-index: 50;
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
         }
 
         .component-icon {
@@ -166,23 +175,39 @@
         .component-details {
             position: absolute;
             top: 100%;
-            left: 0;
-            right: 0;
+            left: -2px;
+            right: -2px;
             background: #1e3a8a;
             color: white;
-            padding: 1rem;
+            padding: 1.5rem;
             border-radius: 0 0 8px 8px;
             font-size: 0.9rem;
+            line-height: 1.5;
             opacity: 0;
             transform: translateY(-10px);
             transition: all 0.3s ease;
-            z-index: 30;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            z-index: 100;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+            border: 2px solid #1e40af;
+            border-top: none;
+            /* Ensure text is readable */
+            font-weight: 500;
         }
 
         .component.active .component-details {
             opacity: 1;
             transform: translateY(0);
+        }
+
+        /* Action buttons container - positioned below components with proper spacing */
+        .action-buttons-container {
+            position: relative;
+            z-index: 5;
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-top: 2rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         }
 
         /* Abstraction Layers Visualization */
@@ -192,6 +217,8 @@
             border-radius: 12px;
             padding: 2rem;
             margin: 2rem 0;
+            position: relative;
+            z-index: 1;
         }
 
         .layer {
@@ -203,16 +230,19 @@
             cursor: pointer;
             transition: all 0.3s ease;
             position: relative;
+            z-index: 5;
         }
 
         .layer:hover {
             background: #f9fafb;
             border-color: #9ca3af;
+            z-index: 10;
         }
 
         .layer.active {
             background: #e0f2fe;
             border-color: #0284c7;
+            z-index: 15;
         }
 
         .layer-title {
@@ -422,6 +452,12 @@
 
             .computer-diagram {
                 grid-template-columns: 1fr;
+                gap: 2rem;
+                margin-bottom: 3rem;
+            }
+
+            .component {
+                min-height: auto;
             }
 
             .component-details {
@@ -430,10 +466,36 @@
                 transform: none;
                 margin-top: 1rem;
                 border-radius: 8px;
+                border: 2px solid #1e40af;
+                z-index: auto;
+            }
+
+            .component.active .component-details {
+                display: block;
             }
 
             .action-buttons {
                 flex-direction: column;
+            }
+
+            .action-buttons-container {
+                margin-top: 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .computer-diagram {
+                gap: 1.5rem;
+                margin-bottom: 2rem;
+            }
+            
+            .component {
+                padding: 0.8rem;
+            }
+            
+            .component-details {
+                padding: 1rem;
+                font-size: 0.85rem;
             }
         }
 
@@ -456,6 +518,36 @@
             clip: rect(0, 0, 0, 0);
             white-space: nowrap;
             border: 0;
+        }
+
+        /* High contrast mode support */
+        @media (prefers-contrast: high) {
+            .component {
+                border-width: 3px;
+            }
+            
+            .component.active {
+                border-width: 4px;
+            }
+            
+            .component-details {
+                border-width: 3px;
+            }
+        }
+
+        /* Reduced motion support */
+        @media (prefers-reduced-motion: reduce) {
+            .component,
+            .component-details,
+            .btn,
+            .layer {
+                transition: none;
+            }
+            
+            .component:hover,
+            .component.active {
+                transform: none;
+            }
         }
     </style>
 </head>
@@ -483,7 +575,7 @@
                 <div class="progress-fill" id="progress-fill"></div>
             </div>
             <p style="font-size: 0.9rem; color: #6b7280; margin-top: 0.5rem;">
-                ⓘ Progress resets when you close your browser. Download your reflection before leaving.
+                ℹ Progress resets when you close your browser. Download your reflection before leaving.
             </p>
         </div>
 
@@ -521,75 +613,85 @@
             <div class="computer-explorer">
                 <h3 style="text-align: center; color: #0ea5e9; margin-bottom: 1rem;">Major Computer Components</h3>
                 <div class="computer-diagram">
-                    <div class="component" tabindex="0" data-component="cpu" onclick="exploreComponent('cpu')">
+                    <div class="component" tabindex="0" data-component="cpu" onclick="exploreComponent('cpu')" 
+                         role="button" aria-describedby="cpu-desc" aria-expanded="false">
                         <div class="component-icon">🧠</div>
                         <div class="component-name">CPU</div>
                         <div class="component-role">Central Processing Unit</div>
-                        <div class="component-details">
+                        <div class="component-details" id="cpu-desc" role="region" aria-live="polite">
                             The "brain" of the computer that executes instructions. Contains the ALU (Arithmetic Logic Unit) and Control Unit. Processes data and coordinates all other components.
                         </div>
                     </div>
 
-                    <div class="component" tabindex="0" data-component="memory" onclick="exploreComponent('memory')">
+                    <div class="component" tabindex="0" data-component="memory" onclick="exploreComponent('memory')"
+                         role="button" aria-describedby="memory-desc" aria-expanded="false">
                         <div class="component-icon">💾</div>
                         <div class="component-name">Memory</div>
                         <div class="component-role">RAM & Storage</div>
-                        <div class="component-details">
+                        <div class="component-details" id="memory-desc" role="region" aria-live="polite">
                             Stores programs and data. RAM provides fast, temporary storage for running programs. Storage devices provide permanent data retention.
                         </div>
                     </div>
 
-                    <div class="component" tabindex="0" data-component="io" onclick="exploreComponent('io')">
+                    <div class="component" tabindex="0" data-component="io" onclick="exploreComponent('io')"
+                         role="button" aria-describedby="io-desc" aria-expanded="false">
                         <div class="component-icon">🔌</div>
                         <div class="component-name">I/O Devices</div>
                         <div class="component-role">Input & Output</div>
-                        <div class="component-details">
+                        <div class="component-details" id="io-desc" role="region" aria-live="polite">
                             Interfaces between humans and computers. Input devices (keyboard, mouse) send data in. Output devices (monitor, speakers) present results.
                         </div>
                     </div>
 
-                    <div class="component" tabindex="0" data-component="bus" onclick="exploreComponent('bus')">
+                    <div class="component" tabindex="0" data-component="bus" onclick="exploreComponent('bus')"
+                         role="button" aria-describedby="bus-desc" aria-expanded="false">
                         <div class="component-icon">🚌</div>
                         <div class="component-name">System Bus</div>
                         <div class="component-role">Data Highway</div>
-                        <div class="component-details">
+                        <div class="component-details" id="bus-desc" role="region" aria-live="polite">
                             Connects all components together. Consists of data bus (carries information), address bus (specifies locations), and control bus (coordinates operations).
                         </div>
                     </div>
 
-                    <div class="component" tabindex="0" data-component="motherboard" onclick="exploreComponent('motherboard')">
+                    <div class="component" tabindex="0" data-component="motherboard" onclick="exploreComponent('motherboard')"
+                         role="button" aria-describedby="motherboard-desc" aria-expanded="false">
                         <div class="component-icon">🔧</div>
                         <div class="component-name">Motherboard</div>
                         <div class="component-role">Main Circuit Board</div>
-                        <div class="component-details">
+                        <div class="component-details" id="motherboard-desc" role="region" aria-live="polite">
                             The foundation that connects all components. Contains slots, sockets, and circuits that allow components to communicate and receive power.
                         </div>
                     </div>
 
-                    <div class="component" tabindex="0" data-component="power" onclick="exploreComponent('power')">
+                    <div class="component" tabindex="0" data-component="power" onclick="exploreComponent('power')"
+                         role="button" aria-describedby="power-desc" aria-expanded="false">
                         <div class="component-icon">⚡</div>
                         <div class="component-name">Power Supply</div>
                         <div class="component-role">Energy Provider</div>
-                        <div class="component-details">
+                        <div class="component-details" id="power-desc" role="region" aria-live="polite">
                             Converts AC power from the wall outlet to DC power that computer components need. Provides stable, regulated power to all system components.
                         </div>
                     </div>
                 </div>
-                <div class="action-buttons" style="position: relative; z-index: 50; background: white; padding: 1rem; border-radius: 8px; margin-top: 2rem;">
-                    <button class="btn btn-primary" onclick="completeSection('components')" id="components-complete-btn" disabled>
-                        ✅ Complete Component Exploration
-                    </button>
+                
+                <div class="action-buttons-container">
+                    <div class="action-buttons">
+                        <button class="btn btn-primary" onclick="completeSection('components')" id="components-complete-btn" disabled>
+                            ✅ Complete Component Exploration
+                        </button>
+                    </div>
                 </div>
             </div>
         </section>
 
         <!-- Abstraction Layers -->
         <section class="content-section">
-            <h2>🏗️ Abstraction Layers</h2>
+            <h2>🗗️ Abstraction Layers</h2>
             <p>Computers work through layers of abstraction - each layer hides the complexity of the layer below it. Click each layer to explore how they build upon each other.</p>
             
             <div class="abstraction-layers">
-                <div class="layer" tabindex="0" data-layer="applications" onclick="exploreLayer('applications')">
+                <div class="layer" tabindex="0" data-layer="applications" onclick="exploreLayer('applications')"
+                     role="button" aria-expanded="false">
                     <div class="layer-title">
                         <span>🖥️ Applications & User Programs</span>
                         <span>▼</span>
@@ -599,7 +701,8 @@
                     </div>
                 </div>
 
-                <div class="layer" tabindex="0" data-layer="highlevel" onclick="exploreLayer('highlevel')">
+                <div class="layer" tabindex="0" data-layer="highlevel" onclick="exploreLayer('highlevel')"
+                     role="button" aria-expanded="false">
                     <div class="layer-title">
                         <span>📝 High-Level Languages (Java, Python, C++)</span>
                         <span>▼</span>
@@ -609,7 +712,8 @@
                     </div>
                 </div>
 
-                <div class="layer" tabindex="0" data-layer="assembly" onclick="exploreLayer('assembly')">
+                <div class="layer" tabindex="0" data-layer="assembly" onclick="exploreLayer('assembly')"
+                     role="button" aria-expanded="false">
                     <div class="layer-title">
                         <span>⚙️ Assembly Language & Machine Code</span>
                         <span>▼</span>
@@ -619,7 +723,8 @@
                     </div>
                 </div>
 
-                <div class="layer" tabindex="0" data-layer="microarch" onclick="exploreLayer('microarch')">
+                <div class="layer" tabindex="0" data-layer="microarch" onclick="exploreLayer('microarch')"
+                     role="button" aria-expanded="false">
                     <div class="layer-title">
                         <span>🔧 Microarchitecture & Hardware</span>
                         <span>▼</span>
@@ -629,7 +734,8 @@
                     </div>
                 </div>
 
-                <div class="layer" tabindex="0" data-layer="digital" onclick="exploreLayer('digital')">
+                <div class="layer" tabindex="0" data-layer="digital" onclick="exploreLayer('digital')"
+                     role="button" aria-expanded="false">
                     <div class="layer-title">
                         <span>🚥 Digital Logic & Gates</span>
                         <span>▼</span>
@@ -639,7 +745,8 @@
                     </div>
                 </div>
 
-                <div class="layer" tabindex="0" data-layer="physics" onclick="exploreLayer('physics')">
+                <div class="layer" tabindex="0" data-layer="physics" onclick="exploreLayer('physics')"
+                     role="button" aria-expanded="false">
                     <div class="layer-title">
                         <span>⚛️ Physics & Transistors</span>
                         <span>▼</span>
@@ -649,10 +756,12 @@
                     </div>
                 </div>
 
-                <div class="action-buttons" style="position: relative; z-index: 50; background: white; padding: 1rem; border-radius: 8px; margin-top: 2rem;">
-                    <button class="btn btn-primary" onclick="completeSection('layers')" id="layers-complete-btn" disabled>
-                        ✅ Complete Abstraction Layers
-                    </button>
+                <div class="action-buttons-container">
+                    <div class="action-buttons">
+                        <button class="btn btn-primary" onclick="completeSection('layers')" id="layers-complete-btn" disabled>
+                            ✅ Complete Abstraction Layers
+                        </button>
+                    </div>
                 </div>
             </div>
         </section>
@@ -664,10 +773,10 @@
                 <div class="question" data-question="1">
                     <div class="question-text">1. Which computer component is often called the "brain" of the computer?</div>
                     <ul class="options">
-                        <li class="option" data-answer="a" onclick="selectAnswer(1, 'a')">A) Memory (RAM)</li>
-                        <li class="option" data-answer="b" onclick="selectAnswer(1, 'b')">B) Central Processing Unit (CPU)</li>
-                        <li class="option" data-answer="c" onclick="selectAnswer(1, 'c')">C) Hard Drive</li>
-                        <li class="option" data-answer="d" onclick="selectAnswer(1, 'd')">D) Motherboard</li>
+                        <li class="option" data-answer="a" onclick="selectAnswer(1, 'a')" tabindex="0" role="radio">A) Memory (RAM)</li>
+                        <li class="option" data-answer="b" onclick="selectAnswer(1, 'b')" tabindex="0" role="radio">B) Central Processing Unit (CPU)</li>
+                        <li class="option" data-answer="c" onclick="selectAnswer(1, 'c')" tabindex="0" role="radio">C) Hard Drive</li>
+                        <li class="option" data-answer="d" onclick="selectAnswer(1, 'd')" tabindex="0" role="radio">D) Motherboard</li>
                     </ul>
                     <div class="feedback" id="feedback-1"></div>
                 </div>
@@ -675,10 +784,10 @@
                 <div class="question" data-question="2">
                     <div class="question-text">2. What is the main purpose of abstraction layers in computer systems?</div>
                     <ul class="options">
-                        <li class="option" data-answer="a" onclick="selectAnswer(2, 'a')">A) To make computers run faster</li>
-                        <li class="option" data-answer="b" onclick="selectAnswer(2, 'b')">B) To hide complexity and make systems easier to understand and use</li>
-                        <li class="option" data-answer="c" onclick="selectAnswer(2, 'c')">C) To reduce the cost of manufacturing</li>
-                        <li class="option" data-answer="d" onclick="selectAnswer(2, 'd')">D) To prevent unauthorized access</li>
+                        <li class="option" data-answer="a" onclick="selectAnswer(2, 'a')" tabindex="0" role="radio">A) To make computers run faster</li>
+                        <li class="option" data-answer="b" onclick="selectAnswer(2, 'b')" tabindex="0" role="radio">B) To hide complexity and make systems easier to understand and use</li>
+                        <li class="option" data-answer="c" onclick="selectAnswer(2, 'c')" tabindex="0" role="radio">C) To reduce the cost of manufacturing</li>
+                        <li class="option" data-answer="d" onclick="selectAnswer(2, 'd')" tabindex="0" role="radio">D) To prevent unauthorized access</li>
                     </ul>
                     <div class="feedback" id="feedback-2"></div>
                 </div>
@@ -686,10 +795,10 @@
                 <div class="question" data-question="3">
                     <div class="question-text">3. Which layer is closest to the actual hardware?</div>
                     <ul class="options">
-                        <li class="option" data-answer="a" onclick="selectAnswer(3, 'a')">A) High-level programming languages</li>
-                        <li class="option" data-answer="b" onclick="selectAnswer(3, 'b')">B) Application software</li>
-                        <li class="option" data-answer="c" onclick="selectAnswer(3, 'c')">C) Digital logic and transistors</li>
-                        <li class="option" data-answer="d" onclick="selectAnswer(3, 'd')">D) Operating system</li>
+                        <li class="option" data-answer="a" onclick="selectAnswer(3, 'a')" tabindex="0" role="radio">A) High-level programming languages</li>
+                        <li class="option" data-answer="b" onclick="selectAnswer(3, 'b')" tabindex="0" role="radio">B) Application software</li>
+                        <li class="option" data-answer="c" onclick="selectAnswer(3, 'c')" tabindex="0" role="radio">C) Digital logic and transistors</li>
+                        <li class="option" data-answer="d" onclick="selectAnswer(3, 'd')" tabindex="0" role="radio">D) Operating system</li>
                     </ul>
                     <div class="feedback" id="feedback-3"></div>
                 </div>
@@ -719,7 +828,8 @@
                     class="reflection-input" 
                     id="reflection-text"
                     placeholder="Share your thoughts here... Consider specific examples like how touching an app icon eventually causes transistors to switch, or how a high-level programming language like the one used to create your favorite app ultimately becomes machine code."
-                    oninput="updateReflection()">
+                    oninput="updateReflection()"
+                    aria-label="Reflection response text area">
                 </textarea>
                 <div class="action-buttons">
                     <button class="btn btn-primary" onclick="saveReflection()">
@@ -757,7 +867,7 @@
                     📄 Download Completion Summary
                 </button>
                 <button class="btn btn-secondary" onclick="reviewModule()">
-                    🔍 Review Module Content
+                    📖 Review Module Content
                 </button>
             </div>
         </section>
@@ -1002,17 +1112,19 @@
             alert('Video transcript would be displayed here in a modal or expandable section.');
         }
 
-        // Component exploration
+        // Component exploration with improved accessibility
         function exploreComponent(componentName) {
-            // Remove active class from all components
+            // Remove active class and aria-expanded from all components
             document.querySelectorAll('.component').forEach(comp => {
                 comp.classList.remove('active');
+                comp.setAttribute('aria-expanded', 'false');
             });
 
             // Add active class to clicked component
             const component = document.querySelector(`[data-component="${componentName}"]`);
             if (component) {
                 component.classList.add('active');
+                component.setAttribute('aria-expanded', 'true');
                 
                 // Track exploration
                 moduleState.componentsExplored.add(componentName);
@@ -1022,17 +1134,25 @@
                     component.style.opacity = '0.8';
                 }, 2000);
 
+                // Announce to screen readers
+                const details = component.querySelector('.component-details');
+                if (details) {
+                    details.setAttribute('aria-live', 'polite');
+                }
+
                 updateButtonStates();
                 saveModuleState();
             }
         }
 
-        // Layer exploration
+        // Layer exploration with improved accessibility
         function exploreLayer(layerName) {
             const layer = document.querySelector(`[data-layer="${layerName}"]`);
             if (layer) {
                 // Toggle active state
+                const isActive = layer.classList.contains('active');
                 layer.classList.toggle('active');
+                layer.setAttribute('aria-expanded', !isActive);
                 
                 // Track exploration
                 moduleState.layersExplored.add(layerName);
@@ -1047,17 +1167,19 @@
             }
         }
 
-        // Quiz functions
+        // Quiz functions with improved accessibility
         function selectAnswer(questionNum, answer) {
             // Remove selection from all options in this question
             const question = document.querySelector(`[data-question="${questionNum}"]`);
             question.querySelectorAll('.option').forEach(opt => {
                 opt.classList.remove('selected');
+                opt.setAttribute('aria-checked', 'false');
             });
 
             // Select the clicked option
             const selectedOption = question.querySelector(`[data-answer="${answer}"]`);
             selectedOption.classList.add('selected');
+            selectedOption.setAttribute('aria-checked', 'true');
 
             // Store the answer
             moduleState.quizAnswers[questionNum] = answer;
@@ -1132,6 +1254,7 @@
             // Clear all selections and feedback
             document.querySelectorAll('.option').forEach(opt => {
                 opt.classList.remove('selected', 'correct', 'incorrect');
+                opt.setAttribute('aria-checked', 'false');
             });
 
             document.querySelectorAll('.feedback').forEach(feedback => {
@@ -1259,7 +1382,7 @@ Note: This summary shows session progress only. Submit required work in Canvas f
             const messages = {
                 video: 'Video section completed! 🎥',
                 components: 'Component exploration completed! 🖥️',
-                layers: 'Abstraction layers completed! 🏗️',
+                layers: 'Abstraction layers completed! 🗗️',
                 quiz: 'Knowledge check completed! 🧠',
                 reflection: 'Reflection completed! 💭'
             };
@@ -1336,12 +1459,29 @@ Note: This summary shows session progress only. Submit required work in Canvas f
             downloadCompletionSummary();
         }
 
-        // Keyboard accessibility
+        // Enhanced keyboard accessibility
         document.addEventListener('keydown', function(e) {
             // Allow Enter key to activate clickable elements
-            if (e.key === 'Enter' && e.target.hasAttribute('tabindex')) {
+            if (e.key === 'Enter' && (e.target.hasAttribute('tabindex') || e.target.classList.contains('option'))) {
                 e.preventDefault();
                 e.target.click();
+            }
+            
+            // Arrow key navigation for quiz options
+            if (e.target.classList.contains('option')) {
+                const options = Array.from(e.target.parentNode.querySelectorAll('.option'));
+                const currentIndex = options.indexOf(e.target);
+                let nextIndex;
+                
+                if (e.key === 'ArrowDown') {
+                    nextIndex = (currentIndex + 1) % options.length;
+                    options[nextIndex].focus();
+                    e.preventDefault();
+                } else if (e.key === 'ArrowUp') {
+                    nextIndex = (currentIndex - 1 + options.length) % options.length;
+                    options[nextIndex].focus();
+                    e.preventDefault();
+                }
             }
         });
 
@@ -1352,6 +1492,24 @@ Note: This summary shows session progress only. Submit required work in Canvas f
 
         // Periodic auto-save
         setInterval(saveModuleState, 30000); // Save every 30 seconds
+
+        // Initialize accessibility attributes
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set initial aria-expanded states
+            document.querySelectorAll('.component').forEach(comp => {
+                comp.setAttribute('aria-expanded', 'false');
+            });
+            
+            document.querySelectorAll('.layer').forEach(layer => {
+                layer.setAttribute('aria-expanded', 'false');
+            });
+            
+            // Set initial aria-checked states for quiz options
+            document.querySelectorAll('.option').forEach(option => {
+                option.setAttribute('aria-checked', 'false');
+            });
+        });
     </script>
 </body>
 </html>
+                
