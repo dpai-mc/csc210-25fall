@@ -664,26 +664,20 @@ A NAND A = NOT(A AND A) = NOT(A)
             </section>
 
             <section class="submission-checklist">
-                <h3>Submission Checklist</h3>
+                <h3>Submission Requirements</h3>
+                <p><strong>Submit a single file:</strong> Lab1_[YourLastName].circ</p>
+                <p>Your Logisim file must contain:</p>
                 <div class="checklist-item" onclick="toggleChecklist(this)">
                     <input type="checkbox" id="check1" aria-describedby="check1-desc">
-                    <label for="check1" id="check1-desc">Lab1_[YourLastName].circ file with all circuits</label>
+                    <label for="check1" id="check1-desc">Main circuit with working NOT gate demonstration</label>
                 </div>
                 <div class="checklist-item" onclick="toggleChecklist(this)">
                     <input type="checkbox" id="check2" aria-describedby="check2-desc">
-                    <label for="check2" id="check2-desc">interface_exploration.png screenshot</label>
+                    <label for="check2" id="check2-desc">All 8 subcircuits with exact names (NOT_1, AND_2, OR_2, etc.)</label>
                 </div>
                 <div class="checklist-item" onclick="toggleChecklist(this)">
                     <input type="checkbox" id="check3" aria-describedby="check3-desc">
-                    <label for="check3" id="check3-desc">lab1_reflection.pdf (one page)</label>
-                </div>
-                <div class="checklist-item" onclick="toggleChecklist(this)">
-                    <input type="checkbox" id="check4" aria-describedby="check4-desc">
-                    <label for="check4" id="check4-desc">All 8 subcircuits with exact names</label>
-                </div>
-                <div class="checklist-item" onclick="toggleChecklist(this)">
-                    <input type="checkbox" id="check5" aria-describedby="check5-desc">
-                    <label for="check5" id="check5-desc">NAND_universal demonstration circuit</label>
+                    <label for="check3" id="check3-desc">NAND_universal demonstration circuit with documentation</label>
                 </div>
             </section>
 
@@ -727,7 +721,7 @@ A NAND A = NOT(A AND A) = NOT(A)
         let completedGates = 0;
         const totalGates = 8;
         let checkedItems = 0;
-        const totalChecklistItems = 5;
+        const totalChecklistItems = 3;
 
         // Section toggle functionality
         function toggleSection(sectionId) {
