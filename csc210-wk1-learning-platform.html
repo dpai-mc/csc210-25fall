@@ -85,7 +85,7 @@
 
         .progress-header {
             display: flex;
-            justify-content: between;
+            justify-content: space-between;
             align-items: center;
             margin-bottom: 0.5rem;
         }
@@ -618,9 +618,6 @@
                     <button class="btn btn-primary" onclick="switchTab('modules')">
                         🚀 Start Learning
                     </button>
-                    <button class="btn btn-secondary" onclick="toggleCollapsible('course-roadmap')">
-                        🗺️ View Course Roadmap
-                    </button>
                 </div>
             </div>
         </div>
@@ -830,4 +827,323 @@
                 </div>
                 <div class="collapsible-content" id="required-reading">
                     <ul style="margin: 1rem 0; padding-left: 2rem;">
-                        
+                        <li><strong>"But How Do It Know?" Chapters 1-2:</strong> Foundation concepts and the simplicity underlying complexity</li>
+                        <li><strong>Supplementary Reading:</strong> Abstraction layers from transistors to applications</li>
+                        <li><strong>Interactive Tutorials:</strong> Embedded within each module for hands-on practice</li>
+                    </ul>
+                </div>
+
+                <div class="collapsible" tabindex="0" role="button" aria-expanded="false" aria-controls="video-content">
+                    <h3>🎥 Video Content</h3>
+                </div>
+                <div class="collapsible-content" id="video-content">
+                    <ul style="margin: 1rem 0; padding-left: 2rem;">
+                        <li><strong>Introduction Video (15 min):</strong> Course welcome and overview</li>
+                        <li><strong>Binary & Hexadecimal Series (45 min total):</strong> Step-by-step number system explanations</li>
+                        <li><strong>Two's Complement Deep Dive (20 min):</strong> Understanding negative number representation</li>
+                        <li><strong>Synthesis Video (15 min):</strong> Connecting concepts to real applications</li>
+                    </ul>
+                    <p><em>All videos include closed captions and downloadable transcripts.</em></p>
+                </div>
+
+                <div class="collapsible" tabindex="0" role="button" aria-expanded="false" aria-controls="tools-software">
+                    <h3>🛠️ Tools & Software</h3>
+                </div>
+                <div class="collapsible-content" id="tools-software">
+                    <ul style="margin: 1rem 0; padding-left: 2rem;">
+                        <li><strong>Interactive Conversion Tools:</strong> Built-in calculators for practice</li>
+                        <li><strong>Number System Visualizers:</strong> See patterns and relationships</li>
+                        <li><strong>Calculator Apps:</strong> Windows/Mac calculator for verification</li>
+                        <li><strong>Mobile Tools:</strong> All interactive content works on smartphones</li>
+                    </ul>
+                </div>
+
+                <div class="collapsible" tabindex="0" role="button" aria-expanded="false" aria-controls="getting-help">
+                    <h3>💬 Getting Help</h3>
+                </div>
+                <div class="collapsible-content" id="getting-help">
+                    <ul style="margin: 1rem 0; padding-left: 2rem;">
+                        <li><strong>Discussion Forums:</strong> Ask questions and help classmates</li>
+                        <li><strong>Virtual Office Hours:</strong> Mondays 3-4 PM and by appointment</li>
+                        <li><strong>AI Tutor:</strong> 24/7 guided help with step-by-step explanations</li>
+                        <li><strong>Study Groups:</strong> Connect with peers for collaborative learning</li>
+                        <li><strong>FAQ Section:</strong> Common mistakes and solutions</li>
+                    </ul>
+                </div>
+
+                <div class="action-buttons">
+                    <button class="btn btn-primary" onclick="openDiscussion()">
+                        💬 Join Discussion Forum
+                    </button>
+                    <button class="btn btn-secondary" onclick="accessHelp()">
+                        🆘 Get Help Now
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Global state management
+        let currentTab = 'overview';
+        let moduleProgress = {
+            1: { completed: false, unlocked: true },
+            2: { completed: false, unlocked: true },
+            3: { completed: false, unlocked: true },
+            4: { completed: false, unlocked: true }
+        };
+        let overallProgress = 0;
+
+        // Tab functionality
+        function switchTab(tabName) {
+            // Update tab buttons
+            document.querySelectorAll('.nav-tab').forEach(tab => {
+                tab.classList.remove('active');
+                tab.setAttribute('aria-selected', 'false');
+            });
+            
+            // Update tab contents
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+
+            // Activate selected tab
+            const selectedButton = document.querySelector(`[data-tab="${tabName}"]`);
+            const selectedContent = document.getElementById(`${tabName}-tab`);
+
+            if (selectedButton && selectedContent) {
+                selectedButton.classList.add('active');
+                selectedButton.setAttribute('aria-selected', 'true');
+                selectedContent.classList.add('active');
+                currentTab = tabName;
+                selectedContent.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }
+
+        // Toggle collapsible content
+        function toggleCollapsible(element) {
+            if (typeof element === 'string') {
+                // Find collapsible by aria-controls attribute
+                element = document.querySelector(`[aria-controls="${element}"]`);
+            }
+            
+            if (!element) return;
+            
+            const isActive = element.classList.contains('active');
+            element.classList.toggle('active');
+            const content = element.nextElementSibling;
+            
+            if (content && content.classList.contains('collapsible-content')) {
+                if (isActive) {
+                    content.classList.remove('active');
+                    element.setAttribute('aria-expanded', 'false');
+                } else {
+                    content.classList.add('active');
+                    element.setAttribute('aria-expanded', 'true');
+                }
+            }
+        }
+
+        // Module management
+        function openModule(moduleNumber) {
+            saveProgress();
+            const moduleUrls = {
+                1: 'https://dpai-mc.github.io/csc210-25fall/csc210-wk1-learning-mod1.html',
+                2: 'https://dpai-mc.github.io/csc210-25fall/csc210-wk1-learning-mod2.html',
+                3: 'https://dpai-mc.github.io/csc210-25fall/csc210-wk1-learning-mod3.html',
+                4: 'https://dpai-mc.github.io/csc210-25fall/csc210-wk1-learning-mod4.html'
+            };
+            
+            if (moduleUrls[moduleNumber]) {
+                const returnUrl = encodeURIComponent(window.location.href);
+                window.location.href = `${moduleUrls[moduleNumber]}?return=${returnUrl}&moduleNum=${moduleNumber}`;
+            } else {
+                alert(`Module ${moduleNumber}: ${getModuleName(moduleNumber)} - Coming Soon!`);
+            }
+        }
+
+        function getModuleName(moduleNumber) {
+            const names = {
+                1: 'The Big Picture',
+                2: 'Number Systems',
+                3: 'Two\'s Complement',
+                4: 'Putting It Together'
+            };
+            return names[moduleNumber];
+        }
+
+        // Update module card displays
+        function updateModuleDisplay() {
+            document.querySelectorAll('.module-card').forEach(card => {
+                const moduleNum = parseInt(card.getAttribute('data-module'));
+                const module = moduleProgress[moduleNum];
+                
+                if (!module) return;
+
+                card.classList.remove('completed', 'locked');
+                const statusElement = card.querySelector('.module-status');
+                
+                if (module.completed) {
+                    card.classList.add('completed');
+                    statusElement.textContent = 'Completed';
+                    statusElement.className = 'module-status status-completed';
+                } else {
+                    statusElement.textContent = 'Available';
+                    statusElement.className = 'module-status status-available';
+                }
+
+                card.style.cursor = 'pointer';
+                card.onclick = () => openModule(moduleNum);
+            });
+        }
+
+        // Progress tracking
+        function updateProgress() {
+            const completedModules = Object.values(moduleProgress).filter(m => m.completed).length;
+            const totalModules = Object.keys(moduleProgress).length;
+            const percentage = Math.round((completedModules / totalModules) * 100);
+            
+            overallProgress = percentage;
+            
+            const progressFill = document.getElementById('progress-fill');
+            const progressText = document.getElementById('progress-text');
+            
+            if (progressFill) {
+                progressFill.style.width = `${percentage}%`;
+            }
+            
+            if (progressText) {
+                progressText.textContent = `${percentage}% Complete`;
+            }
+        }
+
+        // Canvas assignment functions
+        function openCanvasAssignment() {
+            window.open('https://mendocino.instructure.com/courses/19705/assignments/441199?module_item_id=1146660', '_blank');
+        }
+
+        function openCanvasQuiz() {
+            window.open('https://mendocino.instructure.com/courses/19705/quizzes/125348', '_blank');
+        }
+
+        function openParticipationAssignment() {
+            window.open('https://mendocino.instructure.com/courses/19705/assignments/441204', '_blank');
+        }
+
+        function downloadSchedule() {
+            alert('Study schedule download will be implemented in Phase 2');
+        }
+
+        function openSelfAssessment() {
+            alert('Self-assessment activities are embedded within each learning module');
+        }
+
+        function openDiscussion() {
+            alert('Discussion forum available in Canvas course');
+        }
+
+        function accessHelp() {
+            alert('Help available through Canvas messaging, discussion forums, and virtual office hours');
+        }
+
+        // Session storage functions
+        function saveProgress() {
+            try {
+                const progressData = {
+                    moduleProgress: moduleProgress,
+                    overallProgress: overallProgress,
+                    currentTab: currentTab,
+                    timestamp: new Date().toISOString(),
+                    sessionOnly: true
+                };
+                sessionStorage.setItem('csc210_week1_progress', JSON.stringify(progressData));
+            } catch (error) {
+                console.warn('Could not save progress to session storage:', error);
+            }
+        }
+
+        function loadProgress() {
+            try {
+                const saved = sessionStorage.getItem('csc210_week1_progress');
+                if (saved) {
+                    const progressData = JSON.parse(saved);
+                    moduleProgress = progressData.moduleProgress || moduleProgress;
+                    overallProgress = progressData.overallProgress || 0;
+                    updateModuleDisplay();
+                    updateProgress();
+                    console.log('Session progress loaded');
+                }
+            } catch (error) {
+                console.warn('Could not load progress from session storage:', error);
+            }
+        }
+
+        // Initialize everything when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Initializing CSC210 Learning Platform...');
+            
+            // Initialize tab functionality
+            document.querySelectorAll('.nav-tab').forEach(button => {
+                button.addEventListener('click', () => {
+                    const tabName = button.getAttribute('data-tab');
+                    switchTab(tabName);
+                });
+
+                button.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        const tabName = button.getAttribute('data-tab');
+                        switchTab(tabName);
+                    }
+                });
+            });
+
+            // Initialize collapsible functionality
+            document.querySelectorAll('.collapsible').forEach(collapsible => {
+                collapsible.addEventListener('click', function() {
+                    toggleCollapsible(this);
+                });
+
+                collapsible.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        toggleCollapsible(this);
+                    }
+                });
+
+                collapsible.setAttribute('aria-expanded', 'false');
+                collapsible.setAttribute('role', 'button');
+            });
+
+            // Add keyboard navigation for module cards
+            document.querySelectorAll('.module-card').forEach(card => {
+                card.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        const moduleNum = parseInt(this.getAttribute('data-module'));
+                        if (moduleProgress[moduleNum]?.unlocked) {
+                            openModule(moduleNum);
+                        }
+                    }
+                });
+            });
+
+            // Load progress and update displays
+            loadProgress();
+            updateModuleDisplay();
+            updateProgress();
+            
+            // Save progress periodically
+            setInterval(saveProgress, 30000);
+            window.addEventListener('beforeunload', saveProgress);
+            
+            console.log('Learning platform initialized successfully');
+        });
+
+        // Error handling
+        window.addEventListener('error', function(e) {
+            console.error('Learning platform error:', e.error);
+        });
+    </script>
+</body>
+</html>
