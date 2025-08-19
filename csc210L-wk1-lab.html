@@ -298,39 +298,7 @@
             text-decoration: line-through;
         }
 
-        .floating-nav {
-            position: fixed;
-            right: 20px;
-            top: 50%;
-            transform: translateY(-50%);
-            background: white;
-            border-radius: 25px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-            padding: 10px;
-            z-index: 1000;
-            opacity: 0.9;
-            transition: opacity 0.3s ease;
-        }
-
-        .floating-nav:hover {
-            opacity: 1;
-        }
-
-        .nav-item {
-            display: block;
-            padding: 8px 12px;
-            margin: 4px 0;
-            color: #495057;
-            text-decoration: none;
-            border-radius: 15px;
-            transition: all 0.2s ease;
-            font-size: 0.9rem;
-        }
-
-        .nav-item:hover, .nav-item.active {
-            background: #3498db;
-            color: white;
-        }
+        /* Removed floating navigation - doesn't work in iframe/Canvas */
 
         .code-snippet {
             background: #2c3e50;
@@ -398,8 +366,7 @@
         /* Focus styles for accessibility */
         .collapsible:focus,
         .gate-card:focus,
-        .checklist-item:focus,
-        .nav-item:focus {
+        .checklist-item:focus {
             outline: 3px solid #3498db;
             outline-offset: 2px;
         }
@@ -456,11 +423,6 @@
             background: #d4edda !important;
             border-color: #28a745 !important;
             color: #155724 !important;
-        }
-
-        .submission-checklist {
-            background: white !important;
-            color: #333 !important;
         }
 
         .floating-nav {
@@ -707,14 +669,6 @@ A NAND A = NOT(A AND A) = NOT(A)
             </section>
         </main>
     </div>
-
-    <nav class="floating-nav" aria-label="Quick navigation">
-        <a href="#" class="nav-item" onclick="scrollToSection('prep')">Prep</a>
-        <a href="#" class="nav-item" onclick="scrollToSection('part1')">Part 1</a>
-        <a href="#" class="nav-item" onclick="scrollToSection('part2')">Part 2</a>
-        <a href="#" class="nav-item" onclick="scrollToSection('part3')">Part 3</a>
-        <a href="#" class="nav-item" onclick="scrollToSection('part4')">Part 4</a>
-    </nav>
 
     <script>
         // Global variables
@@ -1037,7 +991,6 @@ A NAND A = NOT(A AND A) = NOT(A)
         // Initialize everything when DOM is loaded
         document.addEventListener('DOMContentLoaded', function() {
             loadProgress();
-            setupScrollSpy();
             setupAutoSave();
             setupPrintStyles();
             enhanceAccessibility();
