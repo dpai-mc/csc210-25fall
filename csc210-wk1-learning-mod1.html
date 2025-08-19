@@ -816,24 +816,24 @@
 
         <!-- Reflection Section -->
         <section class="content-section">
-            <h2>💭 Reflection & Discussion</h2>
+            <h2>💭 Module 1 Reflection</h2>
             <div class="reflection-section">
                 <div class="reflection-prompt">
-                    Reflection Prompt: Think about a smartphone or computer you use regularly. Can you identify examples of the different abstraction layers we discussed? How does understanding these layers change your perspective on how technology works?
+                    <strong>Module 1 Reflection Question:</strong> Think about a smartphone or computer you use regularly. Can you identify examples of the different abstraction layers we discussed? How does understanding these layers change your perspective on how technology works?
                 </div>
-                <div style="background: #fef3c7; border: 1px solid #f59e0b; border-radius: 6px; padding: 1rem; margin: 1rem 0; font-size: 0.9rem;">
-                    <strong>📝 Important:</strong> Your reflection response is required for this module's assignment. Use the download or copy buttons below to submit your reflection in Canvas.
+                <div style="background: #e0f2fe; border: 1px solid #0284c7; border-radius: 6px; padding: 1rem; margin: 1rem 0; font-size: 0.9rem;">
+                    <strong>💡 Important:</strong> Download your reflection response as a text file. You'll need to combine all module reflections for your comprehensive reflection assignment in Module 4.
                 </div>
                 <textarea 
                     class="reflection-input" 
                     id="reflection-text"
                     placeholder="Share your thoughts here... Consider specific examples like how touching an app icon eventually causes transistors to switch, or how a high-level programming language like the one used to create your favorite app ultimately becomes machine code."
                     oninput="updateReflection()"
-                    aria-label="Reflection response text area">
+                    aria-label="Module 1 reflection response text area">
                 </textarea>
                 <div class="action-buttons">
-                    <button class="btn btn-primary" onclick="saveReflection()">
-                        💾 Download Reflection Text
+                    <button class="btn btn-primary" onclick="downloadModuleReflection()">
+                        💾 Download Module 1 Reflection
                     </button>
                     <button class="btn btn-secondary" onclick="copyReflectionToClipboard()">
                         📋 Copy to Clipboard
@@ -1279,7 +1279,7 @@
             saveModuleState();
         }
 
-        function saveReflection() {
+        function downloadModuleReflection() {
             const reflectionText = document.getElementById('reflection-text').value;
             if (reflectionText.trim().length > 0) {
                 moduleState.reflectionText = reflectionText;
@@ -1289,6 +1289,7 @@
                 const content = `CSC210 Module 1 Reflection
 Student: [Enter your name]
 Date: ${new Date().toLocaleDateString()}
+Module: Module 1 - The Big Picture
 
 Reflection Question:
 Think about a smartphone or computer you use regularly. Can you identify examples of the different abstraction layers we discussed? How does understanding these layers change your perspective on how technology works?
@@ -1297,7 +1298,7 @@ Response:
 ${reflectionText}
 
 ---
-Instructions: Copy this text and submit it in the Canvas assignment for Week 1 Module 1 Reflection.
+Instructions: Save this file and combine with other module reflections for your comprehensive reflection assignment in Module 4.
 `;
                 
                 const blob = new Blob([content], { type: 'text/plain' });
@@ -1310,26 +1311,50 @@ Instructions: Copy this text and submit it in the Canvas assignment for Week 1 M
                 document.body.removeChild(a);
                 URL.revokeObjectURL(url);
                 
-                alert('Reflection downloaded! Submit this file content in Canvas.');
+                alert('Module 1 reflection downloaded! Keep this file for your Module 4 comprehensive reflection assignment.');
             } else {
                 alert('Please write your reflection before downloading.');
             }
         }
 
+        function saveModuleReflection() {
+            // Redirect to download function for consistency
+            downloadModuleReflection();
+        }
+
+        function saveReflection() {
+            // Redirect to download function for consistency
+            downloadModuleReflection();
+        }
+
         function copyReflectionToClipboard() {
             const reflectionText = document.getElementById('reflection-text').value;
             if (reflectionText.trim().length > 0) {
-                navigator.clipboard.writeText(reflectionText).then(() => {
-                    alert('Reflection copied to clipboard! Paste it into the Canvas assignment.');
+                const fullContent = `CSC210 Module 1 Reflection
+Student: [Enter your name]
+Date: ${new Date().toLocaleDateString()}
+Module: Module 1 - The Big Picture
+
+Reflection Question:
+Think about a smartphone or computer you use regularly. Can you identify examples of the different abstraction layers we discussed? How does understanding these layers change your perspective on how technology works?
+
+Response:
+${reflectionText}
+
+---
+Instructions: Save this text and combine with other module reflections for your comprehensive reflection assignment in Module 4.`;
+
+                navigator.clipboard.writeText(fullContent).then(() => {
+                    alert('Module 1 reflection copied to clipboard! Paste and save this text for your Module 4 assignment.');
                 }).catch(() => {
                     // Fallback for older browsers
                     const textArea = document.createElement('textarea');
-                    textArea.value = reflectionText;
+                    textArea.value = fullContent;
                     document.body.appendChild(textArea);
                     textArea.select();
                     document.execCommand('copy');
                     document.body.removeChild(textArea);
-                    alert('Reflection copied to clipboard! Paste it into the Canvas assignment.');
+                    alert('Module 1 reflection copied to clipboard! Paste and save this text for your Module 4 assignment.');
                 });
             } else {
                 alert('Please write your reflection before copying.');
@@ -1353,12 +1378,13 @@ Completed Activities:
 ✓ Reflection: ${moduleState.sectionsCompleted.reflection ? 'Yes' : 'No'}
 
 Next Steps:
-1. Submit reflection in Canvas assignment
-2. Take Canvas quiz for Week 1
-3. Review any incomplete activities if needed
+1. Download your Module 1 reflection if you haven't already
+2. Continue to Module 2: Number Systems
+3. Save all module reflection files for the comprehensive reflection assignment in Module 4
+4. Review any incomplete activities if needed
 
 ---
-Note: This summary shows session progress only. Submit required work in Canvas for grading.
+Note: Remember to download and save your reflection response file for each module. You'll need all module reflections for the final assignment in Module 4.
 `;
             
             const blob = new Blob([summary], { type: 'text/plain' });
