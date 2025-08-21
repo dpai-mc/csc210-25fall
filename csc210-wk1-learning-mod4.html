@@ -543,15 +543,133 @@
             }
         }
 
-        /* Completion tracking */
-        .completed {
-            opacity: 0.7;
+        /* Video Container Styles */
+        .video-container {
+            position: relative;
+            width: 100%;
+            height: 0;
+            padding-bottom: 56.25%; /* 16:9 aspect ratio */
+            margin: 1rem 0;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            background: #000;
         }
 
-        .completed::after {
-            content: " ✓";
-            color: #16a34a;
-            font-weight: bold;
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .video-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 1rem 0;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .video-info {
+            font-size: 0.9rem;
+            color: #6b7280;
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .video-info a {
+            color: #7c3aed;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .video-info a:hover {
+            text-decoration: underline;
+        }
+
+        .video-accessibility {
+            background: #f8fafc;
+            border-radius: 6px;
+            padding: 1rem;
+            margin-top: 1rem;
+            border-left: 4px solid #3b82f6;
+        }
+
+        .video-accessibility h5 {
+            color: #1e40af;
+            margin-bottom: 0.5rem;
+            font-size: 1rem;
+        }
+
+        .video-accessibility ul {
+            margin: 0;
+            padding-left: 1.5rem;
+            font-size: 0.9rem;
+            color: #4b5563;
+        }
+
+        .video-accessibility li {
+            margin-bottom: 0.3rem;
+        }
+
+        /* Focus styles for video elements */
+        .video-container:focus-within {
+            outline: 3px solid #7c3aed;
+            outline-offset: 2px;
+        }
+
+        /* Loading state for video */
+        .video-loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 200px;
+            background: #f3f4f6;
+            border-radius: 8px;
+            color: #6b7280;
+            font-style: italic;
+        }
+
+        /* Responsive video controls */
+        @media (max-width: 768px) {
+            .video-controls {
+                flex-direction: column;
+                align-items: stretch;
+                text-align: center;
+            }
+
+            .video-info {
+                order: 2;
+                margin-top: 0.5rem;
+            }
+
+            .video-controls button {
+                order: 1;
+                width: 100%;
+            }
+        }
+
+        /* High contrast mode for video elements */
+        @media (prefers-contrast: high) {
+            .video-container {
+                border: 2px solid currentColor;
+            }
+            
+            .video-accessibility {
+                border: 2px solid currentColor;
+            }
+        }
+
+        /* Reduced motion for video container */
+        @media (prefers-reduced-motion: reduce) {
+            .video-container {
+                box-shadow: none;
+                transition: none;
+            }
         }
     </style>
 </head>
@@ -683,16 +801,41 @@
         <section class="content-section" id="synthesis">
             <h2>🎬 Synthesis: From Bits to Programs</h2>
             <div class="interactive-panel">
-                <h3>Video: Connecting the Concepts (15 minutes)</h3>
+                <h3>Video: Connecting the Concepts (13:30 minutes)</h3>
                 <p>This synthesis video ties together everything you've learned this week and shows how number representation enables computation.</p>
                 
-                <div style="background: #1f2937; color: white; padding: 2rem; border-radius: 8px; text-align: center; margin: 1rem 0;">
-                    <p>🎥 <strong>Video Player Placeholder</strong></p>
-                    <p>Synthesis Video: From Bits to Programs</p>
-                    <p style="font-size: 0.9rem; opacity: 0.8;">Duration: 15 minutes | Includes closed captions</p>
-                    <button class="btn btn-primary" onclick="markVideoWatched('synthesis')" id="synthesis-video-btn">
-                        ▶️ Watch Synthesis Video
+                <div class="video-container" style="position: relative; width: 100%; height: 0; padding-bottom: 56.25%; margin: 1rem 0; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);">
+                    <iframe 
+                        id="synthesis-video-frame"
+                        src="https://www.youtube.com/embed/pYDKIK6zGdA?enablejsapi=1&cc_load_policy=1&iv_load_policy=3&modestbranding=1&rel=0"
+                        title="CSC210 Week 1 Synthesis: From Bits to Programs"
+                        style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none;"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                        allowfullscreen
+                        loading="lazy"
+                        aria-describedby="video-description">
+                    </iframe>
+                </div>
+                
+                <div id="video-description" class="sr-only">
+                    A 13 minute and 30 second video that synthesizes the concepts learned in Week 1 of CSC210, connecting number systems to program execution and computation.
+                </div>
+                
+                <div class="video-controls" style="display: flex; justify-content: space-between; align-items: center; margin: 1rem 0; flex-wrap: wrap; gap: 1rem;">
+                    <div class="video-info" style="font-size: 0.9rem; color: #6b7280;">
+                        Duration: 13:30 | Closed captions available | 
+                        <a href="https://mendocino.instructure.com/courses/19705/files/2409323?wrap=1" 
+                           target="_blank" 
+                           rel="noopener noreferrer"
+                           style="color: #7c3aed; text-decoration: none;"
+                           aria-label="Open video transcript in Canvas (opens in new tab)">
+                            📄 View Transcript
+                        </a>
+                    </div>
+                    <button class="btn btn-primary" onclick="markVideoWatched('synthesis')" id="synthesis-video-btn" aria-describedby="video-watch-desc">
+                        ▶️ Mark as Watched
                     </button>
+                    <span id="video-watch-desc" class="sr-only">Click to mark the synthesis video as watched and unlock additional content</span>
                 </div>
 
                 <div id="synthesis-notes" style="display: none;">
@@ -704,6 +847,16 @@
                         <li>Two's complement enables efficient arithmetic in hardware</li>
                         <li>Next week: How logic gates use these binary values to make decisions</li>
                     </ul>
+                    
+                    <div class="video-accessibility" style="background: #f8fafc; border-radius: 6px; padding: 1rem; margin-top: 1rem; border-left: 4px solid #3b82f6;">
+                        <h5 style="color: #1e40af; margin-bottom: 0.5rem;">Accessibility Features</h5>
+                        <ul style="margin: 0; padding-left: 1.5rem; font-size: 0.9rem;">
+                            <li>Closed captions are enabled by default</li>
+                            <li>Playback speed can be adjusted in YouTube player settings</li>
+                            <li>Transcript is available through the Canvas link above</li>
+                            <li>Video content is described in the key takeaways section</li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </section>
@@ -809,14 +962,6 @@
                         <div class="problem-number">1</div>
                         <p><strong>Convert decimal 156 to binary and hexadecimal.</strong></p>
                         <div class="practice-area" contenteditable="true" data-problem="2a" aria-label="Practice area for problem 2">
-                            <span class="practice-placeholder">Work through this problem here...</span>
-                        </div>
-                    </li>
-
-                    <li class="problem-item">
-                        <div class="problem-number">2</div>
-                        <p><strong>Convert binary 11010110 to decimal and hexadecimal.</strong></p>
-                        <div class="practice-area" contenteditable="true" data-problem="1a" aria-label="Practice area for problem 1">
                             <span class="practice-placeholder">Work through this problem here...</span>
                         </div>
                     </li>
@@ -1185,15 +1330,192 @@
             saveProgress();
         }
 
-        // Video tracking
+        // Video tracking with YouTube API integration
+        let youtubePlayer = null;
+        let videoWatchTime = 0;
+        let videoDuration = 810; // 13:30 in seconds
+        let watchThreshold = 0.8; // 80% of video needs to be watched
+
+        // Load YouTube API
+        function loadYouTubeAPI() {
+            if (window.YT && window.YT.Player) {
+                initializeYouTubePlayer();
+                return;
+            }
+            
+            const tag = document.createElement('script');
+            tag.src = 'https://www.youtube.com/iframe_api';
+            const firstScriptTag = document.getElementsByTagName('script')[0];
+            firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+            
+            window.onYouTubeIframeAPIReady = initializeYouTubePlayer;
+        }
+
+        function initializeYouTubePlayer() {
+            try {
+                youtubePlayer = new YT.Player('synthesis-video-frame', {
+                    events: {
+                        'onReady': onPlayerReady,
+                        'onStateChange': onPlayerStateChange
+                    }
+                });
+            } catch (error) {
+                console.warn('YouTube API not available, using fallback video tracking');
+            }
+        }
+
+        function onPlayerReady(event) {
+            // Player is ready, we can now track video interactions
+            console.log('YouTube player ready');
+        }
+
+        function onPlayerStateChange(event) {
+            if (event.data === YT.PlayerState.PLAYING) {
+                startVideoTracking();
+            } else if (event.data === YT.PlayerState.PAUSED || event.data === YT.PlayerState.ENDED) {
+                stopVideoTracking();
+            }
+            
+            if (event.data === YT.PlayerState.ENDED) {
+                markVideoWatched('synthesis');
+            }
+        }
+
+        let videoTrackingInterval = null;
+
+        function startVideoTracking() {
+            if (videoTrackingInterval) return;
+            
+            videoTrackingInterval = setInterval(() => {
+                if (youtubePlayer && youtubePlayer.getCurrentTime) {
+                    const currentTime = youtubePlayer.getCurrentTime();
+                    videoWatchTime = Math.max(videoWatchTime, currentTime);
+                    
+                    // Auto-mark as watched if threshold is reached
+                    if (videoWatchTime >= videoDuration * watchThreshold && !moduleProgress.videoWatched) {
+                        markVideoWatched('synthesis');
+                    }
+                }
+            }, 1000);
+        }
+
+        function stopVideoTracking() {
+            if (videoTrackingInterval) {
+                clearInterval(videoTrackingInterval);
+                videoTrackingInterval = null;
+            }
+        }
+
         function markVideoWatched(videoId) {
+            if (moduleProgress.videoWatched) return;
+            
             moduleProgress.videoWatched = true;
             document.getElementById('synthesis-notes').style.display = 'block';
-            document.getElementById('synthesis-video-btn').textContent = '✅ Video Watched';
-            document.getElementById('synthesis-video-btn').classList.remove('btn-primary');
-            document.getElementById('synthesis-video-btn').classList.add('btn-success');
+            
+            const button = document.getElementById('synthesis-video-btn');
+            button.textContent = '✅ Video Watched';
+            button.classList.remove('btn-primary');
+            button.classList.add('btn-success');
+            button.disabled = true;
+            button.setAttribute('aria-pressed', 'true');
+            
+            // Announce to screen readers
+            const announcement = document.createElement('div');
+            announcement.setAttribute('aria-live', 'polite');
+            announcement.className = 'sr-only';
+            announcement.textContent = 'Synthesis video marked as watched. Additional content is now available.';
+            document.body.appendChild(announcement);
+            
+            setTimeout(() => {
+                document.body.removeChild(announcement);
+            }, 2000);
+            
             updateProgress();
         }
+
+        // Enhanced error handling and fallback for video
+        function handleVideoError() {
+            const videoContainer = document.querySelector('.video-container');
+            if (videoContainer) {
+                videoContainer.innerHTML = `
+                    <div class="video-loading" role="alert">
+                        <div style="text-align: center;">
+                            <p style="margin-bottom: 1rem;">Unable to load embedded video player.</p>
+                            <a href="https://youtu.be/pYDKIK6zGdA" 
+                               class="btn btn-primary" 
+                               target="_blank" 
+                               rel="noopener noreferrer"
+                               aria-label="Open synthesis video on YouTube (opens in new tab)">
+                                ▶️ Watch on YouTube
+                            </a>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        // Fallback video tracking for manual button click
+        function manualVideoTracking() {
+            if (!youtubePlayer) {
+                // If YouTube API isn't available, use manual tracking
+                const button = document.getElementById('synthesis-video-btn');
+                button.addEventListener('click', function() {
+                    if (!moduleProgress.videoWatched) {
+                        const confirmWatch = confirm('Mark this video as watched? This will unlock additional content.');
+                        if (confirmWatch) {
+                            markVideoWatched('synthesis');
+                        }
+                    }
+                });
+            }
+        }
+
+        // Initialize video with error handling
+        function initializeVideo() {
+            try {
+                loadYouTubeAPI();
+                manualVideoTracking();
+                
+                // Set up a timeout to show fallback if API doesn't load
+                setTimeout(() => {
+                    if (!window.YT || !window.YT.Player) {
+                        console.warn('YouTube API failed to load, showing fallback');
+                        handleVideoError();
+                    }
+                }, 10000); // 10 second timeout
+                
+            } catch (error) {
+                console.error('Error initializing video:', error);
+                handleVideoError();
+            }
+        }
+
+        // Update the DOMContentLoaded event listener
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Initializing Module 4 (Session-only tracking)...');
+            console.log('Initial moduleProgress:', moduleProgress);
+            
+            loadSavedData();
+            console.log('After loading saved data:', moduleProgress);
+            
+            updateProgress();
+            initializeInteractiveElements();
+            initializeVideo();
+            
+            // Handle return from other modules
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('from')) {
+                console.log('Returned from:', urlParams.get('from'));
+            }
+            
+            console.log('Module 4 initialized - session progress only');
+        });
+
+        // Clean up video tracking when leaving page
+        window.addEventListener('beforeunload', function() {
+            stopVideoTracking();
+            saveProgress();
+        });
 
         // Interactive application functions
         function updateColor() {
@@ -1809,6 +2131,12 @@
 
     </script>
 </body>
-</html>
+</html>="true" data-problem="1a" aria-label="Practice area for problem 1">
+                            <span class="practice-placeholder">Work through this problem here...</span>
+                        </div>
+                    </li>
 
-                    
+                    <li class="problem-item">
+                        <div class="problem-number">2</div>
+                        <p><strong>Convert binary 11010110 to decimal and hexadecimal.</strong></p>
+                        <div class="practice-area" contenteditable
