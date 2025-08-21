@@ -386,13 +386,45 @@
             transform: none !important;
         }
 
-        /* Video Container */
+        /* Video Container - Enhanced for YouTube Embed */
         .video-container {
             background: #1f2937;
             border-radius: 12px;
             padding: 2rem;
             margin: 2rem 0;
             text-align: center;
+        }
+
+        .video-embed-container {
+            position: relative;
+            width: 100%;
+            height: 0;
+            padding-bottom: 56.25%; /* 16:9 aspect ratio */
+            margin-bottom: 1rem;
+            background: #374151;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .video-embed-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+            border-radius: 8px;
+        }
+
+        .video-info {
+            color: white;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .video-info h3 {
+            color: white;
+            margin-bottom: 0.5rem;
         }
 
         .video-placeholder {
@@ -408,6 +440,76 @@
             justify-content: center;
             gap: 1rem;
             margin-top: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .transcript-section {
+            margin-top: 1rem;
+            text-align: left;
+        }
+
+        .transcript-section .transcript-content {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            color: #333;
+            max-height: 300px;
+            overflow-y: auto;
+            border: 1px solid #d1d5db;
+            line-height: 1.6;
+            font-size: 0.9rem;
+        }
+
+        .transcript-section h4 {
+            margin-bottom: 1rem;
+            color: #1e3a8a;
+        }
+
+        .transcript-section p {
+            margin-bottom: 1rem;
+        }
+
+        .transcript-section strong {
+            color: #1e40af;
+        }
+
+        /* Responsive design for video */
+        @media (max-width: 768px) {
+            .video-container {
+                padding: 1rem;
+            }
+            
+            .video-controls {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .video-controls .btn {
+                min-width: 200px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .video-embed-container {
+                padding-bottom: 75%; /* Adjust aspect ratio for very small screens */
+            }
+        }
+
+        /* Accessibility enhancements for video */
+        .video-embed-container:focus-within {
+            outline: 3px solid #3b82f6;
+            outline-offset: 2px;
+        }
+
+        /* High contrast mode support for video */
+        @media (prefers-contrast: high) {
+            .video-container {
+                border: 2px solid white;
+            }
+            
+            .transcript-section .transcript-content {
+                border-width: 2px;
+            }
         }
 
         /* Reflection Section */
@@ -583,23 +685,62 @@
         <section class="content-section">
             <h2>🎥 Welcome Video</h2>
             <div class="video-container">
-                <div class="video-placeholder">
-                    <h3 style="margin-bottom: 1rem;">Course Introduction & Overview</h3>
-                    <p style="margin-bottom: 1rem;">Duration: 15 minutes</p>
-                    <div style="font-size: 4rem; margin: 1rem 0;">▶️</div>
-                    <p style="font-size: 0.9rem; opacity: 0.8;">Click play to start the introduction video</p>
+                <div class="video-info" style="color: white; margin-bottom: 1rem; text-align: center;">
+                    <h3 style="margin-bottom: 0.5rem;">Course Introduction & Overview</h3>
+                    <p style="margin-bottom: 1rem; opacity: 0.9;">Duration: 15:00</p>
                 </div>
+                
+                <!-- YouTube Video Embed -->
+                <div class="video-embed-container" style="position: relative; width: 100%; height: 0; padding-bottom: 56.25%; margin-bottom: 1rem;">
+                    <iframe id="youtube-video"
+                        style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; border-radius: 8px;"
+                        src="https://www.youtube.com/embed/pdNLA1Hla9s?enablejsapi=1&rel=0"
+                        title="CSC210 Course Introduction & Overview"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowfullscreen>
+                    </iframe>
+                </div>
+                
+                <!-- Video Controls -->
                 <div class="video-controls">
-                    <button class="btn btn-primary" onclick="playVideo('intro')">
-                        ▶️ Play Video
+                    <button class="btn btn-secondary" onclick="toggleTranscript()" id="transcript-btn">
+                        📄 Show Transcript
                     </button>
-                    <button class="btn btn-secondary" onclick="showTranscript('intro')">
-                        📄 View Transcript
+                    <button class="btn btn-secondary" onclick="openVideoInNewTab()">
+                        🔗 Open in YouTube
                     </button>
+                </div>
+                
+                <!-- Transcript Section -->
+                <div class="transcript-section" id="transcript-section" style="display: none; margin-top: 1rem;">
+                    <div style="background: white; border-radius: 8px; padding: 1.5rem; color: #333; max-height: 300px; overflow-y: auto; border: 1px solid #d1d5db;">
+                        <h4 style="margin-bottom: 1rem; color: #1e3a8a;">Video Transcript</h4>
+                        <div id="transcript-content" style="line-height: 1.6; font-size: 0.9rem;">
+                            <p><strong>[00:00]</strong> Welcome to CSC 210 - Computer Architecture and Organization. I'm excited to have you in this course where we'll explore how computers work from the ground up.</p>
+                            
+                            <p><strong>[00:15]</strong> In this course, we'll start with the big picture - understanding the major components of computer systems and how they work together to execute programs.</p>
+                            
+                            <p><strong>[00:30]</strong> We'll explore abstraction layers, from high-level programming languages all the way down to the physical transistors that make computation possible.</p>
+                            
+                            <p><strong>[00:45]</strong> You'll learn about number systems, how computers represent and manipulate data, and the fundamental operations that processors perform.</p>
+                            
+                            <p><strong>[01:00]</strong> We'll dive deep into assembly language programming, giving you direct control over the processor and a clear understanding of how high-level code translates to machine instructions.</p>
+                            
+                            <p><strong>[01:30]</strong> The course covers memory hierarchy, including caches, main memory, and storage systems - understanding how data moves through these levels is crucial for writing efficient programs.</p>
+                            
+                            <p><strong>[02:00]</strong> We'll examine processor design, including instruction sets, pipelining, and how modern CPUs achieve high performance through parallelism.</p>
+                            
+                            <p><strong>[02:30]</strong> Input/output systems and how computers communicate with external devices will also be covered, giving you a complete picture of computer systems.</p>
+                            
+                            <p><strong>[03:00]</strong> Throughout the course, you'll work with hands-on exercises, programming assignments, and projects that reinforce these concepts practically.</p>
+                            
+                            <p><em>Note: This is a sample transcript. The actual transcript should be obtained from the Canvas link provided.</em></p>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="action-buttons">
-                <button class="btn btn-primary" onclick="completeSection('video')" id="video-complete-btn" disabled>
+                <button class="btn btn-primary" onclick="completeSection('video')" id="video-complete-btn">
                     ✅ Mark Video Complete
                 </button>
             </div>
@@ -1100,17 +1241,71 @@
             }
         }
 
-        // Video functions
+        // Video functions - Updated for YouTube integration
         function playVideo(videoId) {
-            alert('Video player would open here. For demo purposes, marking as watched.');
+            // Video is now auto-embedded, so we just mark as completed
             moduleState.sectionsCompleted.video = true;
             updateProgress();
             updateButtonStates();
         }
 
         function showTranscript(videoId) {
-            alert('Video transcript would be displayed here in a modal or expandable section.');
+            // Redirect to toggle transcript function
+            toggleTranscript();
         }
+
+        function toggleTranscript() {
+            const transcriptSection = document.getElementById('transcript-section');
+            const transcriptBtn = document.getElementById('transcript-btn');
+            
+            if (transcriptSection.style.display === 'none') {
+                transcriptSection.style.display = 'block';
+                transcriptBtn.textContent = '📄 Hide Transcript';
+                transcriptBtn.setAttribute('aria-expanded', 'true');
+                
+                // Scroll transcript into view
+                transcriptSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            } else {
+                transcriptSection.style.display = 'none';
+                transcriptBtn.textContent = '📄 Show Transcript';
+                transcriptBtn.setAttribute('aria-expanded', 'false');
+            }
+        }
+
+        function openVideoInNewTab() {
+            window.open('https://youtu.be/pdNLA1Hla9s', '_blank', 'noopener,noreferrer');
+        }
+
+        // YouTube iframe API integration (optional - for advanced tracking)
+        function onYouTubeIframeAPIReady() {
+            // This function will be called when YouTube iframe API is ready
+            // You can add advanced video tracking here if needed
+        }
+
+        // Track video interaction for completion
+        function trackVideoInteraction() {
+            // Auto-enable the completion button when user interacts with video
+            const videoCompleteBtn = document.getElementById('video-complete-btn');
+            if (videoCompleteBtn) {
+                videoCompleteBtn.disabled = false;
+            }
+        }
+
+        // Listen for iframe interactions (simplified approach)
+        document.addEventListener('DOMContentLoaded', function() {
+            const iframe = document.getElementById('youtube-video');
+            if (iframe) {
+                // Enable completion button when iframe is loaded
+                iframe.addEventListener('load', function() {
+                    trackVideoInteraction();
+                });
+                
+                // Also enable after a short delay to account for user interaction
+                setTimeout(() => {
+                    trackVideoInteraction();
+                }, 5000);
+            }
+        });
 
         // Component exploration with improved accessibility
         function exploreComponent(componentName) {
@@ -1519,7 +1714,7 @@ Note: Remember to download and save your reflection response file for each modul
         // Periodic auto-save
         setInterval(saveModuleState, 30000); // Save every 30 seconds
 
-        // Initialize accessibility attributes
+        // Initialize accessibility attributes - Enhanced for video
         document.addEventListener('DOMContentLoaded', function() {
             // Set initial aria-expanded states
             document.querySelectorAll('.component').forEach(comp => {
@@ -1534,6 +1729,29 @@ Note: Remember to download and save your reflection response file for each modul
             document.querySelectorAll('.option').forEach(option => {
                 option.setAttribute('aria-checked', 'false');
             });
+            
+            // Set initial aria-expanded state for transcript button
+            const transcriptBtn = document.getElementById('transcript-btn');
+            if (transcriptBtn) {
+                transcriptBtn.setAttribute('aria-expanded', 'false');
+                transcriptBtn.setAttribute('aria-controls', 'transcript-section');
+            }
+            
+            // Set up video iframe accessibility
+            const iframe = document.getElementById('youtube-video');
+            if (iframe) {
+                iframe.setAttribute('tabindex', '0');
+                
+                // Enable completion button when iframe is loaded
+                iframe.addEventListener('load', function() {
+                    trackVideoInteraction();
+                });
+                
+                // Also enable after a short delay to account for user interaction
+                setTimeout(() => {
+                    trackVideoInteraction();
+                }, 5000);
+            }
         });
     </script>
 </body>
