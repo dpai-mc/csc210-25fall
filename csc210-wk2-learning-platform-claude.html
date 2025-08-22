@@ -112,6 +112,30 @@
             border-radius: 8px;
         }
 
+        .gate-svg {
+            max-width: 250px;
+            height: auto;
+            margin: 1rem 0;
+        }
+
+        .gate-svg .wire { 
+            stroke-width: 4; 
+            transition: stroke 0.3s; 
+        }
+
+        .gate-svg .gate-body { 
+            fill: #f0f0f0; 
+            stroke: #333; 
+            stroke-width: 2; 
+        }
+
+        .gate-svg text { 
+            font-family: monospace; 
+            font-size: 20px; 
+            font-weight: bold; 
+            fill: #333;
+        }
+
         .input-switch, .output-light {
             margin: 0.5rem;
             padding: 0.75rem 1.5rem;
@@ -542,10 +566,10 @@
                     </div>
 
                     <div class="gate-display">
-                        <div class="gate-symbol" id="gateSymbol" aria-label="AND gate symbol">
-                            &
-                        </div>
                         <div id="gateName">AND Gate</div>
+                        <div id="gate-svg-container" aria-live="polite" role="img" aria-label="Interactive logic gate diagram with animated wires">
+                            <!-- SVG diagram will be inserted here -->
+                        </div>
                         <div id="gateDescription">Output is 1 only when ALL inputs are 1</div>
                     </div>
 
@@ -710,7 +734,7 @@
         let highContrast = false;
         let animationsPaused = false;
 
-        // Gate definitions
+        // Gate definitions with exact SVG diagrams from the attached file
         const gates = {
             AND: {
                 symbol: '&',
@@ -723,7 +747,8 @@
                     [1, 0, 0],
                     [1, 1, 1]
                 ],
-                evaluate: (a, b) => a && b
+                evaluate: (a, b) => a && b,
+                svg: `<svg class="gate-svg" viewBox="0 0 200 100"><path class="gate-body" d="M50,10 H100 A40,40 0 0 1 100,90 H50 Z"></path><line class="wire" id="gWireA" x1="0" y1="30" x2="50" y2="30"/><line class="wire" id="gWireB" x1="0" y1="70" x2="50" y2="70"/><line class="wire" id="gWireOut" x1="140" y1="50" x2="200" y2="50"/><text x="15" y="25">A</text><text x="15" y="65">B</text><text id="gOutText" x="180" y="45">0</text></svg>`
             },
             OR: {
                 symbol: '≥1',
@@ -736,7 +761,8 @@
                     [1, 0, 1],
                     [1, 1, 1]
                 ],
-                evaluate: (a, b) => a || b
+                evaluate: (a, b) => a || b,
+                svg: `<svg class="gate-svg" viewBox="0 0 200 100"><path class="gate-body" d="M25,10 Q70,50 25,90 H50 Q120,50 50,10 Z"></path><line class="wire" id="gWireA" x1="0" y1="30" x2="35" y2="30"/><line class="wire" id="gWireB" x1="0" y1="70" x2="35" y2="70"/><line class="wire" id="gWireOut" x1="105" y1="50" x2="200" y2="50"/><text x="15" y="25">A</text><text x="15" y="65">B</text><text id="gOutText" x="180" y="45">0</text></svg>`
             },
             NOT: {
                 symbol: '¬',
@@ -747,7 +773,8 @@
                     [0, 1],
                     [1, 0]
                 ],
-                evaluate: (a) => !a
+                evaluate: (a) => !a,
+                svg: `<svg class="gate-svg" viewBox="0 0 200 100"><path class="gate-body" d="M50,10 L100,50 L50,90 Z"></path><circle class="gate-body" cx="110" cy="50" r="10"></circle><line class="wire" id="gWireA" x1="0" y1="50" x2="50" y2="50"/><line class="wire" id="gWireOut" x1="120" y1="50" x2="200" y2="50"/><text x="15" y="45">A</text><text id="gOutText" x="180" y="45">0</text></svg>`
             },
             NAND: {
                 symbol: '⊼',
@@ -760,7 +787,8 @@
                     [1, 0, 1],
                     [1, 1, 0]
                 ],
-                evaluate: (a, b) => !(a && b)
+                evaluate: (a, b) => !(a && b),
+                svg: `<svg class="gate-svg" viewBox="0 0 200 100"><path class="gate-body" d="M50,10 H100 A40,40 0 0 1 100,90 H50 Z"></path><circle class="gate-body" cx="150" cy="50" r="10"></circle><line class="wire" id="gWireA" x1="0" y1="30" x2="50" y2="30"/><line class="wire" id="gWireB" x1="0" y1="70" x2="50" y2="70"/><line class="wire" id="gWireOut" x1="160" y1="50" x2="200" y2="50"/><text x="15" y="25">A</text><text x="15" y="65">B</text><text id="gOutText" x="180" y="45">0</text></svg>`
             },
             NOR: {
                 symbol: '⊽',
@@ -773,7 +801,8 @@
                     [1, 0, 0],
                     [1, 1, 0]
                 ],
-                evaluate: (a, b) => !(a || b)
+                evaluate: (a, b) => !(a || b),
+                svg: `<svg class="gate-svg" viewBox="0 0 200 100"><path class="gate-body" d="M25,10 Q70,50 25,90 H50 Q120,50 50,10 Z"></path><circle class="gate-body" cx="115" cy="50" r="10"></circle><line class="wire" id="gWireA" x1="0" y1="30" x2="35" y2="30"/><line class="wire" id="gWireB" x1="0" y1="70" x2="35" y2="70"/><line class="wire" id="gWireOut" x1="125" y1="50" x2="200" y2="50"/><text x="15" y="25">A</text><text x="15" y="65">B</text><text id="gOutText" x="180" y="45">0</text></svg>`
             },
             XOR: {
                 symbol: '⊕',
@@ -786,7 +815,8 @@
                     [1, 0, 1],
                     [1, 1, 0]
                 ],
-                evaluate: (a, b) => a !== b
+                evaluate: (a, b) => a !== b,
+                svg: `<svg class="gate-svg" viewBox="0 0 200 100"><path class="gate-body" d="M35,10 Q80,50 35,90 H60 Q130,50 60,10 Z"></path><path class="gate-body" d="M25,10 Q70,50 25,90" fill="none"></path><line class="wire" id="gWireA" x1="0" y1="30" x2="30" y2="30"/><line class="wire" id="gWireB" x1="0" y1="70" x2="30" y2="70"/><line class="wire" id="gWireOut" x1="115" y1="50" x2="200" y2="50"/><text x="15" y="25">A</text><text x="15" y="65">B</text><text id="gOutText" x="180" y="45">0</text></svg>`
             }
         };
 
@@ -823,10 +853,13 @@
             const gate = gates[gateType];
             
             // Update UI
-            document.getElementById('gateSymbol').textContent = gate.symbol;
             document.getElementById('gateName').textContent = gate.name;
             document.getElementById('gateDescription').textContent = gate.description;
             document.getElementById('currentGate').textContent = gateType;
+            
+            // Insert SVG diagram from the attached file
+            const svgContainer = document.getElementById('gate-svg-container');
+            svgContainer.innerHTML = gate.svg;
             
             // Update gate button states
             document.querySelectorAll('.gate-btn').forEach(btn => {
@@ -836,7 +869,7 @@
                 }
             });
             
-            // Handle NOT gate (single input)
+            // Handle NOT gate (single input) - hide second input container
             const inputBContainer = document.getElementById('inputBContainer');
             if (gate.inputs === 1) {
                 inputBContainer.style.display = 'none';
@@ -849,10 +882,75 @@
             updateInputDisplay();
             updateOutput();
             updateTruthTable();
+            updateGateVisualization();
             
             // Mark section as completed
             completedSections.add('gateSimulator');
             updateProgress();
+        }
+
+        function updateGateVisualization() {
+            const gate = gates[currentGateType];
+            const svgContainer = document.getElementById('gate-svg-container');
+            
+            if (!svgContainer.querySelector('svg')) return;
+            
+            // Use the same color scheme as the attached file
+            const wireOnColor = '#007bff';   // Blue for ON (matches --wire-on from attached)
+            const wireOffColor = '#888888';  // Gray for OFF (matches --wire-off from attached)
+            
+            const wireA = svgContainer.querySelector('#gWireA');
+            const wireB = svgContainer.querySelector('#gWireB');
+            const wireOut = svgContainer.querySelector('#gWireOut');
+            const outText = svgContainer.querySelector('#gOutText');
+            
+            // Calculate output using the operators from the attached file
+            let output;
+            if (gate.inputs === 1) {
+                output = inputStates.A ? 0 : 1; // NOT logic
+            } else {
+                const a = inputStates.A ? 1 : 0;
+                const b = inputStates.B ? 1 : 0;
+                
+                switch(currentGateType) {
+                    case 'AND':
+                        output = a & b;
+                        break;
+                    case 'OR':
+                        output = a | b;
+                        break;
+                    case 'NAND':
+                        output = (a & b) ? 0 : 1;
+                        break;
+                    case 'NOR':
+                        output = (a | b) ? 0 : 1;
+                        break;
+                    case 'XOR':
+                        output = a ^ b;
+                        break;
+                    default:
+                        output = 0;
+                }
+            }
+            
+            // Update wire colors based on input/output states
+            if (wireA) {
+                wireA.style.stroke = inputStates.A ? wireOnColor : wireOffColor;
+            }
+            
+            if (wireB && gate.inputs === 2) {
+                wireB.style.stroke = inputStates.B ? wireOnColor : wireOffColor;
+                // Show/hide second input for NOT gate
+                wireB.style.display = gate.inputs === 1 ? 'none' : 'block';
+            }
+            
+            if (wireOut) {
+                wireOut.style.stroke = output ? wireOnColor : wireOffColor;
+            }
+            
+            if (outText) {
+                outText.textContent = output;
+            }
         }
 
         function toggleInput(input) {
@@ -904,6 +1002,9 @@
             outputElement.textContent = `Y: ${output ? 1 : 0}`;
             outputElement.className = output ? 'output-light on' : 'output-light';
             outputElement.setAttribute('aria-label', `Output, currently ${output ? 'ON' : 'OFF'}`);
+            
+            // Update the SVG visualization
+            updateGateVisualization();
         }
 
         function updateTruthTable() {
