@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSC210 - Week 2: Boolean Logic & Digital Gates</title>
+    <style>
+        /* CSS for styling the interactive learning page */
+        :root {
+            --primary-bg: #ffffff;
+            --primary-text: #333333;
+            --accent-color: #005a9c;
+            --accent-light: #e6f3ff;
+            --border-color: #cccccc;
+            --success-color: #28a745;
+            --error-color: #dc3545;
+            --wire-off: #888888;
+            --wire-on: #007bff;
+            --gate-body: #f0f0f0;
+        }
+
+        /* General Body and Typography */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background-color: var(--primary-bg);
+            color: var(--primary-text);
+            font-size: 16px;
+        }
+
+        h1, h2, h3 {
+            color: var(--accent-color);
+            line-height: 1.2;
+        }
+
+        h1 { font-size: 2.2rem; }
+        h2 { font-size: 1.8rem; border-bottom: 2px solid var(--accent-light); padding-bottom: 10px; margin-top: 40px;}
+        h3 { font-size: 1.4rem; }
+
+        a { color: var(--accent-color); text-decoration: none; }
+        a:hover, a:focus { text-decoration: underline; }
+
+        /* Layout */
+        .container {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            background-color: var(--accent-color);
+            color: white;
+            padding: 1rem;
+            text-align: center;
+        }
+        header h1 { color: white; margin: 0; }
+
+        nav {
+            background-color: var(--accent-light);
+            padding: 0.5rem 1rem;
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        nav ul li a {
+            padding: 10px 15px;
+            display: block;
+            font-weight: bold;
+        }
+        
+        main section {
+            margin-bottom: 40px;
+            padding: 20px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background-color: #fafafa;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 20px;
+            margin-top: 40px;
+            font-size: 0.9em;
+            color: #666;
+            border-top: 1px solid var(--border-color);
+        }
+
+        /* Interactive Elements */
+        .interactive-area {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            align-items: flex-start;
+            padding: 20px;
+            background-color: var(--primary-bg);
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+        .controls, .output {
+            flex: 1;
+            min-width: 280px;
+        }
+        
+        button, select {
+            font-size: 1rem;
+            padding: 10px 15px;
+            border-radius: 5px;
+            border: 1px solid var(--accent-color);
+            background-color: var(--accent-color);
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        button:hover, button:focus, select:hover, select:focus {
+            background-color: #004170;
+        }
+        select {
+            background-color: white;
+            color: var(--primary-text);
+        }
+
+        /* Toggle Switch Styling */
+        .switch-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 34px;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        input:checked + .slider {
+            background-color: var(--accent-color);
+        }
+        input:focus + .slider {
+            box-shadow: 0 0 1px var(--accent-color);
+        }
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+
+        /* Truth Table */
+        .truth-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        .truth-table th, .truth-table td {
+            border: 1px solid var(--border-color);
+            padding: 10px;
+            text-align: center;
+        }
+        .truth-table th {
+            background-color: var(--accent-light);
+        }
+        .truth-table .highlight {
+            background-color: #fff3cd;
+            font-weight: bold;
+        }
+        
+        /* Logic Gate Simulator */
+        .gate-simulator {
+            text-align: center;
+        }
+        .gate-svg {
+            max-width: 250px;
+            height: auto;
+        }
+        .gate-svg .wire { stroke-width: 4; transition: stroke 0.3s; }
+        .gate-svg .gate-body { fill: var(--gate-body); stroke: var(--primary-text); stroke-width: 2; }
+        .gate-svg text { font-family: monospace; font-size: 20px; font-weight: bold; }
+        
+        /* Quiz Styling */
+        .quiz-option {
+            display: block;
+            margin: 10px 0;
+            padding: 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            cursor: pointer;
+            background-color: #fff;
+        }
+        .quiz-option:hover {
+            background-color: var(--accent-light);
+        }
+        .quiz-feedback {
+            padding: 15px;
+            margin-top: 15px;
+            border-radius: 5px;
+            font-weight: bold;
+            display: none; /* Initially hidden */
+        }
+        .quiz-feedback.correct {
+            background-color: #d4edda;
+            color: #155724;
+            display: block;
+        }
+        .quiz-feedback.incorrect {
+            background-color: #f8d7da;
+            color: #721c24;
+            display: block;
+        }
+        
+        /* Accessibility */
+        :focus-visible {
+            outline: 3px solid var(--accent-color);
+            outline-offset: 2px;
+        }
+
+        /* Responsiveness */
+        @media (max-width: 768px) {
+            h1 { font-size: 1.8rem; }
+            h2 { font-size: 1.5rem; }
+            .interactive-area { flex-direction: column; }
+            nav ul { flex-direction: column; align-items: center; }
+        }
+    </style>
+</head>
+<body>
+
+    <header role="banner">
+        <h1>CSC210 - Week 2</h1>
+        <p>An Interactive Guide to Boolean Logic & Digital Gates</p>
+    </header>
+
+    <nav aria-label="Module sections">
+        <ul>
+            <li><a href="#intro">Introduction</a></li>
+            <li><a href="#basics">Boolean Basics</a></li>
+            <li><a href="#gates">Logic Gates</a></li>
+            <li><a href="#simplification">Simplification</a></li>
+            <li><a href="#quiz">Knowledge Check</a></li>
+        </ul>
+    </nav>
+
+    <main class="container" id="main-content">
+        <section id="intro" aria-labelledby="intro-heading">
+            <h2 id="intro-heading">👋 Welcome to Week 2!</h2>
+            <p>
+                This week, we bridge the gap between representing data (from Week 1) and processing it. [cite_start]We'll explore <strong>Boolean algebra</strong>, the mathematics of logic that forms the foundation of all digital computing[cite: 1, 2]. [cite_start]You'll learn how simple on/off states can be combined using <strong>logic gates</strong> to make decisions and perform calculations[cite: 1].
+            </p>
+        </section>
+
+        <section id="basics" aria-labelledby="basics-heading">
+            <h2 id="basics-heading">Part 1: Boolean Algebra Basics</h2>
+            <p>
+                At its core, Boolean algebra deals with just two values: TRUE (1) and FALSE (0). [cite_start]There are three fundamental operations[cite: 1]:
+            </p>
+            <ul>
+                <li><strong>AND (·)</strong>: The output is TRUE only if <em>all</em> inputs are TRUE. Think of it as "A and B".</li>
+                <li><strong>OR (+)</strong>: The output is TRUE if <em>at least one</em> input is TRUE. Think of it as "A or B (or both)".</li>
+                <li><strong>NOT (')</strong>: The output is the <em>opposite</em> of the input. It inverts the value.</li>
+            </ul>
+            <h3>Interactive Truth Table</h3>
+            <p>Use the switches and selector below to see these operations in action. [cite_start]The <strong>truth table</strong> on the right shows all possible outcomes for the selected operation, with your current choice highlighted[cite: 1].</p>
+            <div class="interactive-area">
+                <div class="controls">
+                    <div class="switch-container">
+                        <label for="inputA">Input A:</label>
+                        <label class="switch">
+                            <input type="checkbox" id="inputA" aria-label="Toggle Input A">
+                            <span class="slider"></span>
+                        </label>
+                        <span id="valA">0</span>
+                    </div>
+                    <div class="switch-container" id="containerB">
+                        <label for="inputB">Input B:</label>
+                        <label class="switch">
+                            <input type="checkbox" id="inputB" aria-label="Toggle Input B">
+                            <span class="slider"></span>
+                        </label>
+                        <span id="valB">0</span>
+                    </div>
+                    <div>
+                        <label for="operatorSelect">Select Operation:</label>
+                        <select id="operatorSelect" aria-label="Select a Boolean operation">
+                            <option value="AND">AND</option>
+                            <option value="OR">OR</option>
+                            <option value="NOT">NOT (on A)</option>
+                            <option value="NAND">NAND</option>
+                            <option value="NOR">NOR</option>
+                            <option value="XOR">XOR</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="output">
+                    <h3>Result</h3>
+                    <p>A <span id="opSymbol">·</span> B = <strong id="result" style="font-size: 1.5em;">0</strong></p>
+                    <table class="truth-table" aria-live="polite">
+                        <thead id="truthTableHead">
+                            </thead>
+                        <tbody id="truthTableBody">
+                            </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <section id="gates" aria-labelledby="gates-heading">
+            <h2 id="gates-heading">Part 2: Logic Gates ⚙️</h2>
+            <p>
+                [cite_start]Logic gates are the physical devices that perform Boolean operations[cite: 1]. A gate takes one or more binary inputs and produces a single binary output. Below, you can simulate different logic gates. Toggle the inputs and watch the output change.
+            </p>
+             <div class="interactive-area">
+                <div class="controls">
+                    <h3>Gate Controls</h3>
+                    <div class="switch-container">
+                        <label for="gateInputA">Input A:</label>
+                        <label class="switch">
+                            <input type="checkbox" id="gateInputA" aria-label="Toggle Gate Input A">
+                            <span class="slider"></span>
+                        </label>
+                         <span id="gateValA">0</span>
+                    </div>
+                    <div class="switch-container" id="gateContainerB">
+                        <label for="gateInputB">Input B:</label>
+                        <label class="switch">
+                            <input type="checkbox" id="gateInputB" aria-label="Toggle Gate Input B">
+                            <span class="slider"></span>
+                        </label>
+                         <span id="gateValB">0</span>
+                    </div>
+                     <div>
+                        <label for="gateSelect">Select Gate:</label>
+                        <select id="gateSelect" aria-label="Select a logic gate">
+                            <option value="AND">AND</option>
+                            <option value="OR">OR</option>
+                            <option value="NOT">NOT</option>
+                            <option value="NAND">NAND</option>
+                            <option value="NOR">NOR</option>
+                            <option value="XOR">XOR</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="output gate-simulator">
+                    <h3 id="gateName">AND Gate</h3>
+                    <div id="gate-svg-container" aria-live="polite" role="img" aria-label="An animated logic gate diagram.">
+                        </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="simplification" aria-labelledby="simplification-heading">
+            <h2 id="simplification-heading">Part 3: Simplification Challenge</h2>
+            <p>
+                [cite_start]Often, a complex Boolean expression can be simplified to an equivalent one that uses fewer gates[cite: 1]. This is crucial for designing efficient circuits. [cite_start]One important tool for simplification is <strong>De Morgan's Laws</strong>[cite: 1]. Let's test your skills!
+            </p>
+            <h3>Which expression is equivalent to: <code id="quiz-problem"></code></h3>
+            <div id="quiz-options">
+                </div>
+            <div id="quiz-feedback" class="quiz-feedback" role="alert"></div>
+            <button id="next-question">Next Question</button>
+        </section>
+        
+        <section id="quiz" aria-labelledby="quiz-heading">
+            <h2 id="quiz-heading">Final Knowledge Check</h2>
+            [cite_start]<p>This course includes graded assignments and a pass/fail checkpoint to verify your understanding[cite: 2]. Use this final self-check to make sure you've grasped the key concepts from this module!</p>
+            [cite_start]<p><strong>Question:</strong> Which gate is known as a "universal gate" because it can be used to create any other gate? [cite: 1]</p>
+            <form>
+                <input type="radio" name="final_q" id="q_a" value="AND"> <label for="q_a">AND</label><br>
+                <input type="radio" name="final_q" id="q_b" value="XOR"> <label for="q_b">XOR</label><br>
+                <input type="radio" name="final_q" id="q_c" value="NAND"> <label for="q_c">NAND</label><br>
+                <input type="radio" name="final_q" id="q_d" value="NOT"> <label for="q_d">NOT</label><br>
+                <button type="button" id="check-final-answer" style="margin-top: 15px;">Check Answer</button>
+            </form>
+            <p id="final-answer-feedback" style="font-weight: bold; margin-top: 10px;"></p>
+        </section>
+    </main>
+
+    <footer role="contentinfo">
+        <p>CSC210: Computer Organization & Architecture Interactive Module</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+            // --- Part 1: Truth Table Playground ---
+            const inputA = document.getElementById('inputA');
+            const inputB = document.getElementById('inputB');
+            const operatorSelect = document.getElementById('operatorSelect');
+            const valA = document.getElementById('valA');
+            const valB = document.getElementById('valB');
+            const opSymbol = document.getElementById('opSymbol');
+            const result = document.getElementById('result');
+            const truthTableHead = document.getElementById('truthTableHead');
+            const truthTableBody = document.getElementById('truthTableBody');
+            const containerB = document.getElementById('containerB');
+
+            const operators = {
+                AND: { symbol: '·', func: (a, b) => a & b },
+                OR:  { symbol: '+', func: (a, b) => a | b },
+                NOT: { symbol: "'", func: (a, b) => a ? 0 : 1 },
+                NAND:{ symbol: 'NAND', func: (a, b) => (a & b) ? 0 : 1 },
+                NOR: { symbol: 'NOR', func: (a, b) => (a | b) ? 0 : 1 },
+                XOR: { symbol: '⊕', func: (a, b) => a ^ b }
+            };
+
+            function updateTruthTable() {
+                const a = inputA.checked ? 1 : 0;
+                const b = inputB.checked ? 1 : 0;
+                const op = operatorSelect.value;
+                
+                valA.textContent = a;
+                valB.textContent = b;
+
+                // Handle NOT operation UI
+                if (op === 'NOT') {
+                    containerB.style.display = 'none';
+                    opSymbol.textContent = "'";
+                    result.textContent = operators[op].func(a, b);
+                } else {
+                    containerB.style.display = 'flex';
+                    opSymbol.textContent = operators[op].symbol;
+                    result.textContent = operators[op].func(a, b);
+                }
+
+                generateTruthTable(op, a, b);
+            }
+
+            function generateTruthTable(op, currentA, currentB) {
+                truthTableBody.innerHTML = '';
+                if (op === 'NOT') {
+                    truthTableHead.innerHTML = '<tr><th>A</th><th>Result</th></tr>';
+                    [0, 1].forEach(a => {
+                        const res = operators[op].func(a, 0);
+                        const row = document.createElement('tr');
+                        if (a === currentA) row.classList.add('highlight');
+                        row.innerHTML = `<td>${a}</td><td>${res}</td>`;
+                        truthTableBody.appendChild(row);
+                    });
+                } else {
+                    truthTableHead.innerHTML = '<tr><th>A</th><th>B</th><th>Result</th></tr>';
+                    [0, 1].forEach(a => {
+                        [0, 1].forEach(b => {
+                            const res = operators[op].func(a, b);
+                            const row = document.createElement('tr');
+                            if (a === currentA && b === currentB) row.classList.add('highlight');
+                            row.innerHTML = `<td>${a}</td><td>${b}</td><td>${res}</td>`;
+                            truthTableBody.appendChild(row);
+                        });
+                    });
+                }
+            }
+
+            [inputA, inputB, operatorSelect].forEach(el => el.addEventListener('change', updateTruthTable));
+            updateTruthTable();
+
+            // --- Part 2: Logic Gate Simulator ---
+            const gateInputA = document.getElementById('gateInputA');
+            const gateInputB = document.getElementById('gateInputB');
+            const gateSelect = document.getElementById('gateSelect');
+            const gateValA = document.getElementById('gateValA');
+            const gateValB = document.getElementById('gateValB');
+            const gateName = document.getElementById('gateName');
+            const gateContainerB = document.getElementById('gateContainerB');
+            const gateSvgContainer = document.getElementById('gate-svg-container');
+
+            const gateSVGs = {
+                AND: `<svg class="gate-svg" viewBox="0 0 200 100">
+                        <path class="gate-body" d="M50,10 H100 A40,40 0 0 1 100,90 H50 Z"></path>
+                        <line class="wire" id="gWireA" x1="0" y1="30" x2="50" y2="30"/>
+                        <line class="wire" id="gWireB" x1="0" y1="70" x2="50" y2="70"/>
+                        <line class="wire" id="gWireOut" x1="140" y1="50" x2="200" y2="50"/>
+                        <text x="15" y="25">A</text><text x="15" y="65">B</text><text id="gOutText" x="180" y="45">0</text>
+                    </svg>`,
+                OR: `<svg class="gate-svg" viewBox="0 0 200 100">
+                        <path class="gate-body" d="M25,10 Q70,50 25,90 H50 Q120,50 50,10 Z"></path>
+                        <line class="wire" id="gWireA" x1="0" y1="30" x2="35" y2="30"/>
+                        <line class="wire" id="gWireB" x1="0" y1="70" x2="35" y2="70"/>
+                        <line class="wire" id="gWireOut" x1="105" y1="50" x2="200" y2="50"/>
+                        <text x="15" y="25">A</text><text x="15" y="65">B</text><text id="gOutText" x="180" y="45">0</text>
+                    </svg>`,
+                NOT: `<svg class="gate-svg" viewBox="0 0 200 100">
+                        <path class="gate-body" d="M50,10 L100,50 L50,90 Z"></path>
+                        <circle class="gate-body" cx="110" cy="50" r="10"></circle>
+                        <line class="wire" id="gWireA" x1="0" y1="50" x2="50" y2="50"/>
+                        <line class="wire" id="gWireOut" x1="120" y1="50" x2="200" y2="50"/>
+                        <text x="15" y="45">A</text><text id="gOutText" x="180" y="45">0</text>
+                    </svg>`,
+                NAND: `<svg class="gate-svg" viewBox="0 0 200 100">
+                        <path class="gate-body" d="M50,10 H100 A40,40 0 0 1 100,90 H50 Z"></path>
+                        <circle class="gate-body" cx="150" cy="50" r="10"></circle>
+                        <line class="wire" id="gWireA" x1="0" y1="30" x2="50" y2="30"/>
+                        <line class="wire" id="gWireB" x1="0" y1="70" x2="50" y2="70"/>
+                        <line class="wire" id="gWireOut" x1="160" y1="50" x2="200" y2="50"/>
+                        <text x="15" y="25">A</text><text x="15" y="65">B</text><text id="gOutText" x="180" y="45">0</text>
+                    </svg>`,
+                NOR: `<svg class="gate-svg" viewBox="0 0 200 100">
+                        <path class="gate-body" d="M25,10 Q70,50 25,90 H50 Q120,50 50,10 Z"></path>
+                        <circle class="gate-body" cx="115" cy="50" r="10"></circle>
+                        <line class="wire" id="gWireA" x1="0" y1="30" x2="35" y2="30"/>
+                        <line class="wire" id="gWireB" x1="0" y1="70" x2="35" y2="70"/>
+                        <line class="wire" id="gWireOut" x1="125" y1="50" x2="200" y2="50"/>
+                        <text x="15" y="25">A</text><text x="15" y="65">B</text><text id="gOutText" x="180" y="45">0</text>
+                    </svg>`,
+                XOR: `<svg class="gate-svg" viewBox="0 0 200 100">
+                        <path class="gate-body" d="M35,10 Q80,50 35,90 H60 Q130,50 60,10 Z"></path>
+                        <path class="gate-body" d="M25,10 Q70,50 25,90" fill="none"></path>
+                        <line class="wire" id="gWireA" x1="0" y1="30" x2="30" y2="30"/>
+                        <line class="wire" id="gWireB" x1="0" y1="70" x2="30" y2="70"/>
+                        <line class="wire" id="gWireOut" x1="115" y1="50" x2="200" y2="50"/>
+                        <text x="15" y="25">A</text><text x="15" y="65">B</text><text id="gOutText" x="180" y="45">0</text>
+                    </svg>`
+            };
+
+            function updateGateSimulator() {
+                const a = gateInputA.checked ? 1 : 0;
+                const b = gateInputB.checked ? 1 : 0;
+                const gate = gateSelect.value;
+
+                gateName.textContent = `${gate} Gate`;
+                gateValA.textContent = a;
+                gateValB.textContent = b;
+                gateSvgContainer.innerHTML = gateSVGs[gate];
+
+                const result = operators[gate].func(a, b);
+                const wireOnColor = 'var(--wire-on)';
+                const wireOffColor = 'var(--wire-off)';
+
+                const wireA = gateSvgContainer.querySelector('#gWireA');
+                const wireB = gateSvgContainer.querySelector('#gWireB');
+                const wireOut = gateSvgContainer.querySelector('#gWireOut');
+                const outText = gateSvgContainer.querySelector('#gOutText');
+
+                if (gate === 'NOT') {
+                    gateContainerB.style.display = 'none';
+                    if(wireB) wireB.style.display = 'none';
+                    wireA.style.stroke = a ? wireOnColor : wireOffColor;
+                } else {
+                    gateContainerB.style.display = 'flex';
+                    wireA.style.stroke = a ? wireOnColor : wireOffColor;
+                    if(wireB) wireB.style.stroke = b ? wireOnColor : wireOffColor;
+                }
+                
+                wireOut.style.stroke = result ? wireOnColor : wireOffColor;
+                outText.textContent = result;
+            }
+
+            [gateInputA, gateInputB, gateSelect].forEach(el => el.addEventListener('change', updateGateSimulator));
+            updateGateSimulator();
+
+            // --- Part 3: Simplification Quiz ---
+            const quizProblem = document.getElementById('quiz-problem');
+            const quizOptions = document.getElementById('quiz-options');
+            const quizFeedback = document.getElementById('quiz-feedback');
+            const nextQuestionBtn = document.getElementById('next-question');
+
+            const questions = [
+                { problem: "A + AB", options: ["A", "B", "A + B", "1"], answer: 0 },
+                { problem: "A(A + B)", options: ["A + B", "A", "AB", "B"], answer: 1 },
+                { problem: "A + A'B", options: ["B", "A'B", "A + B", "1"], answer: 2 },
+                { problem: "A(A' + B)", options: ["A'", "A + B", "AB", "B"], answer: 2 }
+            ];
+            let currentQuestionIndex = 0;
+
+            function loadQuestion() {
+                const q = questions[currentQuestionIndex];
+                quizProblem.textContent = q.problem;
+                quizOptions.innerHTML = '';
+                quizFeedback.style.display = 'none';
+
+                q.options.forEach((option, index) => {
+                    const button = document.createElement('button');
+                    button.textContent = option;
+                    button.classList.add('quiz-option');
+                    button.dataset.index = index;
+                    button.addEventListener('click', () => checkAnswer(index));
+                    quizOptions.appendChild(button);
+                });
+            }
+            
+            function checkAnswer(selectedIndex) {
+                const correctIndex = questions[currentQuestionIndex].answer;
+                if (selectedIndex == correctIndex) {
+                    quizFeedback.textContent = "Correct! This is a great simplification.";
+                    quizFeedback.className = 'quiz-feedback correct';
+                } else {
+                    quizFeedback.textContent = "Not quite. Try applying the distributive or absorption laws.";
+                    quizFeedback.className = 'quiz-feedback incorrect';
+                }
+            }
+
+            nextQuestionBtn.addEventListener('click', () => {
+                currentQuestionIndex = (currentQuestionIndex + 1) % questions.length;
+                loadQuestion();
+            });
+
+            loadQuestion();
+            
+             // --- Final Knowledge Check ---
+            const checkFinalBtn = document.getElementById('check-final-answer');
+            const finalFeedback = document.getElementById('final-answer-feedback');
+
+            checkFinalBtn.addEventListener('click', () => {
+                const selected = document.querySelector('input[name="final_q"]:checked');
+                if (!selected) {
+                    finalFeedback.textContent = "Please select an answer.";
+                    finalFeedback.style.color = 'var(--error-color)';
+                    return;
+                }
+                if (selected.value === 'NAND') {
+                    finalFeedback.textContent = "Correct! Both NAND and NOR are universal gates.";
+                    finalFeedback.style.color = 'var(--success-color)';
+                } else {
+                    finalFeedback.textContent = "Incorrect. While useful, that is not a universal gate.";
+                    finalFeedback.style.color = 'var(--error-color)';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
