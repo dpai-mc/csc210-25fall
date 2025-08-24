@@ -1,0 +1,1078 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSC210 Week 2 Assignment: Boolean Logic and Digital Circuits</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #ffffff;
+            font-size: 16px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            background: linear-gradient(135deg, #2c3e50, #3498db);
+            color: white;
+            padding: 2rem;
+            margin: -20px -20px 2rem -20px;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+        }
+
+        header .meta {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-top: 1.5rem;
+            font-size: 0.9rem;
+        }
+
+        .meta-item {
+            background: rgba(255,255,255,0.1);
+            padding: 0.5rem;
+            border-radius: 4px;
+            text-align: center;
+        }
+
+        .section {
+            background: #ffffff;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .section-header {
+            background: #f8f9fa;
+            padding: 1rem 1.5rem;
+            border-bottom: 2px solid #3498db;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background 0.3s ease;
+        }
+
+        .section-header:hover {
+            background: #e9ecef;
+        }
+
+        .section-header h2 {
+            color: #2c3e50;
+            font-size: 1.4rem;
+            margin: 0;
+        }
+
+        .points-badge {
+            background: #3498db;
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 15px;
+            font-size: 0.85rem;
+            font-weight: bold;
+        }
+
+        .collapse-icon {
+            transition: transform 0.3s ease;
+            font-size: 1.2rem;
+            color: #3498db;
+        }
+
+        .collapse-icon.collapsed {
+            transform: rotate(-90deg);
+        }
+
+        .section-content {
+            padding: 1.5rem;
+            transition: max-height 0.3s ease, opacity 0.3s ease;
+        }
+
+        .section.collapsed .section-content {
+            max-height: 0;
+            padding-top: 0;
+            padding-bottom: 0;
+            opacity: 0;
+            overflow: hidden;
+        }
+
+        .overview-box {
+            background: #e8f5e8;
+            border-left: 4px solid #28a745;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .warning-box {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            padding: 1rem;
+            border-radius: 4px;
+            margin: 1rem 0;
+        }
+
+        .download-section {
+            background: #f0f8ff;
+            border: 2px solid #3498db;
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+        }
+
+        .download-links {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .download-btn {
+            display: block;
+            background: #3498db;
+            color: white;
+            text-decoration: none;
+            padding: 0.75rem;
+            border-radius: 4px;
+            text-align: center;
+            font-weight: bold;
+            transition: background 0.3s ease;
+        }
+
+        .download-btn:hover {
+            background: #2980b9;
+        }
+
+        .download-btn:focus {
+            outline: 3px solid #74c0fc;
+            outline-offset: 2px;
+        }
+
+        h3 {
+            color: #2c3e50;
+            font-size: 1.2rem;
+            margin: 1.5rem 0 1rem 0;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        h4 {
+            color: #34495e;
+            font-size: 1.1rem;
+            margin: 1rem 0 0.5rem 0;
+        }
+
+        ul, ol {
+            margin-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        li {
+            margin-bottom: 0.5rem;
+        }
+
+        .expression-box {
+            background: #f8f9fa;
+            border: 1px solid #ddd;
+            padding: 1rem;
+            border-radius: 4px;
+            margin: 0.5rem 0;
+            font-family: 'Courier New', monospace;
+            font-size: 1.1rem;
+        }
+
+        .subcircuit-list {
+            background: #e6f3ff;
+            border: 2px solid #3498db;
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+        }
+
+        .subcircuit-list h4 {
+            margin-top: 0;
+            color: #2c3e50;
+        }
+
+        .subcircuit-list ol {
+            margin-left: 1rem;
+        }
+
+        .rubric-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+            background: white;
+        }
+
+        .rubric-table th,
+        .rubric-table td {
+            border: 1px solid #ddd;
+            padding: 0.75rem;
+            text-align: left;
+        }
+
+        .rubric-table th {
+            background: #f8f9fa;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .rubric-table tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+
+        .tips-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+
+        .tip-card {
+            background: #f8f9fa;
+            border-left: 4px solid #17a2b8;
+            padding: 1rem;
+            border-radius: 0 4px 4px 0;
+        }
+
+        .tip-card h4 {
+            color: #17a2b8;
+            margin-top: 0;
+        }
+
+        .progress-tracker {
+            position: sticky;
+            top: 20px;
+            background: #f8f9fa;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 2rem;
+            z-index: 100;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background: #e9ecef;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 0.5rem 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #28a745, #20c997);
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+
+        .accessibility-controls {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(52, 73, 94, 0.9);
+            color: white;
+            padding: 1rem;
+            border-radius: 8px;
+            z-index: 1000;
+        }
+
+        .accessibility-controls h3 {
+            color: white;
+            font-size: 0.9rem;
+            margin: 0 0 0.5rem 0;
+            border: none;
+        }
+
+        .accessibility-controls button {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 0.25rem 0.5rem;
+            margin: 0.125rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+
+        .accessibility-controls button:hover {
+            background: #2980b9;
+        }
+
+        .accessibility-controls button:focus {
+            outline: 2px solid #74c0fc;
+            outline-offset: 2px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+
+            header {
+                margin: -10px -10px 1rem -10px;
+                padding: 1rem;
+            }
+
+            header h1 {
+                font-size: 1.6rem;
+            }
+
+            .section-content {
+                padding: 1rem;
+            }
+
+            .accessibility-controls {
+                position: relative;
+                right: auto;
+                top: auto;
+                background: #f8f9fa;
+                color: #333;
+                margin-bottom: 1rem;
+            }
+
+            .accessibility-controls h3 {
+                color: #2c3e50;
+            }
+
+            .tips-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .download-links {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+
+        @media print {
+            .accessibility-controls,
+            .progress-tracker {
+                display: none !important;
+            }
+            
+            .section {
+                break-inside: avoid;
+            }
+            
+            .section-content {
+                max-height: none !important;
+                opacity: 1 !important;
+            }
+            
+            .section.collapsed .section-content {
+                max-height: none !important;
+                opacity: 1 !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="accessibility-controls" role="region" aria-label="Accessibility controls">
+        <h3>Accessibility</h3>
+        <button onclick="changeFontSize('increase')" aria-label="Increase font size">A+</button>
+        <button onclick="changeFontSize('decrease')" aria-label="Decrease font size">A-</button>
+        <button onclick="toggleHighContrast()" aria-label="Toggle high contrast">Contrast</button>
+        <button onclick="pauseAnimations()" aria-label="Pause animations">No Motion</button>
+    </div>
+
+    <div class="container">
+        <header>
+            <h1>CSC210 Week 2 Assignment</h1>
+            <p>Boolean Logic and Digital Circuits</p>
+            <div class="meta">
+                <div class="meta-item">
+                    <strong>Due:</strong> [Insert Date]
+                </div>
+                <div class="meta-item">
+                    <strong>Points:</strong> 100 Total
+                </div>
+                <div class="meta-item">
+                    <strong>Submission:</strong> Single .circ File + Report
+                </div>
+            </div>
+        </header>
+
+        <div class="progress-tracker" role="region" aria-label="Assignment progress">
+            <h3>Progress Tracker</h3>
+            <div class="progress-bar" role="progressbar" aria-label="Assignment completion progress" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <p id="progressText">Read through each section to track your progress!</p>
+        </div>
+
+        <div class="section" id="overview">
+            <div class="section-header" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="true" aria-controls="overview-content">
+                <h2>Assignment Overview</h2>
+                <span class="collapse-icon" aria-label="Expand or collapse section">▼</span>
+            </div>
+            <div id="overview-content" class="section-content">
+                <div class="overview-box">
+                    <p><strong>Objective:</strong> This assignment introduces you to Logisim circuit simulation while reinforcing Boolean algebra concepts from lecture. You'll build combinational circuits from basic gates and prove fundamental Boolean laws through both mathematical and practical verification.</p>
+                </div>
+
+                <h3>Learning Objectives</h3>
+                <ul>
+                    <li>Construct digital circuits using basic logic gates in Logisim</li>
+                    <li>Verify Boolean algebra laws through circuit simulation</li>
+                    <li>Analyze truth tables and Boolean expressions</li>
+                    <li>Understand the relationship between algebraic expressions and physical circuits</li>
+                    <li>Master subcircuit creation and organization in Logisim</li>
+                </ul>
+
+                <div class="download-section">
+                    <h3>Required Software: Logisim 2.7.1</h3>
+                    <div class="warning-box">
+                        <strong>Important:</strong> You must use Logisim 2.7.1 exactly. Logisim Evolution is NOT allowed for this assignment.
+                    </div>
+                    <div class="download-links">
+                        <a href="https://mendocinocollege-my.sharepoint.com/:u:/g/personal/dpai_mendocino_edu/ETE3bbN1a1tPrHQzXB8cLqcB5zOZSBuM9BrdcxuGxJghDw?e=fkGhtZ" 
+                           class="download-btn" 
+                           target="_blank" 
+                           rel="noopener noreferrer"
+                           aria-describedby="windows-desc">
+                            📱 Logisim 2.7.1 for Windows
+                            <span id="windows-desc" class="sr-only">Download Logisim 2.7.1 for Windows operating system</span>
+                        </a>
+                        <a href="https://mendocinocollege-my.sharepoint.com/:u:/g/personal/dpai_mendocino_edu/EcjnlCXLT1pEvSjVBVemxLkBVe-pwL3ukH6qbyBMkv9ZHg?e=yvVnm8" 
+                           class="download-btn" 
+                           target="_blank" 
+                           rel="noopener noreferrer"
+                           aria-describedby="mac-desc">
+                            🍎 Logisim 2.7.1 for MacOS
+                            <span id="mac-desc" class="sr-only">Download Logisim 2.7.1 for MacOS operating system</span>
+                        </a>
+                    </div>
+                </div>
+
+                <h3>File Structure</h3>
+                <p>All circuits must be created as <strong>subcircuits</strong> within a single file named <code>lastname_firstname_week2.circ</code>. Each part of the assignment should be implemented as a separate subcircuit with the naming convention specified in each section.</p>
+            </div>
+        </div>
+
+        <div class="section" id="part-a">
+            <div class="section-header" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="true" aria-controls="part-a-content">
+                <h2>Part A: Logisim Familiarization</h2>
+                <span class="points-badge">15 points</span>
+                <span class="collapse-icon" aria-label="Expand or collapse section">▼</span>
+            </div>
+            <div id="part-a-content" class="section-content">
+                <h3>Objective</h3>
+                <p>Learn basic Logisim operations and subcircuit creation.</p>
+
+                <h3>Tasks</h3>
+                <h4>1. Create Main Circuit File (3 points)</h4>
+                <ul>
+                    <li>Create a new circuit file named <code>lastname_firstname_week2.circ</code></li>
+                    <li>The main circuit should contain a brief title and your name as text</li>
+                </ul>
+
+                <h4>2. Basic Gate Library (12 points)</h4>
+                <ul>
+                    <li>Create a subcircuit named <code>gate_library</code></li>
+                    <li>Place one of each basic gate: AND, OR, NOT, NAND, NOR, XOR</li>
+                    <li>Add input pins (A, B) and connect them to each gate where applicable</li>
+                    <li>Add output pins for each gate and label them clearly (AND_out, OR_out, etc.)</li>
+                    <li>For single-input gates (NOT), connect input A only</li>
+                </ul>
+
+                <h3>Subcircuit Requirements</h3>
+                <ul>
+                    <li>Use Logisim's "Add Circuit" feature to create subcircuits</li>
+                    <li>Name your subcircuit exactly as specified</li>
+                    <li>Include proper input/output pin labeling</li>
+                    <li>Test functionality by switching between main circuit and subcircuit views</li>
+                </ul>
+
+                <h3>Deliverables</h3>
+                <ul>
+                    <li>Subcircuit <code>gate_library</code> within your main .circ file</li>
+                    <li>Written verification that all gates work correctly</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="section" id="part-b">
+            <div class="section-header" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="true" aria-controls="part-b-content">
+                <h2>Part B: Boolean Expression Implementation</h2>
+                <span class="points-badge">25 points</span>
+                <span class="collapse-icon" aria-label="Expand or collapse section">▼</span>
+            </div>
+            <div id="part-b-content" class="section-content">
+                <h3>Objective</h3>
+                <p>Translate Boolean expressions into working digital circuits.</p>
+
+                <p>Build the following expressions as separate subcircuits:</p>
+
+                <h4>Expression 1: F1 = AB + A'C (8 points)</h4>
+                <div class="expression-box">F1 = AB + A'C</div>
+                <ul>
+                    <li>Subcircuit name: <code>expr1_ab_plus_ac</code></li>
+                    <li>Use 3 inputs (A, B, C) and 1 output (F1)</li>
+                    <li>Build using basic gates (AND, OR, NOT)</li>
+                </ul>
+
+                <h4>Expression 2: F2 = (A + B)(A' + C) (9 points)</h4>
+                <div class="expression-box">F2 = (A + B)(A' + C)</div>
+                <ul>
+                    <li>Subcircuit name: <code>expr2_product_form</code></li>
+                    <li>Use 3 inputs (A, B, C) and 1 output (F2)</li>
+                    <li>Build the circuit as written (don't simplify first)</li>
+                </ul>
+
+                <h4>Expression 3: F3 = A'B'C' + A'BC + AB'C' + ABC (8 points)</h4>
+                <div class="expression-box">F3 = A'B'C' + A'BC + AB'C' + ABC</div>
+                <ul>
+                    <li>Subcircuit name: <code>expr3_sum_of_products</code></li>
+                    <li>Use 3 inputs (A, B, C) and 1 output (F3)</li>
+                    <li>Build using sum-of-products form</li>
+                </ul>
+
+                <h3>Requirements</h3>
+                <ul>
+                    <li>Each expression must be in its own subcircuit</li>
+                    <li>Use consistent input/output naming (A, B, C inputs; F1/F2/F3 outputs)</li>
+                    <li>Create truth table verification for each expression</li>
+                    <li>Document gate counts for each implementation</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="section" id="part-c">
+            <div class="section-header" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="true" aria-controls="part-c-content">
+                <h2>Part C: De Morgan's Laws Verification</h2>
+                <span class="points-badge">35 points</span>
+                <span class="collapse-icon" aria-label="Expand or collapse section">▼</span>
+            </div>
+            <div id="part-c-content" class="section-content">
+                <h3>Objective</h3>
+                <p>Prove De Morgan's Laws through both algebraic manipulation and circuit construction.</p>
+
+                <div class="expression-box">
+                    <strong>Law 1:</strong> NOT(A AND B) = (NOT A) OR (NOT B)<br>
+                    <strong>Law 2:</strong> NOT(A OR B) = (NOT A) AND (NOT B)
+                </div>
+
+                <h3>Tasks</h3>
+
+                <h4>1. Algebraic Proof (10 points)</h4>
+                <ul>
+                    <li>Create complete truth tables for both sides of each law</li>
+                    <li>Show that the truth tables are identical</li>
+                    <li>Explain why this constitutes a proof</li>
+                </ul>
+
+                <h4>2. Circuit Implementation - Law 1 (12 points)</h4>
+                <ul>
+                    <li>Subcircuit name: <code>demorgan_law1</code></li>
+                    <li>Implement both sides of the equation with separate outputs</li>
+                    <li>Left side output: <code>NOT_A_AND_B</code></li>
+                    <li>Right side output: <code>NOTA_OR_NOTB</code></li>
+                    <li>Use inputs A and B</li>
+                    <li>Include a comparison output that shows both sides are equal (use XOR)</li>
+                </ul>
+
+                <h4>3. Circuit Implementation - Law 2 (13 points)</h4>
+                <ul>
+                    <li>Subcircuit name: <code>demorgan_law2</code></li>
+                    <li>Implement both sides of the equation with separate outputs</li>
+                    <li>Left side output: <code>NOT_A_OR_B</code></li>
+                    <li>Right side output: <code>NOTA_AND_NOTB</code></li>
+                    <li>Use inputs A and B</li>
+                    <li>Include a comparison output that shows both sides are equal (use XOR)</li>
+                </ul>
+
+                <h3>Verification Requirements</h3>
+                <ul>
+                    <li>Test all 4 possible input combinations (00, 01, 10, 11)</li>
+                    <li>The comparison output should always be 0 (proving equality)</li>
+                    <li>Document that both sides produce identical outputs for all inputs</li>
+                    <li>Include screenshots of your subcircuits</li>
+                    <li>Explain the practical significance of De Morgan's Laws in circuit design</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="section" id="part-d">
+            <div class="section-header" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="true" aria-controls="part-d-content">
+                <h2>Part D: Circuit Analysis and Simplification</h2>
+                <span class="points-badge">25 points</span>
+                <span class="collapse-icon" aria-label="Expand or collapse section">▼</span>
+            </div>
+            <div id="part-d-content" class="section-content">
+                <h3>Objective</h3>
+                <p>Analyze complex circuits and apply Boolean algebra for simplification.</p>
+
+                <div class="expression-box">
+                    <strong>Given Expression:</strong><br>
+                    F = ABC + AB'C + A'BC + A'B'C'
+                </div>
+
+                <h3>Tasks</h3>
+
+                <h4>1. Original Circuit Implementation (8 points)</h4>
+                <ul>
+                    <li>Subcircuit name: <code>original_complex</code></li>
+                    <li>Build the circuit exactly as given (sum-of-products form)</li>
+                    <li>Use inputs A, B, C and output F_original</li>
+                    <li>Count and document the total number of gates used</li>
+                </ul>
+
+                <h4>2. Boolean Simplification (10 points)</h4>
+                <ul>
+                    <li>Simplify the expression using Boolean algebra laws</li>
+                    <li>Show each step of your simplification process</li>
+                    <li>State which Boolean laws you applied at each step</li>
+                    <li>Create a truth table to verify your simplification is correct</li>
+                </ul>
+
+                <h4>3. Simplified Circuit Implementation (7 points)</h4>
+                <ul>
+                    <li>Subcircuit name: <code>simplified_complex</code></li>
+                    <li>Build a circuit for your simplified expression</li>
+                    <li>Use inputs A, B, C and output F_simplified</li>
+                    <li>Count gates in simplified version</li>
+                </ul>
+
+                <h3>Main Circuit Integration</h3>
+                <ul>
+                    <li>Create a subcircuit named <code>comparison_demo</code> that includes both versions</li>
+                    <li>Connect identical inputs to both circuits</li>
+                    <li>Use outputs to verify both produce identical results</li>
+                    <li>Document the gate count reduction achieved</li>
+                </ul>
+
+                <h3>Analysis Questions</h3>
+                <ul>
+                    <li>How many gates did you eliminate through simplification?</li>
+                    <li>What percentage reduction in gate count did you achieve?</li>
+                    <li>Which Boolean laws were most useful in this simplification?</li>
+                    <li>Why is circuit simplification important in digital design?</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="section" id="requirements">
+            <div class="section-header" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="true" aria-controls="requirements-content">
+                <h2>Submission Requirements</h2>
+                <span class="collapse-icon" aria-label="Expand or collapse section">▼</span>
+            </div>
+            <div id="requirements-content" class="section-content">
+                <div class="subcircuit-list">
+                    <h4>Required Subcircuits in Your .circ File:</h4>
+                    <ol>
+                        <li><code>gate_library</code></li>
+                        <li><code>expr1_ab_plus_ac</code></li>
+                        <li><code>expr2_product_form</code></li>
+                        <li><code>expr3_sum_of_products</code></li>
+                        <li><code>demorgan_law1</code></li>
+                        <li><code>demorgan_law2</code></li>
+                        <li><code>original_complex</code></li>
+                        <li><code>simplified_complex</code></li>
+                        <li><code>comparison_demo</code></li>
+                    </ol>
+                </div>
+
+                <h3>Files to Submit</h3>
+                <ol>
+                    <li><strong>Single Circuit File:</strong> <code>lastname_firstname_week2.circ</code> containing all required subcircuits</li>
+                    <li><strong>Written Report:</strong>
+                        <ul>
+                            <li>Truth tables for all expressions</li>
+                            <li>Screenshots of each subcircuit</li>
+                            <li>Step-by-step algebraic work for simplifications</li>
+                            <li>Gate count comparisons</li>
+                            <li>Analysis answers for Part D</li>
+                            <li>Reflection on learning</li>
+                        </ul>
+                    </li>
+                </ol>
+
+                <h3>Logisim 2.7.1 Specific Requirements</h3>
+                <ul>
+                    <li>Use only standard gates available in Logisim 2.7.1</li>
+                    <li>Do not use any advanced components or custom libraries</li>
+                    <li>Ensure your file opens correctly in Logisim 2.7.1</li>
+                    <li>Test all subcircuits before submission</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="section" id="grading">
+            <div class="section-header" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="true" aria-controls="grading-content">
+                <h2>Grading Rubric</h2>
+                <span class="collapse-icon" aria-label="Expand or collapse section">▼</span>
+            </div>
+            <div id="grading-content" class="section-content">
+                <table class="rubric-table" role="table" aria-label="Grading rubric for assignment components">
+                    <thead>
+                        <tr>
+                            <th>Component</th>
+                            <th>Points</th>
+                            <th>Criteria</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Part A</strong></td>
+                            <td>15</td>
+                            <td>Subcircuit creation, gate functionality, organization</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Part B</strong></td>
+                            <td>25</td>
+                            <td>Correct implementation, subcircuit naming, truth tables</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Part C</strong></td>
+                            <td>35</td>
+                            <td>Mathematical proof, working subcircuits, comprehensive testing</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Part D</strong></td>
+                            <td>25</td>
+                            <td>Accurate simplification, gate optimization, comparison</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>Quality Standards</h3>
+                <ul>
+                    <li><strong>Subcircuit Organization:</strong> Each subcircuit focused on single task</li>
+                    <li><strong>Naming Conventions:</strong> Exact subcircuit names as specified</li>
+                    <li><strong>Circuit Layout:</strong> Gates arranged logically, minimal wire crossing</li>
+                    <li><strong>Documentation:</strong> Clear explanations and step-by-step work shown</li>
+                    <li><strong>Testing:</strong> Evidence that all subcircuits were thoroughly tested</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="section" id="tips">
+            <div class="section-header" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="true" aria-controls="tips-content">
+                <h2>Tips for Success</h2>
+                <span class="collapse-icon" aria-label="Expand or collapse section">▼</span>
+            </div>
+            <div id="tips-content" class="section-content">
+                <div class="tips-grid">
+                    <div class="tip-card">
+                        <h4>Logisim 2.7.1 Best Practices</h4>
+                        <ul>
+                            <li>Plan your layout before building</li>
+                            <li>Use subcircuits properly</li>
+                            <li>Test incrementally</li>
+                            <li>Save frequently</li>
+                            <li>Check connections</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="tip-card">
+                        <h4>Boolean Algebra Tips</h4>
+                        <ul>
+                            <li>Work systematically</li>
+                            <li>Verify with truth tables</li>
+                            <li>Look for common patterns</li>
+                            <li>Document gate counts</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="tip-card">
+                        <h4>Common Mistakes to Avoid</h4>
+                        <ul>
+                            <li>Incorrect subcircuit naming</li>
+                            <li>Unconnected pins</li>
+                            <li>Using wrong Logisim version</li>
+                            <li>Not testing all combinations</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <h3>Subcircuit Creation Steps</h3>
+                <ol>
+                    <li>Right-click in project explorer → Add Circuit</li>
+                    <li>Name your subcircuit exactly as specified</li>
+                    <li>Add input/output pins from I/O library</li>
+                    <li>Build your logic circuit</li>
+                    <li>Test in subcircuit view before using in main circuit</li>
+                </ol>
+
+                <h3>Troubleshooting</h3>
+                <h4>If Your Circuit Doesn't Work:</h4>
+                <ul>
+                    <li>Check that all pins are connected (no red X's)</li>
+                    <li>Verify input/output pin placement and names</li>
+                    <li>Use the Hand tool to test different input combinations</li>
+                    <li>Check that subcircuit is properly saved and named</li>
+                </ul>
+
+                <h4>Version Compatibility:</h4>
+                <ul>
+                    <li>Only Logisim 2.7.1 files will be accepted</li>
+                    <li>Test your final file by closing and reopening it</li>
+                    <li>Ensure all subcircuits appear in the project explorer</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="section" id="help">
+            <div class="section-header" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="true" aria-controls="help-content">
+                <h2>Getting Help</h2>
+                <span class="collapse-icon" aria-label="Expand or collapse section">▼</span>
+            </div>
+            <div id="help-content" class="section-content">
+                <h3>Resources</h3>
+                <ul>
+                    <li><strong>Logisim 2.7.1 Documentation:</strong> Available in Help menu</li>
+                    <li><strong>Office Hours:</strong> [Insert times]</li>
+                    <li><strong>Course Forum:</strong> For technical questions</li>
+                </ul>
+
+                <h3>Academic Integrity</h3>
+                <div class="warning-box">
+                    <strong>Important Guidelines:</strong>
+                    <ul>
+                        <li>You may discuss concepts with classmates</li>
+                        <li>Circuit implementations and written work must be your own</li>
+                        <li>Don't share .circ files with other students</li>
+                        <li>Cite any external resources used</li>
+                    </ul>
+                </div>
+
+                <h3>Learning Reflection</h3>
+                <p>After completing this assignment, consider:</p>
+                <ul>
+                    <li>How does building physical circuits change your understanding of Boolean algebra?</li>
+                    <li>What connections do you see between mathematical laws and practical circuit design?</li>
+                    <li>How might the skills you've developed apply to computer architecture?</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global variables
+        let fontSize = 16;
+        let highContrast = false;
+        let animationsPaused = false;
+        let sectionsRead = new Set();
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            updateProgress();
+            addKeyboardNavigation();
+            announcePageLoad();
+        });
+
+        // Section toggle functionality
+        function toggleSection(header) {
+            const section = header.parentElement;
+            const content = section.querySelector('.section-content');
+            const icon = header.querySelector('.collapse-icon');
+            const isCollapsed = section.classList.contains('collapsed');
+            
+            if (isCollapsed) {
+                section.classList.remove('collapsed');
+                icon.textContent = '▼';
+                icon.classList.remove('collapsed');
+                header.setAttribute('aria-expanded', 'true');
+            } else {
+                section.classList.add('collapsed');
+                icon.textContent = '▶';
+                icon.classList.add('collapsed');
+                header.setAttribute('aria-expanded', 'false');
+            }
+
+            // Mark as read and update progress
+            const sectionId = section.id;
+            if (sectionId && !isCollapsed) {
+                sectionsRead.add(sectionId);
+                updateProgress();
+            }
+        }
+
+        // Progress tracking
+        function updateProgress() {
+            const totalSections = 8; // overview, part-a, part-b, part-c, part-d, requirements, grading, tips, help
+            const completed = sectionsRead.size;
+            const percentage = Math.round((completed / totalSections) * 100);
+            
+            const progressFill = document.getElementById('progressFill');
+            const progressText = document.getElementById('progressText');
+            const progressBar = progressFill.parentElement;
+            
+            progressFill.style.width = percentage + '%';
+            progressBar.setAttribute('aria-valuenow', percentage);
+            
+            if (percentage === 0) {
+                progressText.textContent = 'Read through each section to track your progress!';
+            } else if (percentage < 100) {
+                progressText.textContent = `Progress: ${completed}/${totalSections} sections reviewed (${percentage}%)`;
+            } else {
+                progressText.textContent = `All sections reviewed! Ready to start your assignment. (${percentage}%)`;
+            }
+        }
+
+        // Accessibility functions
+        function changeFontSize(action) {
+            if (action === 'increase' && fontSize < 24) {
+                fontSize += 2;
+            } else if (action === 'decrease' && fontSize > 12) {
+                fontSize -= 2;
+            }
+            
+            document.body.style.fontSize = fontSize + 'px';
+            announceChange(`Font size changed to ${fontSize} pixels`);
+        }
+
+        function toggleHighContrast() {
+            highContrast = !highContrast;
+            
+            if (highContrast) {
+                document.body.style.filter = 'contrast(150%) brightness(1.2)';
+                document.body.style.background = '#000000';
+                document.body.style.color = '#ffffff';
+            } else {
+                document.body.style.filter = 'none';
+                document.body.style.background = '#ffffff';
+                document.body.style.color = '#333';
+            }
+            
+            announceChange(`High contrast ${highContrast ? 'enabled' : 'disabled'}`);
+        }
+
+        function pauseAnimations() {
+            animationsPaused = !animationsPaused;
+            
+            if (animationsPaused) {
+                const style = document.createElement('style');
+                style.id = 'pause-animations';
+                style.textContent = '*, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }';
+                document.head.appendChild(style);
+            } else {
+                const pauseStyle = document.getElementById('pause-animations');
+                if (pauseStyle) {
+                    pauseStyle.remove();
+                }
+            }
+            
+            announceChange(`Animations ${animationsPaused ? 'paused' : 'resumed'}`);
+        }
+
+        // Keyboard navigation
+        function addKeyboardNavigation() {
+            document.addEventListener('keydown', function(e) {
+                // Enter or Space to toggle sections
+                if ((e.key === 'Enter' || e.key === ' ') && e.target.classList.contains('section-header')) {
+                    e.preventDefault();
+                    toggleSection(e.target);
+                }
+                
+                // Ctrl+C to collapse/expand all sections
+                if (e.key === 'c' && e.ctrlKey) {
+                    e.preventDefault();
+                    const sections = document.querySelectorAll('.section');
+                    const anyExpanded = Array.from(sections).some(s => !s.classList.contains('collapsed'));
+                    
+                    sections.forEach(section => {
+                        const header = section.querySelector('.section-header');
+                        if (anyExpanded && !section.classList.contains('collapsed')) {
+                            toggleSection(header);
+                        } else if (!anyExpanded && section.classList.contains('collapsed')) {
+                            toggleSection(header);
+                        }
+                    });
+                    
+                    announceChange(anyExpanded ? 'All sections collapsed' : 'All sections expanded');
+                }
+            });
+        }
+
+        // Screen reader announcements
+        function announceChange(message) {
+            const announcement = document.createElement('div');
+            announcement.setAttribute('aria-live', 'polite');
+            announcement.className = 'sr-only';
+            announcement.textContent = message;
+            document.body.appendChild(announcement);
+            
+            setTimeout(() => {
+                document.body.removeChild(announcement);
+            }, 2000);
+        }
+
+        function announcePageLoad() {
+            const announcement = document.createElement('div');
+            announcement.setAttribute('aria-live', 'polite');
+            announcement.className = 'sr-only';
+            announcement.textContent = 'CSC210 Week 2 Assignment page loaded. Use tab to navigate between sections and interactive elements. Press Ctrl+C to expand or collapse all sections.';
+            document.body.appendChild(announcement);
+            
+            setTimeout(() => {
+                document.body.removeChild(announcement);
+            }, 3000);
+        }
+
+        // Intersection Observer for automatic progress tracking
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting && entry.target.id) {
+                    sectionsRead.add(entry.target.id);
+                    updateProgress();
+                }
+            });
+        }, { threshold: 0.5 });
+
+        // Observe all sections
+        document.querySelectorAll('.section').forEach(section => {
+            observer.observe(section);
+        });
+
+        // Print optimization
+        window.addEventListener('beforeprint', function() {
+            // Expand all sections for printing
+            document.querySelectorAll('.section.collapsed').forEach(section => {
+                section.classList.remove('collapsed');
+            });
+        });
+    </script>
+</body>
+</html>
