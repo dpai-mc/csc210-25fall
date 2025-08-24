@@ -465,6 +465,29 @@
                     <div class="warning-box">
                         <strong>Important:</strong> You must use Logisim 2.7.1 exactly. Logisim Evolution is NOT allowed for this assignment.
                     </div>
+                    
+                    <div style="background: #f8f9fa; border: 2px solid #28a745; border-radius: 8px; padding: 1rem; margin: 1rem 0;">
+                        <h4>Video Tutorial: Installation and Interface Overview</h4>
+                        <div style="position: relative; width: 100%; height: 0; padding-bottom: 56.25%; background-color: #000; border-radius: 8px; margin: 1rem 0;">
+                            <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: white; text-align: center;">
+                                <div style="font-size: 3rem; margin-bottom: 1rem;">▶</div>
+                                <div style="font-size: 1.2rem; font-weight: bold;">Logisim 2.7.1 Tutorial</div>
+                                <div style="font-size: 1rem; opacity: 0.8; margin-top: 0.5rem;">Installation & Interface Basics</div>
+                                <div style="font-size: 0.9rem; opacity: 0.6; margin-top: 0.5rem;">[Video will be embedded here]</div>
+                            </div>
+                        </div>
+                        <p><strong>Tutorial Contents:</strong></p>
+                        <ul>
+                            <li>How to download and install Logisim 2.7.1</li>
+                            <li>Overview of the main interface components</li>
+                            <li>Creating your first circuit with basic gates</li>
+                            <li>Adding input/output pins and testing circuits</li>
+                            <li>Creating and naming subcircuits</li>
+                            <li>Tips for organizing your workspace</li>
+                        </ul>
+                        <p><em>Watch this tutorial before beginning your assignment to ensure you're comfortable with the Logisim interface.</em></p>
+                    </div>
+                    
                     <div class="download-links">
                         <a href="https://mendocinocollege-my.sharepoint.com/:u:/g/personal/dpai_mendocino_edu/ETE3bbN1a1tPrHQzXB8cLqcB5zOZSBuM9BrdcxuGxJghDw?e=fkGhtZ" 
                            class="download-btn" 
@@ -487,6 +510,25 @@
 
                 <h3>File Structure</h3>
                 <p>All circuits must be created as <strong>subcircuits</strong> within a single file named <code>lastname_firstname_week2.circ</code>. Each part of the assignment should be implemented as a separate subcircuit with the naming convention specified in each section.</p>
+
+                <div class="warning-box">
+                    <h4>Boolean Expression Notation Guide</h4>
+                    <p><strong>Understanding Boolean Symbols:</strong></p>
+                    <ul>
+                        <li><strong>AND Operation:</strong> AB or A·B (multiplication)</li>
+                        <li><strong>OR Operation:</strong> A + B (addition)</li>
+                        <li><strong>NOT Operation:</strong> A' or <span style="text-decoration: overline;">A</span> (negation)</li>
+                    </ul>
+                    
+                    <p><strong>Critical: Order of Operations</strong></p>
+                    <p>In expressions like <strong>A'B</strong>, the NOT symbol applies <em>only</em> to the variable it immediately follows. This means:</p>
+                    <div class="expression-box">
+                        A'B = (NOT A) AND B<br>
+                        AB' = A AND (NOT B)<br>
+                        A'B' = (NOT A) AND (NOT B)
+                    </div>
+                    <p>Always read the NOT symbol as applying to the single variable directly before it, just like a mathematical exponent.</p>
+                </div>
             </div>
         </div>
 
@@ -605,22 +647,47 @@
                 <h4>2. Circuit Implementation - Law 1 (12 points)</h4>
                 <ul>
                     <li>Subcircuit name: <code>demorgan_law1</code></li>
-                    <li>Implement both sides of the equation with separate outputs</li>
-                    <li>Left side output: <code>NOT_A_AND_B</code></li>
-                    <li>Right side output: <code>NOTA_OR_NOTB</code></li>
-                    <li>Use inputs A and B</li>
-                    <li>Include a comparison output that shows both sides are equal (use XOR)</li>
+                    <li><strong>Circuit Layout Requirements:</strong>
+                        <ul>
+                            <li>Use shared input pins A and B at the top of your subcircuit</li>
+                            <li>Build the left side circuit: <code>NOT(A AND B)</code> in the upper portion</li>
+                            <li>Build the right side circuit: <code>(NOT A) OR (NOT B)</code> in the lower portion</li>
+                            <li>Align the output pins vertically so you can easily compare results</li>
+                            <li>Label outputs: <code>LEFT_SIDE</code> and <code>RIGHT_SIDE</code></li>
+                        </ul>
+                    </li>
+                    <li><strong>Verification Circuit:</strong> Add an XOR gate connecting both outputs to prove they're always equal (output should always be 0)</li>
+                    <li>Connect the same input pins to both circuits for direct comparison</li>
                 </ul>
 
                 <h4>3. Circuit Implementation - Law 2 (13 points)</h4>
                 <ul>
                     <li>Subcircuit name: <code>demorgan_law2</code></li>
-                    <li>Implement both sides of the equation with separate outputs</li>
-                    <li>Left side output: <code>NOT_A_OR_B</code></li>
-                    <li>Right side output: <code>NOTA_AND_NOTB</code></li>
-                    <li>Use inputs A and B</li>
-                    <li>Include a comparison output that shows both sides are equal (use XOR)</li>
+                    <li><strong>Circuit Layout Requirements:</strong>
+                        <ul>
+                            <li>Use shared input pins A and B at the top of your subcircuit</li>
+                            <li>Build the left side circuit: <code>NOT(A OR B)</code> in the upper portion</li>
+                            <li>Build the right side circuit: <code>(NOT A) AND (NOT B)</code> in the lower portion</li>
+                            <li>Align the output pins vertically for easy visual comparison</li>
+                            <li>Label outputs: <code>LEFT_SIDE</code> and <code>RIGHT_SIDE</code></li>
+                        </ul>
+                    </li>
+                    <li><strong>Verification Circuit:</strong> Add an XOR gate connecting both outputs to prove equality</li>
+                    <li>Use identical inputs for both circuit halves to enable interactive testing</li>
                 </ul>
+
+                <div class="warning-box">
+                    <h4>Circuit Comparison Best Practices</h4>
+                    <p><strong>For Interactive Proof:</strong></p>
+                    <ul>
+                        <li>Place input pins at the top, outputs at the bottom</li>
+                        <li>Use the same input values for both sides of the equation</li>
+                        <li>Vertically align corresponding outputs for easy visual comparison</li>
+                        <li>When testing, toggle inputs and observe that both outputs always match</li>
+                        <li>The XOR verification output should remain 0 for all input combinations</li>
+                    </ul>
+                    <p><strong>Why This Layout Matters:</strong> This arrangement allows you to interactively prove the laws by testing all input combinations and visually confirming that both sides always produce identical results.</p>
+                </div>
 
                 <h3>Verification Requirements</h3>
                 <ul>
@@ -676,11 +743,31 @@
 
                 <h3>Main Circuit Integration</h3>
                 <ul>
-                    <li>Create a subcircuit named <code>comparison_demo</code> that includes both versions</li>
-                    <li>Connect identical inputs to both circuits</li>
-                    <li>Use outputs to verify both produce identical results</li>
-                    <li>Document the gate count reduction achieved</li>
+                    <li>Create a subcircuit named <code>comparison_demo</code></li>
+                    <li><strong>Layout for Circuit Comparison:</strong>
+                        <ul>
+                            <li>Place shared input pins (A, B, C) at the top of the subcircuit</li>
+                            <li>Position the original complex circuit in the upper half</li>
+                            <li>Position the simplified circuit in the lower half</li>
+                            <li>Align the output pins (F_original and F_simplified) vertically</li>
+                            <li>Connect the same input pins to both circuits</li>
+                        </ul>
+                    </li>
+                    <li><strong>Verification:</strong> Add an XOR gate between the outputs to verify they're identical (should always output 0)</li>
+                    <li><strong>Gate Count Display:</strong> Use text labels to show gate counts for each version</li>
                 </ul>
+
+                <div class="warning-box">
+                    <h4>Interactive Circuit Comparison</h4>
+                    <p>The comparison layout allows you to:</p>
+                    <ul>
+                        <li>Toggle input combinations and immediately see both circuit outputs</li>
+                        <li>Visually verify that simplification preserves functionality</li>
+                        <li>Demonstrate the efficiency gain from fewer gates</li>
+                        <li>Use the XOR verification to prove mathematical equivalence</li>
+                    </ul>
+                    <p><strong>Testing Protocol:</strong> Test all 8 possible input combinations (000 through 111) and verify that both outputs match for every combination.</p>
+                </div>
 
                 <h3>Analysis Questions</h3>
                 <ul>
@@ -835,6 +922,20 @@
                     <li>Test in subcircuit view before using in main circuit</li>
                 </ol>
 
+                <h3>Circuit Comparison Layout Guide</h3>
+                <div class="tip-card">
+                    <h4>For De Morgan's Laws and Circuit Comparisons</h4>
+                    <p><strong>Recommended Layout Pattern:</strong></p>
+                    <ul>
+                        <li><strong>Top:</strong> Shared input pins (A, B, C)</li>
+                        <li><strong>Upper half:</strong> First circuit (original expression)</li>
+                        <li><strong>Lower half:</strong> Second circuit (equivalent expression)</li>
+                        <li><strong>Bottom:</strong> Aligned output pins for visual comparison</li>
+                        <li><strong>Side:</strong> XOR gate connecting outputs (for verification)</li>
+                    </ul>
+                    <p>This arrangement enables interactive testing where you toggle inputs and immediately see both outputs change, proving equivalence through direct observation.</p>
+                </div>
+
                 <h3>Troubleshooting</h3>
                 <h4>If Your Circuit Doesn't Work:</h4>
                 <ul>
@@ -861,9 +962,9 @@
             <div id="help-content" class="section-content">
                 <h3>Resources</h3>
                 <ul>
-                    <li><strong>Logisim 2.7.1 Documentation:</strong> Available in Help menu</li>
-                    <li><strong>Office Hours:</strong> [Insert times]</li>
-                    <li><strong>Course Forum:</strong> For technical questions</li>
+                    <li><strong>Logisim 2.7.1 Documentation:</strong> <a href="https://cburch.com/logisim/docs.html" target="_blank" rel="noopener noreferrer">Official Documentation</a></li>
+                    <li><strong>Course Tutor:</strong> <a href="https://www.playlab.ai/project/cmenet5ig00ccil0u7kpqihg2" target="_blank" rel="noopener noreferrer">AI Tutor for CSC210</a></li>
+                    <li><strong>Peer: Questions and Help Forum:</strong> <a href="https://mendocino.instructure.com/courses/19705/discussion_topics/251135" target="_blank" rel="noopener noreferrer">Student Discussion Forum</a></li>
                 </ul>
 
                 <h3>Academic Integrity</h3>
