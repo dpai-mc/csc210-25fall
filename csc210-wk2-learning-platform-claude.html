@@ -505,6 +505,161 @@
         </header>
 
         <section class="section">
+            <h2>Binary Addition and Subtraction Review</h2>
+            <div class="interactive-panel">
+                <p><strong>Before diving into Boolean logic and gates, let's review binary arithmetic</strong> - the foundation that makes digital computation possible. Understanding how binary addition works, especially the concept of "carry," is crucial for grasping how computers perform calculations.</p>
+                
+                <h3>Binary Addition: The Basics</h3>
+                <p>Binary addition follows the same principles as decimal addition, but with only two digits (0 and 1). Just like in decimal arithmetic, we add column by column from right to left, and when the sum exceeds the largest digit in our system, we "carry" to the next column.</p>
+                
+                <h4>Understanding Carry in Binary vs. Decimal</h4>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin: 1.5rem 0;">
+                    <div style="background: #f0f8ff; padding: 1rem; border-radius: 8px;">
+                        <h5 style="color: #2c3e50; margin-top: 0;">Decimal Addition (Base 10)</h5>
+                        <div style="font-family: monospace; font-size: 1.1rem; text-align: center;">
+                            <div>  47</div>
+                            <div>+ 58</div>
+                            <div>---</div>
+                            <div>105</div>
+                        </div>
+                        <p><small>When 7 + 8 = 15, we write 5 and carry 1 because 15 ≥ 10 (our base).</small></p>
+                    </div>
+                    
+                    <div style="background: #e8f5e8; padding: 1rem; border-radius: 8px;">
+                        <h5 style="color: #2c3e50; margin-top: 0;">Binary Addition (Base 2)</h5>
+                        <div style="font-family: monospace; font-size: 1.1rem; text-align: center;">
+                            <div>  1011</div>
+                            <div>+ 1110</div>
+                            <div>-----</div>
+                            <div>11001</div>
+                        </div>
+                        <p><small>When 1 + 1 = 2, we write 0 and carry 1 because 2 ≥ 2 (our base).</small></p>
+                    </div>
+                </div>
+                
+                <div class="warning-box">
+                    <h3>Key Insight: Carry Generation</h3>
+                    <p>In binary, a carry is generated whenever we add two 1s. This is because 1 + 1 = 10 in binary (which equals 2 in decimal), so we place 0 in the current column and carry 1 to the next column to the left.</p>
+                </div>
+                
+                <h3>Interactive Binary Addition Calculator</h3>
+                <div style="background: white; border: 2px solid #3498db; border-radius: 8px; padding: 1.5rem;">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 1rem;">
+                        <div>
+                            <label for="binNum1" style="font-weight: bold;">First Binary Number:</label>
+                            <input type="text" id="binNum1" placeholder="e.g., 1011" 
+                                   style="width: 100%; padding: 0.5rem; font-family: monospace; font-size: 1.1rem; border: 1px solid #ddd; border-radius: 4px;"
+                                   pattern="[01]*" title="Enter only 0s and 1s">
+                        </div>
+                        <div>
+                            <label for="binNum2" style="font-weight: bold;">Second Binary Number:</label>
+                            <input type="text" id="binNum2" placeholder="e.g., 1110" 
+                                   style="width: 100%; padding: 0.5rem; font-family: monospace; font-size: 1.1rem; border: 1px solid #ddd; border-radius: 4px;"
+                                   pattern="[01]*" title="Enter only 0s and 1s">
+                        </div>
+                    </div>
+                    <div style="text-align: center; margin: 1rem 0;">
+                        <button onclick="calculateBinaryAddition()" class="button" aria-describedby="calc-help">Calculate Addition</button>
+                        <span id="calc-help" class="sr-only">Calculate the binary addition with detailed step-by-step breakdown</span>
+                    </div>
+                    <div id="binaryResult" style="background: #f8f9fa; padding: 1rem; border-radius: 4px; margin-top: 1rem; min-height: 50px;" aria-live="polite">
+                        <p>Enter two binary numbers above and click "Calculate Addition" to see the step-by-step process including carry generation.</p>
+                    </div>
+                </div>
+                
+                <h3>Two's Complement: Representing Negative Numbers</h3>
+                <p>Computers use <strong>two's complement</strong> to represent negative numbers. This system allows both positive and negative numbers to be added using the same binary addition circuitry.</p>
+                
+                <div style="background: #fff3cd; border: 2px solid #ffc107; padding: 1rem; border-radius: 8px; margin: 1rem 0;">
+                    <h4 style="color: #856404; margin-top: 0;">Two's Complement Process:</h4>
+                    <ol>
+                        <li><strong>Find the one's complement:</strong> Flip all bits (0 becomes 1, 1 becomes 0)</li>
+                        <li><strong>Add 1:</strong> Add 1 to the one's complement result</li>
+                    </ol>
+                    <p><strong>Example:</strong> To find -5 in 8-bit two's complement:</p>
+                    <div style="font-family: monospace; background: white; padding: 0.5rem; border-radius: 4px;">
+                        +5 in binary: 00000101<br>
+                        One's complement: 11111010<br>
+                        Add 1: 11111010 + 1 = 11111011<br>
+                        <strong>So -5 = 11111011</strong>
+                    </div>
+                </div>
+                
+                <h3>Interactive Two's Complement Converter</h3>
+                <div style="background: white; border: 2px solid #28a745; border-radius: 8px; padding: 1.5rem;">
+                    <div style="display: grid; grid-template-columns: 1fr auto 1fr; gap: 1rem; align-items: center; margin-bottom: 1rem;">
+                        <div>
+                            <label for="decimalInput" style="font-weight: bold;">Decimal Number:</label>
+                            <input type="number" id="decimalInput" placeholder="e.g., -5" 
+                                   min="-128" max="127"
+                                   style="width: 100%; padding: 0.5rem; font-size: 1.1rem; border: 1px solid #ddd; border-radius: 4px;">
+                        </div>
+                        <button onclick="convertToTwosComplement()" class="button" style="margin-top: 1.5rem;">Convert</button>
+                        <div>
+                            <label style="font-weight: bold;">8-bit Two's Complement:</label>
+                            <div id="twosComplementResult" 
+                                 style="background: #f8f9fa; padding: 0.5rem; font-family: monospace; font-size: 1.2rem; border: 1px solid #ddd; border-radius: 4px; min-height: 40px; display: flex; align-items: center;">
+                                Enter a number (-128 to 127)
+                            </div>
+                        </div>
+                    </div>
+                    <div id="conversionSteps" style="background: #f8f9fa; padding: 1rem; border-radius: 4px; margin-top: 1rem; min-height: 50px;" aria-live="polite">
+                        <p>Enter a decimal number to see the step-by-step two's complement conversion.</p>
+                    </div>
+                </div>
+                
+                <h3>Binary Subtraction Using Two's Complement</h3>
+                <p>The brilliant insight of two's complement is that <strong>subtraction becomes addition</strong>. Instead of A - B, we calculate A + (-B), where -B is the two's complement of B.</p>
+                
+                <div style="background: #e8f5e8; border: 2px solid #28a745; padding: 1rem; border-radius: 8px; margin: 1rem 0;">
+                    <h4 style="color: #155724; margin-top: 0;">Subtraction Algorithm:</h4>
+                    <ol>
+                        <li>Convert the number being subtracted to two's complement (making it negative)</li>
+                        <li>Add the two numbers using regular binary addition</li>
+                        <li>If there's a carry out of the most significant bit, discard it</li>
+                        <li>The result is your answer</li>
+                    </ol>
+                </div>
+                
+                <h3>Interactive Binary Subtraction Calculator</h3>
+                <div style="background: white; border: 2px solid #dc3545; border-radius: 8px; padding: 1.5rem;">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 1rem;">
+                        <div>
+                            <label for="minuend" style="font-weight: bold;">Minuend (A):</label>
+                            <input type="number" id="minuend" placeholder="e.g., 12" 
+                                   min="-128" max="127"
+                                   style="width: 100%; padding: 0.5rem; font-size: 1.1rem; border: 1px solid #ddd; border-radius: 4px;">
+                        </div>
+                        <div>
+                            <label for="subtrahend" style="font-weight: bold;">Subtrahend (B):</label>
+                            <input type="number" id="subtrahend" placeholder="e.g., 5" 
+                                   min="-128" max="127"
+                                   style="width: 100%; padding: 0.5rem; font-size: 1.1rem; border: 1px solid #ddd; border-radius: 4px;">
+                        </div>
+                    </div>
+                    <div style="text-align: center; margin: 1rem 0;">
+                        <button onclick="calculateBinarySubtraction()" class="button">Calculate A - B</button>
+                    </div>
+                    <div id="subtractionResult" style="background: #f8f9fa; padding: 1rem; border-radius: 4px; margin-top: 1rem; min-height: 50px;" aria-live="polite">
+                        <p>Enter two decimal numbers to see how subtraction works using two's complement addition.</p>
+                    </div>
+                </div>
+                
+                <h3>Why This Matters for Digital Logic</h3>
+                <div class="success-box">
+                    <h3>Connection to Logic Gates</h3>
+                    <p>Understanding binary addition and carry generation is essential because:</p>
+                    <ul>
+                        <li><strong>ALU Design:</strong> Arithmetic Logic Units use the same gates you'll study to perform addition</li>
+                        <li><strong>Carry Logic:</strong> XOR gates generate sum bits, AND gates generate carry bits</li>
+                        <li><strong>Two's Complement:</strong> Enables subtraction using only addition circuitry</li>
+                        <li><strong>Computer Architecture:</strong> All arithmetic in processors relies on these principles</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section class="section">
             <h2>Week 2 Introduction Video</h2>
             <div class="interactive-panel">
                 <h3>Week 2 Overview: Boolean Logic and Digital Gates</h3>
@@ -1326,8 +1481,291 @@
             }, 2000);
         }
 
-        // Keyboard navigation enhancements
-        document.addEventListener('keydown', function(e) {
+        // Binary arithmetic functions
+        function calculateBinaryAddition() {
+            const num1 = document.getElementById('binNum1').value.trim();
+            const num2 = document.getElementById('binNum2').value.trim();
+            const resultDiv = document.getElementById('binaryResult');
+            
+            // Validate input
+            if (!num1 || !num2) {
+                resultDiv.innerHTML = '<p style="color: #dc3545;"><strong>Error:</strong> Please enter both binary numbers.</p>';
+                return;
+            }
+            
+            if (!/^[01]+$/.test(num1) || !/^[01]+$/.test(num2)) {
+                resultDiv.innerHTML = '<p style="color: #dc3545;"><strong>Error:</strong> Please enter valid binary numbers (only 0s and 1s).</p>';
+                return;
+            }
+            
+            // Pad numbers to same length
+            const maxLength = Math.max(num1.length, num2.length);
+            const paddedNum1 = num1.padStart(maxLength, '0');
+            const paddedNum2 = num2.padStart(maxLength, '0');
+            
+            // Perform addition step by step
+            let result = '';
+            let carry = 0;
+            let steps = [];
+            
+            // Add from right to left
+            for (let i = maxLength - 1; i >= 0; i--) {
+                const bit1 = parseInt(paddedNum1[i]);
+                const bit2 = parseInt(paddedNum2[i]);
+                const sum = bit1 + bit2 + carry;
+                
+                const resultBit = sum % 2;
+                const newCarry = Math.floor(sum / 2);
+                
+                result = resultBit + result;
+                
+                steps.push({
+                    position: maxLength - i,
+                    bit1: bit1,
+                    bit2: bit2,
+                    carryIn: carry,
+                    sum: sum,
+                    resultBit: resultBit,
+                    carryOut: newCarry
+                });
+                
+                carry = newCarry;
+            }
+            
+            if (carry) {
+                result = carry + result;
+            }
+            
+            // Display result
+            let html = '<div style="font-family: monospace; font-size: 1.2rem; text-align: center; margin-bottom: 1rem;">';
+            html += `<div>  ${paddedNum1}</div>`;
+            html += `<div>+ ${paddedNum2}</div>`;
+            html += `<div>${'-'.repeat(maxLength + 2)}</div>`;
+            html += `<div>  ${result}</div>`;
+            html += '</div>';
+            
+            html += '<h4>Step-by-Step Breakdown:</h4>';
+            html += '<div style="font-family: monospace; font-size: 0.9rem;">';
+            
+            for (let i = steps.length - 1; i >= 0; i--) {
+                const step = steps[i];
+                html += `<div style="margin: 0.5rem 0; padding: 0.5rem; background: ${step.carryOut ? '#fff3cd' : '#f8f9fa'}; border-radius: 4px;">`;
+                html += `<strong>Column ${step.position}:</strong> ${step.bit1} + ${step.bit2}`;
+                if (step.carryIn) html += ` + ${step.carryIn} (carry)`;
+                html += ` = ${step.sum}`;
+                html += ` → Write ${step.resultBit}`;
+                if (step.carryOut) html += `, Carry ${step.carryOut}`;
+                html += '</div>';
+            }
+            
+            html += '</div>';
+            html += `<p><strong>Final Answer:</strong> ${paddedNum1} + ${paddedNum2} = ${result}</p>`;
+            html += `<p><strong>Decimal Check:</strong> ${parseInt(paddedNum1, 2)} + ${parseInt(paddedNum2, 2)} = ${parseInt(result, 2)}</p>`;
+            
+            resultDiv.innerHTML = html;
+            
+            // Mark section as completed
+            completedSections.add('binaryArithmetic');
+            updateProgress();
+        }
+        
+        function convertToTwosComplement() {
+            const decimal = parseInt(document.getElementById('decimalInput').value);
+            const resultDiv = document.getElementById('twosComplementResult');
+            const stepsDiv = document.getElementById('conversionSteps');
+            
+            if (isNaN(decimal)) {
+                resultDiv.innerHTML = 'Please enter a valid number';
+                stepsDiv.innerHTML = '<p>Enter a decimal number to see the conversion process.</p>';
+                return;
+            }
+            
+            if (decimal < -128 || decimal > 127) {
+                resultDiv.innerHTML = 'Number out of 8-bit range';
+                stepsDiv.innerHTML = '<p style="color: #dc3545;"><strong>Error:</strong> Please enter a number between -128 and 127 for 8-bit representation.</p>';
+                return;
+            }
+            
+            let html = '';
+            
+            if (decimal >= 0) {
+                // Positive number - straight binary
+                const binary = decimal.toString(2).padStart(8, '0');
+                resultDiv.innerHTML = binary;
+                
+                html += `<h4>Conversion Steps for +${decimal}:</h4>`;
+                html += '<div style="font-family: monospace; background: white; padding: 1rem; border-radius: 4px;">';
+                html += `Positive numbers are represented directly in binary:<br>`;
+                html += `${decimal} in decimal = ${binary} in 8-bit binary`;
+                html += '</div>';
+            } else {
+                // Negative number - two's complement
+                const positive = Math.abs(decimal);
+                const positiveBinary = positive.toString(2).padStart(8, '0');
+                
+                // One's complement
+                let onesComplement = '';
+                for (let i = 0; i < positiveBinary.length; i++) {
+                    onesComplement += positiveBinary[i] === '0' ? '1' : '0';
+                }
+                
+                // Add 1 for two's complement
+                let twosComplement = '';
+                let carry = 1;
+                for (let i = onesComplement.length - 1; i >= 0; i--) {
+                    const bit = parseInt(onesComplement[i]) + carry;
+                    twosComplement = (bit % 2) + twosComplement;
+                    carry = Math.floor(bit / 2);
+                }
+                
+                resultDiv.innerHTML = twosComplement;
+                
+                html += `<h4>Conversion Steps for ${decimal}:</h4>`;
+                html += '<div style="font-family: monospace; background: white; padding: 1rem; border-radius: 4px;">';
+                html += `<strong>Step 1:</strong> Find positive binary<br>`;
+                html += `+${positive} = ${positiveBinary}<br><br>`;
+                html += `<strong>Step 2:</strong> One's complement (flip bits)<br>`;
+                html += `${onesComplement}<br><br>`;
+                html += `<strong>Step 3:</strong> Add 1 for two's complement<br>`;
+                html += `${onesComplement}<br>`;
+                html += `+      1<br>`;
+                html += `${'-'.repeat(8)}<br>`;
+                html += `${twosComplement}<br><br>`;
+                html += `<strong>Result:</strong> ${decimal} = ${twosComplement} in 8-bit two's complement`;
+                html += '</div>';
+            }
+            
+            stepsDiv.innerHTML = html;
+            
+            // Mark section as completed
+            completedSections.add('twosComplement');
+            updateProgress();
+        }
+        
+        function calculateBinarySubtraction() {
+            const minuend = parseInt(document.getElementById('minuend').value);
+            const subtrahend = parseInt(document.getElementById('subtrahend').value);
+            const resultDiv = document.getElementById('subtractionResult');
+            
+            if (isNaN(minuend) || isNaN(subtrahend)) {
+                resultDiv.innerHTML = '<p style="color: #dc3545;"><strong>Error:</strong> Please enter valid numbers for both fields.</p>';
+                return;
+            }
+            
+            if (minuend < -128 || minuend > 127 || subtrahend < -128 || subtrahend > 127) {
+                resultDiv.innerHTML = '<p style="color: #dc3545;"><strong>Error:</strong> Please enter numbers between -128 and 127.</p>';
+                return;
+            }
+            
+            // Convert to 8-bit binary
+            function toBinary(num) {
+                if (num >= 0) {
+                    return num.toString(2).padStart(8, '0');
+                } else {
+                    // Two's complement for negative
+                    const positive = Math.abs(num);
+                    const positiveBinary = positive.toString(2).padStart(8, '0');
+                    let onesComp = '';
+                    for (let i = 0; i < 8; i++) {
+                        onesComp += positiveBinary[i] === '0' ? '1' : '0';
+                    }
+                    // Add 1
+                    let twosComp = '';
+                    let carry = 1;
+                    for (let i = 7; i >= 0; i--) {
+                        const sum = parseInt(onesComp[i]) + carry;
+                        twosComp = (sum % 2) + twosComp;
+                        carry = Math.floor(sum / 2);
+                    }
+                    return twosComp;
+                }
+            }
+            
+            const minuendBinary = toBinary(minuend);
+            const subtrahendBinary = toBinary(subtrahend);
+            
+            // Two's complement of subtrahend
+            let subtrahendTwosComp = '';
+            // First, one's complement
+            let onesComp = '';
+            for (let i = 0; i < 8; i++) {
+                onesComp += subtrahendBinary[i] === '0' ? '1' : '0';
+            }
+            // Then add 1
+            let carry = 1;
+            for (let i = 7; i >= 0; i--) {
+                const sum = parseInt(onesComp[i]) + carry;
+                subtrahendTwosComp = (sum % 2) + subtrahendTwosComp;
+                carry = Math.floor(sum / 2);
+            }
+            
+            // Add minuend + (-subtrahend)
+            let result = '';
+            carry = 0;
+            for (let i = 7; i >= 0; i--) {
+                const sum = parseInt(minuendBinary[i]) + parseInt(subtrahendTwosComp[i]) + carry;
+                result = (sum % 2) + result;
+                carry = Math.floor(sum / 2);
+            }
+            
+            // Calculate actual result
+            const actualResult = minuend - subtrahend;
+            
+            let html = `<h4>Computing ${minuend} - ${subtrahend} using Two's Complement:</h4>`;
+            html += '<div style="font-family: monospace; background: white; padding: 1rem; border-radius: 4px;">';
+            html += `<strong>Step 1:</strong> Convert to binary<br>`;
+            html += `A = ${minuend} → ${minuendBinary}<br>`;
+            html += `B = ${subtrahend} → ${subtrahendBinary}<br><br>`;
+            
+            html += `<strong>Step 2:</strong> Find two's complement of B (to get -B)<br>`;
+            html += `One's complement of B: ${onesComp}<br>`;
+            html += `Add 1:                  ${subtrahendTwosComp}<br>`;
+            html += `So -B = ${subtrahendTwosComp}<br><br>`;
+            
+            html += `<strong>Step 3:</strong> Add A + (-B)<br>`;
+            html += `  ${minuendBinary}<br>`;
+            html += `+ ${subtrahendTwosComp}<br>`;
+            html += `  ${'-'.repeat(8)}<br>`;
+            if (carry) html += `1 `;
+            html += `${result}`;
+            if (carry) html += ` (discard carry)`;
+            html += `<br><br>`;
+            
+            html += `<strong>Step 4:</strong> Interpret result<br>`;
+            if (result[0] === '0') {
+                html += `Result starts with 0 → positive number<br>`;
+                html += `${result} in binary = ${parseInt(result, 2)} in decimal<br>`;
+            } else {
+                html += `Result starts with 1 → negative number (two's complement)<br>`;
+                // Convert back from two's complement
+                let resultOnesComp = '';
+                for (let i = 0; i < 8; i++) {
+                    resultOnesComp += result[i] === '0' ? '1' : '0';
+                }
+                let magnitude = '';
+                let carryBack = 1;
+                for (let i = 7; i >= 0; i--) {
+                    const sum = parseInt(resultOnesComp[i]) + carryBack;
+                    magnitude = (sum % 2) + magnitude;
+                    carryBack = Math.floor(sum / 2);
+                }
+                html += `Magnitude: ${parseInt(magnitude, 2)}, so result = -${parseInt(magnitude, 2)}<br>`;
+            }
+            
+            html += `<br><strong>Final Answer:</strong> ${minuend} - ${subtrahend} = ${actualResult}`;
+            html += '</div>';
+            
+            html += '<div style="background: #e8f5e8; padding: 1rem; border-radius: 4px; margin-top: 1rem;">';
+            html += '<strong>Key Insight:</strong> Subtraction became addition! By using two\'s complement, ';
+            html += 'computers can perform subtraction using the same addition circuitry, making hardware design simpler and more efficient.';
+            html += '</div>';
+            
+            resultDiv.innerHTML = html;
+            
+            // Mark section as completed
+            completedSections.add('binarySubtraction');
+            updateProgress();
+        }
             // Allow space bar to activate buttons and options
             if (e.key === ' ' && (e.target.classList.contains('input-switch') || e.target.classList.contains('quiz-option') || e.target.classList.contains('gate-btn'))) {
                 e.preventDefault();
