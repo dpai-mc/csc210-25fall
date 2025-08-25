@@ -414,18 +414,17 @@
         .video-transcript-container {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
             display: flex;
-            flex-direction: column; /* Stacked by default now */
+            flex-direction: column;
             gap: 20px;
             max-width: 1200px;
-            margin: 20px 0; /* Changed margin to fit inside section */
+            margin: 20px 0;
             padding: 0;
         }
 
         .video-wrapper {
             position: relative;
-            padding-top: 56.25%; /* 16:9 Aspect Ratio */
+            padding-top: 56.25%;
             height: 0;
-            flex: 2;
         }
 
         .video-wrapper iframe {
@@ -438,14 +437,10 @@
         }
 
         .transcript-wrapper {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            min-width: 280px;
-            margin-top: 1rem; /* Space between video and transcript */
+            margin-top: 1rem;
         }
 
-        .transcript-wrapper h4 { /* Matched heading style */
+        .transcript-wrapper h4 {
             margin-top: 0;
             font-size: 1.1rem;
             color: #34495e;
@@ -453,7 +448,7 @@
 
         .transcript-content {
             overflow-y: auto;
-            max-height: 300px; /* Constrained height */
+            max-height: 300px;
             border: 1px solid #e0e0e0;
             padding: 10px;
             background-color: #ffffff;
@@ -660,19 +655,30 @@
                         </ul>
                         <p><em>Watch this tutorial before beginning your assignment to ensure you're comfortable with the Logisim interface.</em></p>
                     </div>
+                    
                     <div class="download-links">
-                        <a href="https://mendocinocollege-my.sharepoint.com/:u:/g/personal/dpai_mendocino_edu/ETE3bbN1a1tPrHQzXB8cLqcB5zOZSBuM9BrdcxuGxJghDw?e=fkGhtZ" class="download-btn" target="_blank" rel="noopener noreferrer" aria-describedby="windows-desc">
+                        <a href="https://mendocinocollege-my.sharepoint.com/:u:/g/personal/dpai_mendocino_edu/ETE3bbN1a1tPrHQzXB8cLqcB5zOZSBuM9BrdcxuGxJghDw?e=fkGhtZ" 
+                           class="download-btn" 
+                           target="_blank" 
+                           rel="noopener noreferrer"
+                           aria-describedby="windows-desc">
                             💻 Logisim 2.7.1 for Windows
                             <span id="windows-desc" class="sr-only">Download Logisim 2.7.1 for Windows operating system</span>
                         </a>
-                        <a href="https://mendocinocollege-my.sharepoint.com/:u:/g/personal/dpai_mendocino_edu/EcjnlCXLT1pEvSjVBVemxLkBVe-pwL3ukH6qbyBMkv9ZHg?e=yvVnm8" class="download-btn" target="_blank" rel="noopener noreferrer" aria-describedby="mac-desc">
+                        <a href="https://mendocinocollege-my.sharepoint.com/:u:/g/personal/dpai_mendocino_edu/EcjnlCXLT1pEvSjVBVemxLkBVe-pwL3ukH6qbyBMkv9ZHg?e=yvVnm8" 
+                           class="download-btn" 
+                           target="_blank" 
+                           rel="noopener noreferrer"
+                           aria-describedby="mac-desc">
                             🍎 Logisim 2.7.1 for MacOS
                             <span id="mac-desc" class="sr-only">Download Logisim 2.7.1 for MacOS operating system</span>
                         </a>
                     </div>
                 </div>
+
                 <h3>File Structure</h3>
                 <p>All circuits must be created as <strong>subcircuits</strong> within a single file named <code>lastname_firstname_week2.circ</code>. Each part of the assignment should be implemented as a separate subcircuit with the naming convention specified in each section.</p>
+
                 <div class="warning-box">
                     <h4>Boolean Expression Notation Guide</h4>
                     <p><strong>Understanding Boolean Symbols:</strong></p>
@@ -681,6 +687,7 @@
                         <li><strong>OR Operation:</strong> A + B (addition)</li>
                         <li><strong>NOT Operation:</strong> A' or <span style="text-decoration: overline;">A</span> (negation)</li>
                     </ul>
+                    
                     <p><strong>Critical: Order of Operations</strong></p>
                     <p>In expressions like <strong>A'B</strong>, the NOT symbol applies <em>only</em> to the variable it immediately follows. This means:</p>
                     <div class="expression-box">
@@ -692,141 +699,462 @@
                 </div>
             </div>
         </div>
-        
+
         <div class="section" id="part-a">
-            <div class="section-header" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" aria-controls="part-a-content">
-                <h2>Part A: Implement Basic Gates <span class="points-badge">20 Points</span></h2>
-                <span class="collapse-icon collapsed" aria-label="Expand or collapse section">▼</span>
+            <div class="section-header" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="true" aria-controls="part-a-content">
+                <h2>Part A: Logisim Familiarization <span class="points-badge">15 points</span></h2>
+                <span class="collapse-icon" aria-label="Expand or collapse section">▼</span>
             </div>
             <div id="part-a-content" class="section-content">
-                <p>Create separate subcircuits for a two-input AND gate and a two-input OR gate.</p>
+                <h3>Objective</h3>
+                <p>Learn basic Logisim operations and subcircuit creation.</p>
+
+                <h3>Tasks</h3>
+                <h4>1. Create Main Circuit File (3 points)</h4>
                 <ul>
-                    <li>Name the subcircuits <code>part-a-and</code> and <code>part-a-or</code>.</li>
-                    <li>Each subcircuit should have two inputs (A, B) and one output (Y).</li>
-                    <li>Verify that your circuits produce the correct truth tables.</li>
+                    <li>Create a new circuit file named <code>lastname_firstname_week2.circ</code></li>
+                    <li>The main circuit should contain a brief title and your name as text</li>
+                </ul>
+
+                <h4>2. Basic Gate Library (12 points)</h4>
+                <ul>
+                    <li>Create a subcircuit named <code>gate_library</code></li>
+                    <li>Place one of each basic gate: AND, OR, NOT, NAND, NOR, XOR</li>
+                    <li>Add input pins (A, B) and connect them to each gate where applicable</li>
+                    <li>Add output pins for each gate and label them clearly (AND_out, OR_out, etc.)</li>
+                    <li>For single-input gates (NOT), connect input A only</li>
+                </ul>
+
+                <h3>Subcircuit Requirements</h3>
+                <ul>
+                    <li>Use Logisim's "Add Circuit" feature to create subcircuits</li>
+                    <li>Name your subcircuit exactly as specified</li>
+                    <li>Include proper input/output pin labeling</li>
+                    <li>Test functionality by switching between main circuit and subcircuit views</li>
+                </ul>
+
+                <h3>Deliverables</h3>
+                <ul>
+                    <li>Subcircuit <code>gate_library</code> within your main .circ file</li>
+                    <li>Written verification that all gates work correctly</li>
                 </ul>
             </div>
         </div>
+
         <div class="section" id="part-b">
-            <div class="section-header" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" aria-controls="part-b-content">
-                <h2>Part B: Boolean Expressions <span class="points-badge">30 Points</span></h2>
-                <span class="collapse-icon collapsed" aria-label="Expand or collapse section">▼</span>
+            <div class="section-header" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="true" aria-controls="part-b-content">
+                <h2>Part B: Boolean Expression Implementation <span class="points-badge">25 points</span></h2>
+                <span class="collapse-icon" aria-label="Expand or collapse section">▼</span>
             </div>
             <div id="part-b-content" class="section-content">
-                <p>Implement the following Boolean expressions, each in its own subcircuit. Use only AND, OR, and NOT gates.</p>
-                <h4>Expression 1: Y = AB + C</h4>
-                <div class="expression-box">Y = (A AND B) OR C</div>
+                <h3>Objective</h3>
+                <p>Translate Boolean expressions into working digital circuits.</p>
+
+                <p>Build the following expressions as separate subcircuits:</p>
+
+                <h4>Expression 1: F1 = AB + A'C (8 points)</h4>
+                <div class="expression-box">F1 = AB + A'C</div>
                 <ul>
-                    <li>Subcircuit Name: <code>part-b-exp1</code></li>
-                    <li>Inputs: A, B, C</li>
-                    <li>Output: Y</li>
+                    <li>Subcircuit name: <code>expr1_ab_plus_ac</code></li>
+                    <li>Use 3 inputs (A, B, C) and 1 output (F1)</li>
+                    <li>Build using basic gates (AND, OR, NOT)</li>
                 </ul>
-                <h4>Expression 2: Y = A(B+C)</h4>
-                <div class="expression-box">Y = A AND (B OR C)</div>
+
+                <h4>Expression 2: F2 = (A + B)(A' + C) (9 points)</h4>
+                <div class="expression-box">F2 = (A + B)(A' + C)</div>
                 <ul>
-                    <li>Subcircuit Name: <code>part-b-exp2</code></li>
-                    <li>Inputs: A, B, C</li>
-                    <li>Output: Y</li>
+                    <li>Subcircuit name: <code>expr2_product_form</code></li>
+                    <li>Use 3 inputs (A, B, C) and 1 output (F2)</li>
+                    <li>Build the circuit as written (don't simplify first)</li>
+                </ul>
+
+                <h4>Expression 3: F3 = A'B'C' + A'BC + AB'C' + ABC (8 points)</h4>
+                <div class="expression-box">F3 = A'B'C' + A'BC + AB'C' + ABC</div>
+                <ul>
+                    <li>Subcircuit name: <code>expr3_sum_of_products</code></li>
+                    <li>Use 3 inputs (A, B, C) and 1 output (F3)</li>
+                    <li>Build using sum-of-products form</li>
+                </ul>
+
+                <h3>Requirements</h3>
+                <ul>
+                    <li>Each expression must be in its own subcircuit</li>
+                    <li>Use consistent input/output naming (A, B, C inputs; F1/F2/F3 outputs)</li>
+                    <li>Create truth table verification for each expression</li>
+                    <li>Document gate counts for each implementation</li>
                 </ul>
             </div>
         </div>
+
         <div class="section" id="part-c">
-            <div class="section-header" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" aria-controls="part-c-content">
-                <h2>Part C: De Morgan's Laws <span class="points-badge">30 Points</span></h2>
-                <span class="collapse-icon collapsed" aria-label="Expand or collapse section">▼</span>
+            <div class="section-header" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="true" aria-controls="part-c-content">
+                <h2>Part C: De Morgan's Laws Verification <span class="points-badge">35 points</span></h2>
+                <span class="collapse-icon" aria-label="Expand or collapse section">▼</span>
             </div>
             <div id="part-c-content" class="section-content">
-                <p>In this section, you will prove one of De Morgan's laws by building and comparing two different circuits in a single subcircuit.</p>
-                <div class="subcircuit-list">
-                    <h4>Subcircuit Name: <code>demorgan-proof</code></h4>
-                    <p>Within this single subcircuit, build two smaller circuits that share the same two inputs (A and B):</p>
-                    <ol>
-                        <li><strong>Circuit 1:</strong> Implement the expression <strong>(AB)'</strong>. This is a NAND gate. The output should be labeled <code>out-nand</code>.</li>
-                        <li><strong>Circuit 2:</strong> Implement the expression <strong>A' + B'</strong>. This is (NOT A) OR (NOT B). The output should be labeled <code>out-or-nots</code>.</li>
-                    </ol>
+                <h3>Objective</h3>
+                <p>Prove De Morgan's Laws through both algebraic manipulation and circuit construction.</p>
+
+                <div class="expression-box">
+                    <strong>Law 1:</strong> NOT(A AND B) = (NOT A) OR (NOT B)<br>
+                    <strong>Law 2:</strong> NOT(A OR B) = (NOT A) AND (NOT B)
                 </div>
-                <p>Toggle the inputs A and B to show that for every combination, <code>out-nand</code> and <code>out-or-nots</code> are always identical, thus proving the law.</p>
+
+                <h3>Tasks</h3>
+
+                <h4>1. Algebraic Proof (10 points)</h4>
+                <ul>
+                    <li>Create complete truth tables for both sides of each law</li>
+                    <li>Show that the truth tables are identical</li>
+                    <li>Explain why this constitutes a proof</li>
+                </ul>
+
+                <h4>2. Circuit Implementation - Law 1 (12 points)</h4>
+                <ul>
+                    <li>Subcircuit name: <code>demorgan_law1</code></li>
+                    <li><strong>Circuit Layout Requirements:</strong>
+                        <ul>
+                            <li>Use shared input pins A and B at the top of your subcircuit</li>
+                            <li>Build the left side circuit: <code>NOT(A AND B)</code> in the upper portion</li>
+                            <li>Build the right side circuit: <code>(NOT A) OR (NOT B)</code> in the lower portion</li>
+                            <li>Align the output pins vertically so you can easily compare results</li>
+                            <li>Label outputs: <code>LEFT_SIDE</code> and <code>RIGHT_SIDE</code></li>
+                        </ul>
+                    </li>
+                    <li><strong>Verification Circuit:</strong> Add an XOR gate connecting both outputs to prove they're always equal (output should always be 0)</li>
+                    <li>Connect the same input pins to both circuits for direct comparison</li>
+                </ul>
+
+                <h4>3. Circuit Implementation - Law 2 (13 points)</h4>
+                <ul>
+                    <li>Subcircuit name: <code>demorgan_law2</code></li>
+                    <li><strong>Circuit Layout Requirements:</strong>
+                        <ul>
+                            <li>Use shared input pins A and B at the top of your subcircuit</li>
+                            <li>Build the left side circuit: <code>NOT(A OR B)</code> in the upper portion</li>
+                            <li>Build the right side circuit: <code>(NOT A) AND (NOT B)</code> in the lower portion</li>
+                            <li>Align the output pins vertically for easy visual comparison</li>
+                            <li>Label outputs: <code>LEFT_SIDE</code> and <code>RIGHT_SIDE</code></li>
+                        </ul>
+                    </li>
+                    <li><strong>Verification Circuit:</strong> Add an XOR gate connecting both outputs to prove equality</li>
+                    <li>Use identical inputs for both circuit halves to enable interactive testing</li>
+                </ul>
+
+                <div class="warning-box">
+                    <h4>Circuit Comparison Best Practices</h4>
+                    <p><strong>For Interactive Proof:</strong></p>
+                    <ul>
+                        <li>Place input pins at the top, outputs at the bottom</li>
+                        <li>Use the same input values for both sides of the equation</li>
+                        <li>Vertically align corresponding outputs for easy visual comparison</li>
+                        <li>When testing, toggle inputs and observe that both outputs always match</li>
+                        <li>The XOR verification output should remain 0 for all input combinations</li>
+                    </ul>
+                    <p><strong>Why This Layout Matters:</strong> This arrangement allows you to interactively prove the laws by testing all input combinations and visually confirming that both sides always produce identical results.</p>
+                </div>
+
+                <h3>Verification Requirements</h3>
+                <ul>
+                    <li>Test all 4 possible input combinations (00, 01, 10, 11)</li>
+                    <li>The comparison output should always be 0 (proving equality)</li>
+                    <li>Document that both sides produce identical outputs for all inputs</li>
+                    <li>Include screenshots of your subcircuits</li>
+                    <li>Explain the practical significance of De Morgan's Laws in circuit design</li>
+                </ul>
             </div>
         </div>
+
         <div class="section" id="part-d">
-            <div class="section-header" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" aria-controls="part-d-content">
-                <h2>Part D: Written Analysis <span class="points-badge extra-credit">Extra Credit: 10 Points</span></h2>
-                <span class="collapse-icon collapsed" aria-label="Expand or collapse section">▼</span>
+            <div class="section-header" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="true" aria-controls="part-d-content">
+                <h2>Part D: Circuit Analysis and Simplification <span class="points-badge">25 points</span></h2>
+                <span class="collapse-icon" aria-label="Expand or collapse section">▼</span>
             </div>
             <div id="part-d-content" class="section-content">
-                <p>In your report, briefly explain in your own words why De Morgan’s law is useful in digital logic design. What does it allow engineers to do?</p>
+                <h3>Objective</h3>
+                <p>Analyze complex circuits and apply Boolean algebra for simplification.</p>
+
+                <div class="expression-box">
+                    <strong>Given Expression:</strong><br>
+                    F = ABC + AB'C + A'BC + A'B'C'
+                </div>
+
+                <h3>Tasks</h3>
+
+                <h4>1. Original Circuit Implementation (8 points)</h4>
+                <ul>
+                    <li>Subcircuit name: <code>original_complex</code></li>
+                    <li>Build the circuit exactly as given (sum-of-products form)</li>
+                    <li>Use inputs A, B, C and output F_original</li>
+                    <li>Count and document the total number of gates used</li>
+                </ul>
+
+                <h4>2. Boolean Simplification (10 points)</h4>
+                <ul>
+                    <li>Simplify the expression using Boolean algebra laws</li>
+                    <li>Show each step of your simplification process</li>
+                    <li>State which Boolean laws you applied at each step</li>
+                    <li>Create a truth table to verify your simplification is correct</li>
+                </ul>
+
+                <h4>3. Simplified Circuit Implementation (7 points)</h4>
+                <ul>
+                    <li>Subcircuit name: <code>simplified_complex</code></li>
+                    <li>Build a circuit for your simplified expression</li>
+                    <li>Use inputs A, B, C and output F_simplified</li>
+                    <li>Count gates in simplified version</li>
+                </ul>
+
+                <h3>Main Circuit Integration</h3>
+                <ul>
+                    <li>Create a subcircuit named <code>comparison_demo</code></li>
+                    <li><strong>Layout for Circuit Comparison:</strong>
+                        <ul>
+                            <li>Place shared input pins (A, B, C) at the top of the subcircuit</li>
+                            <li>Position the original complex circuit in the upper half</li>
+                            <li>Position the simplified circuit in the lower half</li>
+                            <li>Align the output pins (F_original and F_simplified) vertically</li>
+                            <li>Connect the same input pins to both circuits</li>
+                        </ul>
+                    </li>
+                    <li><strong>Verification:</strong> Add an XOR gate between the outputs to verify they're identical (should always output 0)</li>
+                    <li><strong>Gate Count Display:</strong> Use text labels to show gate counts for each version</li>
+                </ul>
+
+                <div class="warning-box">
+                    <h4>Interactive Circuit Comparison</h4>
+                    <p>The comparison layout allows you to:</p>
+                    <ul>
+                        <li>Toggle input combinations and immediately see both circuit outputs</li>
+                        <li>Visually verify that simplification preserves functionality</li>
+                        <li>Demonstrate the efficiency gain from fewer gates</li>
+                        <li>Use the XOR verification to prove mathematical equivalence</li>
+                    </ul>
+                    <p><strong>Testing Protocol:</strong> Test all 8 possible input combinations (000 through 111) and verify that both outputs match for every combination.</p>
+                </div>
+
+                <h3>Analysis Questions</h3>
+                <ul>
+                    <li>How many gates did you eliminate through simplification?</li>
+                    <li>What percentage reduction in gate count did you achieve?</li>
+                    <li>Which Boolean laws were most useful in this simplification?</li>
+                    <li>Why is circuit simplification important in digital design?</li>
+                </ul>
             </div>
         </div>
-        <div class="section" id="submission">
-            <div class="section-header" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" aria-controls="submission-content">
-                <h2>Submission Guidelines</h2>
-                <span class="collapse-icon collapsed" aria-label="Expand or collapse section">▼</span>
+
+        <div class="section" id="requirements">
+            <div class="section-header" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="true" aria-controls="requirements-content">
+                <h2>Submission Requirements</h2>
+                <span class="collapse-icon" aria-label="Expand or collapse section">▼</span>
             </div>
-            <div id="submission-content" class="section-content">
-                <p>Submit a single <code>.circ</code> file containing your main circuit and all required subcircuits. Additionally, include a brief report (.docx or .pdf) with screenshots of each of your circuits and their corresponding truth tables as verified in Logisim.</p>
-                <h3>Grading Rubric</h3>
-                <table class="rubric-table">
+            <div id="requirements-content" class="section-content">
+                <div class="subcircuit-list">
+                    <h4>Required Subcircuits in Your .circ File:</h4>
+                    <ol>
+                        <li><code>gate_library</code></li>
+                        <li><code>expr1_ab_plus_ac</code></li>
+                        <li><code>expr2_product_form</code></li>
+                        <li><code>expr3_sum_of_products</code></li>
+                        <li><code>demorgan_law1</code></li>
+                        <li><code>demorgan_law2</code></li>
+                        <li><code>original_complex</code></li>
+                        <li><code>simplified_complex</code></li>
+                        <li><code>comparison_demo</code></li>
+                    </ol>
+                </div>
+
+                <h3>Files to Submit</h3>
+                <ol>
+                    <li><strong>Single Circuit File:</strong> <code>lastname_firstname_week2.circ</code> containing all required subcircuits</li>
+                    <li><strong>Written Report:</strong>
+                        <ul>
+                            <li>Truth tables for all expressions</li>
+                            <li>Screenshots of each subcircuit</li>
+                            <li>Step-by-step algebraic work for simplifications</li>
+                            <li>Gate count comparisons</li>
+                            <li>Analysis answers for Part D</li>
+                            <li>Reflection on learning</li>
+                        </ul>
+                    </li>
+                </ol>
+
+                <h3>Logisim 2.7.1 Specific Requirements</h3>
+                <ul>
+                    <li>Use only standard gates available in Logisim 2.7.1</li>
+                    <li>Do not use any advanced components or custom libraries</li>
+                    <li>Ensure your file opens correctly in Logisim 2.7.1</li>
+                    <li>Test all subcircuits before submission</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="section" id="grading">
+            <div class="section-header" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="true" aria-controls="grading-content">
+                <h2>Grading Rubric</h2>
+                <span class="collapse-icon" aria-label="Expand or collapse section">▼</span>
+            </div>
+            <div id="grading-content" class="section-content">
+                <table class="rubric-table" role="table" aria-label="Grading rubric for assignment components">
                     <thead>
                         <tr>
-                            <th>Criteria</th>
+                            <th>Component</th>
                             <th>Points</th>
+                            <th>Criteria</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
-                            <td>Part A: Basic gates correctly implemented</td>
-                            <td>20</td>
+                            <td><strong>Part A</strong></td>
+                            <td>15</td>
+                            <td>Subcircuit creation, gate functionality, organization</td>
                         </tr>
                         <tr>
-                            <td>Part B: Boolean expressions correctly implemented</td>
-                            <td>30</td>
+                            <td><strong>Part B</strong></td>
+                            <td>25</td>
+                            <td>Correct implementation, subcircuit naming, truth tables</td>
                         </tr>
                         <tr>
-                            <td>Part C: De Morgan's law correctly proven</td>
-                            <td>30</td>
+                            <td><strong>Part C</strong></td>
+                            <td>35</td>
+                            <td>Mathematical proof, working subcircuits, comprehensive testing</td>
                         </tr>
                         <tr>
-                            <td>File Naming & Subcircuit Organization</td>
-                            <td>20</td>
-                        </tr>
-                        <tr>
-                            <td>Part D: Written Analysis (Extra Credit)</td>
-                            <td>10</td>
+                            <td><strong>Part D</strong></td>
+                            <td>25</td>
+                            <td>Accurate simplification, gate optimization, comparison</td>
                         </tr>
                     </tbody>
                 </table>
+
+                <h3>Quality Standards</h3>
+                <ul>
+                    <li><strong>Subcircuit Organization:</strong> Each subcircuit focused on single task</li>
+                    <li><strong>Naming Conventions:</strong> Exact subcircuit names as specified</li>
+                    <li><strong>Circuit Layout:</strong> Gates arranged logically, minimal wire crossing</li>
+                    <li><strong>Documentation:</strong> Clear explanations and step-by-step work shown</li>
+                    <li><strong>Testing:</strong> Evidence that all subcircuits were thoroughly tested</li>
+                </ul>
             </div>
         </div>
+
         <div class="section" id="tips">
-            <div class="section-header" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" aria-controls="tips-content">
+            <div class="section-header" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="true" aria-controls="tips-content">
                 <h2>Tips for Success</h2>
-                <span class="collapse-icon collapsed" aria-label="Expand or collapse section">▼</span>
+                <span class="collapse-icon" aria-label="Expand or collapse section">▼</span>
             </div>
             <div id="tips-content" class="section-content">
                 <div class="tips-grid">
                     <div class="tip-card">
-                        <h4>Label Everything</h4>
-                        <p>Use labels for all your inputs and outputs in Logisim. This makes your circuits much easier to read and debug.</p>
+                        <h4>Logisim 2.7.1 Best Practices</h4>
+                        <ul>
+                            <li>Plan your layout before building</li>
+                            <li>Use subcircuits properly</li>
+                            <li>Test incrementally</li>
+                            <li>Save frequently</li>
+                            <li>Check connections</li>
+                        </ul>
                     </div>
+                    
                     <div class="tip-card">
-                        <h4>Test Incrementally</h4>
-                        <p>After you place a few gates, test them with the poke tool (the hand icon). Don't wait until the entire circuit is built to find a mistake.</p>
+                        <h4>Boolean Algebra Tips</h4>
+                        <ul>
+                            <li>Work systematically</li>
+                            <li>Verify with truth tables</li>
+                            <li>Look for common patterns</li>
+                            <li>Document gate counts</li>
+                        </ul>
                     </div>
+                    
                     <div class="tip-card">
-                        <h4>Stay Organized</h4>
-                        <p>Keep your wires clean and untangled. Logisim automatically routes wires, but you can drag them to make your layouts neater.</p>
-                    </div>
-                    <div class="tip-card">
-                        <h4>Save Often</h4>
-                        <p>Save your <code>.circ</code> file frequently to avoid losing your work.</p>
+                        <h4>Common Mistakes to Avoid</h4>
+                        <ul>
+                            <li>Incorrect subcircuit naming</li>
+                            <li>Unconnected pins</li>
+                            <li>Using wrong Logisim version</li>
+                            <li>Not testing all combinations</li>
+                        </ul>
                     </div>
                 </div>
+
+                <h3>Subcircuit Creation Steps</h3>
+                <ol>
+                    <li>Right-click in project explorer → Add Circuit</li>
+                    <li>Name your subcircuit exactly as specified</li>
+                    <li>Add input/output pins from I/O library</li>
+                    <li>Build your logic circuit</li>
+                    <li>Test in subcircuit view before using in main circuit</li>
+                </ol>
+
+                <h3>Circuit Comparison Layout Guide</h3>
+                <div class="tip-card">
+                    <h4>For De Morgan's Laws and Circuit Comparisons</h4>
+                    <p><strong>Recommended Layout Pattern:</strong></p>
+                    <ul>
+                        <li><strong>Top:</strong> Shared input pins (A, B, C)</li>
+                        <li><strong>Upper half:</strong> First circuit (original expression)</li>
+                        <li><strong>Lower half:</strong> Second circuit (equivalent expression)</li>
+                        <li><strong>Bottom:</strong> Aligned output pins for visual comparison</li>
+                        <li><strong>Side:</strong> XOR gate connecting outputs (for verification)</li>
+                    </ul>
+                    <p>This arrangement enables interactive testing where you toggle inputs and immediately see both outputs change, proving equivalence through direct observation.</p>
+                </div>
+
+                <h3>Troubleshooting</h3>
+                <h4>If Your Circuit Doesn't Work:</h4>
+                <ul>
+                    <li>Check that all pins are connected (no red X's)</li>
+                    <li>Verify input/output pin placement and names</li>
+                    <li>Use the Hand tool to test different input combinations</li>
+                    <li>Check that subcircuit is properly saved and named</li>
+                </ul>
+
+                <h4>Version Compatibility:</h4>
+                <ul>
+                    <li>Only Logisim 2.7.1 files will be accepted</li>
+                    <li>Test your final file by closing and reopening it</li>
+                    <li>Ensure all subcircuits appear in the project explorer</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="section" id="help">
+            <div class="section-header" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="true" aria-controls="help-content">
+                <h2>Getting Help</h2>
+                <span class="collapse-icon" aria-label="Expand or collapse section">▼</span>
+            </div>
+            <div id="help-content" class="section-content">
+                <h3>Resources</h3>
+                <ul>
+                    <li><strong>Logisim 2.7.1 Documentation:</strong> <a href="https://cburch.com/logisim/docs.html" target="_blank" rel="noopener noreferrer">Official Documentation</a></li>
+                    <li><strong>Course Tutor:</strong> <a href="https://www.playlab.ai/project/cmenet5ig00ccil0u7kpqihg2" target="_blank" rel="noopener noreferrer">AI Tutor for CSC210</a></li>
+                    <li><strong>Peer: Questions and Help Forum:</strong> <a href="https://mendocino.instructure.com/courses/19705/discussion_topics/251135" target="_blank" rel="noopener noreferrer">Student Discussion Forum</a></li>
+                </ul>
+
+                <h3>Academic Integrity</h3>
+                <div class="warning-box">
+                    <strong>Important Guidelines:</strong>
+                    <ul>
+                        <li>You may discuss concepts with classmates</li>
+                        <li>Circuit implementations and written work must be your own</li>
+                        <li>Don't share .circ files with other students</li>
+                        <li>Cite any external resources used</li>
+                    </ul>
+                </div>
+
+                <h3>Learning Reflection</h3>
+                <p>After completing this assignment, consider:</p>
+                <ul>
+                    <li>How does building physical circuits change your understanding of Boolean algebra?</li>
+                    <li>What connections do you see between mathematical laws and practical circuit design?</li>
+                    <li>How might the skills you've developed apply to computer architecture?</li>
+                </ul>
             </div>
         </div>
     </div>
-    
+
     <script>
-        // --- Original Page Script ---
+        // --- YOUR ORIGINAL SCRIPT ---
         const sectionsRead = new Set();
         const totalSections = document.querySelectorAll('.section').length;
 
@@ -900,7 +1228,6 @@
             observer.observe(section);
         });
         
-        // --- Accessibility Script ---
         function changeFontSize(direction) {
             const currentSize = parseFloat(window.getComputedStyle(document.body).fontSize);
             document.body.style.fontSize = (direction === 'increase' ? currentSize + 1 : currentSize - 1) + 'px';
@@ -918,7 +1245,7 @@
             setTimeout(() => { document.body.removeChild(announcement); }, 2000);
         }
     </script>
-    
+
     <script src="https://www.youtube.com/iframe_api"></script>
     <script>
         let player;
