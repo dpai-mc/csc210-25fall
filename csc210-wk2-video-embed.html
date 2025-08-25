@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Video Transcript Player</title>
+
+    <style>
+        /* Main container for the video and transcript */
+        .video-transcript-container {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+            display: flex;
+            flex-direction: row; /* Side-by-side layout for wider screens */
+            gap: 20px;
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+        }
+
+        /* Responsive video wrapper to maintain 16:9 aspect ratio */
+        .video-wrapper {
+            position: relative;
+            padding-top: 56.25%; /* 16:9 Aspect Ratio (9 / 16 = 0.5625) */
+            height: 0;
+            flex: 2; /* Video takes up 2/3 of the space */
+        }
+
+        .video-wrapper iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
+
+        /* Container for the transcript */
+        .transcript-wrapper {
+            flex: 1; /* Transcript takes up 1/3 of the space */
+            display: flex;
+            flex-direction: column;
+            min-width: 280px;
+        }
+
+        .transcript-wrapper h2 {
+            margin-top: 0;
+            font-size: 1.2em;
+            color: #333;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+        }
+
+        /* The scrollable area for transcript content */
+        .transcript-content {
+            overflow-y: auto;
+            height: 400px; /* Adjust height as needed */
+            border: 1px solid #e0e0e0;
+            padding: 10px;
+            background-color: #ffffff;
+            border-radius: 4px;
+        }
+        
+        /* Individual transcript lines */
+        .transcript-content span {
+            display: block; /* Each span on its own line */
+            padding: 8px 12px;
+            margin-bottom: 4px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            line-height: 1.5;
+        }
+        
+        /* Hover and focus states for accessibility */
+        .transcript-content span:hover,
+        .transcript-content span:focus {
+            background-color: #e9e9e9;
+            outline: 2px solid #005fcc;
+            outline-offset: 2px;
+        }
+        
+        /* Style for the currently active transcript line */
+        .transcript-content span.active-transcript {
+            background-color: #ffe0b2; /* A light orange for highlighting */
+            font-weight: bold;
+            color: #000;
+        }
+        
+        /* Responsive layout for smaller screens */
+        @media (max-width: 800px) {
+            .video-transcript-container {
+                flex-direction: column; /* Stack video and transcript vertically */
+            }
+            .video-wrapper {
+                width: 100%;
+            }
+            .transcript-wrapper {
+                margin-top: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="video-transcript-container">
+
+        <div class="video-wrapper">
+            <iframe id="youtube-player"
+                    title="Video player for Boolean Logic and Digital Gates"
+                    src="https://www.youtube.com/embed/gI-qXk7XojA?enablejsapi=1"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowfullscreen>
+            </iframe>
+        </div>
+
+        <div class="transcript-wrapper">
+            <h2>Interactive Transcript</h2>
+            <div id="transcript-container" class="transcript-content">
+                [cite_start]<span data-start="0.0" data-end="5.04" tabindex="0" role="button">Aloha and welcome to Boolean Logic and Digital Gates.</span> [cite: 1]
+                [cite_start]<span data-start="5.68" data-end="8.0" tabindex="0" role="button">That's going to be our topic this week.</span> [cite: 2]
+                [cite_start]<span data-start="10.2" data-end="16.14" tabindex="0" role="button">And so what we're going to start with is a little review here of Binary Edition, the basics.</span> [cite: 3]
+                [cite_start]<span data-start="16.58" data-end="20.62" tabindex="0" role="button">So we sort of went over it last time, but we didn't really cover it real close.</span> [cite: 4]
+                [cite_start]<span data-start="20.62" data-end="30.18" tabindex="0" role="button">So I put up a summary kind of activity for you to look at Boolean Edition and it's kind of foundational.</span> [cite: 5]
+                [cite_start]<span data-start="30.64" data-end="32.78" tabindex="0" role="button">And so you really need to understand that.</span> [cite: 6]
+                <span data-start="32.98" data-end="45.68" tabindex="0" role="button">So if you're struggling with that a little bit, take some time, review the addition and subtraction review that I've posted here, along with the example interactive calculator that you can use.</span>
+                [cite_start]<span data-start="46.3" data-end="49.88" tabindex="0" role="button">OK, and it talks also about two's complement and how you do negative numbers.</span> [cite: 8]
+                <span data-start="50.62" data-end="57.88" tabindex="0" role="button">And add them, so basically, if you want to subtract the number, you convert it to negative and add it.</span>
+                [cite_start]<span data-start="59.5" data-end="101.92" tabindex="0" role="button">Right, because adding a negative is the same as subtraction, so.</span> [cite: 11]
+                [cite_start]<span data-start="103.34" data-end="107.1" tabindex="0" role="button">OK, so and that's what this first part is, I'm not going to go through it in detail.</span> [cite: 12]
+                [cite_start]<span data-start="120.62" data-end="133.7" tabindex="0" role="button">If you struggle at all with conversion between binary and decimal, if that's if you're still struggling with that, it doesn't make a lot of sense.</span> [cite: 15]
+                [cite_start]<span data-start="133.96" data-end="139.08" tabindex="0" role="button">I posted a link here to this thing called a Cisco binary game.</span> [cite: 16]
+                <span data-start="139.74" data-end="146.76" tabindex="0" role="button">OK, and so it's a gamified approach to just basically doing a lot of conversions. [cite_start]All right.</span> [cite: 17]
+                <span data-start="147.18" data-end="154.64" tabindex="0" role="button">And so through sheer repetition, it helps you. Learn, I better understand how that works.</span>
+                [cite_start]<span data-start="203.94" data-end="208.32" tabindex="0" role="button">OK, you can say play game instructions, you can see in the background these columns.</span> [cite: 21]
+                <span data-start="209.38" data-end="219.64" tabindex="0" role="button">So what it does is when there's a number here, like the number two, it wants you to select the bits to match the number. [cite_start]And then once you do, it goes away.</span> [cite: 22]
+                [cite_start]<span data-start="220.62" data-end="221.52" tabindex="0" role="button">Four and one.</span> [cite: 23]
+                [cite_start]<span data-start="222.42" data-end="230.24" tabindex="0" role="button">When there's a question mark, it wants you to type in the value that that binary eight bit binary number means.</span> [cite: 24]
+                [cite_start]<span data-start="233.2" data-end="237.84" tabindex="0" role="button">And you just go through these and it has multiple levels.</span> [cite: 25]
+                [cite_start]<span data-start="251.24" data-end="254.5" tabindex="0" role="button">You basically run out of space, kind of like a Tetris thing.</span> [cite: 27]
+                [cite_start]<span data-start="258.8" data-end="301.74" tabindex="0" role="button">You know, the game ends or you can end the game yourself.</span> [cite: 28]
+                [cite_start]<span data-start="346.24" data-end="350.6" tabindex="0" role="button">OK, the other thing I should mention is that I created a course tutor.</span> [cite: 36]
+                [cite_start]<span data-start="356.24" data-end="400.64" tabindex="0" role="button">It links to a chat bot that you can ask questions of.</span> [cite: 38]
+                [cite_start]<span data-start="411.2" data-end="416.38" tabindex="0" role="button">It is backed by a gen AI, so you can ask it, you know.</span> [cite: 41]
+                [cite_start]<span data-start="444.82" data-end="449.7" tabindex="0" role="button">You can go pretty much anywhere you want to go, and it will answer you.</span> [cite: 45]
+                [cite_start]<span data-start="452.34" data-end="458.0" tabindex="0" role="button">It's not meant to do your work for you, but it's meant to aid and assist you.</span> [cite: 46]
+                [cite_start]<span data-start="508.0" data-end="509.86" tabindex="0" role="button">It's fairly extensive and comprehensive.</span> [cite: 48]
+                [cite_start]<span data-start="511.18" data-end="514.9" tabindex="0" role="button">Basically, it says you're going to use it and you're going to use it as intended.</span> [cite: 49]
+                [cite_start]<span data-start="516.28" data-end="520.1" tabindex="0" role="button">As an aid to help you learn not to do the work for you.</span> [cite: 50]
+                [cite_start]<span data-start="521.22" data-end="526.1" tabindex="0" role="button">OK, so that's so please read this and take a look at it.</span> [cite: 51]
+                [cite_start]<span data-start="550.62" data-end="613.04" tabindex="0" role="button">OK, so this video will get posted here, so we want to talk a little about Boolean algebra, what it is, what logic gates are, maybe what circuits are, truth tables, conversion between representations of Boolean expressions, two tables, gate diagrams and sometimes recognize patterns, sometimes you can see patterns in any more sense.</span> [cite: 56]
+                [cite_start]<span data-start="620.56" data-end="635.76" tabindex="0" role="button">There are these one, two, three, these six primary gates that we care about and and gate and or gate and not gate and and gate and nor gate and in. XOR gate, which is exclusive or or ZOR gate.</span> [cite: 59]
+                [cite_start]<span data-start="637.26" data-end="645.84" tabindex="0" role="button">OK, so an and gate works just like in programming when you're branching, you have an if statement inside your if you have a conditional statement.</span> [cite: 60]
+                <span data-start="646.96" data-end="654.34" tabindex="0" role="button">OK, that is true or false. Well, when you have a compound conditional. [cite_start]You usually have two conditions connected with an and or an or.</span> [cite: 62]
+                [cite_start]<span data-start="655.24" data-end="706.84" tabindex="0" role="button">OK, and an and is exactly that it says, hey, when both inputs are high or true, think of true, false, I'm thinking true, false, one is true, zero is false.</span> [cite: 63]
+                <span data-start="742.16" data-end="746.42" tabindex="0" role="button">These are the laws of bullying algebra. [cite_start]When you look at this, a a is an input.</span> [cite: 70]
+                <span data-start="755.08" data-end="801.12" tabindex="0" role="button">Dot is an and. [cite_start]So a and one equals a OK.</span> [cite: 72]
+                [cite_start]<span data-start="801.66" data-end="808.16" tabindex="0" role="button">A or plus is an or a or zero equals an A. And we use.</span> [cite: 73]
+                [cite_start]<span data-start="834.26" data-end="838.6" tabindex="0" role="button">There's a lot of different notations, but a bar over it means not a.</span> [cite: 77]
+                <span data-start="838.62" data-end="858.58" tabindex="0" role="button">So it means you've taken a and you've not at it. So a times not a equals zero because if a is one, not a is zero. A is zero, not a is one OK, so this community of it doesn't matter which one comes first associative doesn't matter how you pair them.</span>
+                <span data-start="858.58" data-end="908.68" tabindex="0" role="button">If they're all the same. Um, they're all times or they're all plus. [cite_start]It doesn't matter which order you do them and pair them up in and then to Morgan's law, which says.</span> [cite: 83]
+                [cite_start]<span data-start="922.8" data-end="928.08" tabindex="0" role="button">You can group if you have a, B and C, you can group multiple things and create a truth table.</span> [cite: 85]
+                <span data-start="943.32" data-end="948.26" tabindex="0" role="button">And like I said, apparently I got it. [cite_start]I have to update this, but I will update the.</span> [cite: 88]
+                [cite_start]<span data-start="955.62" data-end="959.2" tabindex="0" role="button">All right, so, um, really focus on gates, how they work.</span> [cite: 90]
+                [cite_start]<span data-start="959.9" data-end="1012.1" tabindex="0" role="button">Understand and and in an or a not means just reverse it and and is not and meaning take the results from an and gate and reverse all the answers.</span> [cite: 91]
+                [cite_start]<span data-start="1035.1" data-end="1048.4" tabindex="0" role="button">What it says is that when, um, the if you're doing a two input when the two inputs are the same and you get zero and when they're different, you get one.</span> [cite: 94]
+                <span data-start="1118.76" data-end="1119.98" tabindex="0" role="button">OK, because it's.</span>
+                [cite_start]<span data-start="1120.02" data-end="1127.48" tabindex="0" role="button">An odd number, one plus one plus one is three, three is odd, so the output is one.</span> [cite: 97]
+                [cite_start]<span data-start="1135.56" data-end="1149.48" tabindex="0" role="button">Simulator isn't working right now, like I said, but it should also show a diagram of what our and gates and or gates look like in logic and essentially.</span> [cite: 99]
+                <span data-start="1150.02" data-end="1158.56" tabindex="0" role="button">So, um, that's this week's material. Take some time and work your way through it all. [cite_start]Thanks.</span> [cite: 100]
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://www.youtube.com/iframe_api"></script>
+
+    <script>
+        // Global variable for the YouTube player
+        let player;
+        
+        // This function creates an <iframe> (and YouTube player)
+        // after the API code downloads. It's a required function name by the API.
+        function onYouTubeIframeAPIReady() {
+            player = new YT.Player('youtube-player', {
+                events: {
+                    'onReady': onPlayerReady,
+                    'onStateChange': onPlayerStateChange
+                }
+            });
+        }
+
+        // The API will call this function when the video player is ready.
+        function onPlayerReady(event) {
+            // Player is ready, we can now add event listeners to our transcript
+            setupTranscript();
+        }
+
+        // --- Transcript Synchronization Logic ---
+        const transcriptContainer = document.getElementById('transcript-container');
+        const transcriptSpans = transcriptContainer.querySelectorAll('span');
+        let timeupdater = null; // This will hold our setInterval timer
+
+        // This function runs when the player's state changes (e.g., playing, paused).
+        function onPlayerStateChange(event) {
+            if (event.data == YT.PlayerState.PLAYING) {
+                // If video is playing, start a timer to check the time every 250ms
+                timeupdater = setInterval(updateActiveTranscript, 250);
+            } else if (event.data == YT.PlayerState.PAUSED || event.data == YT.PlayerState.ENDED) {
+                // If video is paused or has ended, stop the timer
+                clearInterval(timeupdater);
+            }
+        }
+
+        // This function sets up the click/keyboard events for each transcript line.
+        function setupTranscript() {
+            transcriptSpans.forEach(span => {
+                const startTime = parseFloat(span.getAttribute('data-start'));
+
+                // Add click event to seek video
+                span.addEventListener('click', () => {
+                    seekToTime(startTime);
+                });
+                
+                // Add keyboard event for accessibility (Enter/Space keys)
+                span.addEventListener('keydown', (event) => {
+                    if (event.key === 'Enter' || event.key === ' ') {
+                        event.preventDefault(); // Prevent page scroll on spacebar
+                        seekToTime(startTime);
+                    }
+                });
+            });
+        }
+        
+        // Function to jump the video to a specific time
+        function seekToTime(time) {
+            if (player && typeof player.seekTo === 'function') {
+                player.seekTo(time, true);
+                player.playVideo(); // Automatically play after seeking
+            }
+        }
+        
+        let activeSpan = null; // Keep track of the currently highlighted span
+
+        // This is the core function that highlights the correct transcript line.
+        function updateActiveTranscript() {
+            if (!player || typeof player.getCurrentTime !== 'function') return;
+            
+            const currentTime = player.getCurrentTime();
+            let newActiveSpan = null;
+
+            // Loop through all spans to find the one that matches the current video time
+            for (const span of transcriptSpans) {
+                const start = parseFloat(span.dataset.start);
+                const end = parseFloat(span.dataset.end);
+
+                if (currentTime >= start && currentTime < end) {
+                    newActiveSpan = span;
+                    break; // Found the correct span, no need to check further
+                }
+            }
+            
+            // Only update the DOM if the active span has changed
+            if (newActiveSpan !== activeSpan) {
+                // Remove 'active' class from the old span if it exists
+                if (activeSpan) {
+                    activeSpan.classList.remove('active-transcript');
+                }
+                
+                // Add 'active' class to the new span and scroll it into view
+                if (newActiveSpan) {
+                    newActiveSpan.classList.add('active-transcript');
+                    // Scroll the active line into the middle of the view for a better experience
+                    newActiveSpan.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'center'
+                    });
+                }
+                
+                // Update the tracker
+                activeSpan = newActiveSpan;
+            }
+        }
+    </script>
+
+</body>
+</html>
