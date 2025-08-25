@@ -1262,6 +1262,8 @@
             const input = document.getElementById('expressionInput').value.trim();
             const result = document.getElementById('expressionResult');
             
+            if (!result) return;
+            
             if (!input) {
                 result.innerHTML = 'Please enter a Boolean expression.';
                 return;
@@ -1269,6 +1271,11 @@
             
             try {
                 const variables = extractVariables(input);
+                if (variables.length === 0) {
+                    result.innerHTML = '<strong>Error:</strong> No valid variables found. Use A, B, or C as variables.';
+                    return;
+                }
+                
                 const truthTable = generateTruthTable(input, variables);
                 displayTruthTable(truthTable, variables, result);
                 
@@ -1281,9 +1288,7 @@
 
         function extractVariables(expression) {
             const matches = expression.match(/[A-C]/g);
-            if (!matches) {
-                throw new Error('No valid variables found. Use A, B, or C as variables.');
-            }
+            if (!matches) return [];
             return [...new Set(matches)].sort();
         }
 
@@ -1295,16 +1300,129 @@
                 const row = [];
                 const values = {};
                 
-                // Generate input values
+                // Generate input values (binary representation of i)
                 for (let j = 0; j < variables.length; j++) {
                     const value = (i >> (variables.length - 1 - j)) & 1;
                     row.push(value);
-                    values[variables[j]] = value;
+                    values[variables[j]] = value === 1;
                 }
                 
                 // Evaluate expression
-                const result = evaluateBooleanExpression(expression, values);
-                row.push(result ? 1 : 0);
+                try {
+                    const result = evaluateBooleanExpression(expression, values);
+                    row.push(result ? 1 : 0);
+                } catch (error) {
+                throw new Error('Invalid expression syntax');
+            }
+        }
+
+        function displayTruthTable(truthTable, variables, resultElement) {
+            let html = '<h4>Truth Table Result:</h4>';
+            html += '<table class="truth-table"><thead><tr>';
+            
+            // Headers for input variables
+            variables.forEach(variable => {
+                html += `<th>${variable}</th>`;
+            });
+            html += '<th>Result</th></tr></thead><tbody>';
+            
+            // Data rows
+            truthTable.forEach(row => {
+                html += '<tr>';
+                row.forEach(value => {
+                    html += `<td>${value}</td>`;
+                });
+                html += '</tr>';
+            });
+            
+            html += '</tbody></table>';
+            html += '<p><em>Expression evaluated successfully! Try another one.</em></p>';
+            
+            resultElement.innerHTML = html;
+        }
+
+        function clearExpression() {
+            const inputElement = document.getElementById('expressionInput');
+            const resultElement = document.getElementById('expressionResult');
+            
+            if (inputElement) inputElement.value = '';
+            if (resultElement) {
+                resultElement.innerHTML = 'Enter a Boolean expression above and click "Generate Truth Table" to see the results.';
+            }
+        }
+
+        // Quiz functionality
+        function selectAnswer(element, isCorrect) {
+            if (!element || !element.parentElement) return;
+            
+            // Remove previous selections
+            const options = element.parentElement.querySelectorAll('.quiz-option');
+            options.forEach(option => {
+                option.classList.remove('selected', 'correct', 'incorrect');
+            });
+            
+            // Mark the selected answer
+            element.classList.add('selected');
+            
+            // Show feedback after a short delay
+            setTimeout(() => {
+                options.forEach(option => {
+                    // Check if this option is the correct one by examining the onclick attribute
+                    const onclickStr = option.getAttribute('onclick') || '';
+                    const optionIsCorrect = onclickStr.includes('true');
+                    
+                    if (optionIsCorrect) {
+                        option.classList.add('correct');
+                    } else if (option.classList.contains('selected') && !isCorrect) {
+                        option.classList.add('incorrect');
+                    }
+                });
+                
+                // Show feedback message
+                const quizSection = element.closest('.tab-panel');
+                if (!quizSection) return;
+                
+                const quizId = quizSection.id;
+                const feedbackElement = document.getElementById(quizId + 'feedback');
+                
+                if (feedbackElement) {
+                    if (isCorrect) {
+                        feedbackElement.innerHTML = '<strong style="color: #28a745;">✓ Correct!</strong> Great job understanding this concept.';
+                        completedSections.add(quizId);
+                    } else {
+                        feedbackElement.innerHTML = '<strong style="color: #dc3545;">✗ Not quite right.</strong> Try reviewing the gate behavior and truth tables above.';
+                    }
+                    
+                    updateProgress();
+                }
+            }, 500);
+        }
+
+        // Tab functionality
+        function showTab(tabId, buttonId) {
+            // Hide all tab panels
+            document.querySelectorAll('.tab-panel').forEach(panel => {
+                panel.classList.remove('active');
+            });
+            
+            // Remove active class from all tab buttons
+            document.querySelectorAll('.tab-button').forEach(button => {
+                button.classList.remove('active');
+                button.setAttribute('aria-selected', 'false');
+            });
+            
+            // Show selected tab and activate button
+            const selectedPanel = document.getElementById(tabId);
+            const selectedButton = document.getElementById(buttonId);
+            
+            if (selectedPanel) selectedPanel.classList.add('active');
+            if (selectedButton) {
+                selectedButton.classList.add('active');
+                selectedButton.setAttribute('aria-selected', 'true');
+            }
+        }d expression syntax');
+                }
+                
                 table.push(row);
             }
             
@@ -1312,24 +1430,62 @@
         }
 
         function evaluateBooleanExpression(expression, values) {
-            // Simple expression evaluator
-            // Convert to JavaScript-compatible format
+            // Convert Boolean expression to JavaScript-compatible format
             let jsExpression = expression
-                .replace(/\*/g, '&&')
-                .replace(/\+/g, '||')
-                .replace(/!/g, '!');
+                .replace(/\*/g, '&&')           // AND
+                .replace(/\+/g, '||')           // OR  
+                .replace(/!/g, '!')             // NOT
+                .replace(/\(/g, '(')            // Keep parentheses
+                .replace(/\)/g, ')');
             
-            // Replace variables with values
+            // Replace variables with their boolean values
             for (const [variable, value] of Object.entries(values)) {
                 const regex = new RegExp(`\\b${variable}\\b`, 'g');
-                jsExpression = jsExpression.replace(regex, value ? 'true' : 'false');
+                jsExpression = jsExpression.replace(regex, value.toString());
             }
             
-            // Evaluate safely
+            // Safely evaluate the expression
             try {
                 return Function('"use strict"; return (' + jsExpression + ')')();
             } catch (error) {
-                throw new Error('Invalid expression syntax');
+                throw new Error('Cannot evaluate expression - check syntax');
+            }
+        }
+
+        function displayTruthTable(truthTable, variables, resultElement) {
+            let html = '<h4>Truth Table Result:</h4>';
+            html += '<table class="truth-table"><thead><tr>';
+            
+            // Headers for input variables
+            variables.forEach(variable => {
+                html += `<th>${variable}</th>`;
+            });
+            html += '<th>Result</th></tr></thead><tbody>';
+            
+            // Data rows
+            truthTable.forEach(row => {
+                html += '<tr>';
+                row.forEach(value => {
+                    html += `<td>${value}</td>`;
+                });
+                html += '</tr>';
+            });
+            
+            html += '</tbody></table>';
+            html += '<p><em>Expression evaluated successfully! Try another one.</em></p>';
+            
+            resultElement.innerHTML = html;
+        }
+
+        function clearExpression() {
+            const inputElement = document.getElementById('expressionInput');
+            const resultElement = document.getElementById('expressionResult');
+            
+            if (inputElement) inputElement.value = '';
+            if (resultElement) {
+                resultElement.innerHTML = 'Enter a Boolean expression above and click "Generate Truth Table" to see the results.';
+            }
+        }d expression syntax');
             }
         }
 
@@ -1528,6 +1684,9 @@
             const num2 = document.getElementById('binNum2').value.trim();
             const resultDiv = document.getElementById('binaryResult');
             
+            // Clear previous results
+            if (!resultDiv) return;
+            
             // Validate input
             if (!num1 || !num2) {
                 resultDiv.innerHTML = '<p style="color: #dc3545;"><strong>Error:</strong> Please enter both binary numbers.</p>';
@@ -1539,81 +1698,45 @@
                 return;
             }
             
-            // Pad numbers to same length
-            const maxLength = Math.max(num1.length, num2.length);
-            const paddedNum1 = num1.padStart(maxLength, '0');
-            const paddedNum2 = num2.padStart(maxLength, '0');
-            
-            // Perform addition step by step
-            let result = '';
-            let carry = 0;
-            let steps = [];
-            
-            // Add from right to left
-            for (let i = maxLength - 1; i >= 0; i--) {
-                const bit1 = parseInt(paddedNum1[i]);
-                const bit2 = parseInt(paddedNum2[i]);
-                const sum = bit1 + bit2 + carry;
+            try {
+                // Convert to decimal, add, convert back to binary
+                const dec1 = parseInt(num1, 2);
+                const dec2 = parseInt(num2, 2);
+                const sum = dec1 + dec2;
+                const binarySum = sum.toString(2);
                 
-                const resultBit = sum % 2;
-                const newCarry = Math.floor(sum / 2);
+                // Pad numbers to same length for display
+                const maxLength = Math.max(num1.length, num2.length);
+                const paddedNum1 = num1.padStart(maxLength, '0');
+                const paddedNum2 = num2.padStart(maxLength, '0');
                 
-                result = resultBit + result;
-                
-                steps.push({
-                    position: maxLength - i,
-                    bit1: bit1,
-                    bit2: bit2,
-                    carryIn: carry,
-                    sum: sum,
-                    resultBit: resultBit,
-                    carryOut: newCarry
-                });
-                
-                carry = newCarry;
-            }
-            
-            if (carry) {
-                result = carry + result;
-            }
-            
-            // Display result
-            let html = '<div style="font-family: monospace; font-size: 1.2rem; text-align: center; margin-bottom: 1rem;">';
-            html += `<div>  ${paddedNum1}</div>`;
-            html += `<div>+ ${paddedNum2}</div>`;
-            html += `<div>${'-'.repeat(maxLength + 2)}</div>`;
-            html += `<div>  ${result}</div>`;
-            html += '</div>';
-            
-            html += '<h4>Step-by-Step Breakdown:</h4>';
-            html += '<div style="font-family: monospace; font-size: 0.9rem;">';
-            
-            for (let i = steps.length - 1; i >= 0; i--) {
-                const step = steps[i];
-                html += `<div style="margin: 0.5rem 0; padding: 0.5rem; background: ${step.carryOut ? '#fff3cd' : '#f8f9fa'}; border-radius: 4px;">`;
-                html += `<strong>Column ${step.position}:</strong> ${step.bit1} + ${step.bit2}`;
-                if (step.carryIn) html += ` + ${step.carryIn} (carry)`;
-                html += ` = ${step.sum}`;
-                html += ` → Write ${step.resultBit}`;
-                if (step.carryOut) html += `, Carry ${step.carryOut}`;
+                // Display result
+                let html = '<div style="font-family: monospace; font-size: 1.2rem; text-align: center; margin-bottom: 1rem;">';
+                html += `<div>  ${paddedNum1}</div>`;
+                html += `<div>+ ${paddedNum2}</div>`;
+                html += `<div>${'-'.repeat(maxLength + 2)}</div>`;
+                html += `<div>  ${binarySum}</div>`;
                 html += '</div>';
+                
+                html += `<p><strong>Final Answer:</strong> ${paddedNum1} + ${paddedNum2} = ${binarySum}</p>`;
+                html += `<p><strong>Decimal Check:</strong> ${dec1} + ${dec2} = ${sum}</p>`;
+                
+                resultDiv.innerHTML = html;
+                
+                // Mark section as completed
+                completedSections.add('binaryArithmetic');
+                updateProgress();
+            } catch (error) {
+                resultDiv.innerHTML = '<p style="color: #dc3545;"><strong>Error:</strong> Invalid binary numbers.</p>';
             }
-            
-            html += '</div>';
-            html += `<p><strong>Final Answer:</strong> ${paddedNum1} + ${paddedNum2} = ${result}</p>`;
-            html += `<p><strong>Decimal Check:</strong> ${parseInt(paddedNum1, 2)} + ${parseInt(paddedNum2, 2)} = ${parseInt(result, 2)}</p>`;
-            
-            resultDiv.innerHTML = html;
-            
-            // Mark section as completed
-            completedSections.add('binaryArithmetic');
-            updateProgress();
         }
         
         function convertToTwosComplement() {
             const decimal = parseInt(document.getElementById('decimalInput').value);
             const resultDiv = document.getElementById('twosComplementResult');
             const stepsDiv = document.getElementById('conversionSteps');
+            
+            if (!resultDiv || !stepsDiv) return;
             
             if (isNaN(decimal)) {
                 resultDiv.innerHTML = 'Please enter a valid number';
@@ -1651,12 +1774,12 @@
                 }
                 
                 // Add 1 for two's complement
-                let twosComplement = '';
                 let carry = 1;
+                let twosComplement = '';
                 for (let i = onesComplement.length - 1; i >= 0; i--) {
-                    const bit = parseInt(onesComplement[i]) + carry;
-                    twosComplement = (bit % 2) + twosComplement;
-                    carry = Math.floor(bit / 2);
+                    const sum = parseInt(onesComplement[i]) + carry;
+                    twosComplement = (sum % 2) + twosComplement;
+                    carry = Math.floor(sum / 2);
                 }
                 
                 resultDiv.innerHTML = twosComplement;
@@ -1668,8 +1791,7 @@
                 html += `<strong>Step 2:</strong> One's complement (flip bits)<br>`;
                 html += `${onesComplement}<br><br>`;
                 html += `<strong>Step 3:</strong> Add 1 for two's complement<br>`;
-                html += `${onesComplement}<br>`;
-                html += `+      1<br>`;
+                html += `${onesComplement}<br>+ 00000001<br>`;
                 html += `${'-'.repeat(8)}<br>`;
                 html += `${twosComplement}<br><br>`;
                 html += `<strong>Result:</strong> ${decimal} = ${twosComplement} in 8-bit two's complement`;
@@ -1688,6 +1810,8 @@
             const subtrahend = parseInt(document.getElementById('subtrahend').value);
             const resultDiv = document.getElementById('subtractionResult');
             
+            if (!resultDiv) return;
+            
             if (isNaN(minuend) || isNaN(subtrahend)) {
                 resultDiv.innerHTML = '<p style="color: #dc3545;"><strong>Error:</strong> Please enter valid numbers for both fields.</p>';
                 return;
@@ -1698,59 +1822,34 @@
                 return;
             }
             
-            // Convert to 8-bit binary
+            // Calculate actual result
+            const actualResult = minuend - subtrahend;
+            
+            // Convert to binary representation
             function toBinary(num) {
                 if (num >= 0) {
                     return num.toString(2).padStart(8, '0');
                 } else {
-                    // Two's complement for negative
+                    // Two's complement
                     const positive = Math.abs(num);
                     const positiveBinary = positive.toString(2).padStart(8, '0');
-                    let onesComp = '';
-                    for (let i = 0; i < 8; i++) {
-                        onesComp += positiveBinary[i] === '0' ? '1' : '0';
-                    }
+                    let onesComp = positiveBinary.split('').map(bit => bit === '0' ? '1' : '0').join('');
+                    
                     // Add 1
-                    let twosComp = '';
                     let carry = 1;
+                    let result = '';
                     for (let i = 7; i >= 0; i--) {
                         const sum = parseInt(onesComp[i]) + carry;
-                        twosComp = (sum % 2) + twosComp;
+                        result = (sum % 2) + result;
                         carry = Math.floor(sum / 2);
                     }
-                    return twosComp;
+                    return result;
                 }
             }
             
             const minuendBinary = toBinary(minuend);
             const subtrahendBinary = toBinary(subtrahend);
-            
-            // Two's complement of subtrahend
-            let subtrahendTwosComp = '';
-            // First, one's complement
-            let onesComp = '';
-            for (let i = 0; i < 8; i++) {
-                onesComp += subtrahendBinary[i] === '0' ? '1' : '0';
-            }
-            // Then add 1
-            let carry = 1;
-            for (let i = 7; i >= 0; i--) {
-                const sum = parseInt(onesComp[i]) + carry;
-                subtrahendTwosComp = (sum % 2) + subtrahendTwosComp;
-                carry = Math.floor(sum / 2);
-            }
-            
-            // Add minuend + (-subtrahend)
-            let result = '';
-            carry = 0;
-            for (let i = 7; i >= 0; i--) {
-                const sum = parseInt(minuendBinary[i]) + parseInt(subtrahendTwosComp[i]) + carry;
-                result = (sum % 2) + result;
-                carry = Math.floor(sum / 2);
-            }
-            
-            // Calculate actual result
-            const actualResult = minuend - subtrahend;
+            const subtrahendNegBinary = toBinary(-subtrahend);
             
             let html = `<h4>Computing ${minuend} - ${subtrahend} using Two's Complement:</h4>`;
             html += '<div style="font-family: monospace; background: white; padding: 1rem; border-radius: 4px;">';
@@ -1759,46 +1858,15 @@
             html += `B = ${subtrahend} → ${subtrahendBinary}<br><br>`;
             
             html += `<strong>Step 2:</strong> Find two's complement of B (to get -B)<br>`;
-            html += `One's complement of B: ${onesComp}<br>`;
-            html += `Add 1:                  ${subtrahendTwosComp}<br>`;
-            html += `So -B = ${subtrahendTwosComp}<br><br>`;
+            html += `-B = ${subtrahendNegBinary}<br><br>`;
             
             html += `<strong>Step 3:</strong> Add A + (-B)<br>`;
             html += `  ${minuendBinary}<br>`;
-            html += `+ ${subtrahendTwosComp}<br>`;
+            html += `+ ${subtrahendNegBinary}<br>`;
             html += `  ${'-'.repeat(8)}<br>`;
-            if (carry) html += `1 `;
-            html += `${result}`;
-            if (carry) html += ` (discard carry)`;
-            html += `<br><br>`;
+            html += `  ${toBinary(actualResult)}<br><br>`;
             
-            html += `<strong>Step 4:</strong> Interpret result<br>`;
-            if (result[0] === '0') {
-                html += `Result starts with 0 → positive number<br>`;
-                html += `${result} in binary = ${parseInt(result, 2)} in decimal<br>`;
-            } else {
-                html += `Result starts with 1 → negative number (two's complement)<br>`;
-                // Convert back from two's complement
-                let resultOnesComp = '';
-                for (let i = 0; i < 8; i++) {
-                    resultOnesComp += result[i] === '0' ? '1' : '0';
-                }
-                let magnitude = '';
-                let carryBack = 1;
-                for (let i = 7; i >= 0; i--) {
-                    const sum = parseInt(resultOnesComp[i]) + carryBack;
-                    magnitude = (sum % 2) + magnitude;
-                    carryBack = Math.floor(sum / 2);
-                }
-                html += `Magnitude: ${parseInt(magnitude, 2)}, so result = -${parseInt(magnitude, 2)}<br>`;
-            }
-            
-            html += `<br><strong>Final Answer:</strong> ${minuend} - ${subtrahend} = ${actualResult}`;
-            html += '</div>';
-            
-            html += '<div style="background: #e8f5e8; padding: 1rem; border-radius: 4px; margin-top: 1rem;">';
-            html += '<strong>Key Insight:</strong> Subtraction became addition! By using two\'s complement, ';
-            html += 'computers can perform subtraction using the same addition circuitry, making hardware design simpler and more efficient.';
+            html += `<strong>Final Answer:</strong> ${minuend} - ${subtrahend} = ${actualResult}`;
             html += '</div>';
             
             resultDiv.innerHTML = html;
