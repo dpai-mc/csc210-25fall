@@ -92,6 +92,10 @@
             font-size: 0.85rem;
             font-weight: bold;
         }
+        
+        .points-badge.extra-credit {
+            background: #28a745;
+        }
 
         .collapse-icon {
             transition: transform 0.3s ease;
@@ -688,12 +692,13 @@
                 </div>
             </div>
         </div>
+        
         <div class="section" id="part-a">
             <div class="section-header" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" aria-controls="part-a-content">
                 <h2>Part A: Implement Basic Gates <span class="points-badge">20 Points</span></h2>
                 <span class="collapse-icon collapsed" aria-label="Expand or collapse section">▼</span>
             </div>
-            <div id="part-a-content" class="section-content" style="max-height: 0px; opacity: 0; padding-top: 0px; padding-bottom: 0px;">
+            <div id="part-a-content" class="section-content">
                 <p>Create separate subcircuits for a two-input AND gate and a two-input OR gate.</p>
                 <ul>
                     <li>Name the subcircuits <code>part-a-and</code> and <code>part-a-or</code>.</li>
@@ -704,10 +709,10 @@
         </div>
         <div class="section" id="part-b">
             <div class="section-header" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" aria-controls="part-b-content">
-                <h2>Part B: Boolean Expressions <span class="points-badge">40 Points</span></h2>
+                <h2>Part B: Boolean Expressions <span class="points-badge">30 Points</span></h2>
                 <span class="collapse-icon collapsed" aria-label="Expand or collapse section">▼</span>
             </div>
-            <div id="part-b-content" class="section-content" style="max-height: 0px; opacity: 0; padding-top: 0px; padding-bottom: 0px;">
+            <div id="part-b-content" class="section-content">
                 <p>Implement the following Boolean expressions, each in its own subcircuit. Use only AND, OR, and NOT gates.</p>
                 <h4>Expression 1: Y = AB + C</h4>
                 <div class="expression-box">Y = (A AND B) OR C</div>
@@ -727,10 +732,10 @@
         </div>
         <div class="section" id="part-c">
             <div class="section-header" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" aria-controls="part-c-content">
-                <h2>Part C: De Morgan's Laws <span class="points-badge">40 Points</span></h2>
+                <h2>Part C: De Morgan's Laws <span class="points-badge">30 Points</span></h2>
                 <span class="collapse-icon collapsed" aria-label="Expand or collapse section">▼</span>
             </div>
-            <div id="part-c-content" class="section-content" style="max-height: 0px; opacity: 0; padding-top: 0px; padding-bottom: 0px;">
+            <div id="part-c-content" class="section-content">
                 <p>In this section, you will prove one of De Morgan's laws by building and comparing two different circuits in a single subcircuit.</p>
                 <div class="subcircuit-list">
                     <h4>Subcircuit Name: <code>demorgan-proof</code></h4>
@@ -743,12 +748,21 @@
                 <p>Toggle the inputs A and B to show that for every combination, <code>out-nand</code> and <code>out-or-nots</code> are always identical, thus proving the law.</p>
             </div>
         </div>
+        <div class="section" id="part-d">
+            <div class="section-header" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" aria-controls="part-d-content">
+                <h2>Part D: Written Analysis <span class="points-badge extra-credit">Extra Credit: 10 Points</span></h2>
+                <span class="collapse-icon collapsed" aria-label="Expand or collapse section">▼</span>
+            </div>
+            <div id="part-d-content" class="section-content">
+                <p>In your report, briefly explain in your own words why De Morgan’s law is useful in digital logic design. What does it allow engineers to do?</p>
+            </div>
+        </div>
         <div class="section" id="submission">
             <div class="section-header" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false" aria-controls="submission-content">
                 <h2>Submission Guidelines</h2>
                 <span class="collapse-icon collapsed" aria-label="Expand or collapse section">▼</span>
             </div>
-            <div id="submission-content" class="section-content" style="max-height: 0px; opacity: 0; padding-top: 0px; padding-bottom: 0px;">
+            <div id="submission-content" class="section-content">
                 <p>Submit a single <code>.circ</code> file containing your main circuit and all required subcircuits. Additionally, include a brief report (.docx or .pdf) with screenshots of each of your circuits and their corresponding truth tables as verified in Logisim.</p>
                 <h3>Grading Rubric</h3>
                 <table class="rubric-table">
@@ -765,11 +779,19 @@
                         </tr>
                         <tr>
                             <td>Part B: Boolean expressions correctly implemented</td>
-                            <td>40</td>
+                            <td>30</td>
                         </tr>
                         <tr>
                             <td>Part C: De Morgan's law correctly proven</td>
-                            <td>40</td>
+                            <td>30</td>
+                        </tr>
+                        <tr>
+                            <td>File Naming &amp; Subcircuit Organization</td>
+                            <td>20</td>
+                        </tr>
+                        <tr>
+                            <td>Part D: Written Analysis (Extra Credit)</td>
+                            <td>10</td>
                         </tr>
                     </tbody>
                 </table>
@@ -780,7 +802,7 @@
                 <h2>Tips for Success</h2>
                 <span class="collapse-icon collapsed" aria-label="Expand or collapse section">▼</span>
             </div>
-            <div id="tips-content" class="section-content" style="max-height: 0px; opacity: 0; padding-top: 0px; padding-bottom: 0px;">
+            <div id="tips-content" class="section-content">
                 <div class="tips-grid">
                     <div class="tip-card">
                         <h4>Label Everything</h4>
