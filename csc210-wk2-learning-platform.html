@@ -649,6 +649,96 @@
             outline-offset: 2px !important;
         }
     </style>
+    
+    <style>
+        .video-transcript-container {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+            display: flex;
+            flex-direction: row;
+            gap: 20px;
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+        }
+
+        .video-wrapper {
+            position: relative;
+            padding-top: 56.25%;
+            height: 0;
+            flex: 2;
+        }
+
+        .video-wrapper iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
+
+        .transcript-wrapper {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-width: 280px;
+        }
+
+        .transcript-wrapper h2 {
+            margin-top: 0;
+            font-size: 1.2em;
+            color: #333;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+        }
+
+        .transcript-content {
+            overflow-y: auto;
+            height: 400px;
+            border: 1px solid #e0e0e0;
+            padding: 10px;
+            background-color: #ffffff;
+            border-radius: 4px;
+        }
+        
+        .transcript-content span {
+            display: block;
+            padding: 8px 12px;
+            margin-bottom: 4px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            line-height: 1.5;
+        }
+        
+        .transcript-content span:hover,
+        .transcript-content span:focus {
+            background-color: #e9e9e9;
+            outline: 2px solid #005fcc;
+            outline-offset: 2px;
+        }
+        
+        .transcript-content span.active-transcript {
+            background-color: #ffe0b2;
+            font-weight: bold;
+            color: #000;
+        }
+        
+        @media (max-width: 800px) {
+            .video-transcript-container {
+                flex-direction: column;
+            }
+            .video-wrapper {
+                width: 100%;
+            }
+            .transcript-wrapper {
+                margin-top: 20px;
+            }
+        }
+    </style>
 </head>
 <body>
     <div class="accessibility-controls" role="region" aria-label="Accessibility controls">
@@ -837,7 +927,76 @@
                 </div>
             </div>
         </section>
-
+        
+        <section class="section">
+            <h2>Instructional Video: Boolean Logic</h2>
+            <div class="video-transcript-container">
+                <div class="video-wrapper">
+                    <iframe id="youtube-player"
+                            title="YouTube video player"
+                            src="https://www.youtube.com/embed/Oc65pA8ATSs?si=VMNOApuFPCTzv7SI"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                            allowfullscreen>
+                    </iframe>
+                </div>
+                <div class="transcript-wrapper">
+                    <h2>Interactive Transcript</h2>
+                    <div id="transcript-container" class="transcript-content">
+                        <span data-start="0.0" data-end="5.04" tabindex="0" role="button">Aloha and welcome to Boolean Logic and Digital Gates.</span>
+                        <span data-start="5.68" data-end="8.0" tabindex="0" role="button">That's going to be our topic this week.</span>
+                        <span data-start="10.2" data-end="16.14" tabindex="0" role="button">And so what we're going to start with is a little review here of Binary Edition, the basics.</span>
+                        <span data-start="16.58" data-end="20.62" tabindex="0" role="button">So we sort of went over it last time, but we didn't really cover it real close.</span>
+                        <span data-start="20.62" data-end="30.18" tabindex="0" role="button">So I put up a summary kind of activity for you to look at Boolean Edition and it's kind of foundational.</span>
+                        <span data-start="30.64" data-end="32.78" tabindex="0" role="button">And so you really need to understand that.</span>
+                        <span data-start="32.98" data-end="45.68" tabindex="0" role="button">So if you're struggling with that a little bit, take some time, review the addition and subtraction review that I've posted here, along with the example interactive calculator that you can use.</span>
+                        <span data-start="46.3" data-end="49.88" tabindex="0" role="button">OK, and it talks also about two's complement and how you do negative numbers.</span>
+                        <span data-start="50.62" data-end="57.88" tabindex="0" role="button">And add them, so basically, if you want to subtract the number, you convert it to negative and add it.</span>
+                        <span data-start="59.5" data-end="101.92" tabindex="0" role="button">Right, because adding a negative is the same as subtraction, so.</span>
+                        <span data-start="103.34" data-end="107.1" tabindex="0" role="button">OK, so and that's what this first part is, I'm not going to go through it in detail.</span>
+                        <span data-start="120.62" data-end="133.7" tabindex="0" role="button">If you struggle at all with conversion between binary and decimal, if that's if you're still struggling with that, it doesn't make a lot of sense.</span>
+                        <span data-start="133.96" data-end="139.08" tabindex="0" role="button">I posted a link here to this thing called a Cisco binary game.</span>
+                        <span data-start="139.74" data-end="146.76" tabindex="0" role="button">OK, and so it's a gamified approach to just basically doing a lot of conversions. All right.</span>
+                        <span data-start="147.18" data-end="154.64" tabindex="0" role="button">And so through sheer repetition, it helps you. Learn, I better understand how that works.</span>
+                        <span data-start="203.94" data-end="208.32" tabindex="0" role="button">OK, you can say play game instructions, you can see in the background these columns.</span>
+                        <span data-start="209.38" data-end="219.64" tabindex="0" role="button">So what it does is when there's a number here, like the number two, it wants you to select the bits to match the number. And then once you do, it goes away.</span>
+                        <span data-start="220.62" data-end="221.52" tabindex="0" role="button">Four and one.</span>
+                        <span data-start="222.42" data-end="230.24" tabindex="0" role="button">When there's a question mark, it wants you to type in the value that that binary eight bit binary number means.</span>
+                        <span data-start="233.2" data-end="237.84" tabindex="0" role="button">And you just go through these and it has multiple levels.</span>
+                        <span data-start="251.24" data-end="254.5" tabindex="0" role="button">You basically run out of space, kind of like a Tetris thing.</span>
+                        <span data-start="258.8" data-end="301.74" tabindex="0" role="button">You know, the game ends or you can end the game yourself.</span>
+                        <span data-start="346.24" data-end="350.6" tabindex="0" role="button">OK, the other thing I should mention is that I created a course tutor.</span>
+                        <span data-start="356.24" data-end="400.64" tabindex="0" role="button">It links to a chat bot that you can ask questions of.</span>
+                        <span data-start="411.2" data-end="416.38" tabindex="0" role="button">It is backed by a gen AI, so you can ask it, you know.</span>
+                        <span data-start="444.82" data-end="449.7" tabindex="0" role="button">You can go pretty much anywhere you want to go, and it will answer you.</span>
+                        <span data-start="452.34" data-end="458.0" tabindex="0" role="button">It's not meant to do your work for you, but it's meant to aid and assist you.</span>
+                        <span data-start="508.0" data-end="509.86" tabindex="0" role="button">It's fairly extensive and comprehensive.</span>
+                        <span data-start="511.18" data-end="514.9" tabindex="0" role="button">Basically, it says you're going to use it and you're going to use it as intended.</span>
+                        <span data-start="516.28" data-end="520.1" tabindex="0" role="button">As an aid to help you learn not to do the work for you.</span>
+                        <span data-start="521.22" data-end="526.1" tabindex="0" role="button">OK, so that's so please read this and take a look at it.</span>
+                        <span data-start="550.62" data-end="613.04" tabindex="0" role="button">OK, so this video will get posted here, so we want to talk a little about Boolean algebra, what it is, what logic gates are, maybe what circuits are, truth tables, conversion between representations of Boolean expressions, two tables, gate diagrams and sometimes recognize patterns, sometimes you can see patterns in any more sense.</span>
+                        <span data-start="620.56" data-end="635.76" tabindex="0" role="button">There are these one, two, three, these six primary gates that we care about and and gate and or gate and not gate and and gate and nor gate and in. XOR gate, which is exclusive or or ZOR gate.</span>
+                        <span data-start="637.26" data-end="645.84" tabindex="0" role="button">OK, so an and gate works just like in programming when you're branching, you have an if statement inside your if you have a conditional statement.</span>
+                        <span data-start="646.96" data-end="654.34" tabindex="0" role="button">OK, that is true or false. Well, when you have a compound conditional. You usually have two conditions connected with an and or an or.</span>
+                        <span data-start="655.24" data-end="706.84" tabindex="0" role="button">OK, and an and is exactly that it says, hey, when both inputs are high or true, think of true, false, I'm thinking true, false, one is true, zero is false.</span>
+                        <span data-start="742.16" data-end="746.42" tabindex="0" role="button">These are the laws of bullying algebra. When you look at this, a a is an input.</span>
+                        <span data-start="755.08" data-end="801.12" tabindex="0" role="button">Dot is an and. So a and one equals a OK.</span>
+                        <span data-start="801.66" data-end="808.16" tabindex="0" role="button">A or plus is an or a or zero equals an A. And we use.</span>
+                        <span data-start="834.26" data-end="838.6" tabindex="0" role="button">There's a lot of different notations, but a bar over it means not a.</span>
+                        <span data-start="838.62" data-end="858.58" tabindex="0" role="button">So it means you've taken a and you've not at it. So a times not a equals zero because if a is one, not a is zero. A is zero, not a is one OK, so this community of it doesn't matter which one comes first associative doesn't matter how you pair them.</span>
+                        <span data-start="858.58" data-end="908.68" tabindex="0" role="button">If they're all the same. Um, they're all times or they're all plus. It doesn't matter which order you do them and pair them up in and then to Morgan's law, which says.</span>
+                        <span data-start="922.8" data-end="928.08" tabindex="0" role="button">You can group if you have a, B and C, you can group multiple things and create a truth table.</span>
+                        <span data-start="943.32" data-end="948.26" tabindex="0" role="button">And like I said, apparently I got it. I have to update this, but I will update the.</span>
+                        <span data-start="955.62" data-end="959.2" tabindex="0" role="button">All right, so, um, really focus on gates, how they work.</span>
+                        <span data-start="959.9" data-end="1012.1" tabindex="0" role="button">Understand and and in an or a not means just reverse it and and is not and meaning take the results from an and gate and reverse all the answers.</span>
+                        <span data-start="1035.1" data-end="1048.4" tabindex="0" role="button">What it says is that when, um, the if you're doing a two input when the two inputs are the same and you get zero and when they're different, you get one.</span>
+                        <span data-start="1118.76" data-end="1119.98" tabindex="0" role="button">OK, because it's.</span>
+                        <span data-start="1120.02" data-end="1127.48" tabindex="0" role="button">An odd number, one plus one plus one is three, three is odd, so the output is one.</span>
+                        <span data-start="1135.56" data-end="1149.48" tabindex="0" role="button">Simulator isn't working right now, like I said, but it should also show a diagram of what our and gates and or gates look like in logic and essentially.</span>
+                        <span data-start="1150.02" data-end="1158.56" tabindex="0" role="button">So, um, that's this week's material. Take some time and work your way through it all. Thanks.</span>
+                    </div>
+                </div>
+            </div>
+        </section>
         <section class="section">
             <h2>Learning Objectives</h2>
             <div class="objectives-grid">
@@ -902,8 +1061,7 @@
                     <div class="gate-display">
                         <div id="gateName">AND Gate</div>
                         <div id="gate-svg-container" aria-live="polite" role="img" aria-label="Interactive logic gate diagram with animated wires">
-                            <!-- SVG diagram will be inserted here -->
-                        </div>
+                            </div>
                         <div id="gateDescription">Output is 1 only when ALL inputs are 1</div>
                     </div>
 
@@ -928,8 +1086,7 @@
                             </tr>
                         </thead>
                         <tbody id="truthTableBody">
-                            <!-- Will be populated by JavaScript -->
-                        </tbody>
+                            </tbody>
                     </table>
                 </div>
             </div>
@@ -1004,7 +1161,7 @@
                 <button class="tab-button" role="tab" aria-selected="false" aria-controls="quiz2" id="tab2" onclick="showTab('quiz2', 'tab2')">Truth Tables</button>
                 <button class="tab-button" role="tab" aria-selected="false" aria-controls="quiz3" id="tab3" onclick="showTab('quiz3', 'tab3')">Boolean Laws</button>
             </div>
-
+            
             <div id="quiz1" class="tab-panel active" role="tabpanel" aria-labelledby="tab1">
                 <div class="quiz-question">
                     <h3>Question 1: Gate Recognition</h3>
@@ -1130,13 +1287,13 @@
                     <line class="wire" id="gWireA" x1="0" y1="50" x2="50" y2="50"/>
                     <line class="wire" id="gWireOut" x1="120" y1="50" x2="200" y2="50"/>
                     <text x="15" y="45">A</text>
-                    <text id="gOutText" x="180" y="45">0</text>
+                    <text id="gOutText" x="180" y="45">1</text>
                 </svg>`
             },
             NAND: {
                 symbol: '⊼',
                 name: 'NAND Gate',
-                description: 'Output is 0 only when ALL inputs are 1',
+                description: 'The INVERSE of an AND gate',
                 inputs: 2,
                 truthTable: [
                     [0, 0, 1],
@@ -1153,13 +1310,13 @@
                     <line class="wire" id="gWireOut" x1="160" y1="50" x2="200" y2="50"/>
                     <text x="15" y="25">A</text>
                     <text x="15" y="65">B</text>
-                    <text id="gOutText" x="180" y="45">0</text>
+                    <text id="gOutText" x="180" y="45">1</text>
                 </svg>`
             },
             NOR: {
                 symbol: '⊽',
                 name: 'NOR Gate',
-                description: 'Output is 1 only when ALL inputs are 0',
+                description: 'The INVERSE of an OR gate',
                 inputs: 2,
                 truthTable: [
                     [0, 0, 1],
@@ -1176,13 +1333,13 @@
                     <line class="wire" id="gWireOut" x1="125" y1="50" x2="200" y2="50"/>
                     <text x="15" y="25">A</text>
                     <text x="15" y="65">B</text>
-                    <text id="gOutText" x="180" y="45">0</text>
+                    <text id="gOutText" x="180" y="45">1</text>
                 </svg>`
             },
             XOR: {
                 symbol: '⊕',
                 name: 'XOR Gate',
-                description: 'Output is 1 when inputs are DIFFERENT',
+                description: 'Output is 1 only when inputs are DIFFERENT',
                 inputs: 2,
                 truthTable: [
                     [0, 0, 0],
@@ -1194,8 +1351,8 @@
                 svg: `<svg class="gate-svg" viewBox="0 0 200 100">
                     <path class="gate-body" d="M35,10 Q80,50 35,90 H60 Q130,50 60,10 Z"></path>
                     <path class="gate-body" d="M25,10 Q70,50 25,90" fill="none"></path>
-                    <line class="wire" id="gWireA" x1="0" y1="30" x2="30" y2="30"/>
-                    <line class="wire" id="gWireB" x1="0" y1="70" x2="30" y2="70"/>
+                    <line class="wire" id="gWireA" x1="0" y1="30" x2="45" y2="30"/>
+                    <line class="wire" id="gWireB" x1="0" y1="70" x2="45" y2="70"/>
                     <line class="wire" id="gWireOut" x1="115" y1="50" x2="200" y2="50"/>
                     <text x="15" y="25">A</text>
                     <text x="15" y="65">B</text>
@@ -1204,816 +1361,457 @@
             }
         };
 
-        // Initialize the page when DOM is loaded
-        document.addEventListener('DOMContentLoaded', function() {
-            selectGate('AND');
-            updateProgress();
-            initializeInputs();
-            
-            // Add comprehensive keyboard navigation
-            document.addEventListener('keydown', function(e) {
-                if (e.key === 'Enter' || e.key === ' ') {
-                    if (e.target.classList.contains('quiz-option') || 
-                        e.target.classList.contains('input-switch') || 
-                        e.target.classList.contains('gate-btn')) {
-                        e.preventDefault();
-                        e.target.click();
-                    }
-                }
-                
-                // Arrow key navigation for gate selector
-                if (e.target.classList.contains('gate-btn') && (e.key === 'ArrowLeft' || e.key === 'ArrowRight')) {
-                    e.preventDefault();
-                    const buttons = Array.from(document.querySelectorAll('.gate-btn'));
-                    const currentIndex = buttons.indexOf(e.target);
-                    let nextIndex;
-                    
-                    if (e.key === 'ArrowRight') {
-                        nextIndex = (currentIndex + 1) % buttons.length;
-                    } else {
-                        nextIndex = (currentIndex - 1 + buttons.length) % buttons.length;
-                    }
-                    
-                    buttons[nextIndex].focus();
-                    buttons[nextIndex].click();
-                }
-            });
+        // DOM utility
+        const $ = (selector) => document.querySelector(selector);
+        const $$ = (selector) => document.querySelectorAll(selector);
 
-            // Track keyboard vs mouse navigation
-            document.addEventListener('keydown', function(e) {
-                if (e.key === 'Tab') {
-                    document.body.classList.add('keyboard-nav');
-                }
-            });
-
-            document.addEventListener('mousedown', function() {
-                document.body.classList.remove('keyboard-nav');
-            });
-
-            // Announce page load for screen readers
-            announceToScreenReader('Interactive Boolean Logic learning page loaded. Use tab to navigate between sections and interactive elements.');
+        // Event listener setup
+        document.addEventListener('DOMContentLoaded', () => {
+            selectGate('AND'); // Initialize with AND gate
+            addKeyboardNavListener();
         });
 
-        // Initialize input validation
-        function initializeInputs() {
-            const binNum1 = document.getElementById('binNum1');
-            const binNum2 = document.getElementById('binNum2');
-            const decimalInput = document.getElementById('decimalInput');
+        // Binary Arithmetic Functions
+        function calculateBinaryAddition() {
+            const num1 = $('#binNum1').value.trim();
+            const num2 = $('#binNum2').value.trim();
+            const resultDiv = $('#binaryResult');
+
+            if (!/^[01]+$/.test(num1) || !/^[01]+$/.test(num2)) {
+                resultDiv.innerHTML = `<p style="color: red;">Error: Please enter valid binary numbers (only 0s and 1s).</p>`;
+                return;
+            }
+
+            const maxLength = Math.max(num1.length, num2.length);
+            const n1 = num1.padStart(maxLength, '0');
+            const n2 = num2.padStart(maxLength, '0');
             
-            if (binNum1) binNum1.addEventListener('input', validateBinaryInput);
-            if (binNum2) binNum2.addEventListener('input', validateBinaryInput);
-            if (decimalInput) decimalInput.addEventListener('input', function() {
-                const value = parseInt(this.value);
-                if (!isNaN(value) && value >= -128 && value <= 127) {
-                    convertToTwosComplement();
-                }
-            });
-        }
-
-        function validateBinaryInput(event) {
-            const input = event.target;
-            const value = input.value;
-            // Remove any non-binary characters
-            input.value = value.replace(/[^01]/g, '');
-        }
-
-        // Screen reader announcement helper
-        function announceToScreenReader(message) {
-            const announcement = document.createElement('div');
-            announcement.setAttribute('aria-live', 'polite');
-            announcement.className = 'sr-only';
-            announcement.textContent = message;
-            document.body.appendChild(announcement);
+            let result = '';
+            let carry = 0;
+            let steps = '<h4>Step-by-step Calculation:</h4><div style="font-family: monospace; white-space: pre; text-align: right;">';
+            steps += `  ${' '.repeat(maxLength + 1)}\n`; // for carries
+            steps += `  ${n1}\n`;
+            steps += `+ ${n2}\n`;
+            steps += '-'.repeat(maxLength + 3) + '\n';
             
-            setTimeout(() => {
-                if (document.body.contains(announcement)) {
-                    document.body.removeChild(announcement);
-                }
-            }, 3000);
+            let carryRow = '';
+
+            for (let i = maxLength - 1; i >= 0; i--) {
+                const bit1 = parseInt(n1[i]);
+                const bit2 = parseInt(n2[i]);
+                const sum = bit1 + bit2 + carry;
+                
+                result = (sum % 2) + result;
+                carry = Math.floor(sum / 2);
+                carryRow = (carry > 0 ? '1' : ' ') + carryRow;
+            }
+
+            if (carry > 0) {
+                result = '1' + result;
+            }
+
+            steps = steps.replace(' ', carryRow + '\n ');
+            steps += `  ${result}\n</div>`;
+            
+            resultDiv.innerHTML = steps;
+            updateProgress('binary-addition');
         }
 
-        // Gate simulator functions
+        function convertToTwosComplement() {
+            const decimalInput = $('#decimalInput');
+            const resultDiv = $('#twosComplementResult');
+            const stepsDiv = $('#conversionSteps');
+            const dec = parseInt(decimalInput.value);
+
+            if (isNaN(dec) || dec < -128 || dec > 127) {
+                resultDiv.textContent = 'Invalid Input';
+                stepsDiv.innerHTML = '<p style="color: red;">Please enter a number between -128 and 127.</p>';
+                return;
+            }
+
+            let binary;
+            if (dec >= 0) {
+                binary = dec.toString(2).padStart(8, '0');
+                stepsDiv.innerHTML = `<h4>Conversion for +${dec}:</h4><p>Positive numbers are represented directly in binary.</p><div style="font-family: monospace;">${binary}</div>`;
+            } else {
+                let absBinary = Math.abs(dec).toString(2).padStart(8, '0');
+                
+                let onesComp = '';
+                for(let bit of absBinary) {
+                    onesComp += (bit === '0' ? '1' : '0');
+                }
+                
+                let twosComp = (parseInt(onesComp, 2) + 1).toString(2).padStart(8, '0');
+                binary = twosComp.slice(-8);
+                
+                stepsDiv.innerHTML = `<h4>Conversion for ${dec}:</h4>
+                <ol>
+                    <li>Start with positive binary: <code>${absBinary}</code></li>
+                    <li>Flip all bits (One's Complement): <code>${onesComp}</code></li>
+                    <li>Add 1: <code>${binary}</code></li>
+                </ol>`;
+            }
+            
+            resultDiv.textContent = binary;
+            updateProgress('twos-complement');
+        }
+
+        function calculateBinarySubtraction() {
+            const minuendEl = $('#minuend');
+            const subtrahendEl = $('#subtrahend');
+            const resultDiv = $('#subtractionResult');
+            
+            const minuend = parseInt(minuendEl.value);
+            const subtrahend = parseInt(subtrahendEl.value);
+
+            if (isNaN(minuend) || isNaN(subtrahend)) {
+                resultDiv.innerHTML = '<p style="color: red;">Please enter valid decimal numbers for both fields.</p>';
+                return;
+            }
+
+            // Convert minuend to binary
+            const minuendBin = (minuend & 0xFF).toString(2).padStart(8, '0');
+
+            // Find two's complement of subtrahend
+            const subtrahendTwosComp = (-subtrahend & 0xFF).toString(2).padStart(8, '0');
+
+            // Perform addition
+            const sum = (minuend + (-subtrahend)) & 0xFF;
+            const resultBin = sum.toString(2).padStart(8, '0');
+
+            resultDiv.innerHTML = `<h4>Calculating ${minuend} - ${subtrahend}:</h4>
+            <div style="font-family: monospace; line-height: 1.8;">
+                Minuend (A):      ${minuend.toString().padStart(4)}  ->  ${minuendBin}<br>
+                Subtrahend (B):   ${subtrahend.toString().padStart(4)}  ->  Two's Comp is ${subtrahendTwosComp}<br>
+                --------------------------------------<br>
+                A + (-B):         ${minuendBin} + ${subtrahendTwosComp}<br>
+                Result:           ${resultBin} (which is ${sum > 127 ? sum - 256 : sum} in decimal)
+            </div>`;
+            updateProgress('binary-subtraction');
+        }
+
+        // Gate Simulator Functions
         function selectGate(gateType) {
             currentGateType = gateType;
             const gate = gates[gateType];
-            
-            // Update UI elements
-            document.getElementById('gateName').textContent = gate.name;
-            document.getElementById('gateDescription').textContent = gate.description;
-            document.getElementById('currentGate').textContent = gateType;
-            
-            // Insert SVG diagram
-            const svgContainer = document.getElementById('gate-svg-container');
-            svgContainer.innerHTML = gate.svg;
-            
-            // Update gate button states
-            document.querySelectorAll('.gate-btn').forEach(btn => {
-                btn.classList.remove('active');
-                if (btn.dataset.gate === gateType) {
-                    btn.classList.add('active');
-                }
+
+            $$('.gate-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.gate === gateType);
             });
-            
-            // Handle NOT gate (single input) - hide second input container
-            const inputBContainer = document.getElementById('inputBContainer');
-            if (gate.inputs === 1) {
-                inputBContainer.style.display = 'none';
-            } else {
-                inputBContainer.style.display = 'block';
-            }
-            
-            // Reset inputs to default state
-            inputStates = { A: false, B: false };
-            updateInputDisplay();
-            updateOutput();
+
+            $('#gateName').textContent = gate.name;
+            $('#gate-svg-container').innerHTML = gate.svg;
+            $('#gateDescription').textContent = gate.description;
+            $('#currentGate').textContent = gate.name;
+            $('#inputBContainer').style.display = gate.inputs === 1 ? 'none' : 'block';
+
             updateTruthTable();
-            updateGateVisualization();
-            
-            // Mark section as completed
-            completedSections.add('gateSimulator');
-            updateProgress();
+            updateGate();
+            announceToScreenReader(`${gate.name} selected.`);
         }
 
-        function updateGateVisualization() {
+        function toggleInput(inputId) {
+            inputStates[inputId] = !inputStates[inputId];
+            updateGate();
+            updateProgress('gate-simulator');
+        }
+
+        function updateGate() {
             const gate = gates[currentGateType];
-            const svgContainer = document.getElementById('gate-svg-container');
+            const inputAVal = Number(inputStates.A);
+            const inputBVal = Number(inputStates.B);
             
-            if (!svgContainer.querySelector('svg')) return;
+            const outputVal = gate.evaluate(inputStates.A, inputStates.B);
             
-            // Define wire colors
-            const wireOnColor = '#007bff';   // Blue for ON
-            const wireOffColor = '#888888';  // Gray for OFF
+            const btnA = $('#inputA');
+            btnA.textContent = `A: ${inputAVal}`;
+            btnA.classList.toggle('on', inputStates.A);
+            btnA.setAttribute('aria-label', `Input A, currently ${inputStates.A ? 'ON' : 'OFF'}`);
             
-            const wireA = svgContainer.querySelector('#gWireA');
-            const wireB = svgContainer.querySelector('#gWireB');
-            const wireOut = svgContainer.querySelector('#gWireOut');
-            const outText = svgContainer.querySelector('#gOutText');
+            $('#gWireA').style.stroke = inputStates.A ? 'var(--wire-on)' : 'var(--wire-off)';
             
-            // Calculate output using gate's evaluate function
-            let output;
-            if (gate.inputs === 1) {
-                output = gate.evaluate(inputStates.A);
-            } else {
-                output = gate.evaluate(inputStates.A, inputStates.B);
+            if (gate.inputs === 2) {
+                const btnB = $('#inputB');
+                btnB.textContent = `B: ${inputBVal}`;
+                btnB.classList.toggle('on', inputStates.B);
+                btnB.setAttribute('aria-label', `Input B, currently ${inputStates.B ? 'ON' : 'OFF'}`);
+                $('#gWireB').style.stroke = inputStates.B ? 'var(--wire-on)' : 'var(--wire-off)';
             }
             
-            // Update wire colors based on input/output states
-            if (wireA) {
-                wireA.style.stroke = inputStates.A ? wireOnColor : wireOffColor;
-            }
-            
-            if (wireB && gate.inputs === 2) {
-                wireB.style.stroke = inputStates.B ? wireOnColor : wireOffColor;
-            }
-            
-            if (wireOut) {
-                wireOut.style.stroke = output ? wireOnColor : wireOffColor;
-            }
-            
-            if (outText) {
-                outText.textContent = output ? '1' : '0';
-            }
-        }
+            const outputDiv = $('#output');
+            outputDiv.textContent = `Y: ${Number(outputVal)}`;
+            outputDiv.classList.toggle('on', outputVal);
+            outputDiv.setAttribute('aria-label', `Output, currently ${outputVal ? 'ON' : 'OFF'}`);
 
-        function toggleInput(input) {
-            inputStates[input] = !inputStates[input];
-            updateInputDisplay();
-            updateOutput();
-            updateGateVisualization();
-            
-            // Announce state change for screen readers
-            const state = inputStates[input] ? 'ON' : 'OFF';
-            announceToScreenReader(`Input ${input} changed to ${state}`);
-        }
+            $('#gWireOut').style.stroke = outputVal ? 'var(--wire-on)' : 'var(--wire-off)';
+            $('#gOutText').textContent = Number(outputVal);
 
-        function updateInputDisplay() {
-            const inputA = document.getElementById('inputA');
-            const inputB = document.getElementById('inputB');
-            
-            // Update input A
-            inputA.textContent = `A: ${inputStates.A ? 1 : 0}`;
-            inputA.className = inputStates.A ? 'input-switch on' : 'input-switch';
-            inputA.setAttribute('aria-label', `Input A, currently ${inputStates.A ? 'ON' : 'OFF'}`);
-            
-            // Update input B (if visible for 2-input gates)
-            if (gates[currentGateType].inputs === 2) {
-                inputB.textContent = `B: ${inputStates.B ? 1 : 0}`;
-                inputB.className = inputStates.B ? 'input-switch on' : 'input-switch';
-                inputB.setAttribute('aria-label', `Input B, currently ${inputStates.B ? 'ON' : 'OFF'}`);
-            }
-        }
-
-        function updateOutput() {
-            const gate = gates[currentGateType];
-            let output;
-            
-            if (gate.inputs === 1) {
-                output = gate.evaluate(inputStates.A);
-            } else {
-                output = gate.evaluate(inputStates.A, inputStates.B);
-            }
-            
-            const outputElement = document.getElementById('output');
-            outputElement.textContent = `Y: ${output ? 1 : 0}`;
-            outputElement.className = output ? 'output-light on' : 'output-light';
-            outputElement.setAttribute('aria-label', `Output, currently ${output ? 'ON' : 'OFF'}`);
+            highlightTruthTableRow();
         }
 
         function updateTruthTable() {
             const gate = gates[currentGateType];
-            const tbody = document.getElementById('truthTableBody');
-            tbody.innerHTML = '';
-            
-            if (gate.inputs === 1) {
-                // Single input truth table (NOT gate)
-                const table = document.getElementById('truthTable');
-                table.querySelector('thead tr').innerHTML = '<th>A</th><th>Y</th>';
-                
-                gate.truthTable.forEach(row => {
-                    const tr = document.createElement('tr');
-                    tr.innerHTML = `<td>${row[0]}</td><td>${row[1]}</td>`;
-                    tbody.appendChild(tr);
-                });
+            const tableBody = $('#truthTableBody');
+            tableBody.innerHTML = '';
+
+            const headerRow = $('#truthTable thead tr');
+            if(gate.inputs === 1) {
+                headerRow.innerHTML = `<th>A</th><th>Y</th>`;
             } else {
-                // Two input truth table
-                const table = document.getElementById('truthTable');
-                table.querySelector('thead tr').innerHTML = '<th>A</th><th>B</th><th>Y</th>';
-                
-                gate.truthTable.forEach(row => {
-                    const tr = document.createElement('tr');
-                    tr.innerHTML = `<td>${row[0]}</td><td>${row[1]}</td><td>${row[2]}</td>`;
-                    tbody.appendChild(tr);
+                headerRow.innerHTML = `<th>A</th><th>B</th><th>Y</th>`;
+            }
+
+            gate.truthTable.forEach(row => {
+                const tr = document.createElement('tr');
+                tr.setAttribute('data-row', row.slice(0, -1).join(''));
+                row.forEach(cell => {
+                    const td = document.createElement('td');
+                    td.textContent = cell;
+                    tr.appendChild(td);
                 });
+                tableBody.appendChild(tr);
+            });
+        }
+
+        function highlightTruthTableRow() {
+            $$('#truthTableBody tr').forEach(row => {
+                row.style.backgroundColor = 'transparent';
+            });
+            
+            const gate = gates[currentGateType];
+            let activeRowId;
+            if (gate.inputs === 1) {
+                activeRowId = String(Number(inputStates.A));
+            } else {
+                activeRowId = String(Number(inputStates.A)) + String(Number(inputStates.B));
+            }
+            
+            const activeRow = $(`#truthTableBody tr[data-row="${activeRowId}"]`);
+            if (activeRow) {
+                activeRow.style.backgroundColor = 'var(--warning-color)';
             }
         }
 
-        // Boolean expression evaluator
+        // Boolean Expression Playground
         function evaluateExpression() {
-            const input = document.getElementById('expressionInput').value.trim();
-            const result = document.getElementById('expressionResult');
-            
+            const input = $('#expressionInput').value.trim();
+            const resultDiv = $('#expressionResult');
             if (!input) {
-                result.innerHTML = 'Please enter a Boolean expression.';
+                resultDiv.innerHTML = '<p style="color:red;">Please enter an expression.</p>';
                 return;
             }
-            
+
             try {
-                const variables = extractVariables(input);
-                if (variables.length === 0) {
-                    result.innerHTML = '<strong>Error:</strong> No valid variables found. Use A, B, or C as variables.';
-                    return;
+                const variables = [...new Set(input.match(/[A-C]/g))].sort();
+                if (!variables.length) throw new Error("No variables (A, B, C) found.");
+
+                let tableHTML = '<table class="truth-table"><thead><tr>';
+                variables.forEach(v => tableHTML += `<th>${v}</th>`);
+                tableHTML += `<th>Result</th></tr></thead><tbody>`;
+
+                for (let i = 0; i < Math.pow(2, variables.length); i++) {
+                    let expression = input.toUpperCase();
+                    let rowValues = [];
+                    tableHTML += '<tr>';
+
+                    for (let j = 0; j < variables.length; j++) {
+                        const val = (i >> (variables.length - 1 - j)) & 1;
+                        expression = expression.replace(new RegExp(variables[j], 'g'), val);
+                        tableHTML += `<td>${val}</td>`;
+                        rowValues.push(val);
+                    }
+
+                    // Simple but unsafe eval. For a real app, use a proper parser.
+                    let sanitized = expression.replace(/!/g, ' ! ').replace(/\*/g, ' && ').replace(/\+/g, ' || ');
+                    const result = eval(sanitized.replace(/[^01&|! ()]/g, ''));
+                    
+                    tableHTML += `<td><strong>${Number(result)}</strong></td></tr>`;
                 }
-                
-                const truthTable = generateTruthTable(input, variables);
-                displayTruthTable(truthTable, variables, result);
-                
-                completedSections.add('booleanPlayground');
-                updateProgress();
-            } catch (error) {
-                result.innerHTML = `<strong>Error:</strong> ${error.message}<br><br>Please check your expression syntax. Use A, B, C as variables, * for AND, + for OR, and ! for NOT.`;
-            }
-        }
 
-        function extractVariables(expression) {
-            const matches = expression.match(/[A-C]/g);
-            if (!matches) return [];
-            return [...new Set(matches)].sort();
-        }
-
-        function generateTruthTable(expression, variables) {
-            const numRows = Math.pow(2, variables.length);
-            const table = [];
-            
-            for (let i = 0; i < numRows; i++) {
-                const row = [];
-                const values = {};
-                
-                // Generate input values (binary representation of i)
-                for (let j = 0; j < variables.length; j++) {
-                    const value = (i >> (variables.length - 1 - j)) & 1;
-                    row.push(value);
-                    values[variables[j]] = value === 1;
-                }
-                
-                // Evaluate expression
-                try {
-                    const result = evaluateBooleanExpression(expression, values);
-                    row.push(result ? 1 : 0);
-                } catch (error) {
-                    throw new Error('Invalid expression syntax');
-                }
-                
-                table.push(row);
+                tableHTML += '</tbody></table>';
+                resultDiv.innerHTML = tableHTML;
+                updateProgress('expression-playground');
+            } catch (e) {
+                resultDiv.innerHTML = `<p style="color:red;">Error evaluating expression: ${e.message}. Please check your syntax.</p>`;
             }
-            
-            return table;
-        }
-
-        function evaluateBooleanExpression(expression, values) {
-            // Convert Boolean expression to JavaScript-compatible format
-            let jsExpression = expression
-                .replace(/\*/g, '&&')           // AND
-                .replace(/\+/g, '||')           // OR  
-                .replace(/!/g, '!')             // NOT
-                .replace(/\(/g, '(')            // Keep parentheses
-                .replace(/\)/g, ')');
-            
-            // Replace variables with their boolean values
-            for (const [variable, value] of Object.entries(values)) {
-                const regex = new RegExp(`\\b${variable}\\b`, 'g');
-                jsExpression = jsExpression.replace(regex, value.toString());
-            }
-            
-            // Safely evaluate the expression
-            try {
-                return Function('"use strict"; return (' + jsExpression + ')')();
-            } catch (error) {
-                throw new Error('Cannot evaluate expression - check syntax');
-            }
-        }
-
-        function displayTruthTable(truthTable, variables, resultElement) {
-            let html = '<h4>Truth Table Result:</h4>';
-            html += '<table class="truth-table"><thead><tr>';
-            
-            // Headers for input variables
-            variables.forEach(variable => {
-                html += `<th>${variable}</th>`;
-            });
-            html += '<th>Result</th></tr></thead><tbody>';
-            
-            // Data rows
-            truthTable.forEach(row => {
-                html += '<tr>';
-                row.forEach(value => {
-                    html += `<td>${value}</td>`;
-                });
-                html += '</tr>';
-            });
-            
-            html += '</tbody></table>';
-            html += '<p><em>Expression evaluated successfully! Try another one.</em></p>';
-            
-            resultElement.innerHTML = html;
         }
 
         function clearExpression() {
-            const inputElement = document.getElementById('expressionInput');
-            const resultElement = document.getElementById('expressionResult');
-            
-            if (inputElement) inputElement.value = '';
-            if (resultElement) {
-                resultElement.innerHTML = 'Enter a Boolean expression above and click "Generate Truth Table" to see the results.';
-            }
+            $('#expressionInput').value = '';
+            $('#expressionResult').innerHTML = 'Enter a Boolean expression above and click "Generate Truth Table" to see the results.';
         }
 
-        // Binary arithmetic functions
-        function calculateBinaryAddition() {
-            const num1 = document.getElementById('binNum1').value.trim();
-            const num2 = document.getElementById('binNum2').value.trim();
-            const resultDiv = document.getElementById('binaryResult');
+        // Quiz and Progress Tracking
+        function showTab(tabId, buttonId) {
+            $$('.tab-panel').forEach(panel => panel.classList.remove('active'));
+            $$('.tab-button').forEach(btn => btn.classList.remove('active'));
             
-            if (!num1 || !num2) {
-                resultDiv.innerHTML = '<p style="color: var(--danger-color);"><strong>Error:</strong> Please enter both binary numbers.</p>';
-                return;
-            }
-            
-            if (!/^[01]+$/.test(num1) || !/^[01]+$/.test(num2)) {
-                resultDiv.innerHTML = '<p style="color: var(--danger-color);"><strong>Error:</strong> Please enter valid binary numbers (only 0s and 1s).</p>';
-                return;
-            }
-            
-            try {
-                // Convert to decimal, add, convert back to binary
-                const dec1 = parseInt(num1, 2);
-                const dec2 = parseInt(num2, 2);
-                const sum = dec1 + dec2;
-                const binarySum = sum.toString(2);
-                
-                // Pad numbers to same length for display
-                const maxLength = Math.max(num1.length, num2.length);
-                const paddedNum1 = num1.padStart(maxLength, '0');
-                const paddedNum2 = num2.padStart(maxLength, '0');
-                
-                // Display result
-                let html = '<div style="font-family: monospace; font-size: 1.2rem; text-align: center; margin-bottom: 1rem;">';
-                html += `<div>  ${paddedNum1}</div>`;
-                html += `<div>+ ${paddedNum2}</div>`;
-                html += `<div>${'-'.repeat(maxLength + 2)}</div>`;
-                html += `<div>  ${binarySum}</div>`;
-                html += '</div>';
-                
-                html += `<p><strong>Final Answer:</strong> ${paddedNum1} + ${paddedNum2} = ${binarySum}</p>`;
-                html += `<p><strong>Decimal Check:</strong> ${dec1} + ${dec2} = ${sum}</p>`;
-                
-                resultDiv.innerHTML = html;
-                
-                // Mark section as completed
-                completedSections.add('binaryArithmetic');
-                updateProgress();
-            } catch (error) {
-                resultDiv.innerHTML = '<p style="color: var(--danger-color);"><strong>Error:</strong> Invalid binary numbers.</p>';
-            }
+            $(`#${tabId}`).classList.add('active');
+            $(`#${buttonId}`).classList.add('active');
         }
 
-        // Two's complement converter function
-        function convertToTwosComplement() {
-            const decimal = parseInt(document.getElementById('decimalInput').value);
-            const resultDiv = document.getElementById('twosComplementResult');
-            const stepsDiv = document.getElementById('conversionSteps');
+        function selectAnswer(element, isCorrect) {
+            const parentOptions = element.parentElement;
+            const feedbackDiv = parentOptions.nextElementSibling;
             
-            if (!resultDiv || !stepsDiv) return;
+            $$('.quiz-option', parentOptions).forEach(opt => {
+                opt.classList.remove('selected', 'correct', 'incorrect');
+                opt.style.pointerEvents = 'none';
+            });
             
-            if (isNaN(decimal)) {
-                resultDiv.innerHTML = 'Please enter a valid number';
-                stepsDiv.innerHTML = '<p>Enter a decimal number to see the conversion process.</p>';
-                return;
-            }
-            
-            if (decimal < -128 || decimal > 127) {
-                resultDiv.innerHTML = 'Number out of 8-bit range';
-                stepsDiv.innerHTML = '<p style="color: var(--danger-color);"><strong>Error:</strong> Please enter a number between -128 and 127 for 8-bit representation.</p>';
-                return;
-            }
-            
-            let html = '';
-            
-            if (decimal >= 0) {
-                // Positive number - straight binary
-                const binary = decimal.toString(2).padStart(8, '0');
-                resultDiv.innerHTML = binary;
-                
-                html += `<h4>Conversion Steps for +${decimal}:</h4>`;
-                html += '<div style="font-family: monospace; background: white; padding: 1rem; border-radius: 4px;">';
-                html += `Positive numbers are represented directly in binary:<br>`;
-                html += `${decimal} in decimal = ${binary} in 8-bit binary`;
-                html += '</div>';
+            element.classList.add('selected');
+            if (isCorrect) {
+                element.classList.add('correct');
+                feedbackDiv.innerHTML = '<p style="color:green;"><strong>Correct!</strong> Great job.</p>';
+                updateProgress(element.closest('.tab-panel').id);
             } else {
-                // Negative number - two's complement
-                const positive = Math.abs(decimal);
-                const positiveBinary = positive.toString(2).padStart(8, '0');
-                
-                // One's complement
-                let onesComplement = '';
-                for (let i = 0; i < positiveBinary.length; i++) {
-                    onesComplement += positiveBinary[i] === '0' ? '1' : '0';
-                }
-                
-                // Add 1 for two's complement
-                let carry = 1;
-                let twosComplement = '';
-                for (let i = onesComplement.length - 1; i >= 0; i--) {
-                    const sum = parseInt(onesComplement[i]) + carry;
-                    twosComplement = (sum % 2) + twosComplement;
-                    carry = Math.floor(sum / 2);
-                }
-                
-                resultDiv.innerHTML = twosComplement;
-                
-                html += `<h4>Conversion Steps for ${decimal}:</h4>`;
-                html += '<div style="font-family: monospace; background: white; padding: 1rem; border-radius: 4px;">';
-                html += `<strong>Step 1:</strong> Find positive binary<br>`;
-                html += `+${positive} = ${positiveBinary}<br><br>`;
-                html += `<strong>Step 2:</strong> One's complement (flip bits)<br>`;
-                html += `${onesComplement}<br><br>`;
-                html += `<strong>Step 3:</strong> Add 1 for two's complement<br>`;
-                html += `${onesComplement}<br>+ 00000001<br>`;
-                html += `${'-'.repeat(8)}<br>`;
-                html += `${twosComplement}<br><br>`;
-                html += `<strong>Result:</strong> ${decimal} = ${twosComplement} in 8-bit two's complement`;
-                html += '</div>';
+                element.classList.add('incorrect');
+                feedbackDiv.innerHTML = '<p style="color:red;"><strong>Not quite.</strong> Try reviewing the material and attempting again.</p>';
             }
+        }
+
+        function updateProgress(sectionId) {
+            completedSections.add(sectionId);
+            const totalSections = 6; // manual count of interactive sections
+            const progress = (completedSections.size / totalSections) * 100;
             
-            stepsDiv.innerHTML = html;
-            
-            // Mark section as completed
-            completedSections.add('twosComplement');
-            updateProgress();
+            $('#progressFill').style.width = `${progress}%`;
+            $('#progressFill').parentElement.setAttribute('aria-valuenow', progress);
+            $('#progressText').textContent = `Progress: ${completedSections.size} of ${totalSections} sections completed.`;
+
+            if (progress === 100) {
+                 $('#progressText').textContent = 'Congratulations! You have completed all interactive sections!';
+                 announceToScreenReader('Congratulations! You have completed all interactive sections!');
+            }
+        }
+
+        // Accessibility Functions
+        function changeFontSize(direction) {
+            fontSize += (direction === 'increase' ? 2 : -2);
+            if(fontSize < 12) fontSize = 12;
+            if(fontSize > 24) fontSize = 24;
+            document.body.style.fontSize = `${fontSize}px`;
         }
         
-        // Binary subtraction calculator function
-        function calculateBinarySubtraction() {
-            const minuend = parseInt(document.getElementById('minuend').value);
-            const subtrahend = parseInt(document.getElementById('subtrahend').value);
-            const resultDiv = document.getElementById('subtractionResult');
-            
-            if (!resultDiv) return;
-            
-            if (isNaN(minuend) || isNaN(subtrahend)) {
-                resultDiv.innerHTML = '<p style="color: var(--danger-color);"><strong>Error:</strong> Please enter valid numbers for both fields.</p>';
-                return;
-            }
-            
-            if (minuend < -128 || minuend > 127 || subtrahend < -128 || subtrahend > 127) {
-                resultDiv.innerHTML = '<p style="color: var(--danger-color);"><strong>Error:</strong> Please enter numbers between -128 and 127.</p>';
-                return;
-            }
-            
-            // Calculate actual result
-            const actualResult = minuend - subtrahend;
-            
-            // Convert to binary representation
-            function toBinary(num) {
-                if (num >= 0) {
-                    return num.toString(2).padStart(8, '0');
-                } else {
-                    // Two's complement
-                    const positive = Math.abs(num);
-                    const positiveBinary = positive.toString(2).padStart(8, '0');
-                    let onesComp = positiveBinary.split('').map(bit => bit === '0' ? '1' : '0').join('');
-                    
-                    // Add 1
-                    let carry = 1;
-                    let result = '';
-                    for (let i = 7; i >= 0; i--) {
-                        const sum = parseInt(onesComp[i]) + carry;
-                        result = (sum % 2) + result;
-                        carry = Math.floor(sum / 2);
-                    }
-                    return result;
-                }
-            }
-            
-            const minuendBinary = toBinary(minuend);
-            const subtrahendBinary = toBinary(subtrahend);
-            const subtrahendNegBinary = toBinary(-subtrahend);
-            
-            let html = `<h4>Computing ${minuend} - ${subtrahend} using Two's Complement:</h4>`;
-            html += '<div style="font-family: monospace; background: white; padding: 1rem; border-radius: 4px;">';
-            html += `<strong>Step 1:</strong> Convert to binary<br>`;
-            html += `A = ${minuend} → ${minuendBinary}<br>`;
-            html += `B = ${subtrahend} → ${subtrahendBinary}<br><br>`;
-            
-            html += `<strong>Step 2:</strong> Find two's complement of B (to get -B)<br>`;
-            html += `-B = ${subtrahendNegBinary}<br><br>`;
-            
-            html += `<strong>Step 3:</strong> Add A + (-B)<br>`;
-            html += `  ${minuendBinary}<br>`;
-            html += `+ ${subtrahendNegBinary}<br>`;
-            html += `  ${'-'.repeat(8)}<br>`;
-            
-            // Handle result overflow for display
-            let resultBinary;
-            if (actualResult >= -128 && actualResult <= 127) {
-                resultBinary = toBinary(actualResult);
-            } else {
-                resultBinary = 'OVERFLOW';
-            }
-            
-            html += `  ${resultBinary}<br><br>`;
-            html += `<strong>Final Answer:</strong> ${minuend} - ${subtrahend} = ${actualResult}`;
-            
-            if (actualResult < -128 || actualResult > 127) {
-                html += '<br><strong>Note:</strong> Result exceeds 8-bit range!';
-            }
-            
-            html += '</div>';
-            
-            resultDiv.innerHTML = html;
-            
-            // Mark section as completed
-            completedSections.add('binarySubtraction');
-            updateProgress();
-        }
-
-        // Quiz functionality
-        function selectAnswer(element, isCorrect) {
-            if (!element || !element.parentElement) return;
-            
-            // Remove previous selections from all options
-            const options = element.parentElement.querySelectorAll('.quiz-option');
-            options.forEach(option => {
-                option.classList.remove('selected', 'correct', 'incorrect');
-            });
-            
-            // Mark the selected answer
-            element.classList.add('selected');
-            
-            // Show feedback after a short delay for better UX
-            setTimeout(() => {
-                options.forEach(option => {
-                    // Check if this option is the correct one by examining the onclick attribute
-                    const onclickStr = option.getAttribute('onclick') || '';
-                    const optionIsCorrect = onclickStr.includes('true');
-                    
-                    if (optionIsCorrect) {
-                        option.classList.add('correct');
-                    } else if (option.classList.contains('selected') && !isCorrect) {
-                        option.classList.add('incorrect');
-                    }
-                });
-                
-                // Show feedback message
-                const quizSection = element.closest('.tab-panel');
-                if (!quizSection) return;
-                
-                const quizId = quizSection.id;
-                const feedbackElement = document.getElementById(quizId + 'feedback');
-                
-                if (feedbackElement) {
-                    if (isCorrect) {
-                        feedbackElement.innerHTML = '<strong style="color: var(--success-color);">✓ Correct!</strong> Great job understanding this concept.';
-                        completedSections.add(quizId);
-                    } else {
-                        feedbackElement.innerHTML = '<strong style="color: var(--danger-color);">✗ Not quite right.</strong> Try reviewing the gate behavior and truth tables above.';
-                    }
-                    
-                    updateProgress();
-                }
-            }, 500);
-        }
-
-        // Tab functionality
-        function showTab(tabId, buttonId) {
-            // Hide all tab panels
-            document.querySelectorAll('.tab-panel').forEach(panel => {
-                panel.classList.remove('active');
-            });
-            
-            // Remove active class from all tab buttons
-            document.querySelectorAll('.tab-button').forEach(button => {
-                button.classList.remove('active');
-                button.setAttribute('aria-selected', 'false');
-            });
-            
-            // Show selected tab and activate button
-            const selectedPanel = document.getElementById(tabId);
-            const selectedButton = document.getElementById(buttonId);
-            
-            if (selectedPanel) selectedPanel.classList.add('active');
-            if (selectedButton) {
-                selectedButton.classList.add('active');
-                selectedButton.setAttribute('aria-selected', 'true');
-            }
-        }
-
-        // Progress tracking
-        function updateProgress() {
-            const totalSections = 5; // gateSimulator, booleanPlayground, quiz1, quiz2, quiz3, binaryArithmetic
-            const completed = completedSections.size;
-            const percentage = Math.min((completed / totalSections) * 100, 100);
-            
-            const progressFill = document.getElementById('progressFill');
-            const progressText = document.getElementById('progressText');
-            
-            if (progressFill) {
-                progressFill.style.width = percentage + '%';
-                progressFill.parentElement.setAttribute('aria-valuenow', percentage);
-            }
-            
-            if (progressText) {
-                let text = `Progress: ${completed}/${totalSections} sections completed (${Math.round(percentage)}%)`;
-                if (percentage === 100) {
-                    text += ' - Excellent work!';
-                }
-                progressText.textContent = text;
-            }
-        }
-
-        // Accessibility functions
-        function changeFontSize(action) {
-            if (action === 'increase' && fontSize < 24) {
-                fontSize += 2;
-            } else if (action === 'decrease' && fontSize > 12) {
-                fontSize -= 2;
-            }
-            
-            document.body.style.fontSize = fontSize + 'px';
-            announceToScreenReader(`Font size changed to ${fontSize} pixels`);
-        }
-
         function toggleHighContrast() {
             highContrast = !highContrast;
-            
-            if (highContrast) {
-                document.body.classList.add('high-contrast');
-            } else {
-                document.body.classList.remove('high-contrast');
-            }
-            
-            announceToScreenReader(`High contrast ${highContrast ? 'enabled' : 'disabled'}`);
+            document.body.classList.toggle('high-contrast', highContrast);
         }
 
         function pauseAllAnimations() {
             animationsPaused = !animationsPaused;
-            
+            const style = document.createElement('style');
+            style.id = 'anim-pause-style';
             if (animationsPaused) {
-                const style = document.createElement('style');
-                style.id = 'pause-animations';
-                style.textContent = `
-                    *, *::before, *::after { 
-                        animation-duration: 0.01ms !important; 
-                        transition-duration: 0.01ms !important;
-                        animation-iteration-count: 1 !important;
-                    }
-                `;
+                style.innerHTML = `* { animation: none !important; transition: none !important; }`;
                 document.head.appendChild(style);
             } else {
-                const pauseStyle = document.getElementById('pause-animations');
-                if (pauseStyle) {
-                    pauseStyle.remove();
-                }
+                const existingStyle = document.getElementById('anim-pause-style');
+                if (existingStyle) existingStyle.remove();
             }
-            
-            announceToScreenReader(`Animations ${animationsPaused ? 'paused' : 'resumed'}`);
         }
 
-        // Enhanced error handling and user feedback
-        function handleError(error, context) {
-            console.error(`Error in ${context}:`, error);
-            announceToScreenReader(`An error occurred. Please try again or contact support if the problem persists.`);
-        }
-
-        // Initialize error handling
-        window.addEventListener('error', function(e) {
-            handleError(e.error, 'global');
-        });
-
-        window.addEventListener('unhandledrejection', function(e) {
-            handleError(e.reason, 'promise');
-        });
-
-        // Ensure all interactive elements have proper focus management
-        document.addEventListener('focusin', function(e) {
-            if (e.target.classList.contains('input-switch') || 
-                e.target.classList.contains('gate-btn') || 
-                e.target.classList.contains('quiz-option')) {
-                e.target.style.outline = '3px solid #74c0fc';
-                e.target.style.outlineOffset = '2px';
+        function announceToScreenReader(message) {
+            let srAnnouncer = $('#sr-announcer');
+            if (!srAnnouncer) {
+                srAnnouncer = document.createElement('div');
+                srAnnouncer.id = 'sr-announcer';
+                srAnnouncer.className = 'sr-only';
+                srAnnouncer.setAttribute('aria-live', 'polite');
+                document.body.appendChild(srAnnouncer);
             }
-        });
-
-        document.addEventListener('focusout', function(e) {
-            if (!document.body.classList.contains('keyboard-nav')) {
-                e.target.style.outline = '';
-                e.target.style.outlineOffset = '';
-            }
-        });
-
-        // Performance optimization: debounce rapid interactions
-        function debounce(func, wait) {
-            let timeout;
-            return function executedFunction(...args) {
-                const later = () => {
-                    clearTimeout(timeout);
-                    func(...args);
-                };
-                clearTimeout(timeout);
-                timeout = setTimeout(later, wait);
-            };
+            srAnnouncer.textContent = message;
         }
-
-        // Optimized input validation
-        const debouncedValidation = debounce(validateBinaryInput, 100);
-
-        // Add resize handler for responsive adjustments
-        window.addEventListener('resize', debounce(function() {
-            // Adjust gate simulator layout on resize
-            const gateSimulator = document.querySelector('.gate-simulator');
-            if (gateSimulator && window.innerWidth < 768) {
-                gateSimulator.style.gridTemplateColumns = '1fr';
-            } else if (gateSimulator) {
-                gateSimulator.style.gridTemplateColumns = '1fr 200px 1fr';
-            }
-        }, 250));
-
-        // Cleanup function for better memory management
-        function cleanup() {
-            // Remove event listeners if needed
-            document.removeEventListener('keydown', arguments.callee);
-            // Clear any timeouts
-            const timeouts = window.timeoutIds || [];
-            timeouts.forEach(clearTimeout);
-        }
-
-        // Add cleanup on page unload
-        window.addEventListener('beforeunload', cleanup);
-
-        // Final initialization check
-        function finalInit() {
-            // Verify all critical elements exist
-            const criticalElements = [
-                'progressFill', 'progressText', 'gateName', 'gateDescription',
-                'inputA', 'inputB', 'output', 'truthTableBody', 'expressionInput', 'expressionResult'
-            ];
-            
-            let allElementsPresent = true;
-            criticalElements.forEach(id => {
-                if (!document.getElementById(id)) {
-                    console.warn(`Critical element missing: ${id}`);
-                    allElementsPresent = false;
+        
+        function addKeyboardNavListener() {
+            document.body.addEventListener('keydown', (e) => {
+                if(e.key === 'Tab') {
+                    document.body.classList.add('keyboard-nav');
                 }
             });
-            
-            if (allElementsPresent) {
-                announceToScreenReader('All interactive elements loaded successfully');
-            } else {
-                announceToScreenReader('Some elements may not be fully loaded. Please refresh if you experience issues.');
+            document.body.addEventListener('mousedown', () => {
+                document.body.classList.remove('keyboard-nav');
+            });
+        }
+    </script>
+    
+    <script src="https://www.youtube.com/iframe_api"></script>
+    <script>
+        let player;
+        function onYouTubeIframeAPIReady() {
+            player = new YT.Player('youtube-player', {
+                events: {
+                    'onReady': onPlayerReady,
+                    'onStateChange': onPlayerStateChange
+                }
+            });
+        }
+
+        function onPlayerReady(event) {
+            setupTranscript();
+        }
+
+        const transcriptContainer = document.getElementById('transcript-container');
+        const transcriptSpans = transcriptContainer.querySelectorAll('span');
+        let timeupdater = null;
+
+        function onPlayerStateChange(event) {
+            if (event.data == YT.PlayerState.PLAYING) {
+                timeupdater = setInterval(updateActiveTranscript, 250);
+            } else if (event.data == YT.PlayerState.PAUSED || event.data == YT.PlayerState.ENDED) {
+                clearInterval(timeupdater);
             }
         }
 
-        // Run final initialization after a brief delay to ensure DOM is fully ready
-        setTimeout(finalInit, 100);
+        function setupTranscript() {
+            transcriptSpans.forEach(span => {
+                const startTime = parseFloat(span.getAttribute('data-start'));
+                span.addEventListener('click', () => {
+                    seekToTime(startTime);
+                });
+                span.addEventListener('keydown', (event) => {
+                    if (event.key === 'Enter' || event.key === ' ') {
+                        event.preventDefault();
+                        seekToTime(startTime);
+                    }
+                });
+            });
+        }
+
+        function seekToTime(time) {
+            if (player && typeof player.seekTo === 'function') {
+                player.seekTo(time, true);
+                player.playVideo();
+            }
+        }
+
+        let activeSpan = null;
+        function updateActiveTranscript() {
+            if (!player || typeof player.getCurrentTime !== 'function') return;
+            const currentTime = player.getCurrentTime();
+            let newActiveSpan = null;
+            for (const span of transcriptSpans) {
+                const start = parseFloat(span.dataset.start);
+                const end = parseFloat(span.dataset.end);
+                if (currentTime >= start && currentTime < end) {
+                    newActiveSpan = span;
+                    break;
+                }
+            }
+            if (newActiveSpan !== activeSpan) {
+                if (activeSpan) {
+                    activeSpan.classList.remove('active-transcript');
+                }
+                if (newActiveSpan) {
+                    newActiveSpan.classList.add('active-transcript');
+                    newActiveSpan.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'center'
+                    });
+                }
+                activeSpan = newActiveSpan;
+            }
+        }
     </script>
 </body>
 </html>
