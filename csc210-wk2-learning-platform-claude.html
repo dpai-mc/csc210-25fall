@@ -1018,6 +1018,7 @@
         document.addEventListener('DOMContentLoaded', function() {
             selectGate('AND');
             updateProgress();
+            initializeInputs();
             
             // Add keyboard navigation
             document.addEventListener('keydown', function(e) {
@@ -1037,9 +1038,36 @@
             document.body.appendChild(announcement);
             
             setTimeout(() => {
-                document.body.removeChild(announcement);
+                if (document.body.contains(announcement)) {
+                    document.body.removeChild(announcement);
+                }
             }, 3000);
         });
+
+        // Initialize input states
+        function initializeInputs() {
+            // Initialize binary calculator inputs
+            const binNum1 = document.getElementById('binNum1');
+            const binNum2 = document.getElementById('binNum2');
+            if (binNum1) binNum1.addEventListener('input', validateBinaryInput);
+            if (binNum2) binNum2.addEventListener('input', validateBinaryInput);
+
+            // Initialize decimal inputs
+            const decimalInput = document.getElementById('decimalInput');
+            if (decimalInput) decimalInput.addEventListener('input', function() {
+                const value = parseInt(this.value);
+                if (!isNaN(value) && value >= -128 && value <= 127) {
+                    convertToTwosComplement();
+                }
+            });
+        }
+
+        function validateBinaryInput(event) {
+            const input = event.target;
+            const value = input.value;
+            // Remove any non-binary characters
+            input.value = value.replace(/[^01]/g, '');
+        }
 
         // Gate simulator functions
         function selectGate(gateType) {
@@ -1349,7 +1377,10 @@
             // Show feedback after a short delay
             setTimeout(() => {
                 options.forEach(option => {
-                    const optionIsCorrect = option.onclick.toString().includes('true');
+                    // Check if this option is the correct one by examining the onclick attribute
+                    const onclickStr = option.getAttribute('onclick') || '';
+                    const optionIsCorrect = onclickStr.includes('true');
+                    
                     if (optionIsCorrect) {
                         option.classList.add('correct');
                     } else if (option.classList.contains('selected') && !isCorrect) {
@@ -1358,17 +1389,22 @@
                 });
                 
                 // Show feedback message
-                const quizId = element.closest('.tab-panel').id;
+                const quizSection = element.closest('.tab-panel');
+                if (!quizSection) return;
+                
+                const quizId = quizSection.id;
                 const feedbackElement = document.getElementById(quizId + 'feedback');
                 
-                if (isCorrect) {
-                    feedbackElement.innerHTML = '<strong style="color: #28a745;">✓ Correct!</strong> Great job understanding this concept.';
-                    completedSections.add(quizId);
-                } else {
-                    feedbackElement.innerHTML = '<strong style="color: #dc3545;">✗ Not quite right.</strong> Try reviewing the gate behavior and truth tables above.';
+                if (feedbackElement) {
+                    if (isCorrect) {
+                        feedbackElement.innerHTML = '<strong style="color: #28a745;">✓ Correct!</strong> Great job understanding this concept.';
+                        completedSections.add(quizId);
+                    } else {
+                        feedbackElement.innerHTML = '<strong style="color: #dc3545;">✗ Not quite right.</strong> Try reviewing the gate behavior and truth tables above.';
+                    }
+                    
+                    updateProgress();
                 }
-                
-                updateProgress();
             }, 500);
         }
 
@@ -1386,9 +1422,14 @@
             });
             
             // Show selected tab and activate button
-            document.getElementById(tabId).classList.add('active');
-            document.getElementById(buttonId).classList.add('active');
-            document.getElementById(buttonId).setAttribute('aria-selected', 'true');
+            const selectedPanel = document.getElementById(tabId);
+            const selectedButton = document.getElementById(buttonId);
+            
+            if (selectedPanel) selectedPanel.classList.add('active');
+            if (selectedButton) {
+                selectedButton.classList.add('active');
+                selectedButton.setAttribute('aria-selected', 'true');
+            }
         }
 
         // Progress tracking
