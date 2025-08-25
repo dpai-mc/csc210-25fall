@@ -109,7 +109,8 @@
 
         .section-content {
             padding: 1.5rem;
-            transition: max-height 0.3s ease, opacity 0.3s ease;
+            transition: max-height 0.4s ease-out, padding 0.4s ease-out, opacity 0.4s ease-out;
+            overflow: hidden;
         }
 
         .section.collapsed .section-content {
@@ -117,7 +118,6 @@
             padding-top: 0;
             padding-bottom: 0;
             opacity: 0;
-            overflow: hidden;
         }
 
         .overview-box {
@@ -655,30 +655,19 @@
                         </ul>
                         <p><em>Watch this tutorial before beginning your assignment to ensure you're comfortable with the Logisim interface.</em></p>
                     </div>
-                    
                     <div class="download-links">
-                        <a href="https://mendocinocollege-my.sharepoint.com/:u:/g/personal/dpai_mendocino_edu/ETE3bbN1a1tPrHQzXB8cLqcB5zOZSBuM9BrdcxuGxJghDw?e=fkGhtZ" 
-                           class="download-btn" 
-                           target="_blank" 
-                           rel="noopener noreferrer"
-                           aria-describedby="windows-desc">
+                        <a href="https://mendocinocollege-my.sharepoint.com/:u:/g/personal/dpai_mendocino_edu/ETE3bbN1a1tPrHQzXB8cLqcB5zOZSBuM9BrdcxuGxJghDw?e=fkGhtZ" class="download-btn" target="_blank" rel="noopener noreferrer" aria-describedby="windows-desc">
                             💻 Logisim 2.7.1 for Windows
                             <span id="windows-desc" class="sr-only">Download Logisim 2.7.1 for Windows operating system</span>
                         </a>
-                        <a href="https://mendocinocollege-my.sharepoint.com/:u:/g/personal/dpai_mendocino_edu/EcjnlCXLT1pEvSjVBVemxLkBVe-pwL3ukH6qbyBMkv9ZHg?e=yvVnm8" 
-                           class="download-btn" 
-                           target="_blank" 
-                           rel="noopener noreferrer"
-                           aria-describedby="mac-desc">
+                        <a href="https://mendocinocollege-my.sharepoint.com/:u:/g/personal/dpai_mendocino_edu/EcjnlCXLT1pEvSjVBVemxLkBVe-pwL3ukH6qbyBMkv9ZHg?e=yvVnm8" class="download-btn" target="_blank" rel="noopener noreferrer" aria-describedby="mac-desc">
                             🍎 Logisim 2.7.1 for MacOS
                             <span id="mac-desc" class="sr-only">Download Logisim 2.7.1 for MacOS operating system</span>
                         </a>
                     </div>
                 </div>
-
                 <h3>File Structure</h3>
                 <p>All circuits must be created as <strong>subcircuits</strong> within a single file named <code>lastname_firstname_week2.circ</code>. Each part of the assignment should be implemented as a separate subcircuit with the naming convention specified in each section.</p>
-
                 <div class="warning-box">
                     <h4>Boolean Expression Notation Guide</h4>
                     <p><strong>Understanding Boolean Symbols:</strong></p>
@@ -687,7 +676,6 @@
                         <li><strong>OR Operation:</strong> A + B (addition)</li>
                         <li><strong>NOT Operation:</strong> A' or <span style="text-decoration: overline;">A</span> (negation)</li>
                     </ul>
-                    
                     <p><strong>Critical: Order of Operations</strong></p>
                     <p>In expressions like <strong>A'B</strong>, the NOT symbol applies <em>only</em> to the variable it immediately follows. This means:</p>
                     <div class="expression-box">
@@ -699,7 +687,7 @@
                 </div>
             </div>
         </div>
-
+        
         <div class="section" id="part-a">
             <div class="section-header" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="true" aria-controls="part-a-content">
                 <h2>Part A: Logisim Familiarization <span class="points-badge">15 points</span></h2>
@@ -1151,10 +1139,10 @@
                 </ul>
             </div>
         </div>
+
     </div>
 
     <script>
-        // --- YOUR ORIGINAL SCRIPT ---
         const sectionsRead = new Set();
         const totalSections = document.querySelectorAll('.section').length;
 
@@ -1162,24 +1150,19 @@
             const section = header.parentElement;
             const content = section.querySelector('.section-content');
             const icon = header.querySelector('.collapse-icon');
+            
+            section.classList.toggle('collapsed');
             const isCollapsed = section.classList.contains('collapsed');
 
+            header.setAttribute('aria-expanded', !isCollapsed);
+            icon.classList.toggle('collapsed', isCollapsed);
+
             if (isCollapsed) {
-                section.classList.remove('collapsed');
-                header.setAttribute('aria-expanded', 'true');
-                icon.classList.remove('collapsed');
-                content.style.maxHeight = content.scrollHeight + 'px';
-                content.style.opacity = '1';
-                content.style.paddingTop = '1.5rem';
-                content.style.paddingBottom = '1.5rem';
-            } else {
-                section.classList.add('collapsed');
-                header.setAttribute('aria-expanded', 'false');
-                icon.classList.add('collapsed');
                 content.style.maxHeight = '0';
                 content.style.opacity = '0';
-                content.style.paddingTop = '0';
-                content.style.paddingBottom = '0';
+            } else {
+                content.style.opacity = '1';
+                content.style.maxHeight = content.scrollHeight + 'px';
             }
         }
 
@@ -1193,24 +1176,23 @@
         }
 
         document.addEventListener('DOMContentLoaded', () => {
-            document.querySelectorAll('.section').forEach(section => {
-                section.classList.add('collapsed');
-                const header = section.querySelector('.section-header');
-                const content = section.querySelector('.section-content');
-                const icon = header.querySelector('.collapse-icon');
-                
-                header.setAttribute('aria-expanded', 'false');
-                icon.classList.add('collapsed');
-                content.style.maxHeight = '0';
-                content.style.opacity = '0';
-                content.style.paddingTop = '0';
-                content.style.paddingBottom = '0';
+            document.querySelectorAll('.section').forEach((section, index) => {
+                if (index !== 0) { // Keep the first section open by default
+                    section.classList.add('collapsed');
+                    const header = section.querySelector('.section-header');
+                    const content = section.querySelector('.section-content');
+                    const icon = header.querySelector('.collapse-icon');
+                    
+                    header.setAttribute('aria-expanded', 'false');
+                    icon.classList.add('collapsed');
+                    content.style.maxHeight = '0';
+                    content.style.opacity = '0';
+                } else {
+                    // Properly initialize the first section to be open
+                    const content = section.querySelector('.section-content');
+                    content.style.maxHeight = content.scrollHeight + 'px';
+                }
             });
-
-            const firstSection = document.querySelector('.section');
-            if(firstSection) {
-                toggleSection(firstSection.querySelector('.section-header'));
-            }
             
             announcePageLoad();
         });
@@ -1245,7 +1227,7 @@
             setTimeout(() => { document.body.removeChild(announcement); }, 2000);
         }
     </script>
-
+    
     <script src="https://www.youtube.com/iframe_api"></script>
     <script>
         let player;
