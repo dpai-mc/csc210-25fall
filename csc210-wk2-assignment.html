@@ -109,15 +109,16 @@
 
         .section-content {
             padding: 1.5rem;
-            transition: max-height 0.4s ease-out, padding 0.4s ease-out, opacity 0.4s ease-out;
+            transition: max-height 0.4s ease-in-out, padding 0.4s ease-in-out, opacity 0.4s ease-in-out;
             overflow: hidden;
         }
 
         .section.collapsed .section-content {
-            max-height: 0;
+            max-height: 0 !important; /* Use important to override dynamic style */
             padding-top: 0;
             padding-bottom: 0;
             opacity: 0;
+            border-top: none;
         }
 
         .overview-box {
@@ -1143,6 +1144,7 @@
     </div>
 
     <script>
+        // --- SCRIPT WITH ACCORDION FIX ---
         const sectionsRead = new Set();
         const totalSections = document.querySelectorAll('.section').length;
 
@@ -1150,19 +1152,24 @@
             const section = header.parentElement;
             const content = section.querySelector('.section-content');
             const icon = header.querySelector('.collapse-icon');
-            
-            section.classList.toggle('collapsed');
             const isCollapsed = section.classList.contains('collapsed');
 
-            header.setAttribute('aria-expanded', !isCollapsed);
-            icon.classList.toggle('collapsed', isCollapsed);
-
             if (isCollapsed) {
+                // Expanding the section
+                section.classList.remove('collapsed');
+                header.setAttribute('aria-expanded', 'true');
+                icon.classList.remove('collapsed');
+                // Set max-height to the content's full scrollable height
+                content.style.maxHeight = content.scrollHeight + 'px';
+                content.style.opacity = '1';
+            } else {
+                // Collapsing the section
+                section.classList.add('collapsed');
+                header.setAttribute('aria-expanded', 'false');
+                icon.classList.add('collapsed');
+                // Collapse by setting max-height to 0
                 content.style.maxHeight = '0';
                 content.style.opacity = '0';
-            } else {
-                content.style.opacity = '1';
-                content.style.maxHeight = content.scrollHeight + 'px';
             }
         }
 
@@ -1177,24 +1184,36 @@
 
         document.addEventListener('DOMContentLoaded', () => {
             document.querySelectorAll('.section').forEach((section, index) => {
-                if (index !== 0) { // Keep the first section open by default
+                const header = section.querySelector('.section-header');
+                const content = section.querySelector('.section-content');
+                const icon = header.querySelector('.collapse-icon');
+                
+                if (index === 0) {
+                    // First section is open by default
+                    section.classList.remove('collapsed');
+                    header.setAttribute('aria-expanded', 'true');
+                    icon.classList.remove('collapsed');
+                    // Set initial max-height
+                    content.style.maxHeight = content.scrollHeight + 'px';
+                } else {
+                    // All other sections are collapsed by default
                     section.classList.add('collapsed');
-                    const header = section.querySelector('.section-header');
-                    const content = section.querySelector('.section-content');
-                    const icon = header.querySelector('.collapse-icon');
-                    
                     header.setAttribute('aria-expanded', 'false');
                     icon.classList.add('collapsed');
                     content.style.maxHeight = '0';
                     content.style.opacity = '0';
-                } else {
-                    // Properly initialize the first section to be open
-                    const content = section.querySelector('.section-content');
-                    content.style.maxHeight = content.scrollHeight + 'px';
                 }
             });
             
             announcePageLoad();
+        });
+
+        // This ensures the accordion height is recalculated if the window is resized
+        window.addEventListener('resize', () => {
+            document.querySelectorAll('.section:not(.collapsed)').forEach(section => {
+                const content = section.querySelector('.section-content');
+                content.style.maxHeight = content.scrollHeight + 'px';
+            });
         });
 
         const observer = new IntersectionObserver((entries) => {
