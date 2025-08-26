@@ -1,0 +1,1163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSC210L Week 2: Boolean Logic Lab</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #ffffff;
+            font-size: 16px;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+
+        header {
+            background: linear-gradient(135deg, #2c3e50, #3498db);
+            color: white;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .lab-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .info-card {
+            background: rgba(255,255,255,0.1);
+            padding: 1rem;
+            border-radius: 4px;
+            text-align: center;
+        }
+
+        .section {
+            background: #ffffff;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .section h2 {
+            color: #2c3e50;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 0.5rem;
+        }
+
+        .activity {
+            background: #f0f8ff;
+            border: 2px solid #3498db;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+        }
+
+        .activity h3 {
+            color: #2c3e50;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .activity-number {
+            background: #3498db;
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 50%;
+            font-size: 0.9rem;
+            font-weight: bold;
+        }
+
+        .virtual-setup {
+            background: #e8f5e8;
+            border: 2px solid #28a745;
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+
+        .virtual-setup h4 {
+            color: #155724;
+            margin-bottom: 0.5rem;
+        }
+
+        .switch-panel {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin: 1rem 0;
+            padding: 1rem;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        .switch {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .switch-button {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            border: 3px solid #666;
+            background: #dc3545;
+            color: white;
+            font-weight: bold;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .switch-button:hover {
+            transform: scale(1.05);
+        }
+
+        .switch-button:focus {
+            outline: 3px solid #74c0fc;
+            outline-offset: 2px;
+        }
+
+        .switch-button.on {
+            background: #28a745;
+            border-color: #1e7e34;
+        }
+
+        .gate-display {
+            text-align: center;
+            margin: 1rem 0;
+            padding: 1rem;
+            background: white;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+        }
+
+        .gate-svg {
+            max-width: 200px;
+            height: auto;
+        }
+
+        .gate-svg .wire {
+            stroke-width: 4;
+            transition: stroke 0.3s;
+        }
+
+        .gate-svg .gate-body {
+            fill: #f0f0f0;
+            stroke: #333;
+            stroke-width: 2;
+        }
+
+        .gate-svg text {
+            font-family: monospace;
+            font-size: 14px;
+            font-weight: bold;
+            fill: #333;
+        }
+
+        .result-display {
+            background: #f8f9fa;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            padding: 1rem;
+            text-align: center;
+            margin: 1rem 0;
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        .result-display.correct {
+            background: #d4edda;
+            border-color: #28a745;
+            color: #155724;
+        }
+
+        .result-display.incorrect {
+            background: #f8d7da;
+            border-color: #dc3545;
+            color: #721c24;
+        }
+
+        .challenge-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+
+        .challenge-card {
+            background: #fff;
+            border: 2px solid #17a2b8;
+            border-radius: 8px;
+            padding: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .challenge-card:hover {
+            background: #e6f3ff;
+            transform: translateY(-2px);
+        }
+
+        .challenge-card:focus {
+            outline: 3px solid #74c0fc;
+            outline-offset: 2px;
+        }
+
+        .challenge-card h4 {
+            color: #17a2b8;
+            margin-bottom: 0.5rem;
+        }
+
+        .truth-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+            background: white;
+        }
+
+        .truth-table th,
+        .truth-table td {
+            border: 1px solid #ddd;
+            padding: 0.5rem;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .truth-table th {
+            background: #3498db;
+            color: white;
+        }
+
+        .truth-table tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 0.5rem;
+            border: 2px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+            margin: 0.5rem 0;
+        }
+
+        .input-field:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+        }
+
+        .button {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            margin: 0.25rem;
+        }
+
+        .button:hover {
+            background: #2980b9;
+            transform: translateY(-1px);
+        }
+
+        .button:focus {
+            outline: 3px solid #74c0fc;
+            outline-offset: 2px;
+        }
+
+        .button.secondary {
+            background: #6c757d;
+        }
+
+        .button.secondary:hover {
+            background: #5a6268;
+        }
+
+        .timer {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: center;
+            margin: 1rem 0;
+        }
+
+        .timer-display {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #856404;
+            margin: 0.5rem 0;
+        }
+
+        .instructor-note {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+
+        .instructor-note h4 {
+            color: #856404;
+            margin-bottom: 0.5rem;
+        }
+
+        .deliverable-section {
+            background: #e8f5e8;
+            border: 3px solid #28a745;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .deliverable-section h2 {
+            color: #155724;
+            border-bottom-color: #28a745;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 600px) {
+            body {
+                padding: 10px;
+            }
+
+            header {
+                padding: 1rem;
+            }
+
+            header h1 {
+                font-size: 1.5rem;
+            }
+
+            .switch-panel {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .lab-info {
+                grid-template-columns: 1fr;
+            }
+
+            .challenge-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* High Contrast and Accessibility */
+        @media (prefers-contrast: high) {
+            body {
+                background: #000;
+                color: #fff;
+            }
+            
+            .section {
+                background: #1a1a1a;
+                border-color: #666;
+                color: #fff;
+            }
+        }
+
+        /* Reduced Motion */
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>CSC210L Week 2: Boolean Logic Lab</h1>
+        <p>Virtual Hands-On Practice with Logic Gates and Truth Tables</p>
+        <div class="lab-info">
+            <div class="info-card">
+                <strong>Duration:</strong> 90 minutes
+            </div>
+            <div class="info-card">
+                <strong>Format:</strong> Virtual Zoom Lab
+            </div>
+            <div class="info-card">
+                <strong>Activities:</strong> 4 Interactive + Deliverable
+            </div>
+            <div class="info-card">
+                <strong>Goal:</strong> Build Boolean Intuition
+            </div>
+        </div>
+    </header>
+
+    <div class="section">
+        <h2>Lab Overview</h2>
+        <p>This virtual lab reinforces Boolean logic concepts through interactive activities followed by a practical Logisim assignment. With our small class size, we'll work together as a group and use breakout rooms strategically to maximize peer learning and discussion.</p>
+        
+        <div class="virtual-setup">
+            <h4>Virtual Lab Setup</h4>
+            <ul>
+                <li><strong>Main Room:</strong> Introduction and wrap-up discussions</li>
+                <li><strong>Breakout Rooms:</strong> 2 pairs (2 students each) for focused collaboration</li>
+                <li><strong>Screen Sharing:</strong> Students share their browser with this interactive page</li>
+                <li><strong>Rotation:</strong> Pairs reconvene to share findings every 20 minutes</li>
+                <li><strong>Lab Assignment:</strong> Complete Logisim deliverable by end of week</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="activity">
+            <h3><span class="activity-number">1</span>Virtual Logic Gate Challenge (20 minutes)</h3>
+            <p><strong>Objective:</strong> Work in pairs to master gate behavior through interactive simulation and peer teaching.</p>
+            
+            <div class="instructor-note">
+                <h4>Instructor Notes</h4>
+                <p><strong>Breakout Setup:</strong> Create 2 rooms with 2 students each. Each pair selects different gates to become "experts" on.</p>
+                <p><strong>Your Role:</strong> Visit rooms to observe and guide. After 15 minutes, bring everyone back to main room for 5-minute expert presentations.</p>
+            </div>
+            
+            <div class="virtual-setup">
+                <h4>Pair Instructions</h4>
+                <ol>
+                    <li><strong>Choose Your Gates:</strong> Each pair picks 2-3 different gate types to focus on</li>
+                    <li><strong>Test Together:</strong> One person controls inputs, other predicts outputs</li>
+                    <li><strong>Document Patterns:</strong> Note what makes each gate unique</li>
+                    <li><strong>Prepare to Teach:</strong> Ready to explain your gates to the other pair</li>
+                </ol>
+            </div>
+
+            <div class="gate-display">
+                <select id="gateType" class="input-field" aria-label="Select gate type">
+                    <option value="AND">AND Gate</option>
+                    <option value="OR">OR Gate</option>
+                    <option value="NAND">NAND Gate</option>
+                    <option value="NOR">NOR Gate</option>
+                    <option value="XOR">XOR Gate</option>
+                </select>
+                <div id="gateSvg" aria-live="polite" role="img" aria-label="Logic gate diagram"></div>
+            </div>
+
+            <div class="switch-panel">
+                <div class="switch">
+                    <button class="switch-button" id="inputA" onclick="toggleInput('A')" 
+                            aria-label="Input A, currently 0" aria-pressed="false">0</button>
+                    <label for="inputA">Input A</label>
+                </div>
+                <div class="switch">
+                    <button class="switch-button" id="inputB" onclick="toggleInput('B')" 
+                            aria-label="Input B, currently 0" aria-pressed="false">0</button>
+                    <label for="inputB">Input B</label>
+                </div>
+                <div class="switch">
+                    <div class="switch-button" id="output" aria-label="Output, currently 0" 
+                         role="status" aria-live="polite" tabindex="0">0</div>
+                    <label>Output</label>
+                </div>
+            </div>
+
+            <div class="result-display" id="gateVerification" aria-live="polite">
+                Select a gate type and toggle inputs to begin testing
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="activity">
+            <h3><span class="activity-number">2</span>Truth Table Speed Challenge (20 minutes)</h3>
+            <p><strong>Objective:</strong> Build accuracy and speed in truth table construction through friendly competition.</p>
+            
+            <div class="instructor-note">
+                <h4>Instructor Notes</h4>
+                <p><strong>Format:</strong> Keep everyone in main room for this competitive activity. Call out expressions verbally while students race to fill tables.</p>
+                <p><strong>Engagement:</strong> Use "fastest finger" style - first to complete correctly wins the round.</p>
+            </div>
+            
+            <div class="timer">
+                <div>Speed Challenge</div>
+                <div class="timer-display" id="challengeTimer" aria-live="polite">Ready</div>
+                <button class="button" onclick="startChallenge()" id="challengeButton">Start New Challenge</button>
+            </div>
+
+            <div id="speedChallenge" style="display: none;">
+                <div id="currentExpression" style="font-size: 1.5rem; text-align: center; margin: 1rem 0; font-weight: bold;"></div>
+                <table class="truth-table" id="challengeTable">
+                    <thead id="challengeTableHead"></thead>
+                    <tbody id="challengeTableBody"></tbody>
+                </table>
+                <div style="text-align: center;">
+                    <button class="button" onclick="checkChallenge()" id="checkChallengeBtn">Submit Answer</button>
+                    <button class="button secondary" onclick="nextChallenge()" id="nextChallengeBtn" style="display: none;">Next Challenge</button>
+                </div>
+                <div id="challengeResult" class="result-display" aria-live="polite"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="activity">
+            <h3><span class="activity-number">3</span>Circuit Detective Pairs (25 minutes)</h3>
+            <p><strong>Objective:</strong> Work in pairs to reverse-engineer mystery circuits and develop analytical thinking skills.</p>
+            
+            <div class="instructor-note">
+                <h4>Instructor Notes</h4>
+                <p><strong>Breakout Setup:</strong> Same pairs as Activity 1. Each pair gets different mystery circuits.</p>
+                <p><strong>Mid-Activity:</strong> After 15 minutes, have pairs swap circuits to check each other's work.</p>
+                <p><strong>Debrief:</strong> Return to main room to discuss detective strategies that worked.</p>
+            </div>
+            
+            <div class="virtual-setup">
+                <h4>Detective Partnership Strategy</h4>
+                <ol>
+                    <li><strong>Systematic Testing:</strong> One person controls inputs, other records all outputs</li>
+                    <li><strong>Pattern Discussion:</strong> Talk through what you observe together</li>
+                    <li><strong>Hypothesis Formation:</strong> Agree on your best guess before submitting</li>
+                    <li><strong>Verification:</strong> Test your theory against all input combinations</li>
+                </ol>
+            </div>
+
+            <div class="challenge-grid">
+                <div class="challenge-card" onclick="loadMystery(1)" tabindex="0" role="button" aria-label="Load mystery circuit 1">
+                    <h4>Mystery Circuit A</h4>
+                    <p>2-input circuit with surprising behavior</p>
+                    <p><em>Good for beginners</em></p>
+                </div>
+                <div class="challenge-card" onclick="loadMystery(2)" tabindex="0" role="button" aria-label="Load mystery circuit 2">
+                    <h4>Mystery Circuit B</h4>
+                    <p>3-input circuit with complex patterns</p>
+                    <p><em>Intermediate challenge</em></p>
+                </div>
+                <div class="challenge-card" onclick="loadMystery(3)" tabindex="0" role="button" aria-label="Load mystery circuit 3">
+                    <h4>Mystery Circuit C</h4>
+                    <p>Multi-gate combination</p>
+                    <p><em>Advanced puzzle</em></p>
+                </div>
+            </div>
+
+            <div id="mysteryCircuit" style="display: none;">
+                <h4>Mystery Circuit Testing</h4>
+                <div id="mysteryInputs"></div>
+                <div class="result-display" id="mysteryOutput" aria-live="polite">Output: ?</div>
+                <input type="text" id="mysteryGuess" class="input-field" 
+                       placeholder="Enter your Boolean expression guess (e.g., A XOR B)" 
+                       aria-label="Your guess for the Boolean expression">
+                <div style="text-align: center;">
+                    <button class="button" onclick="checkMystery()">Submit Guess</button>
+                    <button class="button secondary" onclick="revealMystery()" id="revealMysteryBtn">Get Hint</button>
+                </div>
+                <div id="mysteryResult" class="result-display" aria-live="polite"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="activity">
+            <h3><span class="activity-number">4</span>Real-World Boolean Decisions (25 minutes)</h3>
+            <p><strong>Objective:</strong> Apply Boolean logic to practical scenarios and create custom decision trees.</p>
+            
+            <div class="instructor-note">
+                <h4>Instructor Notes</h4>
+                <p><strong>Format:</strong> Start in main room with scenario explanation. Send pairs to breakouts to create their own scenarios.</p>
+                <p><strong>Creative Component:</strong> Each pair creates a new real-world scenario for the other pair to solve.</p>
+                <p><strong>Final Share:</strong> Return to main room for scenario presentations and solutions.</p>
+            </div>
+
+            <div id="scenarioContainer">
+                <div class="scenario-card" style="border: 2px solid #17a2b8; padding: 1rem; margin: 1rem 0; border-radius: 8px;">
+                    <h4>Sample Scenario: Streaming Service Decision</h4>
+                    <p><strong>Situation:</strong> You'll watch a movie tonight if it's available on your streaming service AND (either it's a weekend OR you finished all your homework).</p>
+                    <p><strong>Inputs:</strong></p>
+                    <ul>
+                        <li>A = Movie is available on your service</li>
+                        <li>B = It's a weekend</li>
+                        <li>C = You finished all homework</li>
+                    </ul>
+                    <p><strong>Question:</strong> When will you watch the movie?</p>
+                    
+                    <table class="truth-table" id="scenarioTable1">
+                        <thead>
+                            <tr><th>Available</th><th>Weekend</th><th>Homework Done</th><th>Watch Movie?</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>0</td><td>0</td><td>0</td><td><input type="number" min="0" max="1" class="scenario-input" data-row="0" data-answer="0"></td></tr>
+                            <tr><td>0</td><td>0</td><td>1</td><td><input type="number" min="0" max="1" class="scenario-input" data-row="1" data-answer="0"></td></tr>
+                            <tr><td>0</td><td>1</td><td>0</td><td><input type="number" min="0" max="1" class="scenario-input" data-row="2" data-answer="0"></td></tr>
+                            <tr><td>0</td><td>1</td><td>1</td><td><input type="number" min="0" max="1" class="scenario-input" data-row="3" data-answer="0"></td></tr>
+                            <tr><td>1</td><td>0</td><td>0</td><td><input type="number" min="0" max="1" class="scenario-input" data-row="4" data-answer="0"></td></tr>
+                            <tr><td>1</td><td>0</td><td>1</td><td><input type="number" min="0" max="1" class="scenario-input" data-row="5" data-answer="1"></td></tr>
+                            <tr><td>1</td><td>1</td><td>0</td><td><input type="number" min="0" max="1" class="scenario-input" data-row="6" data-answer="1"></td></tr>
+                            <tr><td>1</td><td>1</td><td>1</td><td><input type="number" min="0" max="1" class="scenario-input" data-row="7" data-answer="1"></td></tr>
+                        </tbody>
+                    </table>
+                    
+                    <div style="text-align: center; margin: 1rem 0;">
+                        <button class="button" onclick="checkScenario()">Check Answer</button>
+                    </div>
+                    <div id="scenarioResult" class="result-display" aria-live="polite"></div>
+                </div>
+
+                <div class="virtual-setup">
+                    <h4>Create Your Own Scenario Challenge</h4>
+                    <p>Work with your partner to create a new Boolean decision scenario. Think about:</p>
+                    <ul>
+                        <li>Everyday decisions you make (shopping, studying, entertainment)</li>
+                        <li>3 clear yes/no factors that influence the decision</li>
+                        <li>How those factors combine (AND, OR, NOT)</li>
+                    </ul>
+                    <p><strong>Present your scenario to the other pair to solve!</strong></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="deliverable-section">
+        <h2>Lab Assignment: Boolean Logic Circuits (.circ file)</h2>
+        <p><strong>All students must complete:</strong> This Logisim assignment reinforces and extends the concepts practiced during lab activities. Due by end of week.</p>
+        
+        <div class="instructor-note">
+            <h4>Assignment Details</h4>
+            <p><strong>Due:</strong> Friday 11:59 PM | <strong>Submission:</strong> Upload .circ file to Canvas</p>
+            <p><strong>File Name:</strong> <code>lastname_firstname_week2_lab.circ</code></p>
+            <p><strong>Points:</strong> 100 points (major lab grade)</p>
+        </div>
+
+        <div class="activity">
+            <h3>Logisim Lab Assignment Requirements</h3>
+            
+            <h4>Part 1: Gate Testing Circuits (25 points)</h4>
+            <p>Create subcircuits to demonstrate mastery of each basic gate type. Builds on Activity 1 gate experimentation.</p>
+            <ul>
+                <li><strong>Subcircuit Names:</strong> <code>test_AND</code>, <code>test_OR</code>, <code>test_NAND</code>, <code>test_NOR</code>, <code>test_XOR</code></li>
+                <li><strong>Requirements for each subcircuit:</strong>
+                    <ul>
+                        <li>Two input pins labeled A and B</li>
+                        <li>The specified gate type</li>
+                        <li>One output pin labeled Y</li>
+                        <li>Text annotation showing the gate name and its behavior description</li>
+                    </ul>
+                </li>
+                <li><strong>Testing:</strong> Use the hand tool to verify all 4 input combinations (00, 01, 10, 11) work correctly</li>
+            </ul>
+
+            <h4>Part 2: Boolean Expression Implementation (25 points)</h4>
+            <p>Build circuits that implement specific Boolean expressions. Extends the patterns from Activity 2.</p>
+            
+            <div style="background: #f8f9fa; padding: 1rem; border-radius: 8px; margin: 1rem 0;">
+                <p><strong>Build these expressions as separate subcircuits:</strong></p>
+                <ol>
+                    <li><strong>Subcircuit:</strong> <code>expr_simple</code> → Expression: <code>A AND (B OR C)</code></li>
+                    <li><strong>Subcircuit:</strong> <code>expr_complex</code> → Expression: <code>(A XOR B) AND C</code></li>
+                    <li><strong>Subcircuit:</strong> <code>expr_mixed</code> → Expression: <code>NOT(A AND B) OR C</code></li>
+                </ol>
+                <p><strong>Each subcircuit must have:</strong> 3 input pins (A, B, C), proper gate implementation, 1 output pin (Y)</p>
+            </div>
+
+            <h4>Part 3: Mystery Circuit Analysis (25 points)</h4>
+            <p>Apply detective skills from Activity 3 to solve this circuit puzzle.</p>
+            
+            <div style="background: #e6f3ff; padding: 1rem; border-radius: 8px; margin: 1rem 0;">
+                <p><strong>Mystery Circuit Challenge:</strong> Build a subcircuit called <code>mystery_solver</code> that produces these exact outputs:</p>
+                <table class="truth-table" style="width: auto; margin: 1rem auto;">
+                    <thead>
+                        <tr><th>A</th><th>B</th><th>C</th><th>Output</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+                        <tr><td>0</td><td>0</td><td>1</td><td>1</td></tr>
+                        <tr><td>0</td><td>1</td><td>0</td><td>1</td></tr>
+                        <tr><td>0</td><td>1</td><td>1</td><td>1</td></tr>
+                        <tr><td>1</td><td>0</td><td>0</td><td>1</td></tr>
+                        <tr><td>1</td><td>0</td><td>1</td><td>1</td></tr>
+                        <tr><td>1</td><td>1</td><td>0</td><td>0</td></tr>
+                        <tr><td>1</td><td>1</td><td>1</td><td>1</td></tr>
+                    </tbody>
+                </table>
+                <p><strong>Challenge:</strong> Determine the Boolean expression that matches this truth table and implement it using basic gates.</p>
+            </div>
+
+            <h4>Part 4: Real-World Decision Circuit (25 points)</h4>
+            <p>Design a practical Boolean decision circuit based on Activity 4 scenario work.</p>
+            
+            <div style="background: #f0f8ff; padding: 1rem; border-radius: 8px; margin: 1rem 0;">
+                <p><strong>Scenario:</strong> Design a "Smart Home Security System" decision circuit</p>
+                <p><strong>Decision Rule:</strong> The alarm sounds if:</p>
+                <ul>
+                    <li>Motion is detected AND (it's nighttime OR nobody is home)</li>
+                    <li>Input A = Motion detected (1 = yes, 0 = no)</li>
+                    <li>Input B = Nighttime (1 = night, 0 = day)</li>
+                    <li>Input C = Someone home (1 = occupied, 0 = empty)</li>
+                </ul>
+                <p><strong>Subcircuit Name:</strong> <code>security_system</code></p>
+                <p><strong>Output:</strong> 1 = sound alarm, 0 = no alarm</p>
+                <p><strong>Note:</strong> Remember that "nobody is home" means NOT C (someone home)</p>
+            </div>
+
+            <h4>Documentation Requirements</h4>
+            <p>Include a <strong>main circuit</strong> with text labels explaining:</p>
+            <ol>
+                <li>Your name and date</li>
+                <li>Brief description of each subcircuit's purpose</li>
+                <li>For Part 3: The Boolean expression you discovered for the mystery circuit</li>
+                <li>For Part 4: Verification that your security system works correctly for key scenarios</li>
+            </ol>
+        </div>
+
+        <div class="virtual-setup">
+            <h4>Submission Checklist</h4>
+            <ul>
+                <li>✓ File named correctly: <code>lastname_firstname_week2_lab.circ</code></li>
+                <li>✓ All 9 required subcircuits present and named exactly as specified</li>
+                <li>✓ Each subcircuit has proper input/output pins with correct labels</li>
+                <li>✓ All circuits tested and working (use hand tool to verify)</li>
+                <li>✓ Main circuit includes documentation text with your analysis</li>
+                <li>✓ File opens correctly in Logisim 2.7.1 without errors</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>Lab Wrap-Up & Next Steps</h2>
+        <div class="virtual-setup">
+            <h4>Final Discussion (Main Room - 5 minutes)</h4>
+            <ol>
+                <li>Which gate behavior surprised you the most and why?</li>
+                <li>What strategies helped you solve the mystery circuits fastest?</li>
+                <li>How do you see Boolean logic applying to your CSC210 Logisim assignment?</li>
+                <li>What real-world decisions could you model with Boolean expressions?</li>
+            </ol>
+        </div>
+        <p><strong>Connection to CSC210:</strong> The intuition you've built with gate behavior and truth tables will make the Logisim circuit construction much more meaningful. Remember that every complex circuit is built from these basic operations you practiced today!</p>
+        
+        <div class="instructor-note">
+            <h4>Post-Lab Instructor Notes</h4>
+            <p><strong>Grading Focus:</strong> Functionality over aesthetics - circuits must work correctly</p>
+            <p><strong>Common Issues:</strong> Watch for incorrect pin labels and untested circuits</p>
+            <p><strong>Extension:</strong> Strong students can optimize Part 4 for minimum gate count</p>
+        </div>
+    </div>
+
+    <script>
+        // Global state
+        let inputs = { A: false, B: false, C: false };
+        let currentGate = 'AND';
+        let challengeActive = false;
+        let challengeExpressions = [
+            { expr: "A AND B", vars: ['A', 'B'], func: (a, b) => a && b },
+            { expr: "A OR B", vars: ['A', 'B'], func: (a, b) => a || b },
+            { expr: "NOT A", vars: ['A'], func: (a) => !a },
+            { expr: "A XOR B", vars: ['A', 'B'], func: (a, b) => a !== b },
+            { expr: "(A OR B) AND C", vars: ['A', 'B', 'C'], func: (a, b, c) => (a || b) && c }
+        ];
+        let currentChallenge = null;
+        let currentMystery = null;
+
+        // Gate definitions
+        const gates = {
+            AND: {
+                name: 'AND Gate',
+                evaluate: (a, b) => a && b,
+                svg: `<svg class="gate-svg" viewBox="0 0 200 100" aria-label="AND gate symbol">
+                    <path class="gate-body" d="M50,20 H100 A30,30 0 0 1 100,80 H50 Z"></path>
+                    <line class="wire" id="wireA" x1="10" y1="35" x2="50" y2="35"/>
+                    <line class="wire" id="wireB" x1="10" y1="65" x2="50" y2="65"/>
+                    <line class="wire" id="wireOut" x1="130" y1="50" x2="190" y2="50"/>
+                    <text x="5" y="30">A</text>
+                    <text x="5" y="60">B</text>
+                    <text x="175" y="45" id="outText">0</text>
+                </svg>`
+            },
+            OR: {
+                name: 'OR Gate',
+                evaluate: (a, b) => a || b,
+                svg: `<svg class="gate-svg" viewBox="0 0 200 100" aria-label="OR gate symbol">
+                    <path class="gate-body" d="M30,20 Q80,50 30,80 H60 Q120,50 60,20 Z"></path>
+                    <line class="wire" id="wireA" x1="10" y1="35" x2="45" y2="35"/>
+                    <line class="wire" id="wireB" x1="10" y1="65" x2="45" y2="65"/>
+                    <line class="wire" id="wireOut" x1="115" y1="50" x2="190" y2="50"/>
+                    <text x="5" y="30">A</text>
+                    <text x="5" y="60">B</text>
+                    <text x="175" y="45" id="outText">0</text>
+                </svg>`
+            },
+            NAND: {
+                name: 'NAND Gate',
+                evaluate: (a, b) => !(a && b),
+                svg: `<svg class="gate-svg" viewBox="0 0 200 100" aria-label="NAND gate symbol">
+                    <path class="gate-body" d="M50,20 H100 A30,30 0 0 1 100,80 H50 Z"></path>
+                    <circle class="gate-body" cx="140" cy="50" r="8"></circle>
+                    <line class="wire" id="wireA" x1="10" y1="35" x2="50" y2="35"/>
+                    <line class="wire" id="wireB" x1="10" y1="65" x2="50" y2="65"/>
+                    <line class="wire" id="wireOut" x1="148" y1="50" x2="190" y2="50"/>
+                    <text x="5" y="30">A</text>
+                    <text x="5" y="60">B</text>
+                    <text x="175" y="45" id="outText">1</text>
+                </svg>`
+            },
+            NOR: {
+                name: 'NOR Gate',
+                evaluate: (a, b) => !(a || b),
+                svg: `<svg class="gate-svg" viewBox="0 0 200 100" aria-label="NOR gate symbol">
+                    <path class="gate-body" d="M30,20 Q80,50 30,80 H60 Q120,50 60,20 Z"></path>
+                    <circle class="gate-body" cx="125" cy="50" r="8"></circle>
+                    <line class="wire" id="wireA" x1="10" y1="35" x2="45" y2="35"/>
+                    <line class="wire" id="wireB" x1="10" y1="65" x2="45" y2="65"/>
+                    <line class="wire" id="wireOut" x1="133" y1="50" x2="190" y2="50"/>
+                    <text x="5" y="30">A</text>
+                    <text x="5" y="60">B</text>
+                    <text x="175" y="45" id="outText">1</text>
+                </svg>`
+            },
+            XOR: {
+                name: 'XOR Gate',
+                evaluate: (a, b) => a !== b,
+                svg: `<svg class="gate-svg" viewBox="0 0 200 100" aria-label="XOR gate symbol">
+                    <path class="gate-body" d="M40,20 Q85,50 40,80 H70 Q125,50 70,20 Z"></path>
+                    <path class="gate-body" d="M30,20 Q75,50 30,80" fill="none"></path>
+                    <line class="wire" id="wireA" x1="10" y1="35" x2="55" y2="35"/>
+                    <line class="wire" id="wireB" x1="10" y1="65" x2="55" y2="65"/>
+                    <line class="wire" id="wireOut" x1="120" y1="50" x2="190" y2="50"/>
+                    <text x="5" y="30">A</text>
+                    <text x="5" y="60">B</text>
+                    <text x="175" y="45" id="outText">0</text>
+                </svg>`
+            }
+        };
+
+        // Mystery circuits
+        const mysteryChallenges = [
+            {
+                id: 1,
+                inputs: ['A', 'B'],
+                expression: "A XOR B",
+                func: (a, b) => a !== b,
+                hint: "Output is 1 when inputs are different"
+            },
+            {
+                id: 2,
+                inputs: ['A', 'B', 'C'],
+                expression: "(A AND B) OR C",
+                func: (a, b, c) => (a && b) || c,
+                hint: "C alone can make it true, or you need both A and B"
+            },
+            {
+                id: 3,
+                inputs: ['A', 'B', 'C'],
+                expression: "A AND (B XOR C)",
+                func: (a, b, c) => a && (b !== c),
+                hint: "A must be true, and B and C must be different"
+            }
+        ];
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            updateGateDisplay();
+            document.getElementById('gateType').addEventListener('change', function() {
+                currentGate = this.value;
+                updateGateDisplay();
+            });
+        });
+
+        // Activity 1: Gate Challenge
+        function toggleInput(input) {
+            inputs[input] = !inputs[input];
+            updateGateDisplay();
+        }
+
+        function updateGateDisplay() {
+            const gate = gates[currentGate];
+            const gateContainer = document.getElementById('gateSvg');
+            gateContainer.innerHTML = gate.svg;
+
+            // Update input buttons
+            const btnA = document.getElementById('inputA');
+            const btnB = document.getElementById('inputB');
+            const outputBtn = document.getElementById('output');
+
+            btnA.textContent = inputs.A ? '1' : '0';
+            btnA.classList.toggle('on', inputs.A);
+            btnA.setAttribute('aria-label', `Input A, currently ${inputs.A ? '1' : '0'}`);
+            btnA.setAttribute('aria-pressed', inputs.A.toString());
+
+            btnB.textContent = inputs.B ? '1' : '0';
+            btnB.classList.toggle('on', inputs.B);
+            btnB.setAttribute('aria-label', `Input B, currently ${inputs.B ? '1' : '0'}`);
+            btnB.setAttribute('aria-pressed', inputs.B.toString());
+
+            // Calculate output
+            const output = gate.evaluate(inputs.A, inputs.B);
+            outputBtn.textContent = output ? '1' : '0';
+            outputBtn.classList.toggle('on', output);
+            outputBtn.setAttribute('aria-label', `Output, currently ${output ? '1' : '0'}`);
+
+            // Update verification display
+            const verification = document.getElementById('gateVerification');
+            verification.innerHTML = `
+                <strong>${gate.name}:</strong> ${inputs.A ? '1' : '0'} ${currentGate} ${inputs.B ? '1' : '0'} = ${output ? '1' : '0'}<br>
+                <em>Try all 4 input combinations: 00, 01, 10, 11</em>
+            `;
+
+            // Update SVG wires
+            const wireA = document.getElementById('wireA');
+            const wireB = document.getElementById('wireB');
+            const wireOut = document.getElementById('wireOut');
+            const outText = document.getElementById('outText');
+
+            if (wireA) wireA.style.stroke = inputs.A ? '#007bff' : '#888';
+            if (wireB) wireB.style.stroke = inputs.B ? '#007bff' : '#888';
+            if (wireOut) wireOut.style.stroke = output ? '#007bff' : '#888';
+            if (outText) outText.textContent = output ? '1' : '0';
+        }
+
+        // Activity 2: Speed Challenge
+        function startChallenge() {
+            challengeActive = true;
+            document.getElementById('speedChallenge').style.display = 'block';
+            document.getElementById('challengeButton').style.display = 'none';
+            
+            nextChallenge();
+        }
+
+        function nextChallenge() {
+            const randomIndex = Math.floor(Math.random() * challengeExpressions.length);
+            currentChallenge = challengeExpressions[randomIndex];
+            
+            document.getElementById('currentExpression').textContent = currentChallenge.expr;
+            document.getElementById('challengeTimer').textContent = 'Solve as fast as you can!';
+            
+            // Build truth table
+            const thead = document.getElementById('challengeTableHead');
+            const tbody = document.getElementById('challengeTableBody');
+            
+            let headerRow = '<tr>';
+            currentChallenge.vars.forEach(v => headerRow += `<th>${v}</th>`);
+            headerRow += '<th>Output</th></tr>';
+            thead.innerHTML = headerRow;
+            
+            tbody.innerHTML = '';
+            const numRows = Math.pow(2, currentChallenge.vars.length);
+            
+            for (let i = 0; i < numRows; i++) {
+                let row = '<tr>';
+                
+                for (let j = 0; j < currentChallenge.vars.length; j++) {
+                    const val = (i >> (currentChallenge.vars.length - 1 - j)) & 1;
+                    row += `<td>${val}</td>`;
+                }
+                
+                row += `<td><input type="number" min="0" max="1" class="challenge-input" data-row="${i}" style="width: 60px; text-align: center; padding: 0.25rem;"></td>`;
+                row += '</tr>';
+                tbody.innerHTML += row;
+            }
+            
+            document.getElementById('checkChallengeBtn').style.display = 'inline-block';
+            document.getElementById('nextChallengeBtn').style.display = 'none';
+            document.getElementById('challengeResult').innerHTML = '';
+        }
+
+        function checkChallenge() {
+            const inputs = document.querySelectorAll('.challenge-input');
+            let correct = 0;
+            let total = inputs.length;
+            
+            inputs.forEach((input, index) => {
+                const userAnswer = parseInt(input.value);
+                const values = [];
+                
+                for (let j = 0; j < currentChallenge.vars.length; j++) {
+                    const val = (index >> (currentChallenge.vars.length - 1 - j)) & 1;
+                    values.push(!!val);
+                }
+                
+                const expectedAnswer = currentChallenge.func(...values) ? 1 : 0;
+                
+                if (userAnswer === expectedAnswer) {
+                    correct++;
+                    input.style.backgroundColor = '#d4edda';
+                } else {
+                    input.style.backgroundColor = '#f8d7da';
+                    input.value = expectedAnswer;
+                }
+            });
+            
+            const resultDiv = document.getElementById('challengeResult');
+            if (correct === total) {
+                resultDiv.className = 'result-display correct';
+                resultDiv.innerHTML = '<p><strong>Perfect!</strong> Excellent work on the truth table.</p>';
+            } else {
+                resultDiv.className = 'result-display incorrect';
+                resultDiv.innerHTML = `<p><strong>${correct}/${total} correct.</strong> Check the highlighted rows and try the next challenge.</p>`;
+            }
+            
+            document.getElementById('checkChallengeBtn').style.display = 'none';
+            document.getElementById('nextChallengeBtn').style.display = 'inline-block';
+        }
+
+        // Activity 3: Mystery Circuits
+        function loadMystery(mysteryId) {
+            currentMystery = mysteryChallenges.find(m => m.id === mysteryId);
+            
+            document.getElementById('mysteryCircuit').style.display = 'block';
+            
+            // Create input controls
+            const inputsContainer = document.getElementById('mysteryInputs');
+            inputsContainer.innerHTML = '';
+            
+            currentMystery.inputs.forEach(input => {
+                const div = document.createElement('div');
+                div.style.display = 'inline-block';
+                div.style.margin = '0.5rem';
+                div.innerHTML = `
+                    <button class="switch-button mystery-input" id="mystery${input}" 
+                            onclick="toggleMysteryInput('${input}')" 
+                            aria-label="Mystery input ${input}, currently 0">0</button>
+                    <br><label>Input ${input}</label>
+                `;
+                inputsContainer.appendChild(div);
+            });
+            
+            // Reset inputs
+            currentMystery.inputs.forEach(input => {
+                inputs[input] = false;
+            });
+            
+            updateMysteryOutput();
+            document.getElementById('mysteryGuess').value = '';
+            document.getElementById('mysteryResult').innerHTML = '';
+        }
+
+        function toggleMysteryInput(input) {
+            inputs[input] = !inputs[input];
+            
+            const btn = document.getElementById(`mystery${input}`);
+            btn.textContent = inputs[input] ? '1' : '0';
+            btn.classList.toggle('on', inputs[input]);
+            btn.setAttribute('aria-label', `Mystery input ${input}, currently ${inputs[input] ? '1' : '0'}`);
+            
+            updateMysteryOutput();
+        }
+
+        function updateMysteryOutput() {
+            if (!currentMystery) return;
+            
+            const values = currentMystery.inputs.map(input => inputs[input]);
+            const output = currentMystery.func(...values);
+            
+            const outputDisplay = document.getElementById('mysteryOutput');
+            outputDisplay.textContent = `Output: ${output ? '1' : '0'}`;
+            outputDisplay.className = 'result-display';
+        }
+
+        function checkMystery() {
+            const guess = document.getElementById('mysteryGuess').value.trim().toUpperCase();
+            const resultDiv = document.getElementById('mysteryResult');
+            
+            if (!guess) {
+                resultDiv.innerHTML = '<p style="color: red;">Please enter your guess first!</p>';
+                return;
+            }
+            
+            // Simple matching for common expressions
+            const normalizedGuess = guess.replace(/\s+/g, '');
+            const expectedAnswers = [
+                currentMystery.expression.toUpperCase().replace(/\s+/g, ''),
+                currentMystery.expression.toUpperCase().replace('AND', '&').replace('OR', '|').replace(/\s+/g, ''),
+                currentMystery.expression.toUpperCase().replace('AND', '*').replace('OR', '+').replace(/\s+/g, '')
+            ];
+            
+            if (expectedAnswers.some(answer => normalizedGuess.includes(answer))) {
+                resultDiv.className = 'result-display correct';
+                resultDiv.innerHTML = `<p><strong>Correct!</strong> The circuit implements: ${currentMystery.expression}</p>`;
+            } else {
+                resultDiv.className = 'result-display incorrect';
+                resultDiv.innerHTML = `<p><strong>Not quite right.</strong> ${currentMystery.hint}</p>`;
+            }
+        }
+
+        function revealMystery() {
+            const resultDiv = document.getElementById('mysteryResult');
+            resultDiv.className = 'result-display';
+            resultDiv.innerHTML = `<p><strong>Answer:</strong> ${currentMystery.expression}<br><em>${currentMystery.hint}</em></p>`;
+        }
+
+        // Activity 4: Scenarios
+        function checkScenario() {
+            const inputs = document.querySelectorAll('.scenario-input');
+            const resultDiv = document.getElementById('scenarioResult');
+            
+            let correct = 0;
+            let total = inputs.length;
+            
+            inputs.forEach(input => {
+                const userAnswer = parseInt(input.value);
+                const expectedAnswer = parseInt(input.dataset.answer);
+                
+                if (userAnswer === expectedAnswer) {
+                    correct++;
+                    input.style.backgroundColor = '#d4edda';
+                } else {
+                    input.style.backgroundColor = '#f8d7da';
+                }
+            });
+            
+            if (correct === total) {
+                resultDiv.className = 'result-display correct';
+                resultDiv.innerHTML = '<p><strong>Perfect!</strong> You correctly solved the Boolean expression: A AND (B OR C)</p>';
+            } else {
+                resultDiv.className = 'result-display incorrect';
+                resultDiv.innerHTML = `<p><strong>${correct}/${total} correct.</strong> Think: movie available AND (weekend OR homework done)</p>`;
+            }
+        }
+
+        // Keyboard navigation support
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' || e.key === ' ') {
+                if (e.target.classList.contains('challenge-card')) {
+                    e.preventDefault();
+                    e.target.click();
+                }
+            }
+        });
+    </script>
+</body>
+</html>
