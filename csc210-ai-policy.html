@@ -1,814 +1,1164 @@
-<!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>CSC210 & CSC210L - AI Usage Policy</title> <style> * { margin: 0; padding: 0; box-sizing: border-box; }
-    body {
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        line-height: 1.6;
-        color: #333;
-        background-color: #ffffff;
-        font-size: 16px;
-    }
-
-    .container {
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 20px;
-    }
-
-    header {
-        background: linear-gradient(135deg, #2c3e50, #3498db);
-        color: white;
-        padding: 2rem 0;
-        text-align: center;
-        margin-bottom: 2rem;
-        border-radius: 8px;
-    }
-
-    header h1 {
-        font-size: 2.5rem;
-        margin-bottom: 0.5rem;
-        font-weight: 700;
-    }
-
-    header p {
-        font-size: 1.2rem;
-        opacity: 0.9;
-    }
-
-    .navigation {
-        background-color: #f8f9fa;
-        border: 2px solid #e9ecef;
-        border-radius: 8px;
-        padding: 1rem;
-        margin-bottom: 2rem;
-        position: sticky;
-        top: 20px;
-        z-index: 100;
-    }
-
-    .nav-title {
-        font-weight: bold;
-        margin-bottom: 0.5rem;
-        color: #2c3e50;
-    }
-
-    .nav-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-        gap: 0.5rem;
-    }
-
-    .nav-button {
-        background-color: #3498db;
-        color: white;
-        border: none;
-        padding: 0.5rem 1rem;
-        border-radius: 4px;
-        cursor: pointer;
-        font-size: 0.9rem;
-        transition: all 0.3s ease;
-        text-align: center;
-    }
-
-    .nav-button:hover {
-        background-color: #2980b9;
-        transform: translateY(-2px);
-    }
-
-    .nav-button:focus {
-        outline: 3px solid #74c0fc;
-        outline-offset: 2px;
-    }
-
-    .section {
-        background-color: #ffffff;
-        border: 1px solid #e9ecef;
-        border-radius: 8px;
-        padding: 2rem;
-        margin-bottom: 2rem;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        transition: all 0.3s ease;
-    }
-
-    .section.collapsed {
-        max-height: 100px;
-        overflow: hidden;
-        position: relative;
-    }
-
-    .section.collapsed::after {
-        content: '';
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        height: 50px;
-        background: linear-gradient(transparent, #ffffff);
-    }
-
-    .section-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 1rem;
-        cursor: pointer;
-        border-bottom: 2px solid #e9ecef;
-        padding-bottom: 0.5rem;
-    }
-
-    .section-header h2 {
-        color: #2c3e50;
-        font-size: 1.8rem;
-        font-weight: 600;
-    }
-
-    .toggle-btn {
-        background: none;
-        border: none;
-        font-size: 1.5rem;
-        cursor: pointer;
-        color: #3498db;
-        transition: transform 0.3s ease;
-        padding: 0.25rem;
-        border-radius: 4px;
-    }
-
-    .toggle-btn:hover {
-        background-color: #f8f9fa;
-    }
-
-    .toggle-btn:focus {
-        outline: 3px solid #74c0fc;
-        outline-offset: 2px;
-    }
-
-    .toggle-btn.collapsed {
-        transform: rotate(180deg);
-    }
-
-    .warning-box {
-        background-color: #fff3cd;
-        border: 2px solid #ffc107;
-        border-radius: 8px;
-        padding: 1rem;
-        margin: 1rem 0;
-    }
-
-    .warning-box h3 {
-        color: #856404;
-        margin-bottom: 0.5rem;
-        display: flex;
-        align-items: center;
-    }
-
-    .warning-box h3::before {
-        content: '⚠️';
-        margin-right: 0.5rem;
-        font-size: 1.2rem;
-    }
-
-    .success-box {
-        background-color: #d4edda;
-        border: 2px solid #28a745;
-        border-radius: 8px;
-        padding: 1rem;
-        margin: 1rem 0;
-    }
-
-    .success-box h3 {
-        color: #155724;
-        margin-bottom: 0.5rem;
-        display: flex;
-        align-items: center;
-    }
-
-    .success-box h3::before {
-        content: '✅';
-        margin-right: 0.5rem;
-        font-size: 1.2rem;
-    }
-
-    .danger-box {
-        background-color: #f8d7da;
-        border: 2px solid #dc3545;
-        border-radius: 8px;
-        padding: 1rem;
-        margin: 1rem 0;
-    }
-
-    .danger-box h3 {
-        color: #721c24;
-        margin-bottom: 0.5rem;
-        display: flex;
-        align-items: center;
-    }
-
-    .danger-box h3::before {
-        content: '❌';
-        margin-right: 0.5rem;
-        font-size: 1.2rem;
-    }
-
-    ul, ol {
-        margin-left: 1.5rem;
-        margin-bottom: 1rem;
-    }
-
-    li {
-        margin-bottom: 0.5rem;
-    }
-
-    h3 {
-        color: #2c3e50;
-        margin: 1.5rem 0 1rem 0;
-        font-size: 1.3rem;
-    }
-
-    h4 {
-        color: #34495e;
-        margin: 1rem 0 0.5rem 0;
-        font-size: 1.1rem;
-    }
-
-    p {
-        margin-bottom: 1rem;
-    }
-
-    strong {
-        color: #2c3e50;
-    }
-
-    .highlight {
-        background-color: #fff3cd;
-        padding: 0.2rem 0.4rem;
-        border-radius: 4px;
-        border: 1px solid #ffc107;
-    }
-
-    .back-to-top {
-        position: fixed;
-        bottom: 2rem;
-        right: 2rem;
-        background-color: #3498db;
-        color: white;
-        border: none;
-        border-radius: 50%;
-        width: 60px;
-        height: 60px;
-        font-size: 1.5rem;
-        cursor: pointer;
-        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-        transition: all 0.3s ease;
-        opacity: 0;
-        visibility: hidden;
-    }
-
-    .back-to-top.visible {
-        opacity: 1;
-        visibility: visible;
-    }
-
-    .back-to-top:hover {
-        background-color: #2980b9;
-        transform: translateY(-2px);
-    }
-
-    .back-to-top:focus {
-        outline: 3px solid #74c0fc;
-        outline-offset: 2px;
-    }
-
-    .progress-bar {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 0%;
-        height: 4px;
-        background: linear-gradient(90deg, #3498db, #2ecc71);
-        z-index: 1000;
-        transition: width 0.3s ease;
-    }
-
-    @media (max-width: 768px) {
-        .container {
-            padding: 10px;
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSC210 & CSC210L - AI Usage Policy</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
-        header h1 {
-            font-size: 2rem;
-        }
-
-        header p {
-            font-size: 1rem;
-        }
-
-        .section {
-            padding: 1rem;
-        }
-
-        .section-header h2 {
-            font-size: 1.5rem;
-        }
-
-        .nav-grid {
-            grid-template-columns: 1fr;
-        }
-
-        .back-to-top {
-            width: 50px;
-            height: 50px;
-            font-size: 1.2rem;
-            bottom: 1rem;
-            right: 1rem;
-        }
-    }
-
-    @media (max-width: 480px) {
         body {
-            font-size: 14px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #ffffff;
+            font-size: 16px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
         }
 
         header {
-            padding: 1rem 0;
+            background: linear-gradient(135deg, #2c3e50, #3498db);
+            color: white;
+            padding: 2rem 0;
+            text-align: center;
+            margin-bottom: 2rem;
+            border-radius: 8px;
         }
 
         header h1 {
-            font-size: 1.8rem;
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+        }
+
+        header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .navigation {
+            background-color: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 2rem;
+            position: sticky;
+            top: 20px;
+            z-index: 100;
+        }
+
+        .nav-title {
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            color: #2c3e50;
+        }
+
+        .nav-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .nav-button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .nav-button:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+        }
+
+        .nav-button:focus {
+            outline: 3px solid #74c0fc;
+            outline-offset: 2px;
+        }
+
+        .pdf-save-button {
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            margin: 0 auto;
+            max-width: 200px;
+        }
+
+        .pdf-save-button:hover {
+            background-color: #c0392b;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(231, 76, 60, 0.3);
+        }
+
+        .pdf-save-button:focus {
+            outline: 3px solid #f1c40f;
+            outline-offset: 2px;
+        }
+
+        .pdf-save-button:disabled {
+            background-color: #95a5a6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .pdf-icon {
+            font-size: 1.2rem;
         }
 
         .section {
-            padding: 0.75rem;
+            background-color: #ffffff;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
         }
-    }
 
-    @media (prefers-reduced-motion: reduce) {
-        *, *::before, *::after {
-            animation-duration: 0.01ms !important;
-            animation-iteration-count: 1 !important;
-            transition-duration: 0.01ms !important;
+        .section.collapsed {
+            max-height: 100px;
+            overflow: hidden;
+            position: relative;
         }
-    }
 
-    .sr-only {
-        position: absolute;
-        width: 1px;
-        height: 1px;
-        padding: 0;
-        margin: -1px;
-        overflow: hidden;
-        clip: rect(0, 0, 0, 0);
-        white-space: nowrap;
-        border: 0;
-    }
-</style>
-</head> <body> <div class="progress-bar" id="progressBar" role="progressbar" aria-label="Reading progress"></div>
-<div class="container">
-    <header>
-        <h1>CSC210 & CSC210L</h1>
-        <p>Artificial Intelligence Usage Policy - Computer Organization & Architecture</p>
-    </header>
-
-    <nav class="navigation" role="navigation" aria-label="Page sections">
-        <div class="nav-title">Quick Navigation:</div>
-        <div class="nav-grid">
-            <button class="nav-button" onclick="scrollToSection('overview')" aria-describedby="overview-desc">
-                Overview
-                <span id="overview-desc" class="sr-only">Jump to course overview section</span>
-            </button>
-            <button class="nav-button" onclick="scrollToSection('tutor')" aria-describedby="tutor-desc">
-                Course Tutor
-                <span id="tutor-desc" class="sr-only">Jump to course tutor information</span>
-            </button>
-            <button class="nav-button" onclick="scrollToSection('capabilities')" aria-describedby="capabilities-desc">
-                AI Capabilities
-                <span id="capabilities-desc" class="sr-only">Jump to AI capabilities and warnings</span>
-            </button>
-            <button class="nav-button" onclick="scrollToSection('appropriate')" aria-describedby="appropriate-desc">
-                Appropriate Uses
-                <span id="appropriate-desc" class="sr-only">Jump to appropriate AI usage guidelines</span>
-            </button>
-            <button class="nav-button" onclick="scrollToSection('prohibited')" aria-describedby="prohibited-desc">
-                Prohibited Uses
-                <span id="prohibited-desc" class="sr-only">Jump to prohibited AI usage</span>
-            </button>
-            <button class="nav-button" onclick="scrollToSection('guidelines')" aria-describedby="guidelines-desc">
-                Course Guidelines
-                <span id="guidelines-desc" class="sr-only">Jump to course-specific guidelines</span>
-            </button>
-            <button class="nav-button" onclick="scrollToSection('integrity')" aria-describedby="integrity-desc">
-                Academic Integrity
-                <span id="integrity-desc" class="sr-only">Jump to academic integrity information</span>
-            </button>
-        </div>
-    </nav>
-
-    <main>
-        <section id="overview" class="section">
-            <div class="section-header" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="true" aria-controls="overview-content">
-                <h2>Overview</h2>
-                <button class="toggle-btn" aria-label="Collapse overview section">▲</button>
-            </div>
-            <div id="overview-content">
-                <p>This policy outlines the appropriate use of artificial intelligence tools in CSC210 (Computer Organization & Architecture) and CSC210L (Computer Organization Lab). While AI can be a powerful learning aid for understanding digital logic, assembly programming, and CPU design, it must be used responsibly to support genuine learning and maintain academic integrity.</p>
-            </div>
-        </section>
-
-        <section id="tutor" class="section">
-            <div class="section-header" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="true" aria-controls="tutor-content">
-                <h2>Recommended AI Tool: Course-Specific Tutor (Alex Chen)</h2>
-                <button class="toggle-btn" aria-label="Collapse tutor section">▲</button>
-            </div>
-            <div id="tutor-content">
-                <div class="success-box">
-                    <h3>Primary Recommendation: Use the CSC210 Course Tutor</h3>
-                    <p>Students are <strong>strongly encouraged</strong> to use the provided CSC210 Course Tutor ("Alex Chen") as their primary AI learning assistant. This tutor has been specifically configured for our course content, teaching methodology, and learning objectives.</p>
-                </div>
-
-                <h3>Benefits of the Course Tutor:</h3>
-                <ul>
-                    <li>Tailored to CSC210/CSC210L curriculum covering digital logic, MIPS assembly, and CPU design</li>
-                    <li>Aligned with "But How Do It Know?" textbook and course progression</li>
-                    <li>Designed to guide discovery rather than provide direct solutions</li>
-                    <li>Familiar with Logisim circuit design and MARS assembly programming</li>
-                    <li>Understands the checkpoint system and progressive CPU building approach</li>
-                    <li>Programmed to encourage building everything from basic gates (no pre-built components)</li>
-                </ul>
-            </div>
-        </section>
-
-        <section id="capabilities" class="section">
-            <div class="section-header" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="true" aria-controls="capabilities-content">
-                <h2>Critical Understanding: Full AI Capabilities</h2>
-                <button class="toggle-btn" aria-label="Collapse capabilities section">▲</button>
-            </div>
-            <div id="capabilities-content">
-                <div class="warning-box">
-                    <h3>Important Notice</h3>
-                    <p>While the CSC210 Course Tutor has been tuned specifically for this course, it is powered by Claude 4 Opus, a fully-featured generative AI system. This means:</p>
-                    <ul>
-                        <li><strong>It can respond to questions on virtually any topic</strong> - not just computer architecture</li>
-                        <li><strong>It may provide information beyond the scope of this course</strong> that could be incorrect or inappropriate for your current learning level</li>
-                        <li><strong>It can be led astray</strong> if you ask questions unrelated to course material or attempt to use it inappropriately</li>
-                        <li><strong>It could potentially provide direct solutions</strong> if prompted incorrectly, which would undermine your learning</li>
-                    </ul>
-                </div>
-
-                <div class="highlight">
-                    <strong>Stay Focused:</strong> Keep your interactions with the tutor focused on CSC210/CSC210L topics: digital logic, number systems, Boolean algebra, MIPS programming, CPU design, and Logisim circuit construction.
-                </div>
-
-                <h3>AI Bias and Limitations</h3>
-                <p>All AI systems, including our course tutor, have inherent limitations:</p>
-                <ul>
-                    <li><strong>Bias:</strong> AI responses may reflect biases present in training data</li>
-                    <li><strong>Hallucination:</strong> AI may generate plausible-sounding but incorrect technical information</li>
-                    <li><strong>Context limitations:</strong> AI may not fully understand your specific circuit design or assembly code</li>
-                    <li><strong>Outdated information:</strong> AI knowledge has cutoff dates and may not reflect current best practices</li>
-                    <li><strong>Overconfidence:</strong> AI may present uncertain information about computer architecture with unwarranted confidence</li>
-                    <li><strong>Tool-specific gaps:</strong> AI may not be aware of specific Logisim quirks or MARS simulator details</li>
-                </ul>
-            </div>
-        </section>
-
-        <section id="appropriate" class="section">
-            <div class="section-header" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="true" aria-controls="appropriate-content">
-                <h2>Course-Specific Appropriate Uses</h2>
-                <button class="toggle-btn" aria-label="Collapse appropriate uses section">▲</button>
-            </div>
-            <div id="appropriate-content">
-                <div class="success-box">
-                    <h3>Encouraged Uses</h3>
-                    
-                    <h4>Digital Logic & Circuit Design (Weeks 1-4, 9-17):</h4>
-                    <ul>
-                        <li>Explaining Boolean algebra concepts and logic gate behavior</li>
-                        <li>Helping debug Logisim circuits when wires are red or outputs are unexpected</li>
-                        <li>Clarifying the difference between combinational and sequential circuits</li>
-                        <li>Understanding memory elements (latches, flip-flops, registers)</li>
-                        <li>Conceptual guidance on CPU component design</li>
-                    </ul>
-
-                    <h4>Assembly Programming (Weeks 5-8):</h4>
-                    <ul>
-                        <li>Explaining MIPS instruction formats and addressing modes</li>
-                        <li>Helping understand register usage and calling conventions</li>
-                        <li>Clarifying control flow concepts (branches, jumps, procedures)</li>
-                        <li>Debugging assembly logic (not writing code for you)</li>
-                        <li>Understanding memory organization and stack operations</li>
-                    </ul>
-
-                    <h4>CPU Architecture (Weeks 9-17):</h4>
-                    <ul>
-                        <li>Explaining Von Neumann architecture and fetch-decode-execute cycle</li>
-                        <li>Understanding datapath connections and control signals</li>
-                        <li>Clarifying how different CPU components interact</li>
-                        <li>Conceptual help with instruction implementation</li>
-                        <li>Understanding performance metrics and modern architecture concepts</li>
-                    </ul>
-                </div>
-
-                <h3>Acceptable Uses with Caution:</h3>
-                <ul>
-                    <li><strong>Circuit review:</strong> Ask AI to review your Logisim design approach, but understand and implement changes yourself</li>
-                    <li><strong>Assembly debugging:</strong> Get help understanding what your MIPS code does, but write and modify it yourself</li>
-                    <li><strong>Concept reinforcement:</strong> Use AI to explain difficult concepts in different ways</li>
-                    <li><strong>Checkpoint preparation:</strong> Get conceptual help before working on lab checkpoints</li>
-                </ul>
-            </div>
-        </section>
-
-        <section id="prohibited" class="section">
-            <div class="section-header" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="true" aria-controls="prohibited-content">
-                <h2>Strictly Prohibited Uses</h2>
-                <button class="toggle-btn" aria-label="Collapse prohibited uses section">▲</button>
-            </div>
-            <div id="prohibited-content">
-                <div class="danger-box">
-                    <h3>Never Use AI For</h3>
-                    
-                    <h4>Circuit Design:</h4>
-                    <ul>
-                        <li>Generating complete Logisim circuit files or implementations</li>
-                        <li>Providing step-by-step circuit construction instructions</li>
-                        <li>Giving direct gate-level solutions for lab assignments</li>
-                        <li>Creating complete ALU, register file, or CPU designs</li>
-                    </ul>
-
-                    <h4>Assembly Programming:</h4>
-                    <ul>
-                        <li>Writing complete MIPS programs for assignments</li>
-                        <li>Generating code for sorting algorithms, number games, or other lab exercises</li>
-                        <li>Providing direct solutions to programming problems</li>
-                        <li>Converting Java/pseudocode to MIPS without your own understanding</li>
-                    </ul>
-
-                    <h4>Academic Assessments:</h4>
-                    <ul>
-                        <li>Any assistance during quizzes, midterm, lab midterm, or final exam</li>
-                        <li>Help with checkpoint submissions (your circuits must be your own work)</li>
-                        <li>Generating project documentation or technical writing</li>
-                    </ul>
-
-                    <h4>General Violations:</h4>
-                    <ul>
-                        <li>Using AI to avoid engaging with "But How Do It Know?" textbook</li>
-                        <li>Asking AI to complete lab deliverables or lecture assignments</li>
-                        <li>Using AI to circumvent the progressive learning approach</li>
-                    </ul>
-                </div>
-            </div>
-        </section>
-
-        <section id="guidelines" class="section">
-            <div class="section-header" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="true" aria-controls="guidelines-content">
-                <h2>Course-Specific Guidelines</h2>
-                <button class="toggle-btn" aria-label="Collapse guidelines section">▲</button>
-            </div>
-            <div id="guidelines-content">
-                <h3>For Digital Logic Work:</h3>
-                <ul>
-                    <li><strong>Use AI to understand concepts,</strong> not to design circuits</li>
-                    <li><strong>Ask "Why does this gate behave this way?"</strong> not "How do I build an XOR gate?"</li>
-                    <li><strong>Debug with AI help:</strong> "My circuit shows red wires, what might be wrong?" is acceptable</li>
-                    <li><strong>Build from scratch:</strong> Never ask AI for pre-built components or circuit files</li>
-                </ul>
-
-                <h3>For MIPS Programming:</h3>
-                <ul>
-                    <li><strong>Use AI to understand instructions,</strong> not to write programs</li>
-                    <li><strong>Ask about concepts:</strong> "How does the stack work?" is good; "Write a sorting program" is not</li>
-                    <li><strong>Debug logically:</strong> "Why is my loop not terminating?" is acceptable if you show your thinking</li>
-                    <li><strong>Trace together:</strong> AI can help you understand what your code does, but you must write it</li>
-                </ul>
-
-                <h3>For CPU Construction:</h3>
-                <ul>
-                    <li><strong>Conceptual guidance only:</strong> "How do control signals work?" is appropriate</li>
-                    <li><strong>No implementation help:</strong> Don't ask for specific Logisim construction steps</li>
-                    <li><strong>Understanding connections:</strong> AI can help you understand how components should interact</li>
-                    <li><strong>Build incrementally:</strong> Use AI to understand each checkpoint's requirements, not to complete them</li>
-                </ul>
-
-                <div class="warning-box">
-                    <h3>Red Flags - When to Stop Using AI</h3>
-                    <p><strong>Stop immediately if you find yourself:</strong></p>
-                    <ul>
-                        <li>Asking AI to generate circuit files or code</li>
-                        <li>Using AI responses without understanding them</li>
-                        <li>Relying on AI instead of reading the textbook</li>
-                        <li>Asking for direct answers to lab exercises</li>
-                        <li>Using AI to avoid the building-from-scratch approach</li>
-                        <li>Copying AI suggestions without comprehension</li>
-                    </ul>
-                </div>
-            </div>
-        </section>
-
-        <section id="integrity" class="section">
-            <div class="section-header" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="true" aria-controls="integrity-content">
-                <h2>Academic Integrity & Resources</h2>
-                <button class="toggle-btn" aria-label="Collapse integrity section">▲</button>
-            </div>
-            <div id="integrity-content">
-                <h3>Academic Integrity Reminders</h3>
-                <div class="warning-box">
-                    <h3>Remember</h3>
-                    <ul>
-                        <li><strong>Every circuit must be built by you</strong> from basic gates in Logisim</li>
-                        <li><strong>Every line of MIPS code must be written and understood by you</strong></li>
-                        <li><strong>Checkpoints must represent your own learning progress</strong></li>
-                        <li><strong>Lab deliverables must demonstrate your individual skill development</strong></li>
-                    </ul>
-                </div>
-
-                <h3>Documentation Requirements:</h3>
-                <ul>
-                    <li>If AI helps you understand a concept that influences your work, note this in comments</li>
-                    <li>Never submit AI-generated content as your own</li>
-                    <li>When in doubt about AI assistance, ask your instructor before proceeding</li>
-                </ul>
-
-                <h3>Primary Learning Sources (Use These First):</h3>
-                <ol>
-                    <li><strong>"But How Do It Know?" textbook</strong> - Your primary reference</li>
-                    <li><strong>Course videos and materials</strong> - Tailored explanations</li>
-                    <li><strong>Instructor and TA office hours</strong> - Human expertise</li>
-                    <li><strong>Lab sessions</strong> - Hands-on guided practice</li>
-                </ol>
-
-                <h3>Policy Violations and Consequences</h3>
-                <p>Inappropriate AI use may result in:</p>
-                <ul>
-                    <li><strong>Zero points</strong> on affected assignments or checkpoints</li>
-                    <li><strong>Retaking of lab practical exams</strong></li>
-                    <li><strong>Course failure</strong> for repeated violations</li>
-                    <li><strong>Academic integrity charges</strong> per university policy</li>
-                </ul>
-
-                <div class="highlight">
-                    <p><strong>The goal of CSC210/CSC210L is to understand how computers work at the fundamental level. Use AI to deepen that understanding, never to bypass the learning process.</strong></p>
-                </div>
-            </div>
-        </section>
-    </main>
-</div>
-
-<button class="back-to-top" id="backToTop" onclick="scrollToTop()" aria-label="Return to top of page">↑</button>
-
-<script>
-    // Accessibility and interaction functions
-    function toggleSection(header) {
-        const section = header.parentElement;
-        const content = section.querySelector('[id$="-content"]');
-        const toggleBtn = header.querySelector('.toggle-btn');
-        const isCollapsed = section.classList.contains('collapsed');
-        
-        if (isCollapsed) {
-            section.classList.remove('collapsed');
-            toggleBtn.textContent = '▲';
-            toggleBtn.classList.remove('collapsed');
-            header.setAttribute('aria-expanded', 'true');
-            toggleBtn.setAttribute('aria-label', 'Collapse ' + header.querySelector('h2').textContent.toLowerCase() + ' section');
-        } else {
-            section.classList.add('collapsed');
-            toggleBtn.textContent = '▼';
-            toggleBtn.classList.add('collapsed');
-            header.setAttribute('aria-expanded', 'false');
-            toggleBtn.setAttribute('aria-label', 'Expand ' + header.querySelector('h2').textContent.toLowerCase() + ' section');
+        .section.collapsed::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 50px;
+            background: linear-gradient(transparent, #ffffff);
         }
-    }
 
-    function scrollToSection(sectionId) {
-        const section = document.getElementById(sectionId);
-        if (section) {
-            // Expand section if collapsed
-            if (section.classList.contains('collapsed')) {
-                toggleSection(section.querySelector('.section-header'));
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            cursor: pointer;
+            border-bottom: 2px solid #e9ecef;
+            padding-bottom: 0.5rem;
+        }
+
+        .section-header h2 {
+            color: #2c3e50;
+            font-size: 1.8rem;
+            font-weight: 600;
+        }
+
+        .toggle-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #3498db;
+            transition: transform 0.3s ease;
+            padding: 0.25rem;
+            border-radius: 4px;
+        }
+
+        .toggle-btn:hover {
+            background-color: #f8f9fa;
+        }
+
+        .toggle-btn:focus {
+            outline: 3px solid #74c0fc;
+            outline-offset: 2px;
+        }
+
+        .toggle-btn.collapsed {
+            transform: rotate(180deg);
+        }
+
+        .warning-box {
+            background-color: #fff3cd;
+            border: 2px solid #ffc107;
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+
+        .warning-box h3 {
+            color: #856404;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .warning-box h3::before {
+            content: '⚠️';
+            margin-right: 0.5rem;
+            font-size: 1.2rem;
+        }
+
+        .success-box {
+            background-color: #d4edda;
+            border: 2px solid #28a745;
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+
+        .success-box h3 {
+            color: #155724;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .success-box h3::before {
+            content: '✅';
+            margin-right: 0.5rem;
+            font-size: 1.2rem;
+        }
+
+        .danger-box {
+            background-color: #f8d7da;
+            border: 2px solid #dc3545;
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+
+        .danger-box h3 {
+            color: #721c24;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .danger-box h3::before {
+            content: '❌';
+            margin-right: 0.5rem;
+            font-size: 1.2rem;
+        }
+
+        ul, ol {
+            margin-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        li {
+            margin-bottom: 0.5rem;
+        }
+
+        h3 {
+            color: #2c3e50;
+            margin: 1.5rem 0 1rem 0;
+            font-size: 1.3rem;
+        }
+
+        h4 {
+            color: #34495e;
+            margin: 1rem 0 0.5rem 0;
+            font-size: 1.1rem;
+        }
+
+        p {
+            margin-bottom: 1rem;
+        }
+
+        strong {
+            color: #2c3e50;
+        }
+
+        .highlight {
+            background-color: #fff3cd;
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            border: 1px solid #ffc107;
+        }
+
+        .back-to-top {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .back-to-top.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .back-to-top:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+        }
+
+        .back-to-top:focus {
+            outline: 3px solid #74c0fc;
+            outline-offset: 2px;
+        }
+
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 0%;
+            height: 4px;
+            background: linear-gradient(90deg, #3498db, #2ecc71);
+            z-index: 1000;
+            transition: width 0.3s ease;
+        }
+
+        /* Print-specific styles for PDF generation */
+        @media print {
+            .navigation, .back-to-top, .progress-bar, .pdf-save-button {
+                display: none !important;
             }
             
-            section.scrollIntoView({ 
-                behavior: 'smooth',
-                block: 'start'
-            });
+            .section {
+                break-inside: avoid;
+                page-break-inside: avoid;
+                margin-bottom: 1rem !important;
+            }
             
-            // Focus management for accessibility
-            section.querySelector('.section-header').focus();
-        }
-    }
-
-    function scrollToTop() {
-        window.scrollTo({
-            top: 0,
-            behavior: 'smooth'
-        });
-    }
-
-    // Progress bar and back to top button
-    function updateProgressBar() {
-        const scrollTop = window.pageYOffset;
-        const documentHeight = document.documentElement.scrollHeight - window.innerHeight;
-        const scrollPercent = (scrollTop / documentHeight) * 100;
-        
-        document.getElementById('progressBar').style.width = scrollPercent + '%';
-        
-        const backToTopBtn = document.getElementById('backToTop');
-        if (scrollTop > 300) {
-            backToTopBtn.classList.add('visible');
-        } else {
-            backToTopBtn.classList.remove('visible');
-        }
-    }
-
-    // Keyboard navigation
-    function handleKeyPress(event, element) {
-        if (event.key === 'Enter' || event.key === ' ') {
-            event.preventDefault();
-            element.click();
-        }
-    }
-
-    // Event listeners
-    window.addEventListener('scroll', updateProgressBar);
-
-    // Add keyboard navigation to section headers
-    document.querySelectorAll('.section-header').forEach(header => {
-        header.addEventListener('keypress', (e) => handleKeyPress(e, header));
-    });
-
-    // Add keyboard navigation to navigation buttons
-    document.querySelectorAll('.nav-button').forEach(button => {
-        button.addEventListener('keypress', (e) => handleKeyPress(e, button));
-    });
-
-    // Initialize progress bar
-    updateProgressBar();
-
-    // Add focus management for screen readers
-    document.addEventListener('DOMContentLoaded', function() {
-        // Announce page load to screen readers
-        const announcement = document.createElement('div');
-        announcement.setAttribute('aria-live', 'polite');
-        announcement.setAttribute('aria-atomic', 'true');
-        announcement.className = 'sr-only';
-        announcement.textContent = 'CSC210 AI Usage Policy page loaded. Use navigation buttons or tab through sections.';
-        document.body.appendChild(announcement);
-        
-        // Remove announcement after screen readers have processed it
-        setTimeout(() => {
-            document.body.removeChild(announcement);
-        }, 3000);
-    });
-
-    // Enhanced keyboard navigation
-    document.addEventListener('keydown', function(e) {
-        // Allow users to press 'c' to collapse/expand all sections
-        if (e.key === 'c' && e.ctrlKey) {
-            e.preventDefault();
-            const sections = document.querySelectorAll('.section');
-            const anyExpanded = Array.from(sections).some(s => !s.classList.contains('collapsed'));
+            .section.collapsed {
+                max-height: none !important;
+                overflow: visible !important;
+            }
             
-            sections.forEach(section => {
-                const header = section.querySelector('.section-header');
-                if (anyExpanded && !section.classList.contains('collapsed')) {
-                    toggleSection(header);
-                } else if (!anyExpanded && section.classList.contains('collapsed')) {
-                    toggleSection(header);
+            .section.collapsed::after {
+                display: none !important;
+            }
+            
+            body {
+                font-size: 12pt !important;
+                line-height: 1.4 !important;
+                color: #000 !important;
+                background: #fff !important;
+            }
+            
+            .container {
+                max-width: none !important;
+                padding: 0 !important;
+                margin: 0 !important;
+            }
+            
+            header {
+                background: #2c3e50 !important;
+                color: #fff !important;
+                padding: 1rem !important;
+                margin-bottom: 1rem !important;
+                border-radius: 0 !important;
+            }
+            
+            header h1 {
+                font-size: 24pt !important;
+                margin-bottom: 0.5rem !important;
+            }
+            
+            header p {
+                font-size: 14pt !important;
+            }
+            
+            .section-header h2 {
+                font-size: 18pt !important;
+                color: #000 !important;
+                margin-bottom: 0.5rem !important;
+            }
+            
+            .warning-box, .success-box, .danger-box {
+                border: 2px solid #000 !important;
+                background: #f9f9f9 !important;
+                margin: 0.5rem 0 !important;
+                padding: 0.5rem !important;
+            }
+            
+            .warning-box h3, .success-box h3, .danger-box h3 {
+                color: #000 !important;
+                font-size: 12pt !important;
+            }
+            
+            .toggle-btn {
+                display: none !important;
+            }
+            
+            h3 {
+                font-size: 14pt !important;
+                color: #000 !important;
+                margin: 1rem 0 0.5rem 0 !important;
+            }
+            
+            h4 {
+                font-size: 12pt !important;
+                color: #000 !important;
+                margin: 0.75rem 0 0.25rem 0 !important;
+            }
+            
+            p, li {
+                font-size: 11pt !important;
+                color: #000 !important;
+                line-height: 1.3 !important;
+            }
+            
+            ul, ol {
+                margin-left: 1rem !important;
+            }
+            
+            .highlight {
+                background: #f0f0f0 !important;
+                border: 1px solid #ccc !important;
+                padding: 0.1rem 0.2rem !important;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+
+            header h1 {
+                font-size: 2rem;
+            }
+
+            header p {
+                font-size: 1rem;
+            }
+
+            .section {
+                padding: 1rem;
+            }
+
+            .section-header h2 {
+                font-size: 1.5rem;
+            }
+
+            .nav-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .back-to-top {
+                width: 50px;
+                height: 50px;
+                font-size: 1.2rem;
+                bottom: 1rem;
+                right: 1rem;
+            }
+            
+            .pdf-save-button {
+                padding: 0.6rem 1.2rem;
+                font-size: 0.9rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                font-size: 14px;
+            }
+
+            header {
+                padding: 1rem 0;
+            }
+
+            header h1 {
+                font-size: 1.8rem;
+            }
+
+            .section {
+                padding: 0.75rem;
+            }
+            
+            .pdf-save-button {
+                padding: 0.5rem 1rem;
+                font-size: 0.85rem;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+
+        /* Loading indicator for PDF generation */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .loading-overlay.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .loading-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3498db;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="progress-bar" id="progressBar" role="progressbar" aria-label="Reading progress"></div>
+    
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-content">
+            <div class="spinner" aria-hidden="true"></div>
+            <h3>Generating PDF...</h3>
+            <p>Please wait while we prepare your document for download.</p>
+        </div>
+    </div>
+
+    <div class="container">
+        <header>
+            <h1>CSC210 & CSC210L</h1>
+            <p>Artificial Intelligence Usage Policy - Computer Organization & Architecture</p>
+        </header>
+
+        <nav class="navigation" role="navigation" aria-label="Page sections">
+            <div class="nav-title">Quick Navigation:</div>
+            <div class="nav-grid">
+                <button class="nav-button" onclick="scrollToSection('overview')" aria-describedby="overview-desc">
+                    Overview
+                    <span id="overview-desc" class="sr-only">Jump to course overview section</span>
+                </button>
+                <button class="nav-button" onclick="scrollToSection('tutor')" aria-describedby="tutor-desc">
+                    Course Tutor
+                    <span id="tutor-desc" class="sr-only">Jump to course tutor information</span>
+                </button>
+                <button class="nav-button" onclick="scrollToSection('capabilities')" aria-describedby="capabilities-desc">
+                    AI Capabilities
+                    <span id="capabilities-desc" class="sr-only">Jump to AI capabilities and warnings</span>
+                </button>
+                <button class="nav-button" onclick="scrollToSection('appropriate')" aria-describedby="appropriate-desc">
+                    Appropriate Uses
+                    <span id="appropriate-desc" class="sr-only">Jump to appropriate AI usage guidelines</span>
+                </button>
+                <button class="nav-button" onclick="scrollToSection('prohibited')" aria-describedby="prohibited-desc">
+                    Prohibited Uses
+                    <span id="prohibited-desc" class="sr-only">Jump to prohibited AI usage</span>
+                </button>
+                <button class="nav-button" onclick="scrollToSection('guidelines')" aria-describedby="guidelines-desc">
+                    Course Guidelines
+                    <span id="guidelines-desc" class="sr-only">Jump to course-specific guidelines</span>
+                </button>
+                <button class="nav-button" onclick="scrollToSection('integrity')" aria-describedby="integrity-desc">
+                    Academic Integrity
+                    <span id="integrity-desc" class="sr-only">Jump to academic integrity information</span>
+                </button>
+            </div>
+            
+            <button class="pdf-save-button" onclick="generatePDF()" aria-describedby="pdf-desc">
+                <span class="pdf-icon" aria-hidden="true">📄</span>
+                Save as PDF
+                <span id="pdf-desc" class="sr-only">Download this policy document as a PDF file</span>
+            </button>
+        </nav>
+
+        <main>
+            <section id="overview" class="section">
+                <div class="section-header" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="true" aria-controls="overview-content">
+                    <h2>Overview</h2>
+                    <button class="toggle-btn" aria-label="Collapse overview section">▲</button>
+                </div>
+                <div id="overview-content">
+                    <p>This policy outlines the appropriate use of artificial intelligence tools in CSC210 (Computer Organization & Architecture) and CSC210L (Computer Organization Lab). While AI can be a powerful learning aid for understanding digital logic, assembly programming, and CPU design, it must be used responsibly to support genuine learning and maintain academic integrity.</p>
+                </div>
+            </section>
+
+            <section id="tutor" class="section">
+                <div class="section-header" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="true" aria-controls="tutor-content">
+                    <h2>Recommended AI Tool: Course-Specific Tutor (Alex Chen)</h2>
+                    <button class="toggle-btn" aria-label="Collapse tutor section">▲</button>
+                </div>
+                <div id="tutor-content">
+                    <div class="success-box">
+                        <h3>Primary Recommendation: Use the CSC210 Course Tutor</h3>
+                        <p>Students are <strong>strongly encouraged</strong> to use the provided CSC210 Course Tutor ("Alex Chen") as their primary AI learning assistant. This tutor has been specifically configured for our course content, teaching methodology, and learning objectives.</p>
+                    </div>
+
+                    <h3>Benefits of the Course Tutor:</h3>
+                    <ul>
+                        <li>Tailored to CSC210/CSC210L curriculum covering digital logic, MIPS assembly, and CPU design</li>
+                        <li>Aligned with "But How Do It Know?" textbook and course progression</li>
+                        <li>Designed to guide discovery rather than provide direct solutions</li>
+                        <li>Familiar with Logisim circuit design and MARS assembly programming</li>
+                        <li>Understands the checkpoint system and progressive CPU building approach</li>
+                        <li>Programmed to encourage building everything from basic gates (no pre-built components)</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section id="capabilities" class="section">
+                <div class="section-header" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="true" aria-controls="capabilities-content">
+                    <h2>Critical Understanding: Full AI Capabilities</h2>
+                    <button class="toggle-btn" aria-label="Collapse capabilities section">▲</button>
+                </div>
+                <div id="capabilities-content">
+                    <div class="warning-box">
+                        <h3>Important Notice</h3>
+                        <p>While the CSC210 Course Tutor has been tuned specifically for this course, it is powered by Claude 4 Opus, a fully-featured generative AI system. This means:</p>
+                        <ul>
+                            <li><strong>It can respond to questions on virtually any topic</strong> - not just computer architecture</li>
+                            <li><strong>It may provide information beyond the scope of this course</strong> that could be incorrect or inappropriate for your current learning level</li>
+                            <li><strong>It can be led astray</strong> if you ask questions unrelated to course material or attempt to use it inappropriately</li>
+                            <li><strong>It could potentially provide direct solutions</strong> if prompted incorrectly, which would undermine your learning</li>
+                        </ul>
+                    </div>
+
+                    <div class="highlight">
+                        <strong>Stay Focused:</strong> Keep your interactions with the tutor focused on CSC210/CSC210L topics: digital logic, number systems, Boolean algebra, MIPS programming, CPU design, and Logisim circuit construction.
+                    </div>
+
+                    <h3>AI Bias and Limitations</h3>
+                    <p>All AI systems, including our course tutor, have inherent limitations:</p>
+                    <ul>
+                        <li><strong>Bias:</strong> AI responses may reflect biases present in training data</li>
+                        <li><strong>Hallucination:</strong> AI may generate plausible-sounding but incorrect technical information</li>
+                        <li><strong>Context limitations:</strong> AI may not fully understand your specific circuit design or assembly code</li>
+                        <li><strong>Outdated information:</strong> AI knowledge has cutoff dates and may not reflect current best practices</li>
+                        <li><strong>Overconfidence:</strong> AI may present uncertain information about computer architecture with unwarranted confidence</li>
+                        <li><strong>Tool-specific gaps:</strong> AI may not be aware of specific Logisim quirks or MARS simulator details</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section id="appropriate" class="section">
+                <div class="section-header" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="true" aria-controls="appropriate-content">
+                    <h2>Course-Specific Appropriate Uses</h2>
+                    <button class="toggle-btn" aria-label="Collapse appropriate uses section">▲</button>
+                </div>
+                <div id="appropriate-content">
+                    <div class="success-box">
+                        <h3>Encouraged Uses</h3>
+                        
+                        <h4>Digital Logic & Circuit Design (Weeks 1-4, 9-17):</h4>
+                        <ul>
+                            <li>Explaining Boolean algebra concepts and logic gate behavior</li>
+                            <li>Helping debug Logisim circuits when wires are red or outputs are unexpected</li>
+                            <li>Clarifying the difference between combinational and sequential circuits</li>
+                            <li>Understanding memory elements (latches, flip-flops, registers)</li>
+                            <li>Conceptual guidance on CPU component design</li>
+                        </ul>
+
+                        <h4>Assembly Programming (Weeks 5-8):</h4>
+                        <ul>
+                            <li>Explaining MIPS instruction formats and addressing modes</li>
+                            <li>Helping understand register usage and calling conventions</li>
+                            <li>Clarifying control flow concepts (branches, jumps, procedures)</li>
+                            <li>Debugging assembly logic (not writing code for you)</li>
+                            <li>Understanding memory organization and stack operations</li>
+                        </ul>
+
+                        <h4>CPU Architecture (Weeks 9-17):</h4>
+                        <ul>
+                            <li>Explaining Von Neumann architecture and fetch-decode-execute cycle</li>
+                            <li>Understanding datapath connections and control signals</li>
+                            <li>Clarifying how different CPU components interact</li>
+                            <li>Conceptual help with instruction implementation</li>
+                            <li>Understanding performance metrics and modern architecture concepts</li>
+                        </ul>
+                    </div>
+
+                    <h3>Acceptable Uses with Caution:</h3>
+                    <ul>
+                        <li><strong>Circuit review:</strong> Ask AI to review your Logisim design approach, but understand and implement changes yourself</li>
+                        <li><strong>Assembly debugging:</strong> Get help understanding what your MIPS code does, but write and modify it yourself</li>
+                        <li><strong>Concept reinforcement:</strong> Use AI to explain difficult concepts in different ways</li>
+                        <li><strong>Checkpoint preparation:</strong> Get conceptual help before working on lab checkpoints</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section id="prohibited" class="section">
+                <div class="section-header" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="true" aria-controls="prohibited-content">
+                    <h2>Strictly Prohibited Uses</h2>
+                    <button class="toggle-btn" aria-label="Collapse prohibited uses section">▲</button>
+                </div>
+                <div id="prohibited-content">
+                    <div class="danger-box">
+                        <h3>Never Use AI For</h3>
+                        
+                        <h4>Circuit Design:</h4>
+                        <ul>
+                            <li>Generating complete Logisim circuit files or implementations</li>
+                            <li>Providing step-by-step circuit construction instructions</li>
+                            <li>Giving direct gate-level solutions for lab assignments</li>
+                            <li>Creating complete ALU, register file, or CPU designs</li>
+                        </ul>
+
+                        <h4>Assembly Programming:</h4>
+                        <ul>
+                            <li>Writing complete MIPS programs for assignments</li>
+                            <li>Generating code for sorting algorithms, number games, or other lab exercises</li>
+                            <li>Providing direct solutions to programming problems</li>
+                            <li>Converting Java/pseudocode to MIPS without your own understanding</li>
+                        </ul>
+
+                        <h4>Academic Assessments:</h4>
+                        <ul>
+                            <li>Any assistance during quizzes, midterm, lab midterm, or final exam</li>
+                            <li>Help with checkpoint submissions (your circuits must be your own work)</li>
+                            <li>Generating project documentation or technical writing</li>
+                        </ul>
+
+                        <h4>General Violations:</h4>
+                        <ul>
+                            <li>Using AI to avoid engaging with "But How Do It Know?" textbook</li>
+                            <li>Asking AI to complete lab deliverables or lecture assignments</li>
+                            <li>Using AI to circumvent the progressive learning approach</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section id="guidelines" class="section">
+                <div class="section-header" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="true" aria-controls="guidelines-content">
+                    <h2>Course-Specific Guidelines</h2>
+                    <button class="toggle-btn" aria-label="Collapse guidelines section">▲</button>
+                </div>
+                <div id="guidelines-content">
+                    <h3>For Digital Logic Work:</h3>
+                    <ul>
+                        <li><strong>Use AI to understand concepts,</strong> not to design circuits</li>
+                        <li><strong>Ask "Why does this gate behave this way?"</strong> not "How do I build an XOR gate?"</li>
+                        <li><strong>Debug with AI help:</strong> "My circuit shows red wires, what might be wrong?" is acceptable</li>
+                        <li><strong>Build from scratch:</strong> Never ask AI for pre-built components or circuit files</li>
+                    </ul>
+
+                    <h3>For MIPS Programming:</h3>
+                    <ul>
+                        <li><strong>Use AI to understand instructions,</strong> not to write programs</li>
+                        <li><strong>Ask about concepts:</strong> "How does the stack work?" is good; "Write a sorting program" is not</li>
+                        <li><strong>Debug logically:</strong> "Why is my loop not terminating?" is acceptable if you show your thinking</li>
+                        <li><strong>Trace together:</strong> AI can help you understand what your code does, but you must write it</li>
+                    </ul>
+
+                    <h3>For CPU Construction:</h3>
+                    <ul>
+                        <li><strong>Conceptual guidance only:</strong> "How do control signals work?" is appropriate</li>
+                        <li><strong>No implementation help:</strong> Don't ask for specific Logisim construction steps</li>
+                        <li><strong>Understanding connections:</strong> AI can help you understand how components should interact</li>
+                        <li><strong>Build incrementally:</strong> Use AI to understand each checkpoint's requirements, not to complete them</li>
+                    </ul>
+
+                    <div class="warning-box">
+                        <h3>Red Flags - When to Stop Using AI</h3>
+                        <p><strong>Stop immediately if you find yourself:</strong></p>
+                        <ul>
+                            <li>Asking AI to generate circuit files or code</li>
+                            <li>Using AI responses without understanding them</li>
+                            <li>Relying on AI instead of reading the textbook</li>
+                            <li>Asking for direct answers to lab exercises</li>
+                            <li>Using AI to avoid the building-from-scratch approach</li>
+                            <li>Copying AI suggestions without comprehension</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section id="integrity" class="section">
+                <div class="section-header" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="true" aria-controls="integrity-content">
+                    <h2>Academic Integrity & Resources</h2>
+                    <button class="toggle-btn" aria-label="Collapse integrity section">▲</button>
+                </div>
+                <div id="integrity-content">
+                    <h3>Academic Integrity Reminders</h3>
+                    <div class="warning-box">
+                        <h3>Remember</h3>
+                        <ul>
+                            <li><strong>Every circuit must be built by you</strong> from basic gates in Logisim</li>
+                            <li><strong>Every line of MIPS code must be written and understood by you</strong></li>
+                            <li><strong>Checkpoints must represent your own learning progress</strong></li>
+                            <li><strong>Lab deliverables must demonstrate your individual skill development</strong></li>
+                        </ul>
+                    </div>
+
+                    <h3>Documentation Requirements:</h3>
+                    <ul>
+                        <li>If AI helps you understand a concept that influences your work, note this in comments</li>
+                        <li>Never submit AI-generated content as your own</li>
+                        <li>When in doubt about AI assistance, ask your instructor before proceeding</li>
+                    </ul>
+
+                    <h3>Primary Learning Sources (Use These First):</h3>
+                    <ol>
+                        <li><strong>"But How Do It Know?" textbook</strong> - Your primary reference</li>
+                        <li><strong>Course videos and materials</strong> - Tailored explanations</li>
+                        <li><strong>Instructor and TA office hours</strong> - Human expertise</li>
+                        <li><strong>Lab sessions</strong> - Hands-on guided practice</li>
+                    </ol>
+
+                    <h3>Policy Violations and Consequences</h3>
+                    <p>Inappropriate AI use may result in:</p>
+                    <ul>
+                        <li><strong>Zero points</strong> on affected assignments or checkpoints</li>
+                        <li><strong>Retaking of lab practical exams</strong></li>
+                        <li><strong>Course failure</strong> for repeated violations</li>
+                        <li><strong>Academic integrity charges</strong> per university policy</li>
+                    </ul>
+
+                    <div class="highlight">
+                        <p><strong>The goal of CSC210/CSC210L is to understand how computers work at the fundamental level. Use AI to deepen that understanding, never to bypass the learning process.</strong></p>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <button class="back-to-top" id="backToTop" onclick="scrollToTop()" aria-label="Return to top of page">↑</button>
+
+    <script>
+        // Accessibility and interaction functions
+        function toggleSection(header) {
+            const section = header.parentElement;
+            const content = section.querySelector('[id$="-content"]');
+            const toggleBtn = header.querySelector('.toggle-btn');
+            const isCollapsed = section.classList.contains('collapsed');
+            
+            if (isCollapsed) {
+                section.classList.remove('collapsed');
+                toggleBtn.textContent = '▲';
+                toggleBtn.classList.remove('collapsed');
+                header.setAttribute('aria-expanded', 'true');
+                toggleBtn.setAttribute('aria-label', 'Collapse ' + header.querySelector('h2').textContent.toLowerCase() + ' section');
+            } else {
+                section.classList.add('collapsed');
+                toggleBtn.textContent = '▼';
+                toggleBtn.classList.add('collapsed');
+                header.setAttribute('aria-expanded', 'false');
+                toggleBtn.setAttribute('aria-label', 'Expand ' + header.querySelector('h2').textContent.toLowerCase() + ' section');
+            }
+        }
+
+        function scrollToSection(sectionId) {
+            const section = document.getElementById(sectionId);
+            if (section) {
+                // Expand section if collapsed
+                if (section.classList.contains('collapsed')) {
+                    toggleSection(section.querySelector('.section-header'));
                 }
+                
+                section.scrollIntoView({ 
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+                
+                // Focus management for accessibility
+                section.querySelector('.section-header').focus();
+            }
+        }
+
+        function scrollToTop() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
             });
+        }
+
+        // Progress bar and back to top button
+        function updateProgressBar() {
+            const scrollTop = window.pageYOffset;
+            const documentHeight = document.documentElement.scrollHeight - window.innerHeight;
+            const scrollPercent = (scrollTop / documentHeight) * 100;
             
-            // Announce action to screen readers
+            document.getElementById('progressBar').style.width = scrollPercent + '%';
+            
+            const backToTopBtn = document.getElementById('backToTop');
+            if (scrollTop > 300) {
+                backToTopBtn.classList.add('visible');
+            } else {
+                backToTopBtn.classList.remove('visible');
+            }
+        }
+
+        // PDF Generation Function
+        function generatePDF() {
+            const button = document.querySelector('.pdf-save-button');
+            const overlay = document.getElementById('loadingOverlay');
+            
+            // Disable button and show loading
+            button.disabled = true;
+            button.innerHTML = '<span class="pdf-icon" aria-hidden="true">⏳</span>Generating...';
+            overlay.classList.add('visible');
+            
+            // Announce to screen readers
             const announcement = document.createElement('div');
             announcement.setAttribute('aria-live', 'assertive');
             announcement.className = 'sr-only';
-            announcement.textContent = anyExpanded ? 'All sections collapsed' : 'All sections expanded';
+            announcement.textContent = 'PDF generation started. Please wait.';
             document.body.appendChild(announcement);
             
-            setTimeout(() => {
-                document.body.removeChild(announcement);
-            }, 2000);
-        }
-    });
-
-    // Add smooth transitions for reduced motion users
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-        document.documentElement.style.setProperty('scroll-behavior', 'auto');
-    }
-
-    // Print-friendly styles
-    const printStyles = `
-        @media print {
-            .navigation, .back-to-top, .progress-bar { display: none !important; }
-            .section { break-inside: avoid; }
-            .section.collapsed { max-height: none !important; }
-            .section.collapsed::after { display: none !important; }
-            body { font-size: 12pt; line-height: 1.4; }
-            .warning-box, .success-box, .danger-box { 
-                border: 2px solid #000 !important; 
-                background: #f9f9f9 !important; 
+            try {
+                // Temporarily expand all collapsed sections for PDF
+                const collapsedSections = document.querySelectorAll('.section.collapsed');
+                collapsedSections.forEach(section => {
+                    section.classList.remove('collapsed');
+                });
+                
+                // Create a clean version of the document for PDF
+                const printContent = document.cloneNode(true);
+                
+                // Remove unnecessary elements from the cloned content
+                const elementsToRemove = printContent.querySelectorAll('.navigation, .back-to-top, .progress-bar, .pdf-save-button, .loading-overlay');
+                elementsToRemove.forEach(el => el.remove());
+                
+                // Ensure all sections are expanded in the print version
+                const printSections = printContent.querySelectorAll('.section');
+                printSections.forEach(section => {
+                    section.classList.remove('collapsed');
+                    const toggleBtn = section.querySelector('.toggle-btn');
+                    if (toggleBtn) toggleBtn.remove();
+                });
+                
+                // Create a temporary iframe for printing
+                const iframe = document.createElement('iframe');
+                iframe.style.position = 'absolute';
+                iframe.style.top = '-10000px';
+                iframe.style.left = '-10000px';
+                iframe.style.width = '8.5in';
+                iframe.style.height = '11in';
+                document.body.appendChild(iframe);
+                
+                const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+                iframeDoc.open();
+                iframeDoc.write('<!DOCTYPE html><html><head><title>CSC210 AI Policy</title>');
+                
+                // Copy styles to iframe
+                const styles = document.querySelectorAll('style');
+                styles.forEach(style => {
+                    iframeDoc.write('<style>' + style.innerHTML + '</style>');
+                });
+                
+                iframeDoc.write('</head><body>');
+                iframeDoc.write(printContent.querySelector('.container').outerHTML);
+                iframeDoc.write('</body></html>');
+                iframeDoc.close();
+                
+                // Wait a moment for styles to load, then print
+                setTimeout(() => {
+                    iframe.contentWindow.focus();
+                    iframe.contentWindow.print();
+                    
+                    // Clean up
+                    setTimeout(() => {
+                        document.body.removeChild(iframe);
+                        
+                        // Restore collapsed sections
+                        collapsedSections.forEach(section => {
+                            section.classList.add('collapsed');
+                        });
+                        
+                        // Re-enable button
+                        button.disabled = false;
+                        button.innerHTML = '<span class="pdf-icon" aria-hidden="true">📄</span>Save as PDF';
+                        overlay.classList.remove('visible');
+                        
+                        // Announce completion
+                        announcement.textContent = 'PDF generation complete. Check your downloads folder.';
+                        setTimeout(() => {
+                            document.body.removeChild(announcement);
+                        }, 3000);
+                    }, 1000);
+                }, 500);
+                
+            } catch (error) {
+                console.error('PDF generation error:', error);
+                
+                // Error handling
+                button.disabled = false;
+                button.innerHTML = '<span class="pdf-icon" aria-hidden="true">📄</span>Save as PDF';
+                overlay.classList.remove('visible');
+                
+                announcement.textContent = 'PDF generation failed. Please try using your browser\'s print function instead.';
+                setTimeout(() => {
+                    document.body.removeChild(announcement);
+                }, 5000);
+                
+                // Fallback to browser print dialog
+                window.print();
             }
         }
-    `;
-    
-    const styleSheet = document.createElement('style');
-    styleSheet.textContent = printStyles;
-    document.head.appendChild(styleSheet);
-</script>
-</body> </html>
+
+        // Keyboard navigation
+        function handleKeyPress(event, element) {
+            if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault();
+                element.click();
+            }
+        }
+
+        // Event listeners
+        window.addEventListener('scroll', updateProgressBar);
+
+        // Add keyboard navigation to section headers
+        document.querySelectorAll('.section-header').forEach(header => {
+            header.addEventListener('keypress', (e) => handleKeyPress(e, header));
+        });
+
+        // Add keyboard navigation to navigation buttons
+        document.querySelectorAll('.nav-button').forEach(button => {
+            button.addEventListener('keypress', (e) => handleKeyPress(e, button));
+        });
+
+        // Add keyboard navigation to PDF button
+        document.querySelector('.pdf-save-button').addEventListener('keypress', (e) => handleKeyPress(e, document.querySelector('.pdf-save-button')));
+
+        // Initialize progress bar
+        updateProgressBar();
+
+        // Add focus management for screen readers
+        document.addEventListener('DOMContentLoaded', function() {
+            // Announce page load to screen readers
+            const announcement = document.createElement('div');
+            announcement.setAttribute('aria-live', 'polite');
+            announcement.setAttribute('aria-atomic', 'true');
+            announcement.className = 'sr-only';
+            announcement.textContent = 'CSC210 AI Usage Policy page loaded. Use navigation buttons or tab through sections. PDF download available.';
+            document.body.appendChild(announcement);
+            
+            // Remove announcement after screen readers have processed it
+            setTimeout(() => {
+                if (document.body.contains(announcement)) {
+                    document.body.removeChild(announcement);
+                }
+            }, 3000);
+        });
+
+        // Enhanced keyboard navigation
+        document.addEventListener('keydown', function(e) {
+            // Allow users to press 'c' to collapse/expand all sections
+            if (e.key === 'c' && e.ctrlKey) {
+                e.preventDefault();
+                const sections = document.querySelectorAll('.section');
+                const anyExpanded = Array.from(sections).some(s => !s.classList.contains('collapsed'));
+                
+                sections.forEach(section => {
+                    const header = section.querySelector('.section-header');
+                    if (anyExpanded && !section.classList.contains('collapsed')) {
+                        toggleSection(header);
+                    } else if (!anyExpanded && section.classList.contains('collapsed')) {
+                        toggleSection(header);
+                    }
+                });
+                
+                // Announce action to screen readers
+                const announcement = document.createElement('div');
+                announcement.setAttribute('aria-live', 'assertive');
+                announcement.className = 'sr-only';
+                announcement.textContent = anyExpanded ? 'All sections collapsed' : 'All sections expanded';
+                document.body.appendChild(announcement);
+                
+                setTimeout(() => {
+                    if (document.body.contains(announcement)) {
+                        document.body.removeChild(announcement);
+                    }
+                }, 2000);
+            }
+            
+            // Press 'p' to generate PDF
+            if (e.key === 'p' && e.ctrlKey && e.shiftKey) {
+                e.preventDefault();
+                generatePDF();
+            }
+        });
+
+        // Add smooth transitions for reduced motion users
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+            document.documentElement.style.setProperty('scroll-behavior', 'auto');
+        }
+
+        // Close loading overlay if clicked
+        document.getElementById('loadingOverlay').addEventListener('click', function(e) {
+            if (e.target === this) {
+                this.classList.remove('visible');
+            }
+        });
+
+        // Handle print events
+        window.addEventListener('beforeprint', function() {
+            // Expand all sections before printing
+            const collapsedSections = document.querySelectorAll('.section.collapsed');
+            collapsedSections.forEach(section => {
+                section.classList.remove('collapsed');
+            });
+        });
+
+        window.addEventListener('afterprint', function() {
+            // This will restore sections if user uses Ctrl+P instead of our button
+            // But we won't restore them if they used our button (handled in generatePDF)
+        });
+    </script>
+</body>
+</html>
