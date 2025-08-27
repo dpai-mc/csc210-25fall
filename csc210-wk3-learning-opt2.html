@@ -1,0 +1,1736 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Interactive learning platform for CSC210 Week 3: Combinational Logic Design covering arithmetic circuits, multiplexers, decoders, and more">
+    <title>CSC210 Week 3: Combinational Logic Design</title>
+    <style>
+        /* Reset and Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --primary-color: #2563eb;
+            --secondary-color: #3b82f6;
+            --accent-color: #f59e0b;
+            --success-color: #059669;
+            --error-color: #dc2626;
+            --warning-color: #d97706;
+            
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8fafc;
+            --bg-tertiary: #e2e8f0;
+            --text-primary: #1e293b;
+            --text-secondary: #475569;
+            --text-muted: #64748b;
+            
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+            
+            --border-radius: 0.5rem;
+            --border-radius-lg: 0.75rem;
+            
+            --transition: all 0.2s ease-in-out;
+        }
+        
+        /* Typography */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-size: 16px;
+            line-height: 1.6;
+            color: var(--text-primary);
+            background-color: var(--bg-primary);
+        }
+        
+        h1, h2, h3, h4, h5, h6 {
+            font-weight: 600;
+            line-height: 1.3;
+            margin-bottom: 0.5em;
+        }
+        
+        h1 { font-size: 2.5rem; }
+        h2 { font-size: 2rem; }
+        h3 { font-size: 1.5rem; }
+        h4 { font-size: 1.25rem; }
+        
+        p {
+            margin-bottom: 1rem;
+            color: var(--text-secondary);
+        }
+        
+        /* Layout */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+        
+        .main-layout {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            min-height: 100vh;
+            gap: 0;
+        }
+        
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            padding: 1.5rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: var(--shadow-md);
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+        
+        .course-info {
+            font-size: 0.875rem;
+            opacity: 0.9;
+        }
+        
+        /* Sidebar Navigation */
+        .sidebar {
+            background-color: var(--bg-secondary);
+            border-right: 1px solid var(--bg-tertiary);
+            overflow-y: auto;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+        }
+        
+        .nav-section {
+            padding: 1.5rem 1rem;
+        }
+        
+        .nav-title {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.75rem;
+        }
+        
+        .nav-menu {
+            list-style: none;
+        }
+        
+        .nav-item {
+            margin-bottom: 0.25rem;
+        }
+        
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 0.75rem;
+            color: var(--text-secondary);
+            text-decoration: none;
+            border-radius: var(--border-radius);
+            transition: var(--transition);
+            cursor: pointer;
+        }
+        
+        .nav-link:hover {
+            background-color: var(--bg-tertiary);
+            color: var(--text-primary);
+        }
+        
+        .nav-link.active {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .nav-icon {
+            width: 1.25rem;
+            height: 1.25rem;
+            margin-right: 0.75rem;
+            opacity: 0.7;
+        }
+        
+        .progress-indicator {
+            width: 0.5rem;
+            height: 0.5rem;
+            border-radius: 50%;
+            margin-left: auto;
+        }
+        
+        .progress-completed { background-color: var(--success-color); }
+        .progress-in-progress { background-color: var(--warning-color); }
+        .progress-not-started { background-color: var(--bg-tertiary); }
+        
+        /* Main Content Area */
+        .main-content {
+            padding: 2rem;
+            overflow-y: auto;
+        }
+        
+        .content-section {
+            display: none;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+        
+        .content-section.active {
+            display: block;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Cards and Components */
+        .card {
+            background-color: var(--bg-primary);
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--shadow-md);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid var(--bg-tertiary);
+        }
+        
+        .card-header {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--bg-tertiary);
+        }
+        
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            margin-left: auto;
+        }
+        
+        .badge-primary { background-color: var(--primary-color); color: white; }
+        .badge-secondary { background-color: var(--bg-tertiary); color: var(--text-secondary); }
+        .badge-success { background-color: var(--success-color); color: white; }
+        
+        /* Interactive Elements */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--border-radius);
+            font-weight: 500;
+            text-decoration: none;
+            transition: var(--transition);
+            cursor: pointer;
+            border: none;
+            font-size: 0.875rem;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: #1d4ed8;
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .btn-secondary {
+            background-color: var(--bg-tertiary);
+            color: var(--text-primary);
+        }
+        
+        .btn-secondary:hover {
+            background-color: #cbd5e1;
+        }
+        
+        /* Circuit Simulator Styles */
+        .simulator-container {
+            background-color: var(--bg-secondary);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            margin: 1rem 0;
+        }
+        
+        .circuit-canvas {
+            width: 100%;
+            height: 400px;
+            background-color: white;
+            border: 2px solid var(--bg-tertiary);
+            border-radius: var(--border-radius);
+            cursor: crosshair;
+        }
+        
+        .gate-palette {
+            display: flex;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+        
+        .gate-btn {
+            padding: 0.5rem 1rem;
+            background-color: white;
+            border: 2px solid var(--bg-tertiary);
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 0.875rem;
+        }
+        
+        .gate-btn:hover,
+        .gate-btn.active {
+            border-color: var(--primary-color);
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        /* Truth Table Styles */
+        .truth-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+            font-size: 0.875rem;
+        }
+        
+        .truth-table th,
+        .truth-table td {
+            padding: 0.75rem;
+            text-align: center;
+            border: 1px solid var(--bg-tertiary);
+        }
+        
+        .truth-table th {
+            background-color: var(--bg-secondary);
+            font-weight: 600;
+        }
+        
+        .truth-table tbody tr:nth-child(even) {
+            background-color: var(--bg-secondary);
+        }
+        
+        /* Quiz Styles */
+        .quiz-container {
+            background-color: var(--bg-secondary);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+        }
+        
+        .quiz-question {
+            margin-bottom: 1.5rem;
+        }
+        
+        .quiz-options {
+            list-style: none;
+        }
+        
+        .quiz-option {
+            margin-bottom: 0.75rem;
+        }
+        
+        .quiz-option label {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem;
+            background-color: white;
+            border: 2px solid var(--bg-tertiary);
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .quiz-option input[type="radio"] {
+            margin-right: 0.75rem;
+        }
+        
+        .quiz-option label:hover {
+            border-color: var(--primary-color);
+            background-color: #eff6ff;
+        }
+        
+        .quiz-feedback {
+            padding: 1rem;
+            border-radius: var(--border-radius);
+            margin-top: 1rem;
+            display: none;
+        }
+        
+        .quiz-feedback.correct {
+            background-color: #dcfce7;
+            color: var(--success-color);
+            border: 1px solid var(--success-color);
+            display: block;
+        }
+        
+        .quiz-feedback.incorrect {
+            background-color: #fee2e2;
+            color: var(--error-color);
+            border: 1px solid var(--error-color);
+            display: block;
+        }
+        
+        /* Progress Bar */
+        .progress-bar {
+            width: 100%;
+            height: 0.5rem;
+            background-color: var(--bg-tertiary);
+            border-radius: 9999px;
+            overflow: hidden;
+            margin: 1rem 0;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            border-radius: 9999px;
+            transition: width 0.3s ease;
+        }
+        
+        /* Responsive Design - Mobile First */
+        @media (max-width: 768px) {
+            .main-layout {
+                grid-template-columns: 1fr;
+            }
+            
+            .sidebar {
+                position: fixed;
+                top: 0;
+                left: -280px;
+                width: 280px;
+                height: 100vh;
+                z-index: 200;
+                transition: left 0.3s ease;
+            }
+            
+            .sidebar.open {
+                left: 0;
+            }
+            
+            .mobile-nav-toggle {
+                display: block;
+                background: none;
+                border: none;
+                color: white;
+                font-size: 1.5rem;
+                cursor: pointer;
+            }
+            
+            .main-content {
+                padding: 1rem;
+            }
+            
+            .card {
+                padding: 1rem;
+            }
+            
+            h1 { font-size: 2rem; }
+            h2 { font-size: 1.75rem; }
+            h3 { font-size: 1.25rem; }
+            
+            .gate-palette {
+                justify-content: center;
+            }
+            
+            .circuit-canvas {
+                height: 300px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .header-content {
+                flex-direction: column;
+                gap: 0.5rem;
+                text-align: center;
+            }
+            
+            .gate-btn {
+                font-size: 0.75rem;
+                padding: 0.4rem 0.8rem;
+            }
+            
+            .truth-table {
+                font-size: 0.75rem;
+            }
+            
+            .truth-table th,
+            .truth-table td {
+                padding: 0.5rem;
+            }
+        }
+        
+        /* Accessibility Focus Styles */
+        button:focus,
+        .nav-link:focus,
+        .btn:focus,
+        .gate-btn:focus {
+            outline: 2px solid var(--accent-color);
+            outline-offset: 2px;
+        }
+        
+        /* Skip Link for Screen Readers */
+        .skip-link {
+            position: absolute;
+            top: -40px;
+            left: 6px;
+            background: var(--primary-color);
+            color: white;
+            padding: 8px;
+            text-decoration: none;
+            border-radius: 4px;
+            z-index: 1000;
+        }
+        
+        .skip-link:focus {
+            top: 6px;
+        }
+        
+        /* Hidden content for screen readers */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+    </style>
+</head>
+<body>
+    <!-- Skip Link for Accessibility -->
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+    
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">CSC210: Computer Organization & Architecture</div>
+                <button class="mobile-nav-toggle" onclick="toggleMobileNav()" style="display: none;" aria-label="Toggle navigation menu">
+                    <span aria-hidden="true">☰</span>
+                </button>
+                <div class="course-info">
+                    <div>Week 3: Combinational Logic Design</div>
+                    <div>Interactive Learning Platform</div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="main-layout">
+        <!-- Sidebar Navigation -->
+        <nav class="sidebar" role="navigation" aria-label="Course content navigation">
+            <div class="nav-section">
+                <h2 class="nav-title">Course Overview</h2>
+                <ul class="nav-menu">
+                    <li class="nav-item">
+                        <a href="#" class="nav-link active" onclick="showSection('overview')" role="menuitem">
+                            <span class="nav-icon" aria-hidden="true">📚</span>
+                            Learning Objectives
+                            <span class="progress-indicator progress-completed" aria-label="Completed"></span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link" onclick="showSection('schedule')" role="menuitem">
+                            <span class="nav-icon" aria-hidden="true">📅</span>
+                            Weekly Schedule
+                            <span class="progress-indicator progress-not-started" aria-label="Not started"></span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="nav-section">
+                <h2 class="nav-title">Module 1: Arithmetic Circuits</h2>
+                <ul class="nav-menu">
+                    <li class="nav-item">
+                        <a href="#" class="nav-link" onclick="showSection('adders')" role="menuitem">
+                            <span class="nav-icon" aria-hidden="true">🔢</span>
+                            Half & Full Adders
+                            <span class="progress-indicator progress-in-progress" aria-label="In progress"></span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link" onclick="showSection('ripple-carry')" role="menuitem">
+                            <span class="nav-icon" aria-hidden="true">⚡</span>
+                            Ripple-Carry Adders
+                            <span class="progress-indicator progress-not-started" aria-label="Not started"></span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="nav-section">
+                <h2 class="nav-title">Module 2: Data Routing</h2>
+                <ul class="nav-menu">
+                    <li class="nav-item">
+                        <a href="#" class="nav-link" onclick="showSection('multiplexers')" role="menuitem">
+                            <span class="nav-icon" aria-hidden="true">🔄</span>
+                            Multiplexers
+                            <span class="progress-indicator progress-not-started" aria-label="Not started"></span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link" onclick="showSection('demultiplexers')" role="menuitem">
+                            <span class="nav-icon" aria-hidden="true">📡</span>
+                            Demultiplexers
+                            <span class="progress-indicator progress-not-started" aria-label="Not started"></span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="nav-section">
+                <h2 class="nav-title">Module 3: Code Conversion</h2>
+                <ul class="nav-menu">
+                    <li class="nav-item">
+                        <a href="#" class="nav-link" onclick="showSection('decoders')" role="menuitem">
+                            <span class="nav-icon" aria-hidden="true">🔓</span>
+                            Decoders
+                            <span class="progress-indicator progress-not-started" aria-label="Not started"></span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link" onclick="showSection('encoders')" role="menuitem">
+                            <span class="nav-icon" aria-hidden="true">🔒</span>
+                            Encoders
+                            <span class="progress-indicator progress-not-started" aria-label="Not started"></span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="nav-section">
+                <h2 class="nav-title">Assessment</h2>
+                <ul class="nav-menu">
+                    <li class="nav-item">
+                        <a href="#" class="nav-link" onclick="showSection('quiz')" role="menuitem">
+                            <span class="nav-icon" aria-hidden="true">📝</span>
+                            Interactive Quiz
+                            <span class="progress-indicator progress-not-started" aria-label="Not started"></span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link" onclick="showSection('assignments')" role="menuitem">
+                            <span class="nav-icon" aria-hidden="true">📋</span>
+                            Assignments
+                            <span class="progress-indicator progress-not-started" aria-label="Not started"></span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+
+        <!-- Main Content Area -->
+        <main class="main-content" id="main-content" role="main">
+            <!-- Overview Section -->
+            <section id="overview" class="content-section active">
+                <h1>Week 3: Combinational Logic Design</h1>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">Learning Objectives</h2>
+                        <span class="badge badge-primary">Week 3</span>
+                    </div>
+                    <p>By the end of this week, you will be able to:</p>
+                    <ul style="list-style-type: none; padding-left: 0;">
+                        <li style="padding: 0.5rem 0; display: flex; align-items: flex-start;">
+                            <span style="color: var(--success-color); margin-right: 0.75rem; font-size: 1.2rem;" aria-hidden="true">✓</span>
+                            <span>Design and analyze combinational logic circuits using basic gates</span>
+                        </li>
+                        <li style="padding: 0.5rem 0; display: flex; align-items: flex-start;">
+                            <span style="color: var(--success-color); margin-right: 0.75rem; font-size: 1.2rem;" aria-hidden="true">✓</span>
+                            <span>Construct adders (half-adder and full-adder) from basic logic gates</span>
+                        </li>
+                        <li style="padding: 0.5rem 0; display: flex; align-items: flex-start;">
+                            <span style="color: var(--success-color); margin-right: 0.75rem; font-size: 1.2rem;" aria-hidden="true">✓</span>
+                            <span>Understand the operation and applications of multiplexers and demultiplexers</span>
+                        </li>
+                        <li style="padding: 0.5rem 0; display: flex; align-items: flex-start;">
+                            <span style="color: var(--success-color); margin-right: 0.75rem; font-size: 1.2rem;" aria-hidden="true">✓</span>
+                            <span>Design and implement decoders and encoders for various applications</span>
+                        </li>
+                        <li style="padding: 0.5rem 0; display: flex; align-items: flex-start;">
+                            <span style="color: var(--success-color); margin-right: 0.75rem; font-size: 1.2rem;" aria-hidden="true">✓</span>
+                            <span>Analyze timing and propagation delays in combinational circuits</span>
+                        </li>
+                        <li style="padding: 0.5rem 0; display: flex; align-items: flex-start;">
+                            <span style="color: var(--success-color); margin-right: 0.75rem; font-size: 1.2rem;" aria-hidden="true">✓</span>
+                            <span>Apply systematic design methodologies for complex combinational systems</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">Course Progress</h2>
+                    </div>
+                    <div style="margin-bottom: 1rem;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                            <span>Overall Completion</span>
+                            <span><span id="progress-percentage">15</span>%</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 15%" id="progress-bar-fill"></div>
+                        </div>
+                    </div>
+                    <p>You're making great progress! Continue with the arithmetic circuits module to build your foundational understanding of combinational logic design.</p>
+                    <div style="margin-top: 1.5rem;">
+                        <a href="#" class="btn btn-primary" onclick="showSection('adders')">
+                            Start Learning: Half & Full Adders
+                            <span style="margin-left: 0.5rem;" aria-hidden="true">→</span>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">What You'll Build</h2>
+                        <span class="badge badge-secondary">Interactive</span>
+                    </div>
+                    <p>Throughout this week, you'll use our interactive circuit simulator to:</p>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; margin-top: 1rem;">
+                        <div style="background: var(--bg-secondary); padding: 1rem; border-radius: var(--border-radius);">
+                            <h4>🔢 Build Adder Circuits</h4>
+                            <p style="font-size: 0.875rem; margin-bottom: 0;">Create half-adders and full-adders, then chain them into multi-bit ripple-carry adders.</p>
+                        </div>
+                        <div style="background: var(--bg-secondary); padding: 1rem; border-radius: var(--border-radius);">
+                            <h4>🔄 Design Multiplexers</h4>
+                            <p style="font-size: 0.875rem; margin-bottom: 0;">Construct data selectors and learn how to implement logic functions using MUX.</p>
+                        </div>
+                        <div style="background: var(--bg-secondary); padding: 1rem; border-radius: var(--border-radius);">
+                            <h4>🔓 Create Decoder Systems</h4>
+                            <p style="font-size: 0.875rem; margin-bottom: 0;">Build binary-to-unary converters and connect them to 7-segment displays.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Schedule Section -->
+            <section id="schedule" class="content-section">
+                <h1>Weekly Schedule</h1>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">Day 1: Arithmetic Circuit Design</h2>
+                        <span class="badge badge-success">✓ Completed</span>
+                    </div>
+                    <h3>Content Focus</h3>
+                    <p>Half-adder and full-adder theory and implementation</p>
+                    
+                    <h4>Learning Activities</h4>
+                    <ul>
+                        <li>Design 2:1 and 4:1 multiplexers from basic gates</li>
+                        <li>Demonstrate logic function implementation using MUX</li>
+                        <li>Explore real-world applications in computer systems</li>
+                    </ul>
+                    
+                    <h4>Preparation Required</h4>
+                    <p>Study truth tables and selection logic principles</p>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">Day 3: Decoder and Encoder Design</h2>
+                        <span class="badge badge-secondary">Upcoming</span>
+                    </div>
+                    <h3>Content Focus</h3>
+                    <p>Binary decoders, encoders, and priority encoding</p>
+                    
+                    <h4>Learning Activities</h4>
+                    <ul>
+                        <li>Build 2-to-4 and 3-to-8 decoders</li>
+                        <li>Design priority encoder with conflict resolution</li>
+                        <li>Connect decoders to practical applications (7-segment displays)</li>
+                    </ul>
+                    
+                    <h4>Preparation Required</h4>
+                    <p>Review binary-to-decimal conversion and number systems</p>
+                </div>
+            </section>
+
+            <!-- Adders Section -->
+            <section id="adders" class="content-section">
+                <h1>Half & Full Adders</h1>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">Half-Adder Design</h2>
+                        <span class="badge badge-primary">Interactive</span>
+                    </div>
+                    
+                    <p>A half-adder is the simplest arithmetic circuit that adds two single binary digits. It produces a sum and a carry output.</p>
+                    
+                    <h3>Truth Table</h3>
+                    <table class="truth-table">
+                        <thead>
+                            <tr>
+                                <th>A</th>
+                                <th>B</th>
+                                <th>Sum</th>
+                                <th>Carry</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>0</td>
+                                <td>0</td>
+                                <td>0</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>0</td>
+                                <td>1</td>
+                                <td>1</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>1</td>
+                                <td>0</td>
+                                <td>1</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>1</td>
+                                <td>1</td>
+                                <td>0</td>
+                                <td>1</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    
+                    <h3>Boolean Expressions</h3>
+                    <div style="background: var(--bg-secondary); padding: 1rem; border-radius: var(--border-radius); margin: 1rem 0;">
+                        <p><strong>Sum = A ⊕ B</strong> (XOR operation)</p>
+                        <p><strong>Carry = A · B</strong> (AND operation)</p>
+                    </div>
+                    
+                    <h3>Interactive Circuit Simulator</h3>
+                    <div class="simulator-container">
+                        <div class="gate-palette">
+                            <button class="gate-btn" onclick="selectGate('AND')" id="gate-and">AND Gate</button>
+                            <button class="gate-btn" onclick="selectGate('OR')" id="gate-or">OR Gate</button>
+                            <button class="gate-btn" onclick="selectGate('XOR')" id="gate-xor">XOR Gate</button>
+                            <button class="gate-btn" onclick="selectGate('NOT')" id="gate-not">NOT Gate</button>
+                            <button class="gate-btn" onclick="clearCanvas()">Clear Canvas</button>
+                            <button class="gate-btn" onclick="loadHalfAdder()">Load Half-Adder</button>
+                        </div>
+                        <canvas class="circuit-canvas" id="circuit-canvas" width="800" height="400"></canvas>
+                        <div style="margin-top: 1rem;">
+                            <label>
+                                Input A: <input type="checkbox" id="input-a" onchange="updateInputs()">
+                            </label>
+                            <label style="margin-left: 1rem;">
+                                Input B: <input type="checkbox" id="input-b" onchange="updateInputs()">
+                            </label>
+                            <div style="margin-top: 0.5rem;">
+                                <span>Sum Output: <strong id="sum-output">0</strong></span>
+                                <span style="margin-left: 1rem;">Carry Output: <strong id="carry-output">0</strong></span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: 1.5rem;">
+                        <button class="btn btn-primary" onclick="showSection('ripple-carry')">
+                            Next: Ripple-Carry Adders
+                            <span style="margin-left: 0.5rem;" aria-hidden="true">→</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">Full-Adder Design</h2>
+                        <span class="badge badge-primary">Interactive</span>
+                    </div>
+                    
+                    <p>A full-adder extends the half-adder by accepting a carry-in signal, enabling multi-bit addition through cascading.</p>
+                    
+                    <h3>Truth Table</h3>
+                    <table class="truth-table">
+                        <thead>
+                            <tr>
+                                <th>A</th>
+                                <th>B</th>
+                                <th>Cin</th>
+                                <th>Sum</th>
+                                <th>Cout</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+                            <tr><td>0</td><td>0</td><td>1</td><td>1</td><td>0</td></tr>
+                            <tr><td>0</td><td>1</td><td>0</td><td>1</td><td>0</td></tr>
+                            <tr><td>0</td><td>1</td><td>1</td><td>0</td><td>1</td></tr>
+                            <tr><td>1</td><td>0</td><td>0</td><td>1</td><td>0</td></tr>
+                            <tr><td>1</td><td>0</td><td>1</td><td>0</td><td>1</td></tr>
+                            <tr><td>1</td><td>1</td><td>0</td><td>0</td><td>1</td></tr>
+                            <tr><td>1</td><td>1</td><td>1</td><td>1</td><td>1</td></tr>
+                        </tbody>
+                    </table>
+                    
+                    <h3>Boolean Expressions</h3>
+                    <div style="background: var(--bg-secondary); padding: 1rem; border-radius: var(--border-radius); margin: 1rem 0;">
+                        <p><strong>Sum = A ⊕ B ⊕ Cin</strong></p>
+                        <p><strong>Cout = A·B + Cin·(A ⊕ B)</strong></p>
+                    </div>
+
+                    <h3>Interactive Quiz: Understanding Full Adders</h3>
+                    <div class="quiz-container">
+                        <div class="quiz-question">
+                            <h4>Question 1: What would be the outputs for A=1, B=1, Cin=0?</h4>
+                            <ul class="quiz-options">
+                                <li class="quiz-option">
+                                    <label>
+                                        <input type="radio" name="q1" value="a">
+                                        Sum=0, Cout=1
+                                    </label>
+                                </li>
+                                <li class="quiz-option">
+                                    <label>
+                                        <input type="radio" name="q1" value="b">
+                                        Sum=1, Cout=0
+                                    </label>
+                                </li>
+                                <li class="quiz-option">
+                                    <label>
+                                        <input type="radio" name="q1" value="c">
+                                        Sum=1, Cout=1
+                                    </label>
+                                </li>
+                                <li class="quiz-option">
+                                    <label>
+                                        <input type="radio" name="q1" value="d">
+                                        Sum=0, Cout=0
+                                    </label>
+                                </li>
+                            </ul>
+                            <button class="btn btn-secondary" onclick="checkAnswer('q1', 'a')">Check Answer</button>
+                            <div class="quiz-feedback" id="feedback-q1"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Ripple-Carry Adders Section -->
+            <section id="ripple-carry" class="content-section">
+                <h1>Ripple-Carry Adders</h1>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">4-Bit Ripple-Carry Adder</h2>
+                        <span class="badge badge-primary">Interactive</span>
+                    </div>
+                    
+                    <p>A ripple-carry adder chains multiple full-adders together to perform multi-bit addition. The carry output of each stage feeds into the carry input of the next stage.</p>
+                    
+                    <h3>Architecture Overview</h3>
+                    <div style="background: var(--bg-secondary); padding: 1.5rem; border-radius: var(--border-radius); margin: 1rem 0;">
+                        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; text-align: center;">
+                            <div style="background: white; padding: 1rem; border-radius: var(--border-radius); border: 2px solid var(--primary-color);">
+                                <div style="font-weight: 600;">FA₃</div>
+                                <div style="font-size: 0.75rem;">MSB</div>
+                            </div>
+                            <div style="background: white; padding: 1rem; border-radius: var(--border-radius); border: 2px solid var(--primary-color);">
+                                <div style="font-weight: 600;">FA₂</div>
+                            </div>
+                            <div style="background: white; padding: 1rem; border-radius: var(--border-radius); border: 2px solid var(--primary-color);">
+                                <div style="font-weight: 600;">FA₁</div>
+                            </div>
+                            <div style="background: white; padding: 1rem; border-radius: var(--border-radius); border: 2px solid var(--primary-color);">
+                                <div style="font-weight: 600;">FA₀</div>
+                                <div style="font-size: 0.75rem;">LSB</div>
+                            </div>
+                        </div>
+                        <div style="text-align: center; margin-top: 0.5rem; font-size: 0.875rem; color: var(--text-muted);">
+                            → Carry propagates from right to left →
+                        </div>
+                    </div>
+                    
+                    <h3>Interactive 4-Bit Adder</h3>
+                    <div style="background: var(--bg-secondary); padding: 1.5rem; border-radius: var(--border-radius);">
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; align-items: start;">
+                            <div>
+                                <h4>Input A (4-bit)</h4>
+                                <div style="display: flex; gap: 0.5rem; margin-bottom: 1rem;">
+                                    <label><input type="checkbox" id="a3" onchange="calculate4BitSum()"> A₃</label>
+                                    <label><input type="checkbox" id="a2" onchange="calculate4BitSum()"> A₂</label>
+                                    <label><input type="checkbox" id="a1" onchange="calculate4BitSum()"> A₁</label>
+                                    <label><input type="checkbox" id="a0" onchange="calculate4BitSum()"> A₀</label>
+                                </div>
+                                
+                                <h4>Input B (4-bit)</h4>
+                                <div style="display: flex; gap: 0.5rem; margin-bottom: 1rem;">
+                                    <label><input type="checkbox" id="b3" onchange="calculate4BitSum()"> B₃</label>
+                                    <label><input type="checkbox" id="b2" onchange="calculate4BitSum()"> B₂</label>
+                                    <label><input type="checkbox" id="b1" onchange="calculate4BitSum()"> B₁</label>
+                                    <label><input type="checkbox" id="b0" onchange="calculate4BitSum()"> B₀</label>
+                                </div>
+                                
+                                <label>
+                                    <input type="checkbox" id="cin" onchange="calculate4BitSum()"> Carry In
+                                </label>
+                            </div>
+                            
+                            <div>
+                                <h4>Outputs</h4>
+                                <div style="background: white; padding: 1rem; border-radius: var(--border-radius); border: 1px solid var(--bg-tertiary);">
+                                    <p><strong>Sum:</strong> <span id="sum-4bit">0000</span></p>
+                                    <p><strong>Carry Out:</strong> <span id="cout-4bit">0</span></p>
+                                    <p><strong>Decimal:</strong> <span id="decimal-result">0</span></p>
+                                </div>
+                                
+                                <h4 style="margin-top: 1rem;">Propagation Delay Analysis</h4>
+                                <div style="font-size: 0.875rem;">
+                                    <p>Critical Path: <strong id="critical-path">0 gate delays</strong></p>
+                                    <p>Worst-case timing occurs when carry propagates through all stages</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: 1.5rem;">
+                        <button class="btn btn-primary" onclick="showSection('multiplexers')">
+                            Next: Multiplexers
+                            <span style="margin-left: 0.5rem;" aria-hidden="true">→</span>
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Multiplexers Section -->
+            <section id="multiplexers" class="content-section">
+                <h1>Multiplexers</h1>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">2:1 Multiplexer</h2>
+                        <span class="badge badge-primary">Interactive</span>
+                    </div>
+                    
+                    <p>A multiplexer (MUX) is a combinational circuit that selects one of several input signals and forwards it to a single output line.</p>
+                    
+                    <h3>Truth Table (2:1 MUX)</h3>
+                    <table class="truth-table">
+                        <thead>
+                            <tr>
+                                <th>Select (S)</th>
+                                <th>D₀</th>
+                                <th>D₁</th>
+                                <th>Y</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>0</td><td>0</td><td>X</td><td>0</td></tr>
+                            <tr><td>0</td><td>1</td><td>X</td><td>1</td></tr>
+                            <tr><td>1</td><td>X</td><td>0</td><td>0</td></tr>
+                            <tr><td>1</td><td>X</td><td>1</td><td>1</td></tr>
+                        </tbody>
+                    </table>
+                    
+                    <h3>Interactive 4:1 Multiplexer</h3>
+                    <div style="background: var(--bg-secondary); padding: 1.5rem; border-radius: var(--border-radius);">
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+                            <div>
+                                <h4>Data Inputs</h4>
+                                <div style="display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 1rem;">
+                                    <label><input type="checkbox" id="d0" onchange="calculateMux()"> D₀</label>
+                                    <label><input type="checkbox" id="d1" onchange="calculateMux()"> D₁</label>
+                                    <label><input type="checkbox" id="d2" onchange="calculateMux()"> D₂</label>
+                                    <label><input type="checkbox" id="d3" onchange="calculateMux()"> D₃</label>
+                                </div>
+                                
+                                <h4>Select Lines</h4>
+                                <div style="display: flex; gap: 0.5rem;">
+                                    <label><input type="checkbox" id="s1" onchange="calculateMux()"> S₁</label>
+                                    <label><input type="checkbox" id="s0" onchange="calculateMux()"> S₀</label>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <h4>Output</h4>
+                                <div style="background: white; padding: 1rem; border-radius: var(--border-radius); border: 1px solid var(--bg-tertiary);">
+                                    <p><strong>Selected Input:</strong> <span id="selected-input">D₀</span></p>
+                                    <p><strong>Output Y:</strong> <span id="mux-output">0</span></p>
+                                </div>
+                                
+                                <h4 style="margin-top: 1rem;">Logic Function Implementation</h4>
+                                <p style="font-size: 0.875rem;">Multiplexers can implement any logic function by connecting the appropriate values to data inputs.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: 1.5rem;">
+                        <button class="btn btn-primary" onclick="showSection('demultiplexers')">
+                            Next: Demultiplexers
+                            <span style="margin-left: 0.5rem;" aria-hidden="true">→</span>
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Interactive Quiz Section -->
+            <section id="quiz" class="content-section">
+                <h1>Interactive Quiz</h1>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">Combinational Logic Assessment</h2>
+                        <span class="badge badge-primary">10 Questions</span>
+                    </div>
+                    
+                    <div class="quiz-container">
+                        <div class="quiz-question">
+                            <h3>Question 1: Half-Adder Analysis</h3>
+                            <p>What is the Sum output of a half-adder when A=1 and B=1?</p>
+                            <ul class="quiz-options">
+                                <li class="quiz-option">
+                                    <label>
+                                        <input type="radio" name="quiz1" value="a">
+                                        0 (with Carry=1)
+                                    </label>
+                                </li>
+                                <li class="quiz-option">
+                                    <label>
+                                        <input type="radio" name="quiz1" value="b">
+                                        1 (with Carry=0)
+                                    </label>
+                                </li>
+                                <li class="quiz-option">
+                                    <label>
+                                        <input type="radio" name="quiz1" value="c">
+                                        1 (with Carry=1)
+                                    </label>
+                                </li>
+                            </ul>
+                            <button class="btn btn-secondary" onclick="checkQuizAnswer('quiz1', 'a', 'Correct! When both inputs are 1, the XOR gate produces 0 for Sum and the AND gate produces 1 for Carry.')">Check Answer</button>
+                            <div class="quiz-feedback" id="feedback-quiz1"></div>
+                        </div>
+
+                        <div class="quiz-question" style="border-top: 1px solid var(--bg-tertiary); padding-top: 1.5rem; margin-top: 1.5rem;">
+                            <h3>Question 2: Multiplexer Selection</h3>
+                            <p>In a 4:1 multiplexer, what input is selected when S₁=1 and S₀=0?</p>
+                            <ul class="quiz-options">
+                                <li class="quiz-option">
+                                    <label>
+                                        <input type="radio" name="quiz2" value="a">
+                                        D₀
+                                    </label>
+                                </li>
+                                <li class="quiz-option">
+                                    <label>
+                                        <input type="radio" name="quiz2" value="b">
+                                        D₁
+                                    </label>
+                                </li>
+                                <li class="quiz-option">
+                                    <label>
+                                        <input type="radio" name="quiz2" value="c">
+                                        D₂
+                                    </label>
+                                </li>
+                                <li class="quiz-option">
+                                    <label>
+                                        <input type="radio" name="quiz2" value="d">
+                                        D₃
+                                    </label>
+                                </li>
+                            </ul>
+                            <button class="btn btn-secondary" onclick="checkQuizAnswer('quiz2', 'c', 'Correct! S₁S₀ = 10 (binary) = 2 (decimal), so D₂ is selected.')">Check Answer</button>
+                            <div class="quiz-feedback" id="feedback-quiz2"></div>
+                        </div>
+
+                        <div style="margin-top: 2rem; text-align: center;">
+                            <p>Quiz Progress: <strong>2/10</strong> questions</p>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 20%"></div>
+                            </div>
+                            <p style="margin-top: 1rem; font-size: 0.875rem; color: var(--text-muted);">Continue exploring the modules to unlock more quiz questions!</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        // Global Variables
+        let selectedGate = null;
+        let circuitElements = [];
+        let courseProgress = {
+            overview: true,
+            schedule: false,
+            adders: false,
+            'ripple-carry': false,
+            multiplexers: false,
+            demultiplexers: false,
+            decoders: false,
+            encoders: false,
+            quiz: false,
+            assignments: false
+        };
+
+        // Navigation Functions
+        function showSection(sectionId) {
+            // Hide all sections
+            const sections = document.querySelectorAll('.content-section');
+            sections.forEach(section => section.classList.remove('active'));
+            
+            // Show selected section
+            const targetSection = document.getElementById(sectionId);
+            if (targetSection) {
+                targetSection.classList.add('active');
+            }
+            
+            // Update navigation
+            const navLinks = document.querySelectorAll('.nav-link');
+            navLinks.forEach(link => link.classList.remove('active'));
+            
+            // Find and activate the corresponding nav link
+            const activeLink = document.querySelector(`[onclick="showSection('${sectionId}')"]`);
+            if (activeLink) {
+                activeLink.classList.add('active');
+            }
+            
+            // Update progress
+            updateProgress(sectionId);
+            
+            // Close mobile menu if open
+            closeMobileNav();
+            
+            // Focus management for accessibility
+            targetSection?.focus();
+        }
+
+        function updateProgress(sectionId) {
+            if (sectionId in courseProgress) {
+                courseProgress[sectionId] = true;
+                
+                // Update progress indicators
+                const completedCount = Object.values(courseProgress).filter(Boolean).length;
+                const totalCount = Object.keys(courseProgress).length;
+                const percentage = Math.round((completedCount / totalCount) * 100);
+                
+                document.getElementById('progress-percentage').textContent = percentage;
+                document.getElementById('progress-bar-fill').style.width = percentage + '%';
+                
+                // Update progress indicators in navigation
+                updateNavProgressIndicators();
+            }
+        }
+
+        function updateNavProgressIndicators() {
+            // This would update the colored dots in the navigation
+            Object.keys(courseProgress).forEach(section => {
+                const indicator = document.querySelector(`[onclick="showSection('${section}')"] .progress-indicator`);
+                if (indicator) {
+                    indicator.className = 'progress-indicator ' + 
+                        (courseProgress[section] ? 'progress-completed' : 'progress-not-started');
+                }
+            });
+        }
+
+        // Mobile Navigation
+        function toggleMobileNav() {
+            const sidebar = document.querySelector('.sidebar');
+            sidebar.classList.toggle('open');
+        }
+
+        function closeMobileNav() {
+            const sidebar = document.querySelector('.sidebar');
+            sidebar.classList.remove('open');
+        }
+
+        // Circuit Simulator Functions
+        function selectGate(gateType) {
+            selectedGate = gateType;
+            
+            // Update gate button states
+            document.querySelectorAll('.gate-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById('gate-' + gateType.toLowerCase()).classList.add('active');
+        }
+
+        function clearCanvas() {
+            const canvas = document.getElementById('circuit-canvas');
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            circuitElements = [];
+            updateInputs();
+        }
+
+        function loadHalfAdder() {
+            clearCanvas();
+            // This would load a pre-built half-adder circuit
+            drawHalfAdderCircuit();
+        }
+
+        function drawHalfAdderCircuit() {
+            const canvas = document.getElementById('circuit-canvas');
+            const ctx = canvas.getContext('2d');
+            
+            ctx.strokeStyle = '#2563eb';
+            ctx.lineWidth = 2;
+            
+            // Draw XOR gate for Sum
+            ctx.beginPath();
+            ctx.arc(300, 150, 40, 0, 2 * Math.PI);
+            ctx.stroke();
+            ctx.fillText('XOR', 285, 155);
+            
+            // Draw AND gate for Carry
+            ctx.beginPath();
+            ctx.arc(300, 250, 40, 0, 2 * Math.PI);
+            ctx.stroke();
+            ctx.fillText('AND', 285, 255);
+            
+            // Draw connections
+            ctx.beginPath();
+            ctx.moveTo(150, 150);
+            ctx.lineTo(260, 150);
+            ctx.moveTo(150, 250);
+            ctx.lineTo(260, 250);
+            ctx.stroke();
+        }
+
+        // Half-Adder Calculator
+        function updateInputs() {
+            const a = document.getElementById('input-a').checked;
+            const b = document.getElementById('input-b').checked;
+            
+            const sum = a !== b; // XOR operation
+            const carry = a && b; // AND operation
+            
+            document.getElementById('sum-output').textContent = sum ? '1' : '0';
+            document.getElementById('carry-output').textContent = carry ? '1' : '0';
+        }
+
+        // 4-Bit Adder Calculator
+        function calculate4BitSum() {
+            const a3 = document.getElementById('a3').checked ? 1 : 0;
+            const a2 = document.getElementById('a2').checked ? 1 : 0;
+            const a1 = document.getElementById('a1').checked ? 1 : 0;
+            const a0 = document.getElementById('a0').checked ? 1 : 0;
+            
+            const b3 = document.getElementById('b3').checked ? 1 : 0;
+            const b2 = document.getElementById('b2').checked ? 1 : 0;
+            const b1 = document.getElementById('b1').checked ? 1 : 0;
+            const b0 = document.getElementById('b0').checked ? 1 : 0;
+            
+            const cin = document.getElementById('cin').checked ? 1 : 0;
+            
+            // Convert to decimal for calculation
+            const valueA = a3 * 8 + a2 * 4 + a1 * 2 + a0;
+            const valueB = b3 * 8 + b2 * 4 + b1 * 2 + b0;
+            const sum = valueA + valueB + cin;
+            
+            // Extract carry out and sum
+            const carryOut = sum > 15 ? 1 : 0;
+            const result = sum & 0xF; // Keep only 4 bits
+            
+            // Convert result to binary string
+            const binarySum = result.toString(2).padStart(4, '0');
+            
+            document.getElementById('sum-4bit').textContent = binarySum;
+            document.getElementById('cout-4bit').textContent = carryOut;
+            document.getElementById('decimal-result').textContent = (carryOut * 16) + result;
+            
+            // Calculate critical path (simplified)
+            const criticalPath = countCarryPropagation(valueA, valueB, cin);
+            document.getElementById('critical-path').textContent = criticalPath + ' gate delays';
+        }
+
+        function countCarryPropagation(a, b, cin) {
+            // Simplified critical path analysis
+            let carry = cin;
+            let propagations = 0;
+            
+            for (let i = 0; i < 4; i++) {
+                const bitA = (a >> i) & 1;
+                const bitB = (b >> i) & 1;
+                
+                if (carry && (bitA !== bitB)) {
+                    propagations++;
+                }
+                
+                carry = (bitA && bitB) || (carry && (bitA !== bitB));
+            }
+            
+            return Math.max(2, propagations + 1); // Minimum 2 gate delays
+        }
+
+        // Multiplexer Calculator
+        function calculateMux() {
+            const d0 = document.getElementById('d0').checked;
+            const d1 = document.getElementById('d1').checked;
+            const d2 = document.getElementById('d2').checked;
+            const d3 = document.getElementById('d3').checked;
+            
+            const s1 = document.getElementById('s1').checked ? 1 : 0;
+            const s0 = document.getElementById('s0').checked ? 1 : 0;
+            
+            const selectValue = s1 * 2 + s0;
+            const inputs = [d0, d1, d2, d3];
+            
+            document.getElementById('selected-input').textContent = `D${selectValue}`;
+            document.getElementById('mux-output').textContent = inputs[selectValue] ? '1' : '0';
+        }
+
+        // Quiz Functions
+        function checkAnswer(questionId, correctAnswer) {
+            const selectedOption = document.querySelector(`input[name="${questionId}"]:checked`);
+            const feedback = document.getElementById(`feedback-${questionId}`);
+            
+            if (!selectedOption) {
+                feedback.className = 'quiz-feedback incorrect';
+                feedback.textContent = 'Please select an answer.';
+                return;
+            }
+            
+            if (selectedOption.value === correctAnswer) {
+                feedback.className = 'quiz-feedback correct';
+                feedback.textContent = 'Correct! When both inputs are 1, the Sum output is 0 (XOR operation) and Carry output is 1 (AND operation).';
+            } else {
+                feedback.className = 'quiz-feedback incorrect';
+                feedback.textContent = 'Incorrect. Remember: Sum = A ⊕ B, Carry = A · B. Try again!';
+            }
+        }
+
+        function checkQuizAnswer(questionId, correctAnswer, explanation) {
+            const selectedOption = document.querySelector(`input[name="${questionId}"]:checked`);
+            const feedback = document.getElementById(`feedback-${questionId}`);
+            
+            if (!selectedOption) {
+                feedback.className = 'quiz-feedback incorrect';
+                feedback.textContent = 'Please select an answer.';
+                return;
+            }
+            
+            if (selectedOption.value === correctAnswer) {
+                feedback.className = 'quiz-feedback correct';
+                feedback.textContent = explanation;
+            } else {
+                feedback.className = 'quiz-feedback incorrect';
+                feedback.textContent = 'Incorrect. Please review the material and try again.';
+            }
+        }
+
+        // Responsive Design Handler
+        function handleResize() {
+            const mobileToggle = document.querySelector('.mobile-nav-toggle');
+            if (window.innerWidth <= 768) {
+                mobileToggle.style.display = 'block';
+            } else {
+                mobileToggle.style.display = 'none';
+                closeMobileNav();
+            }
+        }
+
+        // Keyboard Navigation Support
+        function handleKeyboard(event) {
+            // ESC key closes mobile menu
+            if (event.key === 'Escape') {
+                closeMobileNav();
+            }
+            
+            // Arrow key navigation for quiz options
+            if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+                const focusedElement = document.activeElement;
+                if (focusedElement.type === 'radio') {
+                    event.preventDefault();
+                    const radios = Array.from(document.querySelectorAll(`input[name="${focusedElement.name}"]`));
+                    const currentIndex = radios.indexOf(focusedElement);
+                    const nextIndex = event.key === 'ArrowDown' 
+                        ? (currentIndex + 1) % radios.length 
+                        : (currentIndex - 1 + radios.length) % radios.length;
+                    radios[nextIndex].focus();
+                    radios[nextIndex].checked = true;
+                }
+            }
+        }
+
+        // Initialize Application
+        function initializeApp() {
+            // Set up event listeners
+            window.addEventListener('resize', handleResize);
+            document.addEventListener('keydown', handleKeyboard);
+            
+            // Initialize responsive design
+            handleResize();
+            
+            // Initialize calculators
+            updateInputs();
+            calculate4BitSum();
+            calculateMux();
+            
+            // Set initial focus for screen readers
+            document.querySelector('h1').setAttribute('tabindex', '-1');
+            
+            // Add ARIA live regions for dynamic content
+            const liveRegion = document.createElement('div');
+            liveRegion.setAttribute('aria-live', 'polite');
+            liveRegion.setAttribute('aria-atomic', 'true');
+            liveRegion.className = 'sr-only';
+            liveRegion.id = 'live-region';
+            document.body.appendChild(liveRegion);
+            
+            console.log('CSC210 Interactive Learning Platform initialized successfully!');
+        }
+
+        // Announce section changes for screen readers
+        function announceChange(message) {
+            const liveRegion = document.getElementById('live-region');
+            if (liveRegion) {
+                liveRegion.textContent = message;
+                setTimeout(() => {
+                    liveRegion.textContent = '';
+                }, 1000);
+            }
+        }
+
+        // Enhanced section showing with announcements
+        function showSection(sectionId) {
+            // Hide all sections
+            const sections = document.querySelectorAll('.content-section');
+            sections.forEach(section => section.classList.remove('active'));
+            
+            // Show selected section
+            const targetSection = document.getElementById(sectionId);
+            if (targetSection) {
+                targetSection.classList.add('active');
+                
+                // Announce the change
+                const sectionTitle = targetSection.querySelector('h1').textContent;
+                announceChange(`Now viewing: ${sectionTitle}`);
+            }
+            
+            // Update navigation
+            const navLinks = document.querySelectorAll('.nav-link');
+            navLinks.forEach(link => link.classList.remove('active'));
+            
+            // Find and activate the corresponding nav link
+            const activeLink = document.querySelector(`[onclick="showSection('${sectionId}')"]`);
+            if (activeLink) {
+                activeLink.classList.add('active');
+            }
+            
+            // Update progress
+            updateProgress(sectionId);
+            
+            // Close mobile menu if open
+            closeMobileNav();
+        }
+
+        // Initialize when DOM is loaded
+        document.addEventListener('DOMContentLoaded', initializeApp);
+
+        // Additional sections (to be implemented in future modules)
+        function showDemultiplexers() {
+            // Placeholder for demultiplexer content
+            alert('Demultiplexers module coming in the next iteration!');
+        }
+
+        function showDecoders() {
+            // Placeholder for decoder content
+            alert('Decoders module coming in the next iteration!');
+        }
+
+        function showEncoders() {
+            // Placeholder for encoder content
+            alert('Encoders module coming in the next iteration!');
+        }
+
+        function showAssignments() {
+            // Placeholder for assignments content
+            alert('Assignments module coming in the next iteration!');
+        }
+    </script>
+
+    <!-- Additional sections placeholder -->
+    <section id="demultiplexers" class="content-section">
+        <h1>Demultiplexers</h1>
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">Coming Soon</h2>
+                <span class="badge badge-secondary">Module 2</span>
+            </div>
+            <p>The demultiplexers module will be available in the next iteration of this learning platform.</p>
+            <p>This module will cover:</p>
+            <ul>
+                <li>1:4 and 1:8 demultiplexer designs</li>
+                <li>Relationship between decoders and demultiplexers</li>
+                <li>Applications in memory addressing and I/O systems</li>
+                <li>Interactive circuit simulations</li>
+            </ul>
+        </div>
+    </section>
+
+    <section id="decoders" class="content-section">
+        <h1>Decoders</h1>
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">Coming Soon</h2>
+                <span class="badge badge-secondary">Module 3</span>
+            </div>
+            <p>The decoders module will be available in the next iteration of this learning platform.</p>
+            <p>This module will cover:</p>
+            <ul>
+                <li>2-to-4 and 3-to-8 decoder implementations</li>
+                <li>Enable inputs and cascading techniques</li>
+                <li>7-segment display drivers</li>
+                <li>Memory decoding applications</li>
+            </ul>
+        </div>
+    </section>
+
+    <section id="encoders" class="content-section">
+        <h1>Encoders</h1>
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">Coming Soon</h2>
+                <span class="badge badge-secondary">Module 3</span>
+            </div>
+            <p>The encoders module will be available in the next iteration of this learning platform.</p>
+            <p>This module will cover:</p>
+            <ul>
+                <li>Priority encoders and conflict resolution</li>
+                <li>Binary and BCD encoders</li>
+                <li>Applications in interrupt handling</li>
+                <li>Data compression techniques</li>
+            </ul>
+        </div>
+    </section>
+
+    <section id="assignments" class="content-section">
+        <h1>Assignments</h1>
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">Course Assignments</h2>
+                <span class="badge badge-primary">CSC210</span>
+            </div>
+            
+            <h3>Lecture Assignment: Combinational Circuit Analysis and Design</h3>
+            <p><strong>Total Points:</strong> 100 points</p>
+            <p><strong>Due Date:</strong> End of Week 3</p>
+            
+            <h4>Part A: Circuit Analysis (40 points)</h4>
+            <ol>
+                <li><strong>4-bit Ripple Carry Adder Analysis</strong> (15 points)
+                    <ul>
+                        <li>Determine sum and carry outputs for specific input combinations</li>
+                        <li>Calculate worst-case propagation delay</li>
+                        <li>Identify critical path and timing considerations</li>
+                    </ul>
+                </li>
+                <li><strong>8:1 Multiplexer Function Implementation</strong> (15 points)
+                    <ul>
+                        <li>Analyze MUX circuit implementing 3-variable Boolean function</li>
+                        <li>Derive truth table from circuit diagram</li>
+                        <li>Write simplified Boolean expression using K-maps</li>
+                    </ul>
+                </li>
+                <li><strong>Combined Decoder/Encoder System</strong> (10 points)
+                    <ul>
+                        <li>Trace signals through 3:8 decoder connected to 8:3 priority encoder</li>
+                        <li>Explain system function and identify issues</li>
+                        <li>Suggest improvements for reliability and performance</li>
+                    </ul>
+                </li>
+            </ol>
+
+            <h4>Part B: Design Problems (45 points)</h4>
+            <ol start="4">
+                <li><strong>Multi-Level Arithmetic Circuit</strong> (20 points)
+                    <ul>
+                        <li>Design circuit computing (A + B) × C for 3-bit numbers</li>
+                        <li>Use only half-adders, full-adders, and AND gates</li>
+                        <li>Provide complete schematic with signal labeling</li>
+                        <li>Estimate gate count and propagation delay</li>
+                    </ul>
+                </li>
+                <li><strong>Data Selector with Enable</strong> (15 points)
+                    <ul>
+                        <li>Design 4-input data selector with 2 select lines</li>
+                        <li>Include active-low enable functionality</li>
+                        <li>Show implementation using basic gates only</li>
+                        <li>Create truth table and timing diagram</li>
+                    </ul>
+                </li>
+                <li><strong>BCD-to-Decimal Decoder</strong> (10 points)
+                    <ul>
+                        <li>Convert 4-bit BCD input to 10 output lines</li>
+                        <li>Include invalid BCD code detection</li>
+                        <li>Show cascading method for larger BCD numbers</li>
+                    </ul>
+                </li>
+            </ol>
+
+            <h4>Part C: Application Analysis (15 points)</h4>
+            <ol start="7">
+                <li><strong>Computer System Integration</strong> (15 points)
+                    <ul>
+                        <li>Explain multiplexer use in CPU register files</li>
+                        <li>Describe decoder role in memory address decoding</li>
+                        <li>Analyze trade-offs between decoder size and memory organization</li>
+                        <li>Connect concepts to Von Neumann architecture principles</li>
+                    </ul>
+                </li>
+            </ol>
+
+            <div style="background: var(--bg-secondary); padding: 1rem; border-radius: var(--border-radius); margin: 1.5rem 0;">
+                <h4>Lab Assignment: Advanced Combinational Circuits in Logisim</h4>
+                <p><strong>Completion Time:</strong> 2.5 hours (in-lab)</p>
+                <p><strong>Deliverables:</strong></p>
+                <ul>
+                    <li>Logisim circuit file (.circ)</li>
+                    <li>Test documentation with screenshots</li>
+                    <li>Performance analysis report</li>
+                    <li>Design reflection (1-2 pages)</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+</body>
+</html></h4>
+                    <ul>
+                        <li>Derive truth tables and Boolean expressions</li>
+                        <li>Compare different implementation approaches</li>
+                        <li>Analyze propagation delays in cascaded adders</li>
+                    </ul>
+                    
+                    <h4>Preparation Required</h4>
+                    <p>Review XOR gate properties and carry propagation concepts</p>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">Day 2: Multiplexer Theory and Applications</h2>
+                        <span class="badge badge-primary">In Progress</span>
+                    </div>
+                    <h3>Content Focus</h3>
+                    <p>Multiplexer operation, control signals, and data routing</p>
+                    
+                    <h4>Learning Activities
