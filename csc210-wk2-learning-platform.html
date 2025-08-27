@@ -1650,13 +1650,16 @@
             $(`#${buttonId}`).classList.add('active');
         }
 
-        function selectAnswer(element, isCorrect) {
+         function selectAnswer(element, isCorrect) {
             const parentOptions = element.parentElement;
             const feedbackDiv = parentOptions.nextElementSibling;
             
-            $$('.quiz-option', parentOptions).forEach(opt => {
-                opt.classList.remove('selected', 'correct', 'incorrect');
-                opt.style.pointerEvents = 'none';
+            // Only disable options within the current question
+            Array.from(parentOptions.children).forEach(opt => {
+                if (opt.classList.contains('quiz-option')) {
+                    opt.classList.remove('selected', 'correct', 'incorrect');
+                    opt.style.pointerEvents = 'none';
+                }
             });
             
             element.classList.add('selected');
