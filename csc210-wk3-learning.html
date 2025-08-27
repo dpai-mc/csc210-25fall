@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Week 3 Interactive Learning: Combinational Logic</title>
+    <style>
+        /* CSS Reset and Basic Setup */
+        :root {
+            --primary-bg: #ffffff;
+            --text-color: #212529;
+            --primary-color: #005a9c;
+            --secondary-color: #e9ecef;
+            --border-color: #ced4da;
+            --success-color: #28a745;
+            --error-color: #dc3545;
+            --light-on-color: #ffc107;
+            --light-off-color: #6c757d;
+            --segment-on-color: #f82121;
+            --segment-off-color: #3e0a0a;
+        }
+
+        body {
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            line-height: 1.6;
+            background-color: var(--primary-bg);
+            color: var(--text-color);
+        }
+
+        /* ADA Compliance: Focus visibility */
+        :focus-visible {
+            outline: 3px solid var(--primary-color);
+            outline-offset: 2px;
+        }
+
+        /* Layout and Structure */
+        .container {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header, footer {
+            background-color: var(--primary-color);
+            color: white;
+            text-align: center;
+            padding: 1rem;
+        }
+
+        nav {
+            background-color: var(--secondary-color);
+            padding: 0.5rem;
+            border-bottom: 2px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        nav a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: bold;
+            padding: 5px 10px;
+            border-radius: 5px;
+        }
+
+        nav a:hover, nav a:focus {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        section {
+            padding: 40px 10px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        h1, h2, h3 {
+            color: var(--primary-color);
+        }
+        
+        h1 { text-align: center; }
+        h2 { border-bottom: 2px solid var(--secondary-color); padding-bottom: 10px; margin-bottom: 20px;}
+
+        /* Interactive Components Styling */
+        .interactive-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            align-items: center;
+            margin-top: 20px;
+        }
+
+        .controls, .outputs {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .control-group {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .control-group label {
+            font-weight: bold;
+            min-width: 80px;
+        }
+
+        .toggle-btn {
+            padding: 10px 20px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            border: 2px solid var(--border-color);
+            border-radius: 5px;
+            background-color: var(--light-off-color);
+            color: white;
+            width: 60px;
+            text-align: center;
+        }
+
+        .toggle-btn.active {
+            background-color: var(--light-on-color);
+            border-color: #e0ac00;
+            color: var(--text-color);
+        }
+
+        .light-indicator {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: var(--light-off-color);
+            border: 3px solid #343a40;
+            box-shadow: inset 2px 2px 5px rgba(0,0,0,0.4);
+            transition: background-color 0.2s;
+        }
+
+        .light-indicator.on {
+            background-color: var(--light-on-color);
+            box-shadow: 0 0 15px var(--light-on-color);
+        }
+
+        /* 7-Segment Display Styling */
+        .segment-display-container {
+            display: flex;
+            justify-content: center;
+        }
+        .seven-segment-display {
+            width: 120px;
+            height: 200px;
+            position: relative;
+        }
+        .segment {
+            background-color: var(--segment-off-color);
+            position: absolute;
+            border-radius: 5px;
+            transition: background-color 0.2s;
+        }
+        .segment.on { background-color: var(--segment-on-color); }
+        .h-seg { width: 80px; height: 20px; }
+        .v-seg { width: 20px; height: 80px; }
+        .seg-a { top: 0; left: 20px; }
+        .seg-b { top: 20px; right: 0; }
+        .seg-c { top: 100px; right: 0; }
+        .seg-d { bottom: 0; left: 20px; }
+        .seg-e { top: 100px; left: 0; }
+        .seg-f { top: 20px; left: 0; }
+        .seg-g { top: 90px; left: 20px; }
+
+        /* Knowledge Check Styling */
+        .quiz-question {
+            background: var(--secondary-color);
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+        }
+        .quiz-feedback {
+            font-weight: bold;
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            display: none;
+        }
+        .quiz-feedback.correct { display: block; background-color: #d4edda; color: var(--success-color); }
+        .quiz-feedback.incorrect { display: block; background-color: #f8d7da; color: var(--error-color); }
+        .quiz-button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        .quiz-button:hover { background-color: #004b82; }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .interactive-container {
+                grid-template-columns: 1fr;
+            }
+            nav ul {
+                flex-direction: column;
+                align-items: center;
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>CSC210: Combinational Logic Design</h1>
+    </header>
+
+    <nav>
+        <ul>
+            <li><a href="#objectives">Learning Objectives</a></li>
+            <li><a href="#adders">Arithmetic Circuits</a></li>
+            <li><a href="#multiplexers">Data Selectors</a></li>
+            <li><a href="#decoders">Code Converters</a></li>
+            <li><a href="#quiz">Knowledge Check</a></li>
+        </ul>
+    </nav>
+
+    <main class="container">
+        <section id="objectives">
+            <h2>Week 3 Learning Objectives</h2>
+            <p>This interactive module supports the key learning objectives for Week 3. By interacting with these simulations, you will gain a practical understanding of fundamental combinational circuits. The goal is to help you:</p>
+            <ul>
+                <li>Design and analyze circuits like adders, multiplexers, and decoders.</li>
+                <li>Understand the flow of signals and the relationship between inputs and outputs.</li>
+                <li>Visualize the logic that powers arithmetic, data routing, and code conversion.</li>
+            </ul>
+        </section>
+
+        <hr/>
+
+        <section id="adders">
+            <h2>Arithmetic Circuits: The 1-Bit Full Adder</h2>
+            <p>A <strong>full adder</strong> is a fundamental building block for digital arithmetic. It adds three 1-bit binary numbers (A, B, and a Carry-In) and produces a 2-bit result: a Sum and a Carry-Out. Toggle the inputs below to see how the outputs change.</p>
+            <div class="interactive-container">
+                <div class="controls">
+                    <h3>Inputs</h3>
+                    <div class="control-group">
+                        <label for="adder-a">Input A:</label>
+                        <button id="adder-a" class="toggle-btn" data-value="0" role="switch" aria-checked="false">0</button>
+                    </div>
+                    <div class="control-group">
+                        <label for="adder-b">Input B:</label>
+                        <button id="adder-b" class="toggle-btn" data-value="0" role="switch" aria-checked="false">0</button>
+                    </div>
+                    <div class="control-group">
+                        <label for="adder-cin">Carry-In:</label>
+                        <button id="adder-cin" class="toggle-btn" data-value="0" role="switch" aria-checked="false">0</button>
+                    </div>
+                </div>
+                <div class="outputs">
+                    <h3>Outputs</h3>
+                    <div class="control-group">
+                        <label>Sum:</label>
+                        <div id="adder-sum" class="light-indicator" role="status" aria-label="Sum Output"></div>
+                    </div>
+                    <div class="control-group">
+                        <label>Carry-Out:</label>
+                        <div id="adder-cout" class="light-indicator" role="status" aria-label="Carry-Out Output"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <hr/>
+
+        <section id="multiplexers">
+            <h2>Data Selectors: The 4-to-1 Multiplexer (MUX)</h2>
+            <p>A <strong>multiplexer</strong> (or MUX) is a circuit that selects one of several analog or digital input signals and forwards the selected input into a single output line. A 4-to-1 MUX has four data inputs (D0-D3) and two select lines (S1, S0) to choose which input to pass through. Set the data inputs and use the select lines to see which value appears at the output Y.</p>
+             <div class="interactive-container">
+                <div class="controls">
+                    <h3>Data & Select Inputs</h3>
+                    <div class="control-group">
+                        <label>Select S1:</label>
+                        <button id="mux-s1" class="toggle-btn" data-value="0" role="switch" aria-checked="false">0</button>
+                    </div>
+                     <div class="control-group">
+                        <label>Select S0:</label>
+                        <button id="mux-s0" class="toggle-btn" data-value="0" role="switch" aria-checked="false">0</button>
+                    </div>
+                    <hr style="width:100%;">
+                    <div class="control-group">
+                        <label for="mux-d0">Data D0:</label>
+                        <button id="mux-d0" class="toggle-btn" data-value="0" role="switch" aria-checked="false">0</button>
+                    </div>
+                    <div class="control-group">
+                        <label for="mux-d1">Data D1:</label>
+                        <button id="mux-d1" class="toggle-btn active" data-value="1" role="switch" aria-checked="true">1</button>
+                    </div>
+                    <div class="control-group">
+                        <label for="mux-d2">Data D2:</label>
+                        <button id="mux-d2" class="toggle-btn" data-value="0" role="switch" aria-checked="false">0</button>
+                    </div>
+                    <div class="control-group">
+                        <label for="mux-d3">Data D3:</label>
+                        <button id="mux-d3" class="toggle-btn active" data-value="1" role="switch" aria-checked="true">1</button>
+                    </div>
+                </div>
+                <div class="outputs">
+                    <h3>Output</h3>
+                     <div class="control-group">
+                        <label>Output Y:</label>
+                        <div id="mux-y" class="light-indicator" role="status" aria-label="Multiplexer Output Y"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <hr/>
+
+        <section id="decoders">
+            <h2>Code Converters: BCD to 7-Segment Decoder</h2>
+            <p>A <strong>decoder</strong> converts a binary code into a specific output. This BCD (Binary Coded Decimal) to 7-Segment Decoder takes a 4-bit BCD input (representing digits 0-9) and lights up the correct segments on a display. Inputs from 1010 (10) to 1111 (15) are invalid and will display an 'E' for Error.</p>
+            <div class="interactive-container">
+                <div class="controls">
+                    <h3>BCD Input [B3:B0]</h3>
+                    <div class="control-group">
+                        <label for="bcd-b3">B3 (MSB):</label>
+                        <button id="bcd-b3" class="toggle-btn" data-value="0" role="switch" aria-checked="false">0</button>
+                    </div>
+                    <div class="control-group">
+                        <label for="bcd-b2">B2:</label>
+                        <button id="bcd-b2" class="toggle-btn" data-value="0" role="switch" aria-checked="false">0</button>
+                    </div>
+                    <div class="control-group">
+                        <label for="bcd-b1">B1:</label>
+                        <button id="bcd-b1" class="toggle-btn" data-value="0" role="switch" aria-checked="false">0</button>
+                    </div>
+                    <div class="control-group">
+                        <label for="bcd-b0">B0 (LSB):</label>
+                        <button id="bcd-b0" class="toggle-btn" data-value="0" role="switch" aria-checked="false">0</button>
+                    </div>
+                </div>
+                <div class="outputs">
+                    <h3>7-Segment Display</h3>
+                    <div class="segment-display-container">
+                        <div class="seven-segment-display">
+                            <div id="seg-a" class="segment h-seg seg-a"></div>
+                            <div id="seg-b" class="segment v-seg seg-b"></div>
+                            <div id="seg-c" class="segment v-seg seg-c"></div>
+                            <div id="seg-d" class="segment h-seg seg-d"></div>
+                            <div id="seg-e" class="segment v-seg seg-e"></div>
+                            <div id="seg-f" class="segment v-seg seg-f"></div>
+                            <div id="seg-g" class="segment h-seg seg-g"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <hr/>
+
+        <section id="quiz">
+            <h2>Knowledge Check</h2>
+            <p>Test your understanding of the key concepts from this week.</p>
+            <div class="quiz-question" id="q1">
+                <h3>Question 1</h3>
+                <p>Which circuit is used to select one data input from many and route it to a single output?</p>
+                <form>
+                    <input type="radio" name="q1" value="a" id="q1a"> <label for="q1a">Decoder</label><br>
+                    <input type="radio" name="q1" value="b" id="q1b"> <label for="q1b">Multiplexer</label><br>
+                    <input type="radio" name="q1" value="c" id="q1c"> <label for="q1c">Full Adder</label><br>
+                    <input type="radio" name="q1" value="d" id="q1d"> <label for="q1d">Encoder</label><br>
+                </form>
+                <button class="quiz-button" data-question="q1" data-answer="b">Check Answer</button>
+                <div class="quiz-feedback"></div>
+            </div>
+
+            <div class="quiz-question" id="q2">
+                <h3>Question 2</h3>
+                <p>In a 4-bit ripple-carry adder, the path that determines the circuit's maximum operational speed is known as the:</p>
+                <form>
+                    <input type="radio" name="q2" value="a" id="q2a"> <label for="q2a">Selection Path</label><br>
+                    <input type="radio" name="q2" value="b" id="q2b"> <label for="q2b">Data Path</label><br>
+                    <input type="radio" name="q2" value="c" id="q2c"> <label for="q2c">Critical Path</label><br>
+                    <input type="radio" name="q2" value="d" id="q2d"> <label for="q2d">Enable Path</label><br>
+                </form>
+                <button class="quiz-button" data-question="q2" data-answer="c">Check Answer</button>
+                <div class="quiz-feedback"></div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>An interactive learning artifact for CSC210L: Computer Organization Lab.</p>
+    </footer>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+
+    // --- Universal Toggle Button Logic ---
+    const allToggleButtons = document.querySelectorAll('.toggle-btn');
+    allToggleButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            const currentValue = parseInt(button.dataset.value);
+            const newValue = 1 - currentValue; // Flip 0 to 1 and 1 to 0
+            button.dataset.value = newValue;
+            button.textContent = newValue;
+            button.classList.toggle('active');
+            button.setAttribute('aria-checked', newValue === 1);
+            
+            // Dispatch a custom event to notify simulators of the change
+            document.dispatchEvent(new Event('updateSimulators'));
+        });
+    });
+    
+    // --- Full Adder Simulation ---
+    const adderA = document.getElementById('adder-a');
+    const adderB = document.getElementById('adder-b');
+    const adderCin = document.getElementById('adder-cin');
+    const adderSum = document.getElementById('adder-sum');
+    const adderCout = document.getElementById('adder-cout');
+
+    function updateFullAdder() {
+        const a = parseInt(adderA.dataset.value);
+        const b = parseInt(adderB.dataset.value);
+        const cin = parseInt(adderCin.dataset.value);
+
+        // Logic Implementation
+        const sum = a ^ b ^ cin; // A XOR B XOR Cin
+        const cout = (a & b) | (cin & (a ^ b)); // (A AND B) OR (Cin AND (A XOR B))
+
+        // Update UI
+        adderSum.classList.toggle('on', sum === 1);
+        adderCout.classList.toggle('on', cout === 1);
+    }
+
+    // --- Multiplexer Simulation ---
+    const muxS1 = document.getElementById('mux-s1');
+    const muxS0 = document.getElementById('mux-s0');
+    const muxInputs = [
+        document.getElementById('mux-d0'),
+        document.getElementById('mux-d1'),
+        document.getElementById('mux-d2'),
+        document.getElementById('mux-d3')
+    ];
+    const muxY = document.getElementById('mux-y');
+    
+    function updateMux() {
+        const s1 = parseInt(muxS1.dataset.value);
+        const s0 = parseInt(muxS0.dataset.value);
+        const selectIndex = (s1 << 1) | s0; // Combine s1 and s0 to get a number 0-3
+
+        const selectedInputValue = parseInt(muxInputs[selectIndex].dataset.value);
+        
+        muxY.classList.toggle('on', selectedInputValue === 1);
+    }
+
+    // --- BCD to 7-Segment Decoder Simulation ---
+    const bcdInputs = [
+        document.getElementById('bcd-b0'),
+        document.getElementById('bcd-b1'),
+        document.getElementById('bcd-b2'),
+        document.getElementById('bcd-b3')
+    ];
+    const segments = {
+        a: document.getElementById('seg-a'),
+        b: document.getElementById('seg-b'),
+        c: document.getElementById('seg-c'),
+        d: document.getElementById('seg-d'),
+        e: document.getElementById('seg-e'),
+        f: document.getElementById('seg-f'),
+        g: document.getElementById('seg-g')
+    };
+    
+    // [a, b, c, d, e, f, g]
+    const segmentMap = [
+        [1, 1, 1, 1, 1, 1, 0], // 0
+        [0, 1, 1, 0, 0, 0, 0], // 1
+        [1, 1, 0, 1, 1, 0, 1], // 2
+        [1, 1, 1, 1, 0, 0, 1], // 3
+        [0, 1, 1, 0, 0, 1, 1], // 4
+        [1, 0, 1, 1, 0, 1, 1], // 5
+        [1, 0, 1, 1, 1, 1, 1], // 6
+        [1, 1, 1, 0, 0, 0, 0], // 7
+        [1, 1, 1, 1, 1, 1, 1], // 8
+        [1, 1, 1, 1, 0, 1, 1], // 9
+        [1, 0, 0, 1, 1, 1, 1], // E (Error for 10-15)
+    ];
+
+    function update7Segment() {
+        let bcdValue = 0;
+        for (let i = 0; i < bcdInputs.length; i++) {
+            if (parseInt(bcdInputs[i].dataset.value) === 1) {
+                bcdValue |= (1 << i);
+            }
+        }
+        
+        const patternIndex = bcdValue > 9 ? 10 : bcdValue;
+        const currentPattern = segmentMap[patternIndex];
+        
+        segments.a.classList.toggle('on', currentPattern[0] === 1);
+        segments.b.classList.toggle('on', currentPattern[1] === 1);
+        segments.c.classList.toggle('on', currentPattern[2] === 1);
+        segments.d.classList.toggle('on', currentPattern[3] === 1);
+        segments.e.classList.toggle('on', currentPattern[4] === 1);
+        segments.f.classList.toggle('on', currentPattern[5] === 1);
+        segments.g.classList.toggle('on', currentPattern[6] === 1);
+    }
+
+    // --- Knowledge Check Logic ---
+    const quizButtons = document.querySelectorAll('.quiz-button');
+    quizButtons.forEach(button => {
+        button.addEventListener('click', (e) => {
+            const questionId = e.target.dataset.question;
+            const correctAnswer = e.target.dataset.answer;
+            const questionContainer = document.getElementById(questionId);
+            const feedbackEl = questionContainer.querySelector('.quiz-feedback');
+            const selectedAnswer = questionContainer.querySelector(`input[name="${questionId}"]:checked`);
+
+            if (selectedAnswer) {
+                if (selectedAnswer.value === correctAnswer) {
+                    feedbackEl.textContent = 'Correct! Well done.';
+                    feedbackEl.className = 'quiz-feedback correct';
+                } else {
+                    feedbackEl.textContent = 'Not quite. Review the concepts and try again.';
+                    feedbackEl.className = 'quiz-feedback incorrect';
+                }
+            } else {
+                feedbackEl.textContent = 'Please select an answer.';
+                feedbackEl.className = 'quiz-feedback incorrect';
+            }
+        });
+    });
+
+    // --- Initial and Update Calls ---
+    function runAllSimulators() {
+        updateFullAdder();
+        updateMux();
+        update7Segment();
+    }
+    
+    // Listen for the custom event dispatched by buttons
+    document.addEventListener('updateSimulators', runAllSimulators);
+    
+    // Initial run to set the correct state on page load
+    runAllSimulators();
+});
+</script>
+
+</body>
+</html>
