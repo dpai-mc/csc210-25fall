@@ -4,540 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Arithmetic Circuits - CSC210</title>
-    <style>
-        /* 
-         * CSC210 Module Shared Styles
-         * Version: 1.0.0
-         * 
-         * This CSS file provides consistent styling across all modules
-         * and ensures proper integration with the main learning platform.
-         */
-
-        /* ===== CSS CUSTOM PROPERTIES (DESIGN SYSTEM) ===== */
-        :root {
-            /* Primary Color Palette - Must match platform */
-            --primary-color: #2563eb;
-            --secondary-color: #3b82f6;
-            --accent-color: #f59e0b;
-            --success-color: #059669;
-            --error-color: #dc2626;
-            --warning-color: #d97706;
-            --info-color: #0891b2;
-            
-            /* Background Colors */
-            --bg-primary: #ffffff;
-            --bg-secondary: #f8fafc;
-            --bg-tertiary: #e2e8f0;
-            --bg-inverse: #1e293b;
-            
-            /* Text Colors */
-            --text-primary: #1e293b;
-            --text-secondary: #475569;
-            --text-muted: #64748b;
-            --text-inverse: #f8fafc;
-            
-            /* Border and Shadow */
-            --border-color: #e2e8f0;
-            --border-color-hover: #cbd5e1;
-            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-            --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 10px 10px -5px rgb(0 0 0 / 0.04);
-            
-            /* Border Radius */
-            --border-radius-sm: 0.25rem;
-            --border-radius: 0.5rem;
-            --border-radius-lg: 0.75rem;
-            --border-radius-xl: 1rem;
-            
-            /* Spacing Scale */
-            --space-1: 0.25rem;
-            --space-2: 0.5rem;
-            --space-3: 0.75rem;
-            --space-4: 1rem;
-            --space-5: 1.25rem;
-            --space-6: 1.5rem;
-            --space-8: 2rem;
-            --space-10: 2.5rem;
-            --space-12: 3rem;
-            --space-16: 4rem;
-            
-            /* Typography */
-            --font-family-base: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            --font-family-mono: 'Monaco', 'Cascadia Code', 'Consolas', monospace;
-            
-            --font-size-xs: 0.75rem;
-            --font-size-sm: 0.875rem;
-            --font-size-base: 1rem;
-            --font-size-lg: 1.125rem;
-            --font-size-xl: 1.25rem;
-            --font-size-2xl: 1.5rem;
-            --font-size-3xl: 1.875rem;
-            --font-size-4xl: 2.25rem;
-            
-            --line-height-tight: 1.25;
-            --line-height-normal: 1.5;
-            --line-height-relaxed: 1.75;
-            
-            /* Transitions */
-            --transition-fast: 0.15s ease;
-            --transition-normal: 0.2s ease;
-            --transition-slow: 0.3s ease;
-            
-            /* Breakpoints (for reference in media queries) */
-            --breakpoint-sm: 480px;
-            --breakpoint-md: 768px;
-            --breakpoint-lg: 1024px;
-            --breakpoint-xl: 1200px;
-        }
-
-        /* ===== RESET AND BASE STYLES ===== */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        html {
-            font-size: 16px;
-            scroll-behavior: smooth;
-        }
-
-        body {
-            font-family: var(--font-family-base);
-            font-size: var(--font-size-base);
-            line-height: var(--line-height-normal);
-            color: var(--text-primary);
-            background-color: var(--bg-primary);
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-        }
-
-        /* ===== TYPOGRAPHY ===== */
-        h1, h2, h3, h4, h5, h6 {
-            font-weight: 600;
-            line-height: var(--line-height-tight);
-            margin-bottom: var(--space-4);
-            color: var(--text-primary);
-        }
-
-        h1 { font-size: var(--font-size-4xl); }
-        h2 { font-size: var(--font-size-3xl); }
-        h3 { font-size: var(--font-size-2xl); }
-        h4 { font-size: var(--font-size-xl); }
-        h5 { font-size: var(--font-size-lg); }
-        h6 { font-size: var(--font-size-base); }
-
-        p {
-            margin-bottom: var(--space-4);
-            color: var(--text-secondary);
-        }
-
-        strong {
-            font-weight: 600;
-            color: var(--text-primary);
-        }
-
-        code {
-            font-family: var(--font-family-mono);
-            font-size: 0.875em;
-            background-color: var(--bg-tertiary);
-            padding: var(--space-1) var(--space-2);
-            border-radius: var(--border-radius-sm);
-            color: var(--text-primary);
-        }
-
-        /* ===== LAYOUT COMPONENTS ===== */
-        .module-container {
-            max-width: 100%;
-            margin: 0 auto;
-            padding: var(--space-6);
-            min-height: 100vh;
-        }
-
-        .section {
-            margin-bottom: var(--space-8);
-        }
-
-        .section-header {
-            margin-bottom: var(--space-6);
-            padding-bottom: var(--space-4);
-            border-bottom: 2px solid var(--border-color);
-        }
-
-        .grid {
-            display: grid;
-            gap: var(--space-6);
-        }
-
-        .grid-2 {
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-        }
-
-        .flex {
-            display: flex;
-            gap: var(--space-4);
-        }
-
-        .flex-col {
-            flex-direction: column;
-        }
-
-        .items-center {
-            align-items: center;
-        }
-
-        .justify-between {
-            justify-content: space-between;
-        }
-
-        .justify-center {
-            justify-content: center;
-        }
-
-        /* ===== CARD COMPONENTS ===== */
-        .card {
-            background-color: var(--bg-primary);
-            border: 1px solid var(--border-color);
-            border-radius: var(--border-radius-lg);
-            box-shadow: var(--shadow-md);
-            padding: var(--space-6);
-            margin-bottom: var(--space-6);
-            transition: box-shadow var(--transition-normal);
-        }
-
-        .card:hover {
-            box-shadow: var(--shadow-lg);
-        }
-
-        .card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: var(--space-4);
-            padding-bottom: var(--space-4);
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .card-title {
-            font-size: var(--font-size-xl);
-            font-weight: 600;
-            color: var(--text-primary);
-            margin: 0;
-        }
-
-        /* ===== INTERACTIVE ELEMENTS ===== */
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: var(--space-2);
-            padding: var(--space-3) var(--space-6);
-            font-size: var(--font-size-sm);
-            font-weight: 500;
-            text-decoration: none;
-            border: none;
-            border-radius: var(--border-radius);
-            cursor: pointer;
-            transition: all var(--transition-normal);
-            min-height: 44px; /* WCAG touch target minimum */
-            min-width: 44px;
-        }
-
-        .btn:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-            transform: none !important;
-        }
-
-        .btn-primary {
-            background-color: var(--primary-color);
-            color: white;
-        }
-
-        .btn-primary:hover:not(:disabled) {
-            background-color: #1d4ed8;
-            transform: translateY(-1px);
-            box-shadow: var(--shadow-lg);
-        }
-
-        .btn-secondary {
-            background-color: var(--bg-tertiary);
-            color: var(--text-primary);
-        }
-
-        .btn-secondary:hover:not(:disabled) {
-            background-color: #cbd5e1;
-            transform: translateY(-1px);
-        }
-
-        .btn-success {
-            background-color: var(--success-color);
-            color: white;
-        }
-
-        /* ===== FORM CONTROLS ===== */
-        .checkbox-group {
-            display: flex;
-            align-items: center;
-            gap: var(--space-2);
-            margin-bottom: var(--space-3);
-        }
-
-        .checkbox {
-            width: 18px;
-            height: 18px;
-            accent-color: var(--primary-color);
-        }
-
-        .checkbox-label {
-            font-size: var(--font-size-sm);
-            color: var(--text-secondary);
-            cursor: pointer;
-            user-select: none;
-        }
-
-        /* ===== SIMULATOR COMPONENTS ===== */
-        .simulator-container {
-            background-color: var(--bg-secondary);
-            border: 1px solid var(--border-color);
-            border-radius: var(--border-radius-lg);
-            padding: var(--space-6);
-            margin: var(--space-6) 0;
-        }
-
-        .simulator-controls {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: var(--space-6);
-            margin-bottom: var(--space-6);
-        }
-
-        .control-group {
-            background-color: var(--bg-primary);
-            padding: var(--space-4);
-            border-radius: var(--border-radius);
-            border: 1px solid var(--border-color);
-        }
-
-        .control-group h4 {
-            font-size: var(--font-size-lg);
-            margin-bottom: var(--space-3);
-            color: var(--text-primary);
-        }
-
-        .output-display {
-            background-color: var(--bg-primary);
-            border: 2px solid var(--success-color);
-            border-radius: var(--border-radius);
-            padding: var(--space-4);
-            margin: var(--space-4) 0;
-            text-align: center;
-        }
-
-        .output-value {
-            font-family: var(--font-family-mono);
-            font-size: var(--font-size-2xl);
-            font-weight: 600;
-            color: var(--success-color);
-        }
-
-        /* ===== TRUTH TABLE STYLES ===== */
-        .truth-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: var(--space-6) 0;
-            font-size: var(--font-size-sm);
-            background-color: var(--bg-primary);
-            border-radius: var(--border-radius);
-            overflow: hidden;
-            box-shadow: var(--shadow-md);
-        }
-
-        .truth-table th,
-        .truth-table td {
-            padding: var(--space-3);
-            text-align: center;
-            border: 1px solid var(--border-color);
-        }
-
-        .truth-table th {
-            background-color: var(--primary-color);
-            color: white;
-            font-weight: 600;
-            font-size: var(--font-size-sm);
-        }
-
-        .truth-table tbody tr:nth-child(even) {
-            background-color: var(--bg-secondary);
-        }
-
-        .truth-table tbody tr:hover {
-            background-color: var(--bg-tertiary);
-        }
-
-        .truth-table .active-row {
-            background-color: #fef3c7 !important;
-            font-weight: 600;
-            box-shadow: inset 0 0 0 2px var(--warning-color);
-        }
-
-        /* ===== PROGRESS INDICATORS ===== */
-        .progress-container {
-            margin: var(--space-6) 0;
-        }
-
-        .progress-bar {
-            width: 100%;
-            height: 8px;
-            background-color: var(--bg-tertiary);
-            border-radius: 9999px;
-            overflow: hidden;
-            margin: var(--space-2) 0;
-        }
-
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, var(--primary-color) 0%, var(--secondary-color) 100%);
-            border-radius: 9999px;
-            transition: width var(--transition-slow);
-            position: relative;
-            width: 0%;
-        }
-
-        .progress-text {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: var(--font-size-sm);
-            color: var(--text-secondary);
-        }
-
-        /* ===== QUIZ STYLES ===== */
-        .quiz-container {
-            background-color: var(--bg-secondary);
-            border-radius: var(--border-radius-lg);
-            padding: var(--space-6);
-            margin: var(--space-6) 0;
-        }
-
-        .quiz-question {
-            margin-bottom: var(--space-8);
-            background-color: var(--bg-primary);
-            padding: var(--space-6);
-            border-radius: var(--border-radius);
-            border: 1px solid var(--border-color);
-        }
-
-        .quiz-question h4 {
-            margin-bottom: var(--space-4);
-        }
-
-        .quiz-options {
-            list-style: none;
-            margin-bottom: var(--space-4);
-        }
-
-        .quiz-option {
-            margin-bottom: var(--space-3);
-        }
-
-        .quiz-option label {
-            display: flex;
-            align-items: flex-start;
-            gap: var(--space-3);
-            padding: var(--space-4);
-            background-color: var(--bg-secondary);
-            border: 2px solid var(--border-color);
-            border-radius: var(--border-radius);
-            cursor: pointer;
-            transition: all var(--transition-normal);
-            min-height: 44px; /* Touch target */
-        }
-
-        .quiz-option label:hover {
-            border-color: var(--primary-color);
-            background-color: #eff6ff;
-        }
-
-        .quiz-feedback {
-            margin-top: var(--space-4);
-            padding: var(--space-4);
-            border-radius: var(--border-radius);
-            display: none;
-        }
-
-        .quiz-feedback.correct {
-            background-color: #dcfce7;
-            color: var(--success-color);
-            border: 1px solid var(--success-color);
-            display: block;
-        }
-
-        .quiz-feedback.incorrect {
-            background-color: #fee2e2;
-            color: var(--error-color);
-            border: 1px solid var(--error-color);
-            display: block;
-        }
-
-        /* ===== ACCESSIBILITY ENHANCEMENTS ===== */
-        .sr-only {
-            position: absolute;
-            width: 1px;
-            height: 1px;
-            padding: 0;
-            margin: -1px;
-            overflow: hidden;
-            clip: rect(0, 0, 0, 0);
-            white-space: nowrap;
-            border: 0;
-        }
-
-        .skip-link {
-            position: absolute;
-            top: -40px;
-            left: var(--space-2);
-            background-color: var(--primary-color);
-            color: white;
-            padding: var(--space-2) var(--space-4);
-            text-decoration: none;
-            border-radius: var(--border-radius);
-            z-index: 1000;
-            font-weight: 500;
-        }
-
-        .skip-link:focus {
-            top: var(--space-2);
-        }
-
-        /* ===== RESPONSIVE DESIGN ===== */
-        @media (min-width: 768px) {
-            .module-container {
-                padding: var(--space-10);
-            }
-            
-            .simulator-controls {
-                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            }
-        }
-
-        @media (min-width: 1024px) {
-            .module-container {
-                max-width: 1200px;
-                padding: var(--space-12);
-            }
-            
-            .simulator-controls {
-                grid-template-columns: repeat(3, 1fr);
-            }
-        }
-
-        /* ===== UTILITY CLASSES ===== */
-        .text-center { text-align: center; }
-        .font-bold { font-weight: 600; }
-        .hidden { display: none; }
-    </style>
+    <link rel="stylesheet" href="shared/module-styles.css">
 </head>
 <body>
     <!-- Skip link for accessibility -->
@@ -553,7 +20,7 @@
                     <span id="progress-text">0%</span>
                 </div>
                 <div class="progress-bar">
-                    <div class="progress-fill" id="module-progress" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" role="progressbar"></div>
+                    <div class="progress-fill" id="module-progress"></div>
                 </div>
             </div>
         </header>
@@ -584,554 +51,22 @@
                         </div>
                         
                         <div class="control-group">
+                            <h4>Circuit Diagram</h4>
+                            <canvas id="ha-circuit" class="circuit-canvas" width="400" height="200" 
+                                    data-circuit-simulator="true" aria-label="Half-adder circuit diagram">
+                            </canvas>
+                        </div>
+                        
+                        <div class="control-group">
                             <h4>Outputs</h4>
                             <div class="output-display">
                                 <div>Sum: <span class="output-value" id="ha-sum">0</span></div>
                                 <div>Carry: <span class="output-value" id="ha-carry">0</span></div>
                             </div>
-                        </div>
-                        
-                        <div class="control-group">
-                            <h4>Boolean Expressions</h4>
                             <p><strong>Sum = A ⊕ B</strong></p>
                             <p><strong>Carry = A • B</strong></p>
                         </div>
                     </div>
-                    
-                    <div class="control-group">
-                        <h4>Timing Analysis</h4>
-                        <p>Critical Path: <span id="critical-path">4 gate delays</span></p>
-                        <p>Propagation Pattern: C₀ → C₁ → C₂ → C₃ → Cout</p>
-                        <p><small>Each full-adder adds 1 gate delay to the carry chain.</small></p>
-                    </div>
-                </div>
-            </div>
-        </section>
-        
-        <!-- Section 4: Knowledge Assessment Quiz -->
-        <section class="section" id="assessment-section">
-            <div class="card">
-                <div class="card-header">
-                    <h2 class="card-title">Knowledge Assessment</h2>
-                </div>
-                
-                <p>Test your understanding of arithmetic circuits with this interactive quiz. You need to answer 6 out of 7 questions correctly to pass.</p>
-                
-                <div id="quiz-container" class="quiz-container">
-                    <!-- Quiz will be populated by JavaScript -->
-                </div>
-            </div>
-        </section>
-    </main>
-
-    <script>
-        /* SET MODULE ID FIRST - CRITICAL FOR PLATFORM COMMUNICATION */
-        window.MODULE_ID = 'arithmetic';
-        
-        /**
-         * CSC210 Module Shared Utilities
-         * Version: 1.0.0
-         * 
-         * This JavaScript library provides common utilities and functions
-         * used across all CSC210 learning modules.
-         */
-
-        /* ===== PLATFORM COMMUNICATION ===== */
-        class PlatformCommunication {
-            constructor(moduleId) {
-                this.moduleId = moduleId;
-                this.messageQueue = [];
-                this.isInitialized = false;
-                
-                this.setupMessageListener();
-                this.sendModuleLoaded();
-            }
-            
-            setupMessageListener() {
-                window.addEventListener('message', (event) => {
-                    this.handlePlatformMessage(event.data);
-                });
-            }
-            
-            handlePlatformMessage(data) {
-                switch (data.type) {
-                    case 'themeUpdate':
-                        this.handleThemeUpdate(data.theme);
-                        break;
-                    case 'pauseModule':
-                        this.handlePause();
-                        break;
-                    case 'resumeModule':
-                        this.handleResume();
-                        break;
-                    case 'resetModule':
-                        this.handleReset();
-                        break;
-                    case 'prerequisiteStatus':
-                        this.handlePrerequisiteStatus(data);
-                        break;
-                }
-            }
-            
-            sendModuleLoaded() {
-                this.sendMessage({
-                    type: 'moduleLoaded',
-                    module: this.moduleId,
-                    version: '1.0.0',
-                    timestamp: new Date().toISOString()
-                });
-                this.isInitialized = true;
-            }
-            
-            sendProgress(progress, section = null) {
-                this.sendMessage({
-                    type: 'moduleProgress',
-                    module: this.moduleId,
-                    progress: Math.round(progress),
-                    section: section,
-                    timestamp: new Date().toISOString()
-                });
-            }
-            
-            sendCompletion(completionData = {}) {
-                this.sendMessage({
-                    type: 'moduleComplete',
-                    module: this.moduleId,
-                    completionData: {
-                        timeSpent: completionData.timeSpent || 0,
-                        quizScore: completionData.quizScore || 0,
-                        sectionsCompleted: completionData.sectionsCompleted || [],
-                        ...completionData
-                    },
-                    timestamp: new Date().toISOString()
-                });
-            }
-            
-            sendError(error, context = {}) {
-                this.sendMessage({
-                    type: 'moduleError',
-                    module: this.moduleId,
-                    error: {
-                        message: error.message || error,
-                        stack: error.stack,
-                        context: context
-                    },
-                    timestamp: new Date().toISOString()
-                });
-            }
-            
-            sendNotification(message, type = 'info') {
-                this.sendMessage({
-                    type: 'notification',
-                    module: this.moduleId,
-                    message: message,
-                    notificationType: type,
-                    timestamp: new Date().toISOString()
-                });
-            }
-            
-            sendMessage(data) {
-                try {
-                    window.parent.postMessage(data, '*');
-                } catch (error) {
-                    console.warn('Failed to send message to parent:', error);
-                    this.messageQueue.push(data);
-                }
-            }
-            
-            // Event handlers that modules can override
-            handleThemeUpdate(theme) {
-                console.log('Theme updated:', theme);
-            }
-            
-            handlePause() {
-                console.log('Module paused');
-            }
-            
-            handleResume() {
-                console.log('Module resumed');
-            }
-            
-            handleReset() {
-                console.log('Module reset requested');
-            }
-            
-            handlePrerequisiteStatus(data) {
-                console.log('Prerequisite status:', data);
-            }
-        }
-
-        /* ===== PROGRESS TRACKING ===== */
-        class ProgressTracker {
-            constructor(moduleId, sections = []) {
-                this.moduleId = moduleId;
-                this.sections = sections;
-                this.sectionProgress = new Array(sections.length).fill(0);
-                this.currentSection = 0;
-                this.startTime = Date.now();
-                
-                this.communication = new PlatformCommunication(moduleId);
-            }
-            
-            updateSectionProgress(sectionIndex, progress) {
-                if (sectionIndex >= 0 && sectionIndex < this.sections.length) {
-                    this.sectionProgress[sectionIndex] = Math.max(0, Math.min(100, progress));
-                    
-                    const totalProgress = this.getTotalProgress();
-                    const sectionName = this.sections[sectionIndex];
-                    
-                    this.communication.sendProgress(totalProgress, sectionName);
-                    this.updateProgressBar(totalProgress);
-                }
-            }
-            
-            completeSection(sectionIndex) {
-                this.updateSectionProgress(sectionIndex, 100);
-                
-                // Auto-advance to next section if available
-                if (sectionIndex + 1 < this.sections.length) {
-                    this.currentSection = sectionIndex + 1;
-                }
-            }
-            
-            getTotalProgress() {
-                const sum = this.sectionProgress.reduce((a, b) => a + b, 0);
-                return Math.round(sum / this.sections.length);
-            }
-            
-            getTimeSpent() {
-                return Math.round((Date.now() - this.startTime) / 1000);
-            }
-            
-            updateProgressBar(progress) {
-                const progressBar = document.getElementById('module-progress');
-                const progressText = document.getElementById('progress-text');
-                
-                if (progressBar) {
-                    progressBar.style.width = progress + '%';
-                    progressBar.setAttribute('aria-valuenow', progress);
-                }
-                
-                if (progressText) {
-                    progressText.textContent = progress + '%';
-                }
-            }
-            
-            markComplete(additionalData = {}) {
-                const completionData = {
-                    timeSpent: this.getTimeSpent(),
-                    sectionsCompleted: this.sections,
-                    finalProgress: this.getTotalProgress(),
-                    ...additionalData
-                };
-                
-                this.communication.sendCompletion(completionData);
-            }
-        }
-
-        /* ===== QUIZ SYSTEM ===== */
-        class QuizManager {
-            constructor(quizData, passingScore = 80) {
-                this.questions = quizData;
-                this.currentQuestion = 0;
-                this.answers = {};
-                this.passingScore = passingScore;
-                this.completed = false;
-                
-                this.setupQuizInterface();
-            }
-            
-            setupQuizInterface() {
-                const container = document.getElementById('quiz-container');
-                if (!container) return;
-                
-                this.renderQuestion();
-            }
-            
-            renderQuestion() {
-                const container = document.getElementById('quiz-container');
-                const question = this.questions[this.currentQuestion];
-                
-                container.innerHTML = `
-                    <div class="quiz-question">
-                        <div class="quiz-header">
-                            <h3>Question ${this.currentQuestion + 1} of ${this.questions.length}</h3>
-                            <div class="quiz-progress">
-                                <div class="progress-bar">
-                                    <div class="progress-fill" style="width: ${(this.currentQuestion / this.questions.length) * 100}%"></div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="question-content">
-                            <h4>${question.question}</h4>
-                            
-                            <div class="quiz-options" role="radiogroup" aria-labelledby="question-${this.currentQuestion}">
-                                ${question.options.map((option, index) => `
-                                    <div class="quiz-option">
-                                        <label>
-                                            <input type="radio" 
-                                                   name="question-${this.currentQuestion}" 
-                                                   value="${index}"
-                                                   onchange="quizManager.selectAnswer(${index})"
-                                                   aria-describedby="option-${this.currentQuestion}-${index}">
-                                            <span id="option-${this.currentQuestion}-${index}">${option}</span>
-                                        </label>
-                                    </div>
-                                `).join('')}
-                            </div>
-                            
-                            <div class="quiz-feedback" id="feedback-${this.currentQuestion}"></div>
-                        </div>
-                        
-                        <div class="quiz-actions">
-                            <button class="btn btn-secondary" onclick="quizManager.previousQuestion()" 
-                                    ${this.currentQuestion === 0 ? 'disabled' : ''}>
-                                Previous
-                            </button>
-                            
-                            <button class="btn btn-primary" onclick="quizManager.checkAnswer()" 
-                                    id="check-answer-btn" disabled>
-                                Check Answer
-                            </button>
-                            
-                            <button class="btn btn-primary" onclick="quizManager.nextQuestion()" 
-                                    id="next-question-btn" style="display: none;">
-                                ${this.currentQuestion === this.questions.length - 1 ? 'Finish Quiz' : 'Next Question'}
-                            </button>
-                        </div>
-                    </div>
-                `;
-            }
-            
-            selectAnswer(answerIndex) {
-                this.answers[this.currentQuestion] = answerIndex;
-                document.getElementById('check-answer-btn').disabled = false;
-            }
-            
-            checkAnswer() {
-                const question = this.questions[this.currentQuestion];
-                const userAnswer = this.answers[this.currentQuestion];
-                const isCorrect = userAnswer === question.correct;
-                
-                const feedback = document.getElementById(`feedback-${this.currentQuestion}`);
-                feedback.className = `quiz-feedback ${isCorrect ? 'correct' : 'incorrect'}`;
-                feedback.style.display = 'block';
-                feedback.innerHTML = `
-                    <strong>${isCorrect ? 'Correct!' : 'Incorrect.'}</strong>
-                    <p>${question.explanation || (isCorrect ? 'Well done!' : 'Please review the material and try again.')}</p>
-                `;
-                
-                // Disable answer options and show next button
-                const options = document.querySelectorAll(`input[name="question-${this.currentQuestion}"]`);
-                options.forEach(option => option.disabled = true);
-                
-                document.getElementById('check-answer-btn').style.display = 'none';
-                document.getElementById('next-question-btn').style.display = 'inline-block';
-            }
-            
-            nextQuestion() {
-                if (this.currentQuestion < this.questions.length - 1) {
-                    this.currentQuestion++;
-                    this.renderQuestion();
-                } else {
-                    this.completeQuiz();
-                }
-            }
-            
-            previousQuestion() {
-                if (this.currentQuestion > 0) {
-                    this.currentQuestion--;
-                    this.renderQuestion();
-                }
-            }
-            
-            completeQuiz() {
-                const score = this.calculateScore();
-                const passed = score >= this.passingScore;
-                
-                this.completed = true;
-                this.displayResults(score, passed);
-                
-                // Update progress tracker
-                if (passed && window.progressTracker) {
-                    window.progressTracker.completeSection(3); // Assessment section
-                    window.progressTracker.markComplete({ quizScore: score });
-                }
-                
-                return { score, passed };
-            }
-            
-            calculateScore() {
-                const correctAnswers = this.questions.reduce((count, question, index) => {
-                    return count + (this.answers[index] === question.correct ? 1 : 0);
-                }, 0);
-                
-                return Math.round((correctAnswers / this.questions.length) * 100);
-            }
-            
-            displayResults(score, passed) {
-                const container = document.getElementById('quiz-container');
-                
-                container.innerHTML = `
-                    <div class="quiz-results">
-                        <div class="results-header">
-                            <h3>Quiz Complete!</h3>
-                            <div class="score-display">
-                                <div class="output-display">
-                                    <div class="score-number">
-                                        <span class="output-value">${score}%</span>
-                                    </div>
-                                </div>
-                                <p class="score-status">
-                                    ${passed ? `Congratulations! You passed with ${score}%.` : `You scored ${score}%. You need ${this.passingScore}% to pass.`}
-                                </p>
-                            </div>
-                        </div>
-                        
-                        <div class="results-breakdown">
-                            <h4>Question Breakdown:</h4>
-                            <div class="question-summary">
-                                ${this.questions.map((question, index) => {
-                                    const isCorrect = this.answers[index] === question.correct;
-                                    return `
-                                        <div class="question-item">
-                                            <span class="question-number">Q${index + 1}</span>
-                                            <span class="question-status">${isCorrect ? '✓' : '✗'}</span>
-                                            <span class="question-text">${question.question.substring(0, 50)}...</span>
-                                        </div>
-                                    `;
-                                }).join('')}
-                            </div>
-                        </div>
-                        
-                        <div class="results-actions">
-                            ${!passed ? `
-                                <button class="btn btn-primary" onclick="quizManager.retakeQuiz()">
-                                    Retake Quiz
-                                </button>
-                            ` : ''}
-                        </div>
-                    </div>
-                `;
-            }
-            
-            retakeQuiz() {
-                this.currentQuestion = 0;
-                this.answers = {};
-                this.completed = false;
-                this.renderQuestion();
-            }
-        }
-
-        /* ===== MODULE-SPECIFIC IMPLEMENTATIONS ===== */
-        
-        // Half-Adder Simulator
-        class HalfAdderSimulator {
-            constructor() {
-                this.inputA = document.getElementById('ha-input-a');
-                this.inputB = document.getElementById('ha-input-b');
-                this.setupEventListeners();
-                this.calculate(); // Initial calculation
-            }
-            
-            setupEventListeners() {
-                this.inputA.addEventListener('change', () => this.calculate());
-                this.inputB.addEventListener('change', () => this.calculate());
-            }
-            
-            calculate() {
-                const a = this.inputA.checked;
-                const b = this.inputB.checked;
-                
-                const sum = a !== b; // XOR
-                const carry = a && b; // AND
-                
-                this.updateDisplay(sum, carry);
-                this.highlightTruthTableRow(a, b);
-            }
-            
-            updateDisplay(sum, carry) {
-                document.getElementById('ha-sum').textContent = sum ? '1' : '0';
-                document.getElementById('ha-carry').textContent = carry ? '1' : '0';
-            }
-            
-            highlightTruthTableRow(a, b) {
-                const table = document.getElementById('ha-truth-table');
-                const rows = table.querySelectorAll('tbody tr');
-                
-                // Remove existing highlights
-                rows.forEach(row => row.classList.remove('active-row'));
-                
-                // Find matching row
-                const inputPattern = `${a ? 1 : 0},${b ? 1 : 0}`;
-                const matchingRow = Array.from(rows).find(row => 
-                    row.dataset.inputs === inputPattern
-                );
-                
-                if (matchingRow) {
-                    matchingRow.classList.add('active-row');
-                }
-            }
-        }
-        
-        // Full-Adder Simulator
-        class FullAdderSimulator {
-            constructor() {
-                this.inputA = document.getElementById('fa-input-a');
-                this.inputB = document.getElementById('fa-input-b');
-                this.inputCin = document.getElementById('fa-input-cin');
-                this.setupEventListeners();
-                this.calculate(); // Initial calculation
-            }
-            
-            setupEventListeners() {
-                this.inputA.addEventListener('change', () => this.calculate());
-                this.inputB.addEventListener('change', () => this.calculate());
-                this.inputCin.addEventListener('change', () => this.calculate());
-            }
-            
-            calculate() {
-                const a = this.inputA.checked;
-                const b = this.inputB.checked;
-                const cin = this.inputCin.checked;
-                
-                const sum = a !== b !== cin; // XOR chain
-                const cout = (a && b) || (cin && (a !== b)); // Carry logic
-                
-                this.updateDisplay(sum, cout);
-                this.highlightTruthTableRow(a, b, cin);
-            }
-            
-            updateDisplay(sum, cout) {
-                document.getElementById('fa-sum').textContent = sum ? '1' : '0';
-                document.getElementById('fa-carry').textContent = cout ? '1' : '0';
-            }
-            
-            highlightTruthTableRow(a, b, cin) {
-                const table = document.getElementById('fa-truth-table');
-                const rows = table.querySelectorAll('tbody tr');
-                
-                // Remove existing highlights
-                rows.forEach(row => row.classList.remove('active-row'));
-                
-                // Find matching row
-                const inputPattern = `${a ? 1 : 0},${b ? 1 : 0},${cin ? 1 : 0}`;
-                const matchingRow = Array.from(rows).find(row => 
-                    row.dataset.inputs === inputPattern
-                );
-                
-                if (matchingRow) {
-                    matchingRow.classList.add('active-row');
-                }
-            }
-        }
-        
-        // 4-Bit Ripple-Carry Adder Simulator
-        class RippleCarryAdderSimulator {
-            constructor() {
-                this.inputsA = [
-                    document.getElementById('rc-a0'),
                     
                     <div class="truth-table-container">
                         <h4>Truth Table</h4>
@@ -1181,15 +116,18 @@
                         </div>
                         
                         <div class="control-group">
+                            <h4>Circuit Diagram</h4>
+                            <canvas id="fa-circuit" class="circuit-canvas" width="500" height="300" 
+                                    data-circuit-simulator="true" aria-label="Full-adder circuit diagram">
+                            </canvas>
+                        </div>
+                        
+                        <div class="control-group">
                             <h4>Outputs</h4>
                             <div class="output-display">
                                 <div>Sum: <span class="output-value" id="fa-sum">0</span></div>
                                 <div>Carry Out: <span class="output-value" id="fa-carry">0</span></div>
                             </div>
-                        </div>
-                        
-                        <div class="control-group">
-                            <h4>Boolean Expressions</h4>
                             <p><strong>Sum = A ⊕ B ⊕ Cin</strong></p>
                             <p><strong>Cout = AB + Cin(A ⊕ B)</strong></p>
                         </div>
@@ -1234,7 +172,7 @@
                             <h4>4-bit Input A</h4>
                             <div class="checkbox-group">
                                 <input type="checkbox" id="rc-a3" class="checkbox">
-                                <label for="rc-a3" class="checkbox-label">A₃</label>
+                                <label for="rc-a3" class="checkbox-label">A₃ (MSB)</label>
                             </div>
                             <div class="checkbox-group">
                                 <input type="checkbox" id="rc-a2" class="checkbox">
@@ -1246,7 +184,7 @@
                             </div>
                             <div class="checkbox-group">
                                 <input type="checkbox" id="rc-a0" class="checkbox">
-                                <label for="rc-a0" class="checkbox-label">A₀</label>
+                                <label for="rc-a0" class="checkbox-label">A₀ (LSB)</label>
                             </div>
                         </div>
                         
@@ -1254,7 +192,7 @@
                             <h4>4-bit Input B</h4>
                             <div class="checkbox-group">
                                 <input type="checkbox" id="rc-b3" class="checkbox">
-                                <label for="rc-b3" class="checkbox-label">B₃</label>
+                                <label for="rc-b3" class="checkbox-label">B₃ (MSB)</label>
                             </div>
                             <div class="checkbox-group">
                                 <input type="checkbox" id="rc-b2" class="checkbox">
@@ -1266,19 +204,445 @@
                             </div>
                             <div class="checkbox-group">
                                 <input type="checkbox" id="rc-b0" class="checkbox">
-                                <label for="rc-b0" class="checkbox-label">B₀</label>
+                                <label for="rc-b0" class="checkbox-label">B₀ (LSB)</label>
                             </div>
                         </div>
                         
                         <div class="control-group">
-                            <h4>Results</h4>
+                            <h4>Results & Control</h4>
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="rc-carry-in" class="checkbox">
+                                <label for="rc-carry-in" class="checkbox-label">Carry In</label>
+                            </div>
                             <div class="output-display">
                                 <div>Binary: <span class="output-value" id="rc-sum-binary">0000</span></div>
                                 <div>Decimal: <span class="output-value" id="rc-sum-decimal">0</span></div>
                                 <div>Carry Out: <span class="output-value" id="rc-carry-out">0</span></div>
                             </div>
-                            <div class="checkbox-group">
-                                <input type="checkbox" id="rc-carry-in" class="checkbox">
-                                <label for="rc-carry-in" class="checkbox-label">Carry In</label>
-                            </div>
                         </div>
+                    </div>
+                    
+                    <div class="control-group">
+                        <h4>Timing Analysis</h4>
+                        <p>Critical Path: <span id="critical-path">4 gate delays</span></p>
+                        <p>Propagation Pattern: C₀ → C₁ → C₂ → C₃ → Cout</p>
+                        <p><small>Each full-adder adds 1 gate delay to the carry chain.</small></p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Section 4: Knowledge Assessment Quiz -->
+        <section class="section" id="assessment-section">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Knowledge Assessment</h2>
+                </div>
+                
+                <p>Test your understanding of arithmetic circuits with this interactive quiz. You need to answer 6 out of 7 questions correctly to pass.</p>
+                
+                <div id="quiz-container" class="quiz-container">
+                    <!-- Quiz will be populated by JavaScript -->
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Import shared JavaScript modules -->
+    <script src="shared/module-utils.js"></script>
+    <script src="shared/circuit-simulator.js"></script>
+    
+    <script>
+        /* SET MODULE ID FIRST - CRITICAL FOR PLATFORM COMMUNICATION */
+        window.MODULE_ID = 'arithmetic';
+        
+        /* ===== MODULE-SPECIFIC IMPLEMENTATIONS ===== */
+        
+        // Half-Adder Simulator
+        class HalfAdderSimulator {
+            constructor() {
+                this.inputA = document.getElementById('ha-input-a');
+                this.inputB = document.getElementById('ha-input-b');
+                this.setupEventListeners();
+                this.setupCircuit();
+                this.calculate();
+            }
+            
+            setupEventListeners() {
+                this.inputA.addEventListener('change', () => this.calculate());
+                this.inputB.addEventListener('change', () => this.calculate());
+            }
+            
+            setupCircuit() {
+                try {
+                    this.circuitSim = new CircuitSimulator.CircuitSimulator('ha-circuit');
+                    this.circuit = CircuitSimulator.CircuitTemplates.halfAdderCircuit(this.circuitSim);
+                } catch (error) {
+                    console.warn('Circuit visualization not available:', error);
+                }
+            }
+            
+            calculate() {
+                const a = this.inputA.checked;
+                const b = this.inputB.checked;
+                
+                const sum = a !== b; // XOR
+                const carry = a && b; // AND
+                
+                this.updateDisplay(sum, carry);
+                this.highlightTruthTableRow(a, b);
+                this.updateCircuit(a, b);
+            }
+            
+            updateDisplay(sum, carry) {
+                document.getElementById('ha-sum').textContent = sum ? '1' : '0';
+                document.getElementById('ha-carry').textContent = carry ? '1' : '0';
+            }
+            
+            updateCircuit(a, b) {
+                if (this.circuit && this.circuit.inputs) {
+                    this.circuit.inputs.A.value = a;
+                    this.circuit.inputs.B.value = b;
+                    this.circuitSim.simulate();
+                    this.circuitSim.render();
+                }
+            }
+            
+            highlightTruthTableRow(a, b) {
+                const table = document.getElementById('ha-truth-table');
+                const rows = table.querySelectorAll('tbody tr');
+                
+                rows.forEach(row => row.classList.remove('active-row'));
+                
+                const inputPattern = `${a ? 1 : 0},${b ? 1 : 0}`;
+                const matchingRow = Array.from(rows).find(row => 
+                    row.dataset.inputs === inputPattern
+                );
+                
+                if (matchingRow) {
+                    matchingRow.classList.add('active-row');
+                }
+            }
+        }
+        
+        // Full-Adder Simulator
+        class FullAdderSimulator {
+            constructor() {
+                this.inputA = document.getElementById('fa-input-a');
+                this.inputB = document.getElementById('fa-input-b');
+                this.inputCin = document.getElementById('fa-input-cin');
+                this.setupEventListeners();
+                this.calculate();
+            }
+            
+            setupEventListeners() {
+                this.inputA.addEventListener('change', () => this.calculate());
+                this.inputB.addEventListener('change', () => this.calculate());
+                this.inputCin.addEventListener('change', () => this.calculate());
+            }
+            
+            calculate() {
+                const a = this.inputA.checked;
+                const b = this.inputB.checked;
+                const cin = this.inputCin.checked;
+                
+                const sum = a !== b !== cin;
+                const cout = (a && b) || (cin && (a !== b));
+                
+                this.updateDisplay(sum, cout);
+                this.highlightTruthTableRow(a, b, cin);
+            }
+            
+            updateDisplay(sum, cout) {
+                document.getElementById('fa-sum').textContent = sum ? '1' : '0';
+                document.getElementById('fa-carry').textContent = cout ? '1' : '0';
+            }
+            
+            highlightTruthTableRow(a, b, cin) {
+                const table = document.getElementById('fa-truth-table');
+                const rows = table.querySelectorAll('tbody tr');
+                
+                rows.forEach(row => row.classList.remove('active-row'));
+                
+                const inputPattern = `${a ? 1 : 0},${b ? 1 : 0},${cin ? 1 : 0}`;
+                const matchingRow = Array.from(rows).find(row => 
+                    row.dataset.inputs === inputPattern
+                );
+                
+                if (matchingRow) {
+                    matchingRow.classList.add('active-row');
+                }
+            }
+        }
+        
+        // 4-Bit Ripple-Carry Adder Simulator
+        class RippleCarryAdderSimulator {
+            constructor() {
+                this.inputsA = [
+                    document.getElementById('rc-a0'),
+                    document.getElementById('rc-a1'),
+                    document.getElementById('rc-a2'),
+                    document.getElementById('rc-a3')
+                ];
+                this.inputsB = [
+                    document.getElementById('rc-b0'),
+                    document.getElementById('rc-b1'),
+                    document.getElementById('rc-b2'),
+                    document.getElementById('rc-b3')
+                ];
+                this.carryIn = document.getElementById('rc-carry-in');
+                this.setupEventListeners();
+                this.calculate();
+            }
+            
+            setupEventListeners() {
+                [...this.inputsA, ...this.inputsB, this.carryIn].forEach(input => {
+                    input.addEventListener('change', () => this.calculate());
+                });
+            }
+            
+            calculate() {
+                const aValues = this.inputsA.map(input => input.checked);
+                const bValues = this.inputsB.map(input => input.checked);
+                let carryIn = this.carryIn.checked;
+                
+                const sums = [];
+                let carryOut = carryIn;
+                
+                // Calculate each bit position
+                for (let i = 0; i < 4; i++) {
+                    const a = aValues[i];
+                    const b = bValues[i];
+                    
+                    const sum = a !== b !== carryOut;
+                    const newCarryOut = (a && b) || (carryOut && (a !== b));
+                    
+                    sums[i] = sum;
+                    carryOut = newCarryOut;
+                }
+                
+                this.updateDisplay(sums, carryOut);
+            }
+            
+            updateDisplay(sums, carryOut) {
+                // Convert to binary string (MSB first for display)
+                const binaryResult = [sums[3], sums[2], sums[1], sums[0]].map(s => s ? '1' : '0').join('');
+                document.getElementById('rc-sum-binary').textContent = binaryResult;
+                
+                // Convert to decimal
+                const decimalResult = parseInt(binaryResult, 2);
+                document.getElementById('rc-sum-decimal').textContent = decimalResult.toString();
+                
+                document.getElementById('rc-carry-out').textContent = carryOut ? '1' : '0';
+            }
+        }
+
+        // Quiz Data
+        const quizData = [
+            {
+                question: "What are the outputs when A=1 and B=1 in a half-adder?",
+                options: [
+                    "Sum=0, Carry=1",
+                    "Sum=1, Carry=0", 
+                    "Sum=1, Carry=1",
+                    "Sum=0, Carry=0"
+                ],
+                correct: 0,
+                explanation: "In a half-adder, when both inputs are 1: Sum = A ⊕ B = 1 ⊕ 1 = 0, and Carry = A • B = 1 • 1 = 1"
+            },
+            {
+                question: "What is the Boolean expression for the Sum output of a full-adder?",
+                options: [
+                    "A • B • Cin",
+                    "A + B + Cin",
+                    "A ⊕ B ⊕ Cin",
+                    "A • B + Cin"
+                ],
+                correct: 2,
+                explanation: "The Sum output of a full-adder uses XOR operations: Sum = A ⊕ B ⊕ Cin"
+            },
+            {
+                question: "In a 4-bit ripple-carry adder, how many gate delays are in the critical path?",
+                options: [
+                    "2 gate delays",
+                    "4 gate delays",
+                    "6 gate delays",
+                    "8 gate delays"
+                ],
+                correct: 1,
+                explanation: "The critical path goes through all 4 carry stages, with each full-adder contributing 1 gate delay to the carry chain."
+            },
+            {
+                question: "What is the main limitation of ripple-carry adders?",
+                options: [
+                    "They consume too much power",
+                    "They are too complex to build",
+                    "Carry propagation causes timing delays",
+                    "They can only add positive numbers"
+                ],
+                correct: 2,
+                explanation: "Ripple-carry adders have timing limitations because each carry must propagate through all stages before the final result is valid."
+            },
+            {
+                question: "If A=1011 and B=0110 are added in a 4-bit adder with Cin=1, what is the result?",
+                options: [
+                    "10010 (binary), 18 (decimal)",
+                    "10001 (binary), 17 (decimal)",
+                    "01111 (binary), 15 (decimal)",
+                    "10000 (binary), 16 (decimal)"
+                ],
+                correct: 0,
+                explanation: "1011 + 0110 + 1 = 10010 in binary. Converting: 11 + 6 + 1 = 18 in decimal."
+            },
+            {
+                question: "Which gate type is used for the Sum output in a half-adder?",
+                options: [
+                    "AND gate",
+                    "OR gate", 
+                    "XOR gate",
+                    "NAND gate"
+                ],
+                correct: 2,
+                explanation: "The Sum output uses an XOR gate because Sum = A ⊕ B, which produces 1 only when inputs differ."
+            },
+            {
+                question: "How many full-adders are needed to build a 4-bit ripple-carry adder?",
+                options: [
+                    "3 full-adders",
+                    "4 full-adders",
+                    "5 full-adders",
+                    "8 full-adders"
+                ],
+                correct: 1,
+                explanation: "A 4-bit ripple-carry adder requires exactly 4 full-adders, one for each bit position."
+            }
+        ];
+
+        // Module initialization
+        let progressTracker;
+        let halfAdder;
+        let fullAdder; 
+        let rippleCarryAdder;
+        let quizManager;
+
+        function initializeModule() {
+            try {
+                // Initialize progress tracking
+                progressTracker = new ModuleUtils.ProgressTracker(window.MODULE_ID, [
+                    'half-adder',
+                    'full-adder', 
+                    'ripple-carry',
+                    'assessment'
+                ]);
+                window.progressTracker = progressTracker;
+
+                // Initialize simulators
+                halfAdder = new HalfAdderSimulator();
+                fullAdder = new FullAdderSimulator();
+                rippleCarryAdder = new RippleCarryAdderSimulator();
+                
+                // Initialize quiz
+                quizManager = new ModuleUtils.QuizManager(quizData, 86); // Need 6/7 correct
+                window.quizManager = quizManager;
+                
+                // Set up progress tracking
+                setupProgressTracking();
+                progressTracker.updateSectionProgress(0, 10);
+                
+                console.log('Arithmetic Circuits module initialized successfully');
+                
+            } catch (error) {
+                console.error('Error initializing module:', error);
+                showErrorMessage('Module failed to initialize. Please refresh the page.');
+            }
+        }
+
+        function setupProgressTracking() {
+            // Track half-adder interactions
+            const haInputs = [
+                document.getElementById('ha-input-a'),
+                document.getElementById('ha-input-b')
+            ];
+            
+            let haInteractions = 0;
+            haInputs.forEach(input => {
+                input.addEventListener('change', () => {
+                    haInteractions++;
+                    if (haInteractions >= 3) {
+                        progressTracker.updateSectionProgress(0, 60);
+                    }
+                    if (haInteractions >= 6) {
+                        progressTracker.completeSection(0);
+                    }
+                });
+            });
+            
+            // Track full-adder interactions
+            const faInputs = [
+                document.getElementById('fa-input-a'),
+                document.getElementById('fa-input-b'),
+                document.getElementById('fa-input-cin')
+            ];
+            
+            let faInteractions = 0;
+            faInputs.forEach(input => {
+                input.addEventListener('change', () => {
+                    faInteractions++;
+                    if (faInteractions >= 4) {
+                        progressTracker.updateSectionProgress(1, 60);
+                    }
+                    if (faInteractions >= 8) {
+                        progressTracker.completeSection(1);
+                    }
+                });
+            });
+            
+            // Track ripple-carry interactions
+            const rcInputs = [
+                ...document.querySelectorAll('[id^="rc-a"]'),
+                ...document.querySelectorAll('[id^="rc-b"]'),
+                document.getElementById('rc-carry-in')
+            ];
+            
+            let rcInteractions = 0;
+            rcInputs.forEach(input => {
+                input.addEventListener('change', () => {
+                    rcInteractions++;
+                    if (rcInteractions >= 5) {
+                        progressTracker.updateSectionProgress(2, 60);
+                    }
+                    if (rcInteractions >= 10) {
+                        progressTracker.completeSection(2);
+                    }
+                });
+            });
+        }
+
+        function showErrorMessage(message) {
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'card';
+            errorDiv.style.backgroundColor = '#fee2e2';
+            errorDiv.style.borderColor = '#dc2626';
+            errorDiv.innerHTML = `
+                <h3 style="color: #dc2626;">⚠ Error</h3>
+                <p>${message}</p>
+            `;
+            
+            document.querySelector('.module-container').insertBefore(
+                errorDiv, 
+                document.querySelector('.section')
+            );
+        }
+
+        // Initialize when DOM loads
+        document.addEventListener('DOMContentLoaded', initializeModule);
+
+        // Handle page unload for cleanup
+        window.addEventListener('beforeunload', () => {
+            if (progressTracker && progressTracker.getTotalProgress() === 100) {
+                progressTracker.markComplete();
+            }
+        });
+    </script>
+</body>
+</html>
