@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transistors and Logic Gates Learning Module</title>
+    <style>
+        /* General Body Styling */
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4; /* Light background for accessibility */
+            color: #333;
+        }
+
+        /* Header Styling */
+        header {
+            text-align: center;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #0056b3;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            color: #0056b3;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        h2 {
+            color: #0056b3;
+            font-size: 1.8em;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 5px;
+        }
+
+        h3 {
+            color: #0056b3;
+            font-size: 1.4em;
+            margin-top: 25px;
+            margin-bottom: 10px;
+        }
+
+        /* Section Styling */
+        section {
+            background-color: #fff;
+            padding: 25px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        /* Paragraph and List Styling */
+        p {
+            margin-bottom: 15px;
+            font-size: 1.1em;
+        }
+
+        ul {
+            list-style-type: disc;
+            margin-left: 20px;
+            margin-bottom: 15px;
+        }
+
+        li {
+            margin-bottom: 8px;
+            font-size: 1.05em;
+        }
+
+        /* Image Styling */
+        img {
+            max-width: 100%;
+            height: auto;
+            display: block; /* Ensures image is on its own line */
+            margin: 20px auto; /* Centers images and adds vertical space */
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        /* Code/Interactive Element Styling */
+        .code-block, .interactive-section {
+            background-color: #e9e9e9;
+            padding: 15px;
+            border-left: 5px solid #007bff;
+            margin-bottom: 20px;
+            overflow-x: auto; /* For code blocks */
+        }
+
+        pre {
+            white-space: pre-wrap; /* Ensures code wraps */
+            word-wrap: break-word;
+        }
+
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        /* Accessibility Focus Styles */
+        :focus {
+            outline: 3px solid #ffcc00; /* High-contrast focus indicator */
+            outline-offset: 2px;
+        }
+
+        /* Video Container */
+        .video-container {
+            position: relative;
+            padding-bottom: 56.25%; /* 16:9 aspect ratio */
+            height: 0;
+            overflow: hidden;
+            max-width: 100%;
+            background: #000;
+            margin: 20px 0;
+        }
+
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
+
+        /* Transcript Styling */
+        .transcript-container {
+            margin-top: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 15px;
+            background-color: #f9f9f9;
+        }
+
+        .transcript-container h3 {
+            color: #0056b3;
+            margin-top: 0;
+        }
+
+        .transcript-text {
+            max-height: 200px; /* Limit height for scrollability */
+            overflow-y: auto;
+            border-top: 1px solid #eee;
+            padding-top: 10px;
+            font-size: 0.95em;
+        }
+
+        /* Footer Styling */
+        footer {
+            text-align: center;
+            padding-top: 30px;
+            margin-top: 40px;
+            border-top: 1px solid #ccc;
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            body {
+                padding: 15px;
+            }
+            h1 {
+                font-size: 2em;
+            }
+            h2 {
+                font-size: 1.5em;
+            }
+            h3 {
+                font-size: 1.2em;
+            }
+            section {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header role="banner">
+        <h1>Transistors and Logic Gates</h1>
+        <p>An Interactive Learning Module</p>
+    </header>
+
+    <main id="main-content">
+        <section aria-labelledby="what-is-transistor">
+            <h2 id="what-is-transistor">What is a Transistor?</h2>
+            <p>A transistor is a semiconductor device used to amplify or switch electronic signals and electrical power. It is one of the fundamental building blocks of modern electronic devices, often described as a tiny, electronically controlled switch or a faucet that controls the flow of electricity.</p>
+
+            <h3>Types of Transistors:</h3>
+            <ul>
+                <li><strong>Bipolar Junction Transistors (BJTs):</strong> These were among the first transistors. They have three terminals:
+                    <ul>
+                        <li><strong>Base (B):</strong> The control input. A small current here controls a larger current.</li>
+                        <li><strong>Collector (C):</strong> Where the main current enters.</li>
+                        <li><strong>Emitter (E):</strong> Where the main current leaves.</li>
+                    </ul>
+                    BJTs come in NPN and PNP types, referring to their semiconductor layering.
+                </li>
+                <li><strong>Field-Effect Transistors (FETs):</strong> More common in modern integrated circuits. They also have three terminals:
+                    <ul>
+                        <li><strong>Gate (G):</strong> The control input. An electric field here controls the current flow.</li>
+                        <li><strong>Drain (D):</strong> Where the main current enters.</li>
+                        <li><strong>Source (S):</strong> Where the main current leaves.</li>
+                    </ul>
+                    The most common type is the <strong>Metal-Oxide-Semiconductor Field-Effect Transistor (MOSFET)</strong>, found in NMOS and PMOS variants.
+                </li>
+            </ul>
+            <p>In digital circuits, transistors primarily function as **switches**: either allowing current to flow ("ON" or logical "1") or blocking it ("OFF" or logical "0").</p>
+        </section>
+
+        <section aria-labelledby="how-transistor-works">
+            <h2 id="how-transistor-works">How a Transistor Works</h2>
+            <p>At its core, a transistor uses a small electrical signal to control a larger one.</p>
+
+            <h3>For a BJT (NPN type):</h3>
+            <p>When a small current is applied to the Base, it "opens the gate" for a much larger current to flow from the Collector to the Emitter. No current at the Base means the "gate" is closed. This allows it to amplify signals or act as a digital switch.</p>
+
+            <h3>For a MOSFET (N-channel type):</h3>
+            <p>Applying a voltage to the Gate creates an electric field that forms a conductive channel between the Source and the Drain, allowing current to flow. Without Gate voltage, the channel is non-conductive. This precise control makes MOSFETs ideal for digital logic, as they consume very little power when idle in CMOS (Complementary Metal-Oxide-Semiconductor) configurations.</p>
+        </section>
+
+        <section aria-labelledby="logic-gates">
+            <h2 id="logic-gates">Simple Logic Gates Using Transistors</h2>
+            <p>Logic gates are the fundamental building blocks of digital circuits, performing basic logical operations on binary inputs (0s and 1s) to produce a single binary output. We'll look at CMOS (Complementary Metal-Oxide-Semiconductor) implementations, which are power-efficient and widely used.</p>
+            <p>In CMOS:</p>
+            <ul>
+                <li><strong>NMOS Transistors:</strong> Conduct when the gate is high (1), block when the gate is low (0).</li>
+                <li><strong>PMOS Transistors:</strong> Conduct when the gate is low (0), block when the gate is high (1).</li>
+            </ul>
+            <p>Let "high" (near supply voltage, Vdd) be logical "1" and "low" (near ground, GND) be logical "0".</p>
+
+            <h3>1. NOT Gate (Inverter)</h3>
+            <p>Inverts the input: 0 becomes 1, and 1 becomes 0.</p>
+            <img src="not_gate.png" alt="Circuit diagram of a CMOS NOT gate with a PMOS and NMOS transistor connected in series, and its truth table showing input 0 gives output 1, and input 1 gives output 0." width="400">
+            <ul>
+                <li><strong>Input A is 0 (Low):</strong> PMOS ON, NMOS OFF. Output Y is 1 (connected to Vdd).</li>
+                <li><strong>Input A is 1 (High):</strong> PMOS OFF, NMOS ON. Output Y is 0 (connected to GND).</li>
+            </ul>
+
+            <h3>2. NAND Gate</h3>
+            <p>Output is 0 only if ALL inputs are 1. Otherwise, output is 1.</p>
+            <img src="nand_gate.png" alt="Circuit diagram of a 2-input CMOS NAND gate. It shows two PMOS transistors in parallel connected to VDD, and two NMOS transistors in series connected to GND. Inputs A and B control the gates of both PMOS and NMOS transistors. Includes the NAND gate truth table." width="500">
+            <ul>
+                <li><strong>Pull-up Network (PMOS in parallel):</strong> If A or B (or both) are 0, at least one PMOS turns ON, pulling output to 1.</li>
+                <li><strong>Pull-down Network (NMOS in series):</strong> Both A and B must be 1 for both NMOS to turn ON, pulling output to 0.</li>
+            </ul>
+
+            <h3>3. NOR Gate</h3>
+            <p>Output is 1 only if ALL inputs are 0. Otherwise, output is 0.</p>
+            <img src="nor_gate.png" alt="Circuit diagram of a 2-input CMOS NOR gate. It shows two PMOS transistors in series connected to VDD, and two NMOS transistors in parallel connected to GND. Inputs A and B control the gates of both PMOS and NMOS transistors. Includes the NOR gate truth table." width="500">
+            <ul>
+                <li><strong>Pull-up Network (PMOS in series):</strong> Both A and B must be 0 for both PMOS to turn ON, pulling output to 1.</li>
+                <li><strong>Pull-down Network (NMOS in parallel):</strong> If A or B (or both) are 1, at least one NMOS turns ON, pulling output to 0.</li>
+            </ul>
+
+            <h3>4. AND Gate</h3>
+            <p>Output is 1 only if ALL inputs are 1. Can be built by connecting a NAND gate to a NOT gate.</p>
+            <img src="and_gate.png" alt="Circuit diagram illustrating how to build an AND gate from a NAND gate followed by a NOT gate. Shows a 2-input NAND gate connected to a 1-input NOT gate, with the final output being the AND function. Includes the AND gate truth table." width="600">
+
+            <h3>5. OR Gate</h3>
+            <p>Output is 1 if ANY input is 1. Can be built by connecting a NOR gate to a NOT gate.</p>
+            <img src="or_gate.png" alt="Circuit diagram illustrating how to build an OR gate from a NOR gate followed by a NOT gate. Shows a 2-input NOR gate connected to a 1-input NOT gate, with the final output being the OR function. Includes the OR gate truth table." width="600">
+        </section>
+
+        <section aria-labelledby="interactive-example">
+            <h2 id="interactive-example">Interactive NOT Gate Example</h2>
+            <p>Click the button below to simulate the input of a NOT gate and see the resulting output!</p>
+            <div class="interactive-section">
+                <p><strong>Input (A):</strong> <span id="not-input-display">0</span></p>
+                <p><strong>Output (Y):</strong> <span id="not-output-display">1</span></p>
+                <button id="toggle-not-input" aria-controls="not-input-display not-output-display">Toggle Input</button>
+            </div>
+        </section>
+
+        <section aria-labelledby="video-resource">
+            <h2 id="video-resource">Further Learning: Video Resource</h2>
+            <p>Watch this video to see transistors and logic gates explained visually.</p>
+            <div class="video-container">
+                <iframe src="https://www.youtube.com/embed/RPK7WvPqf0A?rel=0" 
+                        title="YouTube video about Transistors and Logic Gates" 
+                        frameborder="0" 
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                        allowfullscreen>
+                </iframe>
+            </div>
+
+            <div class="transcript-container">
+                <h3>Video Transcript (Placeholder)</h3>
+                <div class="transcript-text" tabindex="0">
+                    <p>[Transcript will go here. This section is designed to be accessible and scrollable.]</p>
+                    <p>Welcome to this module on transistors and logic gates. Today, we'll explore the tiny switches that power all our modern electronics.</p>
+                    <p>A transistor is essentially a semiconductor device that can either amplify an electronic signal or act as a switch. Think of it like a light switch, but instead of your finger, another electrical signal controls it.</p>
+                    <p>There are two main types: BJTs and FETs. BJTs were the first, but FETs, especially MOSFETs, dominate modern digital circuits due to their efficiency.</p>
+                    <p>In a MOSFET, applying a voltage to the 'gate' terminal creates an electrical field that allows current to flow between the 'drain' and 'source' terminals. Remove the voltage, and the current stops. This ON/OFF behavior is perfect for representing the 1s and 0s of digital logic.</p>
+                    <p>Now, let's see how these switches combine to form logic gates. The simplest is the NOT gate, or inverter. If the input is 0, the output is 1. If the input is 1, the output is 0.</p>
+                    <p>Using CMOS technology, which uses both N-type and P-type MOSFETs, we can create very efficient gates. An NMOS transistor turns ON with a high gate voltage, while a PMOS turns ON with a low gate voltage.</p>
+                    <p>For a NOT gate, we use one PMOS and one NMOS. When the input is low, the PMOS turns on, connecting the output to the high voltage (1). When the input is high, the NMOS turns on, connecting the output to ground (0).</p>
+                    <p>Next, let's look at the NAND gate. This gate outputs 0 only if all its inputs are 1. Otherwise, the output is 1.</p>
+                    <p>A 2-input NAND gate uses two PMOS transistors in parallel for the pull-up network and two NMOS transistors in series for the pull-down network. Only when both inputs are high do both NMOS transistors conduct, pulling the output to 0.</p>
+                    <p>Similarly, the NOR gate outputs 1 only if all its inputs are 0. Otherwise, the output is 0.</p>
+                    <p>The 2-input NOR gate has two PMOS transistors in series for the pull-up and two NMOS in parallel for the pull-down. Only when both inputs are low do both PMOS transistors conduct, pulling the output to 1.</p>
+                    <p>We can combine these basic gates to create others. An AND gate is simply a NAND gate followed by a NOT gate. An OR gate is a NOR gate followed by a NOT gate.</p>
+                    <p>These simple transistor-based gates form the very foundation of all digital electronics, from calculators to supercomputers. Understanding them is key to understanding how computers work at a fundamental level.</p>
+                    <p>Thank you for watching this module. Feel free to explore the interactive examples and resources provided on this page to deepen your understanding.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer role="contentinfo">
+        <p>&copy; 2023 Transistor Learning Module. All rights reserved.</p>
+        <p><a href="#main-content" aria-label="Back to top of content">Back to Top</a></p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Interactive NOT Gate Logic
+            const toggleNotInputButton = document.getElementById('toggle-not-input');
+            const notInputDisplay = document.getElementById('not-input-display');
+            const notOutputDisplay = document.getElementById('not-output-display');
+
+            let notGateInput = 0; // Initial input
+
+            function updateNotGate() {
+                notInputDisplay.textContent = notGateInput;
+                // NOT gate logic: if input is 0, output is 1; if input is 1, output is 0
+                notOutputDisplay.textContent = (notGateInput === 0) ? 1 : 0;
+            }
+
+            toggleNotInputButton.addEventListener('click', function() {
+                notGateInput = 1 - notGateInput; // Toggles between 0 and 1
+                updateNotGate();
+                // Announce change for screen readers
+                this.setAttribute('aria-live', 'polite');
+                this.setAttribute('aria-atomic', 'true');
+                this.innerHTML = `Toggle Input (Input is now ${notGateInput})`;
+            });
+
+            // Initial state update
+            updateNotGate();
+        });
+    </script>
+</body>
+</html>
