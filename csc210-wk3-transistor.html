@@ -195,6 +195,40 @@
     </header>
 
     <main id="main-content">
+        <section aria-labelledby="video-resource">
+            <h2 id="video-resource">Further Learning: Video Resource</h2>
+            <p>Watch this video to see transistors and logic gates explained visually.</p>
+            <div class="video-container">
+                <iframe src="https://www.youtube.com/embed/RPK7WvPqf0A?rel=0" 
+                        title="YouTube video about Transistors and Logic Gates" 
+                        frameborder="0" 
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                        allowfullscreen>
+                </iframe>
+            </div>
+
+            <div class="transcript-container">
+                <h3>Video Transcript (Placeholder)</h3>
+                <div class="transcript-text" tabindex="0">
+                    <p>[Transcript will go here. This section is designed to be accessible and scrollable.]</p>
+                    <p>Welcome to this module on transistors and logic gates. Today, we'll explore the tiny switches that power all our modern electronics.</p>
+                    <p>A transistor is essentially a semiconductor device that can either amplify an electronic signal or act as a switch. Think of it like a light switch, but instead of your finger, another electrical signal controls it.</p>
+                    <p>There are two main types: BJTs and FETs. BJTs were the first, but FETs, especially MOSFETs, dominate modern digital circuits due to their efficiency.</p>
+                    <p>In a MOSFET, applying a voltage to the 'gate' terminal creates an electrical field that allows current to flow between the 'drain' and 'source' terminals. Remove the voltage, and the current stops. This ON/OFF behavior is perfect for representing the 1s and 0s of digital logic.</p>
+                    <p>Now, let's see how these switches combine to form logic gates. The simplest is the NOT gate, or inverter. If the input is 0, the output is 1. If the input is 1, the output is 0.</p>
+                    <p>Using CMOS technology, which uses both N-type and P-type MOSFETs, we can create very efficient gates. An NMOS transistor turns ON with a high gate voltage, while a PMOS turns ON with a low gate voltage.</p>
+                    <p>For a NOT gate, we use one PMOS and one NMOS. When the input is low, the PMOS turns on, connecting the output to the high voltage (1). When the input is high, the NMOS turns on, connecting the output to ground (0).</p>
+                    <p>Next, let's look at the NAND gate. This gate outputs 0 only if all its inputs are 1. Otherwise, the output is 1.</p>
+                    <p>A 2-input NAND gate uses two PMOS transistors in parallel for the pull-up network and two NMOS transistors in series for the pull-down network. Only when both inputs are high do both NMOS transistors conduct, pulling the output to 0.</p>
+                    <p>Similarly, the NOR gate outputs 1 only if all its inputs are 0. Otherwise, the output is 0.</p>
+                    <p>The 2-input NOR gate has two PMOS transistors in series for the pull-up and two NMOS in parallel for the pull-down. Only when both inputs are low do both PMOS transistors conduct, pulling the output to 1.</p>
+                    <p>We can combine these basic gates to create others. An AND gate is simply a NAND gate followed by a NOT gate. An OR gate is a NOR gate followed by a NOT gate.</p>
+                    <p>These simple transistor-based gates form the very foundation of all digital electronics, from calculators to supercomputers. Understanding them is key to understanding how computers work at a fundamental level.</p>
+                    <p>Thank you for watching this module. Feel free to explore the interactive examples and resources provided on this page to deepen your understanding.</p>
+                </div>
+            </div>
+        </section>
+
         <section aria-labelledby="what-is-transistor">
             <h2 id="what-is-transistor">What is a Transistor?</h2>
             <p>A transistor is a semiconductor device used to amplify or switch electronic signals and electrical power. It is one of the fundamental building blocks of modern electronic devices, often described as a tiny, electronically controlled switch or a faucet that controls the flow of electricity.</p>
@@ -244,7 +278,7 @@
 
             <h3>1. NOT Gate (Inverter)</h3>
             <p>Inverts the input: 0 becomes 1, and 1 becomes 0.</p>
-            <img src="not_gate.png" alt="Circuit diagram of a CMOS NOT gate with a PMOS and NMOS transistor connected in series, and its truth table showing input 0 gives output 1, and input 1 gives output 0." width="400">
+            <img src="images/not_gate.png" alt="Circuit diagram of a CMOS NOT gate with a PMOS and NMOS transistor connected in series, and its truth table showing input 0 gives output 1, and input 1 gives output 0." width="400">
             <ul>
                 <li><strong>Input A is 0 (Low):</strong> PMOS ON, NMOS OFF. Output Y is 1 (connected to Vdd).</li>
                 <li><strong>Input A is 1 (High):</strong> PMOS OFF, NMOS ON. Output Y is 0 (connected to GND).</li>
@@ -252,7 +286,7 @@
 
             <h3>2. NAND Gate</h3>
             <p>Output is 0 only if ALL inputs are 1. Otherwise, output is 1.</p>
-            <img src="nand_gate.png" alt="Circuit diagram of a 2-input CMOS NAND gate. It shows two PMOS transistors in parallel connected to VDD, and two NMOS transistors in series connected to GND. Inputs A and B control the gates of both PMOS and NMOS transistors. Includes the NAND gate truth table." width="500">
+            <img src="images/nand_gate.png" alt="Circuit diagram of a 2-input CMOS NAND gate. It shows two PMOS transistors in parallel connected to VDD, and two NMOS transistors in series connected to GND. Inputs A and B control the gates of both PMOS and NMOS transistors. Includes the NAND gate truth table." width="500">
             <ul>
                 <li><strong>Pull-up Network (PMOS in parallel):</strong> If A or B (or both) are 0, at least one PMOS turns ON, pulling output to 1.</li>
                 <li><strong>Pull-down Network (NMOS in series):</strong> Both A and B must be 1 for both NMOS to turn ON, pulling output to 0.</li>
@@ -260,7 +294,7 @@
 
             <h3>3. NOR Gate</h3>
             <p>Output is 1 only if ALL inputs are 0. Otherwise, output is 0.</p>
-            <img src="nor_gate.png" alt="Circuit diagram of a 2-input CMOS NOR gate. It shows two PMOS transistors in series connected to VDD, and two NMOS transistors in parallel connected to GND. Inputs A and B control the gates of both PMOS and NMOS transistors. Includes the NOR gate truth table." width="500">
+            <img src="images/nor_gate.png" alt="Circuit diagram of a 2-input CMOS NOR gate. It shows two PMOS transistors in series connected to VDD, and two NMOS transistors in parallel connected to GND. Inputs A and B control the gates of both PMOS and NMOS transistors. Includes the NOR gate truth table." width="500">
             <ul>
                 <li><strong>Pull-up Network (PMOS in series):</strong> Both A and B must be 0 for both PMOS to turn ON, pulling output to 1.</li>
                 <li><strong>Pull-down Network (NMOS in parallel):</strong> If A or B (or both) are 1, at least one NMOS turns ON, pulling output to 0.</li>
@@ -268,11 +302,11 @@
 
             <h3>4. AND Gate</h3>
             <p>Output is 1 only if ALL inputs are 1. Can be built by connecting a NAND gate to a NOT gate.</p>
-            <img src="and_gate.png" alt="Circuit diagram illustrating how to build an AND gate from a NAND gate followed by a NOT gate. Shows a 2-input NAND gate connected to a 1-input NOT gate, with the final output being the AND function. Includes the AND gate truth table." width="600">
+            <img src="images/and_gate.png" alt="Circuit diagram illustrating how to build an AND gate from a NAND gate followed by a NOT gate. Shows a 2-input NAND gate connected to a 1-input NOT gate, with the final output being the AND function. Includes the AND gate truth table." width="600">
 
             <h3>5. OR Gate</h3>
             <p>Output is 1 if ANY input is 1. Can be built by connecting a NOR gate to a NOT gate.</p>
-            <img src="or_gate.png" alt="Circuit diagram illustrating how to build an OR gate from a NOR gate followed by a NOT gate. Shows a 2-input NOR gate connected to a 1-input NOT gate, with the final output being the OR function. Includes the OR gate truth table." width="600">
+            <img src="images/or_gate.png" alt="Circuit diagram illustrating how to build an OR gate from a NOR gate followed by a NOT gate. Shows a 2-input NOR gate connected to a 1-input NOT gate, with the final output being the OR function. Includes the OR gate truth table." width="600">
         </section>
 
         <section aria-labelledby="interactive-example">
@@ -284,44 +318,10 @@
                 <button id="toggle-not-input" aria-controls="not-input-display not-output-display">Toggle Input</button>
             </div>
         </section>
-
-        <section aria-labelledby="video-resource">
-            <h2 id="video-resource">Further Learning: Video Resource</h2>
-            <p>Watch this video to see transistors and logic gates explained visually.</p>
-            <div class="video-container">
-                <iframe src="https://www.youtube.com/embed/RPK7WvPqf0A?rel=0" 
-                        title="YouTube video about Transistors and Logic Gates" 
-                        frameborder="0" 
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                        allowfullscreen>
-                </iframe>
-            </div>
-
-            <div class="transcript-container">
-                <h3>Video Transcript (Placeholder)</h3>
-                <div class="transcript-text" tabindex="0">
-                    <p>[Transcript will go here. This section is designed to be accessible and scrollable.]</p>
-                    <p>Welcome to this module on transistors and logic gates. Today, we'll explore the tiny switches that power all our modern electronics.</p>
-                    <p>A transistor is essentially a semiconductor device that can either amplify an electronic signal or act as a switch. Think of it like a light switch, but instead of your finger, another electrical signal controls it.</p>
-                    <p>There are two main types: BJTs and FETs. BJTs were the first, but FETs, especially MOSFETs, dominate modern digital circuits due to their efficiency.</p>
-                    <p>In a MOSFET, applying a voltage to the 'gate' terminal creates an electrical field that allows current to flow between the 'drain' and 'source' terminals. Remove the voltage, and the current stops. This ON/OFF behavior is perfect for representing the 1s and 0s of digital logic.</p>
-                    <p>Now, let's see how these switches combine to form logic gates. The simplest is the NOT gate, or inverter. If the input is 0, the output is 1. If the input is 1, the output is 0.</p>
-                    <p>Using CMOS technology, which uses both N-type and P-type MOSFETs, we can create very efficient gates. An NMOS transistor turns ON with a high gate voltage, while a PMOS turns ON with a low gate voltage.</p>
-                    <p>For a NOT gate, we use one PMOS and one NMOS. When the input is low, the PMOS turns on, connecting the output to the high voltage (1). When the input is high, the NMOS turns on, connecting the output to ground (0).</p>
-                    <p>Next, let's look at the NAND gate. This gate outputs 0 only if all its inputs are 1. Otherwise, the output is 1.</p>
-                    <p>A 2-input NAND gate uses two PMOS transistors in parallel for the pull-up network and two NMOS transistors in series for the pull-down network. Only when both inputs are high do both NMOS transistors conduct, pulling the output to 0.</p>
-                    <p>Similarly, the NOR gate outputs 1 only if all its inputs are 0. Otherwise, the output is 0.</p>
-                    <p>The 2-input NOR gate has two PMOS transistors in series for the pull-up and two NMOS in parallel for the pull-down. Only when both inputs are low do both PMOS transistors conduct, pulling the output to 1.</p>
-                    <p>We can combine these basic gates to create others. An AND gate is simply a NAND gate followed by a NOT gate. An OR gate is a NOR gate followed by a NOT gate.</p>
-                    <p>These simple transistor-based gates form the very foundation of all digital electronics, from calculators to supercomputers. Understanding them is key to understanding how computers work at a fundamental level.</p>
-                    <p>Thank you for watching this module. Feel free to explore the interactive examples and resources provided on this page to deepen your understanding.</p>
-                </div>
-            </div>
-        </section>
     </main>
 
     <footer role="contentinfo">
-        <p>&copy; 2023 Transistor Learning Module. All rights reserved.</p>
+        <p>© 2023 Transistor Learning Module. All rights reserved.</p>
         <p><a href="#main-content" aria-label="Back to top of content">Back to Top</a></p>
     </footer>
 
