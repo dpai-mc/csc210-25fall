@@ -3,496 +3,465 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Arithmetic Circuits - CSC210</title>
+    <title>Interactive Learning Module: Digital Adders</title>
     <style>
-/* * CSC210 Module Shared Styles
- * Version: 1.0.0
- * * This CSS file provides consistent styling across all modules
- * and ensures proper integration with the main learning platform.
- */
+        /* CSS Reset & Global Styles */
+        :root {
+            --bg-color: #ffffff;
+            --text-color: #212529;
+            --primary-color: #0056b3;
+            --primary-hover: #004494;
+            --border-color: #dee2e6;
+            --card-bg: #f8f9fa;
+            --wire-off-color: #adb5bd;
+            --wire-on-color: #28a745;
+            --gate-fill: #e9ecef;
+            --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            --radius: 8px;
+        }
 
-/* ===== CSS CUSTOM PROPERTIES (DESIGN SYSTEM) ===== */
-:root {
-    /* Primary Color Palette - Must match platform */
-    --primary-color: #2563eb;
-    --secondary-color: #3b82f6;
-    --accent-color: #f59e0b;
-    --success-color: #059669;
-    --error-color: #dc2626;
-    --warning-color: #d97706;
-    --info-color: #0891b2;
-    
-    /* Background Colors */
-    --bg-primary: #ffffff;
-    --bg-secondary: #f8fafc;
-    --bg-tertiary: #e2e8f0;
-    --bg-inverse: #1e293b;
-    
-    /* Text Colors */
-    --text-primary: #1e293b;
-    --text-secondary: #475569;
-    --text-light: #f1f5f9;
-    
-    /* Font Styles */
-    --font-family-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-    --font-family-mono: "Courier New", Courier, monospace;
-    --font-size-base: 16px;
-    --font-weight-normal: 400;
-    --font-weight-bold: 700;
-    
-    /* Spacing & Sizing */
-    --spacing-unit: 8px;
-    --border-radius: 4px;
-    
-    /* Transitions */
-    --transition-speed: 0.2s;
-}
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
-/* ===== GENERAL STYLES ===== */
-body {
-    font-family: var(--font-family-sans);
-    color: var(--text-primary);
-    background-color: var(--bg-secondary);
-    line-height: 1.6;
-    margin: 0;
-    padding: calc(var(--spacing-unit) * 3);
-}
+        body {
+            font-family: var(--font-family);
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.7;
+            padding: 1.5rem;
+        }
 
-.module-container {
-    max-width: 900px;
-    margin: auto;
-    background-color: var(--bg-primary);
-    border-radius: var(--border-radius);
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-    padding: calc(var(--spacing-unit) * 4);
-}
+        /* Main Container & Layout */
+        .container {
+            max-width: 960px;
+            margin: 0 auto;
+        }
 
-h1, h2, h3 {
-    color: var(--primary-color);
-    border-bottom: 2px solid var(--bg-tertiary);
-    padding-bottom: var(--spacing-unit);
-    margin-top: calc(var(--spacing-unit) * 3);
-}
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 1rem;
+        }
 
-p {
-    margin-bottom: calc(var(--spacing-unit) * 2);
-}
+        h1 {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+        }
+        
+        h2 {
+            font-size: 2rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border-color);
+        }
 
-code {
-    font-family: var(--font-family-mono);
-    background-color: var(--bg-tertiary);
-    padding: 2px 5px;
-    border-radius: var(--border-radius);
-}
+        h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
 
-/* ===== INTERACTIVE COMPONENTS ===== */
-.simulation-container {
-    border: 1px solid var(--bg-tertiary);
-    padding: calc(var(--spacing-unit) * 2);
-    margin-top: calc(var(--spacing-unit) * 2);
-    border-radius: var(--border-radius);
-}
+        p, ul {
+            margin-bottom: 1rem;
+            max-width: 75ch;
+        }
 
-.simulation-container svg {
-    width: 100%;
-    height: auto;
-    user-select: none;
-}
+        section {
+            margin-bottom: 4rem;
+        }
 
-.controls {
-    margin-top: var(--spacing-unit);
-    display: flex;
-    gap: calc(var(--spacing-unit) * 2);
-}
+        /* Interactive Module Card */
+        .interactive-module {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+            align-items: center;
+        }
 
-button {
-    background-color: var(--primary-color);
-    color: var(--text-light);
-    border: none;
-    padding: var(--spacing-unit) calc(var(--spacing-unit) * 2);
-    border-radius: var(--border-radius);
-    cursor: pointer;
-    transition: background-color var(--transition-speed);
-}
+        @media (min-width: 768px) {
+            .interactive-module {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+        
+        .explanation {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
 
-button:hover {
-    background-color: var(--secondary-color);
-}
+        .diagram-container {
+            min-height: 250px;
+        }
+        
+        .simulation-svg {
+            width: 100%;
+            height: auto;
+            font-family: var(--font-family);
+        }
 
-/* ===== QUIZ STYLES ===== */
-.quiz-container {
-    margin-top: calc(var(--spacing-unit) * 4);
-}
+        /* SVG Specific Styles */
+        .gate { fill: var(--gate-fill); stroke: var(--primary-color); stroke-width: 2.5; }
+        .label { font-size: 14px; font-weight: bold; fill: var(--text-color); user-select: none; }
+        .value { font-size: 16px; font-weight: bold; fill: var(--primary-color); }
+        .wire { stroke: var(--wire-off-color); stroke-width: 3; fill: none; transition: stroke 0.2s ease; }
+        .wire.on { stroke: var(--wire-on-color); stroke-width: 4; }
+        .input-switch { cursor: pointer; }
+        .input-switch:focus-visible { outline: 2px solid var(--primary-hover); }
+        .output-light { transition: fill 0.2s ease; }
+        
+        /* Truth Table */
+        table {
+            width: 100%;
+            max-width: 300px;
+            border-collapse: collapse;
+            text-align: center;
+        }
+        th, td {
+            border: 1px solid var(--border-color);
+            padding: 0.5rem;
+        }
+        thead {
+            background-color: var(--primary-color);
+            color: white;
+        }
 
-.question {
-    background: var(--bg-secondary);
-    padding: calc(var(--spacing-unit) * 2);
-    margin-bottom: var(--spacing-unit);
-    border-radius: var(--border-radius);
-}
-
-.question ul {
-    list-style-type: none;
-    padding: 0;
-}
-
-.question li {
-    padding: var(--spacing-unit);
-    cursor: pointer;
-}
-
-.question li:hover {
-    background-color: var(--bg-tertiary);
-}
-
-.feedback {
-    margin-top: var(--spacing-unit);
-    padding: var(--spacing-unit);
-    border-radius: var(--border-radius);
-}
-
-.feedback.correct {
-    background-color: var(--success-color);
-    color: var(--text-light);
-}
-
-.feedback.incorrect {
-    background-color: var(--error-color);
-    color: var(--text-light);
-}
-
-/* SVG specific styles */
-.wire {
-    stroke-width: 2;
-    stroke: var(--text-secondary);
-    fill: none;
-}
-
-.wire.on {
-    stroke: var(--accent-color);
-    stroke-width: 3;
-}
-
-.gate {
-    fill: var(--bg-secondary);
-    stroke: var(--primary-color);
-    stroke-width: 2;
-}
-
-.label {
-    font-family: var(--font-family-sans);
-    font-size: 14px;
-    fill: var(--text-primary);
-    user-select: none;
-}
-
-.interactive:hover {
-    cursor: pointer;
-    opacity: 0.8;
-}
     </style>
 </head>
 <body>
-    <div class="module-container">
+
+    <div class="container">
         <header>
-            <h1>Module 3: Arithmetic Circuits</h1>
-            <p>Understanding how computers perform basic arithmetic using logic gates.</p>
+            <h1>Understanding Digital Adders</h1>
+            <p>An interactive guide to the building blocks of computer arithmetic.</p>
         </header>
 
         <section id="half-adder">
-            <h2>The Half-Adder</h2>
-            <p>A half-adder is a fundamental digital circuit that adds two single binary digits (A and B). It produces two outputs: a <strong>Sum (S)</strong> and a <strong>Carry (C)</strong>.</p>
-            <p>The logic is: S = A XOR B, and C = A AND B.</p>
-            
-            <div class="simulation-container">
-                <h3>Interactive Half-Adder</h3>
-                <p>Click on the input boxes (A or B) to toggle their values between 0 and 1.</p>
-                <svg id="half-adder-svg" viewBox="0 0 400 250">
-                    <path id="wire-a-xor" class="wire" d="M 50 50 H 150"/>
-                    <path id="wire-b-xor" class="wire" d="M 50 150 H 150"/>
-                    <path id="wire-a-and" class="wire" d="M 50 50 H 75 V 100 H 150"/>
-                    <path id="wire-b-and" class="wire" d="M 50 150 H 75 V 120 H 150"/>
-                    <path id="wire-sum" class="wire" d="M 250 75 H 350"/>
-                    <path id="wire-carry" class="wire" d="M 250 110 H 350"/>
-
-                    <path id="gate-xor" class="gate" d="M 150 50 C 175 50, 175 100, 150 100 M 145 40 C 175 50, 175 100, 145 110 "/>
-                    <text x="190" y="80" class="label">XOR</text>
-                    <path id="gate-and" class="gate" d="M 150 100 H 200 A 25 25 0 0 1 200 150 H 150 Z"/>
-                    <text x="165" y="130" class="label">AND</text>
-
-                    <rect id="input-a" class="interactive" x="30" y="40" width="20" height="20" fill="lightblue"/>
-                    <text x="10" y="55" class="label">A</text>
-                    <text id="text-a" x="35" y="55" class="label">0</text>
-                    <rect id="input-b" class="interactive" x="30" y="140" width="20" height="20" fill="lightblue"/>
-                    <text x="10" y="155" class="label">B</text>
-                    <text id="text-b" x="35" y="155" class="label">0</text>
-                    
-                    <rect id="output-sum" x="350" y="65" width="20" height="20" fill="lightgreen"/>
-                    <text x="375" y="80" class="label">Sum</text>
-                    <text id="text-sum" x="355" y="80" class="label">0</text>
-                    <rect id="output-carry" x="350" y="125" width="20" height="20" fill="lightgreen"/>
-                    <text x="375" y="140" class="label">Carry</text>
-                    <text id="text-carry-ha" x="355" y="140" class="label">0</text>
-                </svg>
+            <h2>1. The Half-Adder: Adding Two Bits</h2>
+            <div class="interactive-module">
+                <div class="explanation">
+                    <h3>How It Works</h3>
+                    <p>A <strong>half-adder</strong> is the simplest arithmetic circuit. Its job is to add two single binary digits (bits) together.</p>
+                    <p>It has two inputs, <strong>A</strong> and <strong>B</strong>, and produces two outputs:</p>
+                    <ul>
+                        <li><strong>Sum (S):</strong> The result of A <em>XOR</em> B.</li>
+                        <li><strong>Carry (C):</strong> The result of A <em>AND</em> B.</li>
+                    </ul>
+                    <h4>Truth Table</h4>
+                    <table>
+                        <thead><tr><th>A</th><th>B</th><th>Carry</th><th>Sum</th></tr></thead>
+                        <tbody>
+                            <tr><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+                            <tr><td>0</td><td>1</td><td>0</td><td>1</td></tr>
+                            <tr><td>1</td><td>0</td><td>0</td><td>1</td></tr>
+                            <tr><td>1</td><td>1</td><td>1</td><td>0</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="diagram-container">
+                    <svg id="ha-svg" class="simulation-svg" viewBox="0 0 350 250" aria-labelledby="ha-title" role="img">
+                        <title id="ha-title">Half-Adder Interactive Diagram</title>
+                        <path id="ha-wire-a1" class="wire" d="M 50 50 H 130" />
+                        <path id="ha-wire-b1" class="wire" d="M 50 125 H 130" />
+                        <path id="ha-wire-a2" class="wire" d="M 50 50 H 70 V 175 H 130" />
+                        <path id="ha-wire-b2" class="wire" d="M 50 125 H 70 V 200 H 130" />
+                        <path id="ha-wire-s" class="wire" d="M 230 88 H 300" />
+                        <path id="ha-wire-c" class="wire" d="M 230 188 H 300" />
+                        <path class="gate" d="M130,63 v50 q20,0 20,-25 q0,-25 -20,-25 m0,50 c30,0 30,-50 0,-50" />
+                        <path class="gate" d="M130,163 h50 a25,25 0 0 1 0,50 h-50 z" />
+                        <g id="ha-input-a" class="input-switch" tabindex="0" role="button" aria-pressed="false" aria-label="Input A">
+                            <rect x="20" y="38" width="30" height="25" rx="5" fill="#e9ecef" stroke="#6c757d" stroke-width="2"/>
+                            <text class="label" x="8" y="55">A</text><text id="ha-val-a" class="value" x="32" y="56">0</text>
+                        </g>
+                        <g id="ha-input-b" class="input-switch" tabindex="0" role="button" aria-pressed="false" aria-label="Input B">
+                            <rect x="20" y="113" width="30" height="25" rx="5" fill="#e9ecef" stroke="#6c757d" stroke-width="2"/>
+                            <text class="label" x="8" y="130">B</text><text id="ha-val-b" class="value" x="32" y="131">0</text>
+                        </g>
+                        <circle id="ha-light-s" class="output-light" cx="315" cy="88" r="12" fill="var(--wire-off-color)" stroke="#6c757d" stroke-width="2"/>
+                        <text class="label" x="335" y="93">Sum</text><text id="ha-val-s" class="value" x="310" y="93" aria-live="polite">0</text>
+                        <circle id="ha-light-c" class="output-light" cx="315" cy="188" r="12" fill="var(--wire-off-color)" stroke="#6c757d" stroke-width="2"/>
+                        <text class="label" x="335" y="193">Carry</text><text id="ha-val-c" class="value" x="310" y="193" aria-live="polite">0</text>
+                        <text class="label" x="160" y="50">XOR</text>
+                        <text class="label" x="160" y="150">AND</text>
+                    </svg>
+                </div>
             </div>
         </section>
 
         <section id="full-adder">
-            <h2>The Full-Adder</h2>
-            <p>A full-adder is a more complex circuit that adds three binary digits: A, B, and a Carry-In (C-in). It's essential for multi-bit addition. It produces a Sum (S) and a Carry-Out (C-out).</p>
-            <p>It can be constructed from two half-adders and an OR gate.</p>
-
-            <div class="simulation-container">
-                <h3>Interactive Full-Adder</h3>
-                <p>Click on the input boxes (A, B, or C-in) to toggle their values.</p>
-                <svg id="full-adder-svg" viewBox="0 0 500 300">
-                    <text x="150" y="150">Full-Adder SVG Placeholder</text>
-                </svg>
+            <h2>2. The Full-Adder: Including the Carry</h2>
+            <div class="interactive-module">
+                 <div class="explanation">
+                    <h3>The Missing Piece</h3>
+                    <p>A half-adder works for single bits, but what about adding larger numbers? When you add `1+1` in binary, you get `10`. The `1` must be "carried over" to the next column. A half-adder can't accept this incoming carry.</p>
+                    <p>A <strong>full-adder</strong> solves this by adding a third input, <strong>Carry-In (Cin)</strong>, alongside <strong>A</strong> and <strong>B</strong>. It can be built by combining two half-adders and an OR gate.</p>
+                    <h4>Truth Table</h4>
+                    <table>
+                        <thead><tr><th>A</th><th>B</th><th>Cin</th><th>Cout</th><th>Sum</th></tr></thead>
+                        <tbody>
+                            <tr><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+                            <tr><td>0</td><td>0</td><td>1</td><td>0</td><td>1</td></tr>
+                            <tr><td>0</td><td>1</td><td>0</td><td>0</td><td>1</td></tr>
+                            <tr><td>0</td><td>1</td><td>1</td><td>1</td><td>0</td></tr>
+                            <tr><td>1</td><td>0</td><td>0</td><td>0</td><td>1</td></tr>
+                            <tr><td>1</td><td>0</td><td>1</td><td>1</td><td>0</td></tr>
+                            <tr><td>1</td><td>1</td><td>0</td><td>1</td><td>0</td></tr>
+                            <tr><td>1</td><td>1</td><td>1</td><td>1</td><td>1</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="diagram-container">
+                    <svg id="fa-svg" class="simulation-svg" viewBox="0 0 450 300" aria-labelledby="fa-title" role="img">
+                        <title id="fa-title">Full-Adder Interactive Diagram</title>
+                        <path id="fa-wire-a1" class="wire" d="M50 50 h 70" />
+                        <path id="fa-wire-b1" class="wire" d="M50 100 h 70" />
+                        <path id="fa-wire-s1" class="wire" d="M170 75 h 40" />
+                        <path id="fa-wire-c1" class="wire" d="M145 125 h 110 v 75 h 40" />
+                        <path id="fa-wire-cin1" class="wire" d="M50 150 h 160" />
+                        <path id="fa-wire-s1-s2" class="wire" d="M210 75 h 40" />
+                        <path id="fa-wire-s2" class="wire" d="M350 113 h 50" />
+                        <path id="fa-wire-c2" class="wire" d="M325 163 h 25 v -25 h 30" />
+                        <path id="fa-wire-cout" class="wire" d="M360 175 h 40" />
+                        <rect class="gate" x="120" y="50" width="50" height="75" rx="5" />
+                        <text class="label" x="130" y="90">HA 1</text>
+                        <rect class="gate" x="250" y="75" width="75" height="88" rx="5" />
+                        <text class="label" x="260" y="125">HA 2</text>
+                        <path class="gate" d="M320,150 a40,40 0 0 1 0,50 c15,0 15,-50 0,-50" />
+                        <g id="fa-input-a" class="input-switch" tabindex="0" role="button" aria-pressed="false" aria-label="Input A"><rect x="20" y="38" width="30" height="25" rx="5" fill="#e9ecef" stroke="#6c757d" stroke-width="2"/><text class="label" x="8" y="55">A</text><text id="fa-val-a" class="value" x="32" y="56">0</text></g>
+                        <g id="fa-input-b" class="input-switch" tabindex="0" role="button" aria-pressed="false" aria-label="Input B"><rect x="20" y="88" width="30" height="25" rx="5" fill="#e9ecef" stroke="#6c757d" stroke-width="2"/><text class="label" x="8" y="105">B</text><text id="fa-val-b" class="value" x="32" y="106">0</text></g>
+                        <g id="fa-input-cin" class="input-switch" tabindex="0" role="button" aria-pressed="false" aria-label="Input Carry In"><rect x="20" y="138" width="30" height="25" rx="5" fill="#e9ecef" stroke="#6c757d" stroke-width="2"/><text class="label" x="-2" y="155">Cin</text><text id="fa-val-cin" class="value" x="32" y="156">0</text></g>
+                        <circle id="fa-light-s" class="output-light" cx="415" cy="113" r="12" fill="var(--wire-off-color)" stroke="#6c757d" stroke-width="2"/><text class="label" x="435" y="118">Sum</text><text id="fa-val-s" class="value" x="410" y="118" aria-live="polite">0</text>
+                        <circle id="fa-light-cout" class="output-light" cx="415" cy="175" r="12" fill="var(--wire-off-color)" stroke="#6c757d" stroke-width="2"/><text class="label" x="435" y="180">Cout</text><text id="fa-val-cout" class="value" x="410" y="180" aria-live="polite">0</text>
+                    </svg>
+                </div>
             </div>
         </section>
 
-        <section id="ripple-carry">
-            <h2>The 4-Bit Ripple-Carry Adder</h2>
-            <p>To add numbers with more than one bit, we chain full-adders together. The carry-out of one full-adder becomes the carry-in of the next. This is called a ripple-carry adder.</p>
-            
-            <div class="simulation-container">
-                <h3>Interactive 4-Bit Adder</h3>
-                <p>The interactive SVG diagram for the 4-bit ripple-carry adder should be placed here.</p>
-                <svg id="ripple-carry-svg" viewBox="0 0 600 400">
-                     <text x="200" y="200">4-Bit Ripple-Carry Adder SVG Placeholder</text>
-                </svg>
+        <section id="ripple-adder">
+            <h2>3. The 4-Bit Ripple-Carry Adder</h2>
+             <div class="interactive-module">
+                <div class="explanation">
+                    <h3>Adding Multiple Bits</h3>
+                    <p>To add numbers with more than one bit (e.g., `1011` + `0010`), we chain full-adders together. This creates a <strong>Ripple-Carry Adder</strong>.</p>
+                    <p>The <strong>Carry-Out (Cout)</strong> from one full-adder becomes the <strong>Carry-In (Cin)</strong> for the next one in the chain. This "ripples" the carry bit from the least significant bit (right) to the most significant bit (left).</p>
+                    <p>In this 4-bit adder, we add two numbers: <strong>A (A3 A2 A1 A0)</strong> and <strong>B (B3 B2 B1 B0)</strong>.</p>
+                </div>
+                <div class="diagram-container">
+                     <svg id="rca-svg" class="simulation-svg" viewBox="0 0 500 320" aria-labelledby="rca-title" role="img">
+                         <title id="rca-title">4-Bit Ripple-Carry Adder Interactive Diagram</title>
+                         <g id="rca-fa0"><rect class="gate" x="370" y="100" width="60" height="100" rx="5"/><text class="label" x="380" y="155">FA 0</text></g>
+                         <g id="rca-fa1"><rect class="gate" x="270" y="100" width="60" height="100" rx="5"/><text class="label" x="280" y="155">FA 1</text></g>
+                         <g id="rca-fa2"><rect class="gate" x="170" y="100" width="60" height="100" rx="5"/><text class="label" x="180" y="155">FA 2</text></g>
+                         <g id="rca-fa3"><rect class="gate" x="70" y="100" width="60" height="100" rx="5"/><text class="label" x="80" y="155">FA 3</text></g>
+                         <path id="rca-wire-c0" class="wire" d="M370 150 h-40 v-25 h-30"/>
+                         <path id="rca-wire-c1" class="wire" d="M270 150 h-40 v-25 h-30"/>
+                         <path id="rca-wire-c2" class="wire" d="M170 150 h-40 v-25 h-30"/>
+                         <path id="rca-wire-c3" class="wire" d="M70 150 h-20"/>
+                         <path class="wire" d="M400 60 v 40"/><g id="rca-input-a0" class="input-switch" tabindex="0" role="button" aria-pressed="false" aria-label="Input A0"><rect x="385" y="30" width="30" height="30" rx="5" fill="#e9ecef" stroke="#6c757d" stroke-width="2"/><text class="label" x="390" y="20">A0</text><text id="rca-val-a0" class="value" x="397" y="51">0</text></g>
+                         <path class="wire" d="M300 60 v 40"/><g id="rca-input-a1" class="input-switch" tabindex="0" role="button" aria-pressed="false" aria-label="Input A1"><rect x="285" y="30" width="30" height="30" rx="5" fill="#e9ecef" stroke="#6c757d" stroke-width="2"/><text class="label" x="290" y="20">A1</text><text id="rca-val-a1" class="value" x="297" y="51">0</text></g>
+                         <path class="wire" d="M200 60 v 40"/><g id="rca-input-a2" class="input-switch" tabindex="0" role="button" aria-pressed="false" aria-label="Input A2"><rect x="185" y="30" width="30" height="30" rx="5" fill="#e9ecef" stroke="#6c757d" stroke-width="2"/><text class="label" x="190" y="20">A2</text><text id="rca-val-a2" class="value" x="197" y="51">0</text></g>
+                         <path class="wire" d="M100 60 v 40"/><g id="rca-input-a3" class="input-switch" tabindex="0" role="button" aria-pressed="false" aria-label="Input A3"><rect x="85" y="30" width="30" height="30" rx="5" fill="#e9ecef" stroke="#6c757d" stroke-width="2"/><text class="label" x="90" y="20">A3</text><text id="rca-val-a3" class="value" x="97" y="51">0</text></g>
+                         <path class="wire" d="M400 240 v-40"/><g id="rca-input-b0" class="input-switch" tabindex="0" role="button" aria-pressed="false" aria-label="Input B0"><rect x="385" y="240" width="30" height="30" rx="5" fill="#e9ecef" stroke="#6c757d" stroke-width="2"/><text class="label" x="390" y="285">B0</text><text id="rca-val-b0" class="value" x="397" y="261">0</text></g>
+                         <path class="wire" d="M300 240 v-40"/><g id="rca-input-b1" class="input-switch" tabindex="0" role="button" aria-pressed="false" aria-label="Input B1"><rect x="285" y="240" width="30" height="30" rx="5" fill="#e9ecef" stroke="#6c757d" stroke-width="2"/><text class="label" x="290" y="285">B1</text><text id="rca-val-b1" class="value" x="297" y="261">0</text></g>
+                         <path class="wire" d="M200 240 v-40"/><g id="rca-input-b2" class="input-switch" tabindex="0" role="button" aria-pressed="false" aria-label="Input B2"><rect x="185" y="240" width="30" height="30" rx="5" fill="#e9ecef" stroke="#6c757d" stroke-width="2"/><text class="label" x="190" y="285">B2</text><text id="rca-val-b2" class="value" x="197" y="261">0</text></g>
+                         <path class="wire" d="M100 240 v-40"/><g id="rca-input-b3" class="input-switch" tabindex="0" role="button" aria-pressed="false" aria-label="Input B3"><rect x="85" y="240" width="30" height="30" rx="5" fill="#e9ecef" stroke="#6c757d" stroke-width="2"/><text class="label" x="90" y="285">B3</text><text id="rca-val-b3" class="value" x="97" y="261">0</text></g>
+                         <path id="rca-wire-s0" class="wire" d="M400 200 v 10"/><circle id="rca-light-s0" class="output-light" cx="400" cy="220" r="12" fill="var(--wire-off-color)" stroke="#6c757d" stroke-width="2"/><text class="label" x="420" y="225">S0</text><text id="rca-val-s0" class="value" x="395" y="225" aria-live="polite">0</text>
+                         <path id="rca-wire-s1" class="wire" d="M300 200 v 10"/><circle id="rca-light-s1" class="output-light" cx="300" cy="220" r="12" fill="var(--wire-off-color)" stroke="#6c757d" stroke-width="2"/><text class="label" x="320" y="225">S1</text><text id="rca-val-s1" class="value" x="295" y="225" aria-live="polite">0</text>
+                         <path id="rca-wire-s2" class="wire" d="M200 200 v 10"/><circle id="rca-light-s2" class="output-light" cx="200" cy="220" r="12" fill="var(--wire-off-color)" stroke="#6c757d" stroke-width="2"/><text class="label" x="220" y="225">S2</text><text id="rca-val-s2" class="value" x="195" y="225" aria-live="polite">0</text>
+                         <path id="rca-wire-s3" class="wire" d="M100 200 v 10"/><circle id="rca-light-s3" class="output-light" cx="100" cy="220" r="12" fill="var(--wire-off-color)" stroke="#6c757d" stroke-width="2"/><text class="label" x="120" y="225">S3</text><text id="rca-val-s3" class="value" x="95" y="225" aria-live="polite">0</text>
+                         <circle id="rca-light-c3" class="output-light" cx="35" cy="150" r="12" fill="var(--wire-off-color)" stroke="#6c757d" stroke-width="2"/><text class="label" x="10" y="130">Cout</text><text id="rca-val-c3" class="value" x="30" y="155" aria-live="polite">0</text>
+                     </svg>
+                </div>
             </div>
         </section>
 
-        <section id="assessment">
-            <h2>Assessment Quiz</h2>
-            <p>Test your understanding of arithmetic circuits.</p>
-            <div id="quiz-container" class="quiz-container"></div>
-            <button id="submit-quiz">Submit Answers</button>
-            <div id="quiz-results"></div>
-        </section>
     </div>
 
     <script>
-// Enhanced Quiz Manager
-class QuizManager {
-    constructor(quizData) {
-        this.quizData = quizData;
-        this.userAnswers = {};
-        this.container = document.getElementById('quiz-container');
-        this.resultsContainer = document.getElementById('quiz-results');
-        this.submitButton = document.getElementById('submit-quiz');
-        this.render();
-        this.submitButton.addEventListener('click', () => this.showResults());
-    }
+    document.addEventListener('DOMContentLoaded', () => {
 
-    render() {
-        this.quizData.forEach((q, index) => {
-            const questionEl = document.createElement('div');
-            questionEl.className = 'question';
-            let optionsHtml = '<ul>';
-            q.options.forEach((option, i) => {
-                optionsHtml += `<li><input type="radio" name="q${index}" value="${i}">${option}</li>`;
-            });
-            optionsHtml += '</ul>';
-            questionEl.innerHTML = `<p>${index + 1}. ${q.question}</p>${optionsHtml}`;
-            this.container.appendChild(questionEl);
-        });
-    }
+        // --- UTILITY FUNCTIONS ---
+        const getEl = (id) => document.getElementById(id);
+        const setClass = (id, className, condition) => getEl(id).classList.toggle(className, condition);
+        const setText = (id, text) => getEl(id).textContent = text;
+        const setFill = (id, color) => getEl(id).style.fill = color;
 
-    showResults() {
-        let score = 0;
-        this.quizData.forEach((q, index) => {
-            const selected = document.querySelector(`input[name="q${index}"]:checked`);
-            if (selected && parseInt(selected.value) === q.answer) {
-                score++;
+        /**
+         * Generic function to handle input clicks and keyboard events for accessibility.
+         * @param {HTMLElement} el - The input element.
+         * @param {Function} callback - The function to call on activation.
+         */
+        function setupInput(el, callback) {
+            const handler = (event) => {
+                if (event.type === 'click' || (event.type === 'keydown' && (event.key === 'Enter' || event.key === ' '))) {
+                    event.preventDefault();
+                    callback();
+                }
+            };
+            el.addEventListener('click', handler);
+            el.addEventListener('keydown', handler);
+        }
+
+        // --- HALF ADDER SIMULATOR ---
+        class HalfAdderSim {
+            constructor() {
+                this.a = 0;
+                this.b = 0;
+                this.elements = {
+                    valA: 'ha-val-a', valB: 'ha-val-b', valS: 'ha-val-s', valC: 'ha-val-c',
+                    wireA1: 'ha-wire-a1', wireA2: 'ha-wire-a2', wireB1: 'ha-wire-b1', wireB2: 'ha-wire-b2',
+                    wireS: 'ha-wire-s', wireC: 'ha-wire-c',
+                    lightS: 'ha-light-s', lightC: 'ha-light-c'
+                };
+                setupInput(getEl('ha-input-a'), () => this.toggleA());
+                setupInput(getEl('ha-input-b'), () => this.toggleB());
+                this.update();
             }
-        });
-        this.resultsContainer.innerHTML = `<h3>Your score: ${score} out of ${this.quizData.length}</h3>`;
-    }
 
-    calculateScore() {
-        // ... (calculation logic)
-        return 0; // Placeholder
-    }
-}
+            toggleA() { this.a = 1 - this.a; getEl('ha-input-a').setAttribute('aria-pressed', this.a === 1); this.update(); }
+            toggleB() { this.b = 1 - this.b; getEl('ha-input-b').setAttribute('aria-pressed', this.b === 1); this.update(); }
 
-// Base class for circuit simulators
-class CircuitSimulator {
-    constructor(svgId) {
-        this.svg = document.getElementById(svgId);
-        if (!this.svg) {
-            throw new Error(`SVG element with ID "${svgId}" not found.`);
-        }
-        this.inputs = {};
-        this.outputs = {};
-        this.wires = {};
-    }
+            update() {
+                const sum = this.a ^ this.b;
+                const carry = this.a & this.b;
 
-    updateWire(wireId, state) {
-        const wire = this.wires[wireId] || this.svg.getElementById(wireId);
-        if (wire) {
-            this.wires[wireId] = wire;
-            wire.classList.toggle('on', state === 1);
-        }
-    }
+                // Update text values
+                setText(this.elements.valA, this.a);
+                setText(this.elements.valB, this.b);
+                setText(this.elements.valS, sum);
+                setText(this.elements.valC, carry);
 
-    updateText(textId, value) {
-        const textElement = this.svg.getElementById(textId);
-        if (textElement) {
-            textElement.textContent = value;
-        }
-    }
-}
+                // Update wires
+                setClass(this.elements.wireA1, 'on', this.a);
+                setClass(this.elements.wireA2, 'on', this.a);
+                setClass(this.elements.wireB1, 'on', this.b);
+                setClass(this.elements.wireB2, 'on', this.b);
+                setClass(this.elements.wireS, 'on', sum);
+                setClass(this.elements.wireC, 'on', carry);
 
-// Half-Adder Simulator
-class HalfAdderSimulator extends CircuitSimulator {
-    constructor(svgId) {
-        super(svgId);
-        this.inputs = { a: 0, b: 0 };
-        this.outputs = { sum: 0, carry: 0 };
-        this.initListeners();
-        this.update();
-    }
-
-    initListeners() {
-        this.svg.getElementById('input-a').addEventListener('click', () => this.toggleInput('a'));
-        this.svg.getElementById('input-b').addEventListener('click', () => this.toggleInput('b'));
-    }
-
-    toggleInput(input) {
-        this.inputs[input] = 1 - this.inputs[input];
-        this.update();
-    }
-
-    update() {
-        const { a, b } = this.inputs;
-        this.outputs.sum = a ^ b; // XOR
-        this.outputs.carry = a & b; // AND
-
-        // Update visuals
-        this.updateText('text-a', a);
-        this.updateText('text-b', b);
-        this.updateText('text-sum', this.outputs.sum);
-        this.updateText('text-carry-ha', this.outputs.carry);
-        
-        this.updateWire('wire-a-xor', a);
-        this.updateWire('wire-a-and', a);
-        this.updateWire('wire-b-xor', b);
-        this.updateWire('wire-b-and', b);
-        this.updateWire('wire-sum', this.outputs.sum);
-        this.updateWire('wire-carry', this.outputs.carry);
-    }
-}
-
-// Full-Adder and Ripple-Carry simulators would be defined here...
-class FullAdderSimulator extends CircuitSimulator {
-    // ... Implementation
-}
-
-class RippleCarryAdderSimulator extends CircuitSimulator {
-    // ... Implementation
-}
-
-// Main module initialization function
-function initializeCompleteArithmeticModule() {
-    try {
-        console.log("Initializing Arithmetic Circuits Module...");
-
-        // Initialize simulators
-        window.halfAdder = new HalfAdderSimulator('half-adder-svg');
-        // The following lines will fail if the SVG elements don't exist,
-        // which is expected if they are just placeholders.
-        try {
-            window.fullAdder = new FullAdderSimulator('full-adder-svg');
-        } catch (e) {
-            console.warn("FullAdder SVG not found. Skipping initialization.");
-        }
-        try {
-            window.rippleCarryAdder = new RippleCarryAdderSimulator('ripple-carry-svg');
-        } catch(e) {
-            console.warn("RippleCarryAdder SVG not found. Skipping initialization.");
-        }
-        
-        // Quiz data
-        const quizData = [
-            {
-                question: "What are the outputs of a half-adder?",
-                options: ["Sum and Carry", "Input and Output", "A and B"],
-                answer: 0
-            },
-            {
-                question: "A full-adder can be constructed from:",
-                options: ["Two AND gates and one OR gate", "Two XOR gates", "Two half-adders and an OR gate"],
-                answer: 2
+                // Update lights
+                setFill(this.elements.lightS, sum ? 'var(--wire-on-color)' : 'var(--wire-off-color)');
+                setFill(this.elements.lightC, carry ? 'var(--wire-on-color)' : 'var(--wire-off-color)');
             }
-        ];
-
-        // Initialize quiz system
-        window.quizManager = new QuizManager(quizData);
-
-        console.log("Module initialized successfully.");
-    } catch (error) {
-        console.error("Failed to initialize arithmetic module:", error);
-        // Display an error message to the user in the UI
-        const container = document.querySelector('.module-container');
-        if (container) {
-            const errorDiv = document.createElement('div');
-            errorDiv.textContent = 'Error: The interactive module could not be loaded. Please try refreshing the page.';
-            errorDiv.style.color = 'red';
-            errorDiv.style.padding = '10px';
-            errorDiv.style.border = '1px solid red';
-            container.prepend(errorDiv);
         }
-    }
-}
+        new HalfAdderSim();
 
-function cleanupArithmeticModule() {
-    try {
-        console.log("Cleaning up Arithmetic Module...");
-        
-        // Update completion status if appropriate
-        if (window.progressTracker && window.progressTracker.getTotalProgress() === 100) {
-            window.progressTracker.markComplete({
-                quizScore: window.quizManager ? window.quizManager.calculateScore() : 0,
-                timeSpent: window.progressTracker.getTimeSpent(),
-                sectionsCompleted: ['half-adder', 'full-adder', 'ripple-carry', 'assessment']
-            });
+
+        // --- FULL ADDER SIMULATOR ---
+        class FullAdderSim {
+            constructor() {
+                this.a = 0;
+                this.b = 0;
+                this.cin = 0;
+                this.elements = {
+                    valA: 'fa-val-a', valB: 'fa-val-b', valCin: 'fa-val-cin',
+                    valS: 'fa-val-s', valCout: 'fa-val-cout',
+                    wireA1: 'fa-wire-a1', wireB1: 'fa-wire-b1', wireCin1: 'fa-wire-cin1',
+                    wireS1: 'fa-wire-s1', wireC1: 'fa-wire-c1', wireS1S2: 'fa-wire-s1-s2',
+                    wireC2: 'fa-wire-c2', wireS2: 'fa-wire-s2', wireCout: 'fa-wire-cout',
+                    lightS: 'fa-light-s', lightCout: 'fa-light-cout'
+                };
+                setupInput(getEl('fa-input-a'), () => this.toggle('a'));
+                setupInput(getEl('fa-input-b'), () => this.toggle('b'));
+                setupInput(getEl('fa-input-cin'), () => this.toggle('cin'));
+                this.update();
+            }
+
+            toggle(input) {
+                this[input] = 1 - this[input];
+                getEl(`fa-input-${input}`).setAttribute('aria-pressed', this[input] === 1);
+                this.update();
+            }
+            
+            update() {
+                // HA1
+                const s1 = this.a ^ this.b;
+                const c1 = this.a & this.b;
+                // HA2
+                const sum = s1 ^ this.cin;
+                const c2 = s1 & this.cin;
+                // OR Gate
+                const cout = c1 | c2;
+
+                // Update text
+                setText(this.elements.valA, this.a);
+                setText(this.elements.valB, this.b);
+                setText(this.elements.valCin, this.cin);
+                setText(this.elements.valS, sum);
+                setText(this.elements.valCout, cout);
+
+                // Update wires
+                setClass(this.elements.wireA1, 'on', this.a);
+                setClass(this.elements.wireB1, 'on', this.b);
+                setClass(this.elements.wireCin1, 'on', this.cin);
+                setClass(this.elements.wireS1, 'on', s1);
+                setClass(this.elements.wireC1, 'on', c1);
+                setClass(this.elements.wireS1S2, 'on', s1);
+                setClass(this.elements.wireC2, 'on', c2);
+                setClass(this.elements.wireS2, 'on', sum);
+                setClass(this.elements.wireCout, 'on', cout);
+
+                // Update lights
+                setFill(this.elements.lightS, sum ? 'var(--wire-on-color)' : 'var(--wire-off-color)');
+                setFill(this.elements.lightCout, cout ? 'var(--wire-on-color)' : 'var(--wire-off-color)');
+            }
         }
+        new FullAdderSim();
         
-        // Clear any ongoing animations or timers
-        // (Add cleanup code here if needed)
-        
-    } catch (error) {
-        console.warn('Error during module cleanup:', error);
-    }
-}
+        // --- RIPPLE CARRY ADDER SIMULATOR ---
+        class RippleCarryAdderSim {
+            constructor() {
+                this.inputs = { a: [0,0,0,0], b: [0,0,0,0] };
+                for (let i = 0; i < 4; i++) {
+                    setupInput(getEl(`rca-input-a${i}`), () => this.toggle('a', i));
+                    setupInput(getEl(`rca-input-b${i}`), () => this.toggle('b', i));
+                }
+                this.update();
+            }
+            
+            toggle(type, index) {
+                this.inputs[type][index] = 1 - this.inputs[type][index];
+                getEl(`rca-input-${type}${index}`).setAttribute('aria-pressed', this.inputs[type][index] === 1);
+                this.update();
+            }
+            
+            update() {
+                let carry = 0;
+                for (let i = 0; i < 4; i++) {
+                    const a = this.inputs.a[i];
+                    const b = this.inputs.b[i];
+                    
+                    // Full adder logic
+                    const sum = a ^ b ^ carry;
+                    carry = (a & b) | (carry & (a ^ b));
 
-// Initialize when DOM is fully loaded
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initializeCompleteArithmeticModule);
-} else {
-    // DOM already loaded
-    initializeCompleteArithmeticModule();
-}
+                    // Update UI for this bit
+                    setText(`rca-val-a${i}`, a);
+                    setText(`rca-val-b${i}`, b);
+                    setText(`rca-val-s${i}`, sum);
+                    setClass(`rca-wire-s${i}`, 'on', sum);
+                    setFill(`rca-light-s${i}`, sum ? 'var(--wire-on-color)' : 'var(--wire-off-color)');
+                    setClass(`rca-wire-c${i}`, 'on', carry);
+                }
+                
+                // Final carry out
+                setText(`rca-val-c3`, carry);
+                setFill(`rca-light-c3`, carry ? 'var(--wire-on-color)' : 'var(--wire-off-color)');
+            }
+        }
+        new RippleCarryAdderSim();
 
-// Handle page unload
-window.addEventListener('beforeunload', cleanupArithmeticModule);
-
-// Export for debugging
-window.ArithmeticModule = {
-    initialize: initializeCompleteArithmeticModule,
-    cleanup: cleanupArithmeticModule,
-    getStatus: () => ({
-        progressTracker: window.progressTracker,
-        simulators: {
-            halfAdder: window.halfAdder,
-            fullAdder: window.fullAdder, 
-            rippleCarryAdder: window.rippleCarryAdder
-        },
-        quizManager: window.quizManager
-    })
-};
+    });
     </script>
+
 </body>
 </html>
