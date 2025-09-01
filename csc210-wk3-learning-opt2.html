@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Interactive learning platform for CSC210 Week 3: Combinational Logic Design covering arithmetic circuits, multiplexers, decoders, and more">
-    <title>CSC210 Week 3: Combinational Logic Design</title>
+    <meta name="description" content="Interactive learning platform for CSC210 Week 3: Combinational Logic Design covering arithmetic and decoder circuits.">
+    <title>CSC210 Week 3: Combinational Logic</title>
     <style>
         /* Reset and Base Styles */
         * {
@@ -17,9 +17,8 @@
             --primary-color: #2563eb;
             --secondary-color: #3b82f6;
             --accent-color: #f59e0b;
-            --success-color: #059669;
+            --success-color: #16a34a;
             --error-color: #dc2626;
-            --warning-color: #d97706;
             
             --bg-primary: #ffffff;
             --bg-secondary: #f8fafc;
@@ -31,1211 +30,389 @@
             --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
             --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
             --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-            
-            --border-radius: 0.5rem;
-            --border-radius-lg: 0.75rem;
-            
-            --transition: all 0.2s ease-in-out;
+            --border-radius-md: 0.375rem;
+            --border-radius-lg: 0.5rem;
+            --transition-speed: 0.2s ease-in-out;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: var(--bg-secondary);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        /* Layout */
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 250px;
+            background-color: var(--bg-primary);
+            padding: 1.5rem;
+            border-right: 1px solid var(--bg-tertiary);
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100%;
+            overflow-y: auto;
+            transition: transform var(--transition-speed);
+        }
+
+        .main-content {
+            flex-grow: 1;
+            margin-left: 250px;
+            padding: 2rem 3rem;
+            overflow-y: auto;
         }
         
         /* Typography */
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            font-size: 16px;
-            line-height: 1.6;
+        h1, h2, h3 {
             color: var(--text-primary);
-            background-color: var(--bg-primary);
-            height: 100vh;
-            overflow: hidden; /* For iframe embedding */
-        }
-        
-        h1, h2, h3, h4, h5, h6 {
-            font-weight: 600;
-            line-height: 1.3;
-            margin-bottom: 0.5em;
-        }
-        
-        h1 { font-size: 2.5rem; }
-        h2 { font-size: 2rem; }
-        h3 { font-size: 1.5rem; }
-        h4 { font-size: 1.25rem; }
-        
-        p {
             margin-bottom: 1rem;
-            color: var(--text-secondary);
-        }
-        
-        /* Layout - Optimized for iframe */
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 1rem;
-        }
-        
-        .main-layout {
-            display: grid;
-            grid-template-columns: 280px 1fr;
-            height: 100vh;
-            gap: 0;
-        }
-        
-        /* Header */
-        .header {
-            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
-            color: white;
-            padding: 1rem 0;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            box-shadow: var(--shadow-md);
-        }
-        
-        .header-content {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .logo {
-            font-size: 1.2rem;
             font-weight: 700;
         }
-        
-        .course-info {
-            font-size: 0.875rem;
-            opacity: 0.9;
-        }
-        
+        h1 { font-size: 2.25rem; }
+        h2 { font-size: 1.75rem; border-bottom: 2px solid var(--bg-tertiary); padding-bottom: 0.5rem; margin-top: 2.5rem; }
+        h3 { font-size: 1.25rem; }
+        p { margin-bottom: 1rem; color: var(--text-secondary); }
+        a { color: var(--primary-color); text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        ul { list-style-position: inside; padding-left: 1rem; }
+
         /* Sidebar Navigation */
-        .sidebar {
-            background-color: var(--bg-secondary);
-            border-right: 1px solid var(--bg-tertiary);
-            overflow-y: auto;
-            height: 100vh;
+        .sidebar-header { margin-bottom: 2rem; }
+        .sidebar-header h2 { font-size: 1.25rem; color: var(--primary-color); }
+        .sidebar-nav ul { list-style: none; padding: 0; }
+        .sidebar-nav li a {
+            display: block;
+            padding: 0.75rem 1rem;
+            border-radius: var(--border-radius-md);
+            transition: background-color var(--transition-speed), color var(--transition-speed);
         }
-        
-        .nav-section {
-            padding: 1.5rem 1rem;
-        }
-        
-        .nav-title {
-            font-size: 0.875rem;
-            font-weight: 600;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            margin-bottom: 0.75rem;
-        }
-        
-        .nav-menu {
-            list-style: none;
-        }
-        
-        .nav-item {
-            margin-bottom: 0.25rem;
-        }
-        
-        .nav-link {
-            display: flex;
-            align-items: center;
-            padding: 0.75rem 0.75rem;
-            color: var(--text-secondary);
-            text-decoration: none;
-            border-radius: var(--border-radius);
-            transition: var(--transition);
-            cursor: pointer;
-        }
-        
-        .nav-link:hover {
-            background-color: var(--bg-tertiary);
-            color: var(--text-primary);
-        }
-        
-        .nav-link.active {
-            background-color: var(--primary-color);
+        .sidebar-nav li a:hover, .sidebar-nav li a.active {
+            background-color: var(--secondary-color);
             color: white;
         }
-        
-        .nav-icon {
-            width: 1.25rem;
-            height: 1.25rem;
-            margin-right: 0.75rem;
-            opacity: 0.7;
-        }
-        
-        .progress-indicator {
-            width: 0.5rem;
-            height: 0.5rem;
-            border-radius: 50%;
-            margin-left: auto;
-        }
-        
-        .progress-completed { background-color: var(--success-color); }
-        .progress-in-progress { background-color: var(--warning-color); }
-        .progress-not-started { background-color: var(--bg-tertiary); }
-        
-        /* Main Content Area */
-        .main-content {
-            padding: 2rem;
-            overflow-y: auto;
-            height: 100vh;
-        }
-        
-        .content-section {
-            display: none;
-            animation: fadeIn 0.3s ease-in-out;
-        }
-        
-        .content-section.active {
-            display: block;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        /* Cards and Components */
+
+        /* Card Component */
         .card {
             background-color: var(--bg-primary);
             border-radius: var(--border-radius-lg);
             box-shadow: var(--shadow-md);
             padding: 1.5rem;
             margin-bottom: 1.5rem;
-            border: 1px solid var(--bg-tertiary);
         }
-        
-        .card-header {
-            display: flex;
-            justify-content: between;
-            align-items: center;
-            margin-bottom: 1rem;
-            padding-bottom: 1rem;
-            border-bottom: 1px solid var(--bg-tertiary);
-        }
-        
-        .card-title {
-            font-size: 1.25rem;
-            font-weight: 600;
-            color: var(--text-primary);
-        }
-        
-        .badge {
-            display: inline-flex;
-            align-items: center;
-            padding: 0.25rem 0.75rem;
-            border-radius: 9999px;
-            font-size: 0.75rem;
-            font-weight: 500;
-            margin-left: auto;
-        }
-        
-        .badge-primary { background-color: var(--primary-color); color: white; }
-        .badge-secondary { background-color: var(--bg-tertiary); color: var(--text-secondary); }
-        .badge-success { background-color: var(--success-color); color: white; }
-        .badge-warning { background-color: var(--warning-color); color: white; }
-        
-        /* Interactive Elements */
+
+        /* Button */
         .btn {
-            display: inline-flex;
-            align-items: center;
-            padding: 0.75rem 1.5rem;
-            border-radius: var(--border-radius);
-            font-weight: 500;
-            text-decoration: none;
-            transition: var(--transition);
-            cursor: pointer;
-            border: none;
-            font-size: 0.875rem;
-        }
-        
-        .btn-primary {
+            display: inline-block;
             background-color: var(--primary-color);
             color: white;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: var(--border-radius-md);
+            cursor: pointer;
+            font-weight: 600;
+            text-align: center;
+            transition: background-color var(--transition-speed);
         }
-        
-        .btn-primary:hover {
-            background-color: #1d4ed8;
-            transform: translateY(-1px);
-            box-shadow: var(--shadow-lg);
+        .btn:hover { background-color: #1d4ed8; color: white; text-decoration: none; }
+
+        /* Learning Modules Section */
+        .modules-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
         }
-        
-        .btn-secondary {
-            background-color: var(--bg-tertiary);
-            color: var(--text-primary);
+        .module-card {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            text-align: center;
         }
-        
-        .btn-secondary:hover {
-            background-color: #cbd5e1;
-        }
-        
-        /* Video Container */
+
+        /* Video Section */
         .video-container {
             position: relative;
-            width: 100%;
-            height: 0;
             padding-bottom: 56.25%; /* 16:9 aspect ratio */
-            margin: 1rem 0;
-            background-color: var(--bg-secondary);
-            border-radius: var(--border-radius);
+            height: 0;
             overflow: hidden;
+            max-width: 100%;
+            background: #000;
+            border-radius: var(--border-radius-lg);
         }
-        
-        .video-placeholder {
+        .video-container iframe {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            background: linear-gradient(135deg, var(--bg-tertiary) 0%, var(--bg-secondary) 100%);
-            color: var(--text-secondary);
         }
-        
-        .video-placeholder .play-icon {
-            font-size: 3rem;
-            margin-bottom: 1rem;
+        .transcript {
+            margin-top: 1rem;
+        }
+        .transcript summary {
+            cursor: pointer;
+            font-weight: bold;
             color: var(--primary-color);
         }
-        
-        /* Module Integration Placeholder */
-        .module-container {
-            width: 100%;
-            min-height: 400px;
-            border: 2px dashed var(--bg-tertiary);
-            border-radius: var(--border-radius);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background-color: var(--bg-secondary);
-            margin: 1rem 0;
+
+        /* Quiz Section */
+        #quiz-container .question { margin-bottom: 1.5rem; }
+        #quiz-container ul { list-style-type: none; padding-left: 0; }
+        #quiz-container li {
+            padding: 0.75rem;
+            margin: 0.5rem 0;
+            border: 1px solid var(--bg-tertiary);
+            border-radius: var(--border-radius-md);
+            cursor: pointer;
         }
-        
-        .module-placeholder {
-            text-align: center;
-            color: var(--text-muted);
-        }
-        
-        .module-placeholder h3 {
-            margin-bottom: 0.5rem;
-            color: var(--text-secondary);
-        }
-        
-        /* Progress Bar */
-        .progress-bar {
-            width: 100%;
-            height: 0.5rem;
-            background-color: var(--bg-tertiary);
-            border-radius: 9999px;
-            overflow: hidden;
-            margin: 1rem 0;
-        }
-        
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, var(--primary-color) 0%, var(--secondary-color) 100%);
-            border-radius: 9999px;
-            transition: width 0.3s ease;
-        }
-        
-        /* Study Path Timeline */
-        .study-timeline {
-            position: relative;
-            margin: 2rem 0;
-        }
-        
-        .timeline-item {
-            display: flex;
-            align-items: flex-start;
-            margin-bottom: 2rem;
-            position: relative;
-        }
-        
-        .timeline-marker {
-            width: 2rem;
-            height: 2rem;
-            border-radius: 50%;
-            background-color: var(--bg-tertiary);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-right: 1rem;
-            flex-shrink: 0;
-            position: relative;
-            z-index: 2;
-        }
-        
-        .timeline-marker.completed {
-            background-color: var(--success-color);
-            color: white;
-        }
-        
-        .timeline-marker.current {
-            background-color: var(--primary-color);
-            color: white;
-        }
-        
-        .timeline-content {
-            flex: 1;
-            background-color: var(--bg-secondary);
+        #quiz-container li:hover { background-color: var(--bg-secondary); }
+        #quiz-results {
+            margin-top: 1.5rem;
             padding: 1rem;
-            border-radius: var(--border-radius);
+            border-radius: var(--border-radius-md);
+            font-weight: bold;
+            text-align: center;
         }
+        .quiz-feedback { font-style: italic; margin-top: 0.5rem; padding-left: 1rem; }
+        .correct { border-left: 4px solid var(--success-color); }
+        .incorrect { border-left: 4px solid var(--error-color); }
+
+
+        /* Responsive Design */
+        .mobile-nav-toggle { display: none; }
         
-        .timeline-item:not(:last-child)::after {
-            content: '';
-            position: absolute;
-            left: 1rem;
-            top: 2rem;
-            bottom: -2rem;
-            width: 2px;
-            background-color: var(--bg-tertiary);
-            z-index: 1;
-        }
-        
-        /* Responsive Design - Mobile First */
         @media (max-width: 768px) {
-            .main-layout {
-                grid-template-columns: 1fr;
-            }
-            
             .sidebar {
-                position: fixed;
-                top: 0;
-                left: -280px;
-                width: 280px;
-                height: 100vh;
-                z-index: 200;
-                transition: left 0.3s ease;
+                transform: translateX(-100%);
+                z-index: 1000;
+                box-shadow: var(--shadow-lg);
             }
-            
             .sidebar.open {
-                left: 0;
+                transform: translateX(0);
             }
-            
+            .main-content {
+                margin-left: 0;
+            }
             .mobile-nav-toggle {
                 display: block;
-                background: none;
-                border: none;
+                position: fixed;
+                top: 1rem;
+                left: 1rem;
+                z-index: 1001;
+                background: var(--primary-color);
                 color: white;
+                border: none;
+                border-radius: 50%;
+                width: 40px;
+                height: 40px;
                 font-size: 1.5rem;
                 cursor: pointer;
             }
-            
-            .main-content {
-                padding: 1rem;
-            }
-            
-            .card {
-                padding: 1rem;
-            }
-            
-            h1 { font-size: 2rem; }
-            h2 { font-size: 1.75rem; }
-            h3 { font-size: 1.25rem; }
-        }
-        
-        @media (max-width: 480px) {
-            .header-content {
-                flex-direction: column;
-                gap: 0.5rem;
-                text-align: center;
-            }
-            
-            .logo {
-                font-size: 1rem;
-            }
-        }
-        
-        /* Accessibility Focus Styles */
-        button:focus,
-        .nav-link:focus,
-        .btn:focus {
-            outline: 2px solid var(--accent-color);
-            outline-offset: 2px;
-        }
-        
-        /* Skip Link for Screen Readers */
-        .skip-link {
-            position: absolute;
-            top: -40px;
-            left: 6px;
-            background: var(--primary-color);
-            color: white;
-            padding: 8px;
-            text-decoration: none;
-            border-radius: 4px;
-            z-index: 1000;
-        }
-        
-        .skip-link:focus {
-            top: 6px;
-        }
-        
-        /* Hidden content for screen readers */
-        .sr-only {
-            position: absolute;
-            width: 1px;
-            height: 1px;
-            padding: 0;
-            margin: -1px;
-            overflow: hidden;
-            clip: rect(0, 0, 0, 0);
-            white-space: nowrap;
-            border: 0;
         }
     </style>
 </head>
 <body>
-    <!-- Skip Link for Accessibility -->
-    <a href="#main-content" class="skip-link">Skip to main content</a>
-    
-    <!-- Header -->
-    <header class="header">
-        <div class="container">
-            <div class="header-content">
-                <div class="logo">CSC210: Computer Organization & Architecture</div>
-                <button class="mobile-nav-toggle" onclick="toggleMobileNav()" style="display: none;" aria-label="Toggle navigation menu">
-                    <span aria-hidden="true">☰</span>
-                </button>
-                <div class="course-info">
-                    <div>Week 3: Combinational Logic Design</div>
-                    <div>Interactive Learning Platform</div>
-                </div>
-            </div>
-        </div>
-    </header>
 
-    <div class="main-layout">
-        <!-- Sidebar Navigation -->
-        <nav class="sidebar" role="navigation" aria-label="Course content navigation">
-            <div class="nav-section">
-                <h2 class="nav-title">Getting Started</h2>
-                <ul class="nav-menu">
-                    <li class="nav-item">
-                        <a href="#" class="nav-link active" onclick="showSection('overview')" role="menuitem">
-                            <span class="nav-icon" aria-hidden="true">🎯</span>
-                            Learning Objectives
-                            <span class="progress-indicator progress-completed" aria-label="Completed"></span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="#" class="nav-link" onclick="showSection('intro-video')" role="menuitem">
-                            <span class="nav-icon" aria-hidden="true">🎥</span>
-                            Introduction Video
-                            <span class="progress-indicator progress-not-started" aria-label="Not started"></span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="#" class="nav-link" onclick="showSection('study-path')" role="menuitem">
-                            <span class="nav-icon" aria-hidden="true">📚</span>
-                            Study Path
-                            <span class="progress-indicator progress-not-started" aria-label="Not started"></span>
-                        </a>
-                    </li>
+    <div class="container">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h2>CSC210 - Week 3</h2>
+            </div>
+            <nav class="sidebar-nav">
+                <ul>
+                    <li><a href="#overview">Overview</a></li>
+                    <li><a href="#video-lesson">Video Lesson</a></li>
+                    <li><a href="#learning-modules">Learning Modules</a></li>
+                    <li><a href="#assessment">Assessment</a></li>
                 </ul>
-            </div>
+            </nav>
+        </aside>
 
-            <div class="nav-section">
-                <h2 class="nav-title">Learning Modules</h2>
-                <ul class="nav-menu">
-                    <li class="nav-item">
-                        <a href="#" class="nav-link" onclick="showSection('module-arithmetic')" role="menuitem">
-                            <span class="nav-icon" aria-hidden="true">🔢</span>
-                            Arithmetic Circuits
-                            <span class="progress-indicator progress-not-started" aria-label="Not started"></span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="#" class="nav-link" onclick="showSection('module-routing')" role="menuitem">
-                            <span class="nav-icon" aria-hidden="true">🔄</span>
-                            Data Routing
-                            <span class="progress-indicator progress-not-started" aria-label="Not started"></span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="#" class="nav-link" onclick="showSection('module-conversion')" role="menuitem">
-                            <span class="nav-icon" aria-hidden="true">🔓</span>
-                            Code Conversion
-                            <span class="progress-indicator progress-not-started" aria-label="Not started"></span>
-                        </a>
-                    </li>
+        <main class="main-content">
+            <button class="mobile-nav-toggle" id="mobile-nav-toggle" aria-label="Open navigation menu" aria-expanded="false">&#9776;</button>
+
+            <header>
+                <h1>Week 3: Combinational Logic</h1>
+                <p class="text-muted">Exploring the building blocks of computation, from basic arithmetic to data selection and decoding.</p>
+            </header>
+
+            <section id="overview" class="card">
+                <h2>Learning Objectives</h2>
+                <p>By the end of this week, you will be able to:</p>
+                <ul>
+                    <li>Design and analyze half-adders, full-adders, and ripple-carry adders.</li>
+                    <li>Understand the function and application of decoders in memory addressing and data routing.</li>
+                    <li>Differentiate between various types of decoders (e.g., 2-to-4, 3-to-8).</li>
+                    <li>Apply combinational logic principles to build essential arithmetic and decoding circuits.</li>
                 </ul>
-            </div>
+            </section>
 
-            <div class="nav-section">
-                <h2 class="nav-title">Assessment</h2>
-                <ul class="nav-menu">
-                    <li class="nav-item">
-                        <a href="#" class="nav-link" onclick="showSection('quiz')" role="menuitem">
-                            <span class="nav-icon" aria-hidden="true">📝</span>
-                            Interactive Quiz
-                            <span class="progress-indicator progress-not-started" aria-label="Not started"></span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="#" class="nav-link" onclick="showSection('assignments')" role="menuitem">
-                            <span class="nav-icon" aria-hidden="true">📋</span>
-                            Assignments
-                            <span class="progress-indicator progress-not-started" aria-label="Not started"></span>
-                        </a>
-                    </li>
-                </ul>
-            </div>
-        </nav>
-
-        <!-- Main Content Area -->
-        <main class="main-content" id="main-content" role="main">
-            <!-- Overview Section -->
-            <section id="overview" class="content-section active">
-                <h1>Week 3: Combinational Logic Design</h1>
-                
-                <div class="card">
-                    <div class="card-header">
-                        <h2 class="card-title">Learning Objectives</h2>
-                        <span class="badge badge-primary">Week 3</span>
-                    </div>
-                    <p>By the end of this week, you will be able to:</p>
-                    <ul style="list-style-type: none; padding-left: 0;">
-                        <li style="padding: 0.5rem 0; display: flex; align-items: flex-start;">
-                            <span style="color: var(--success-color); margin-right: 0.75rem; font-size: 1.2rem;" aria-hidden="true">✓</span>
-                            <span>Design and analyze combinational logic circuits using basic gates</span>
-                        </li>
-                        <li style="padding: 0.5rem 0; display: flex; align-items: flex-start;">
-                            <span style="color: var(--success-color); margin-right: 0.75rem; font-size: 1.2rem;" aria-hidden="true">✓</span>
-                            <span>Construct adders (half-adder and full-adder) from basic logic gates</span>
-                        </li>
-                        <li style="padding: 0.5rem 0; display: flex; align-items: flex-start;">
-                            <span style="color: var(--success-color); margin-right: 0.75rem; font-size: 1.2rem;" aria-hidden="true">✓</span>
-                            <span>Understand the operation and applications of multiplexers and demultiplexers</span>
-                        </li>
-                        <li style="padding: 0.5rem 0; display: flex; align-items: flex-start;">
-                            <span style="color: var(--success-color); margin-right: 0.75rem; font-size: 1.2rem;" aria-hidden="true">✓</span>
-                            <span>Design and implement decoders and encoders for various applications</span>
-                        </li>
-                        <li style="padding: 0.5rem 0; display: flex; align-items: flex-start;">
-                            <span style="color: var(--success-color); margin-right: 0.75rem; font-size: 1.2rem;" aria-hidden="true">✓</span>
-                            <span>Analyze timing and propagation delays in combinational circuits</span>
-                        </li>
-                        <li style="padding: 0.5rem 0; display: flex; align-items: flex-start;">
-                            <span style="color: var(--success-color); margin-right: 0.75rem; font-size: 1.2rem;" aria-hidden="true">✓</span>
-                            <span>Apply systematic design methodologies for complex combinational systems</span>
-                        </li>
-                    </ul>
+            <section id="video-lesson" class="card">
+                <h2>Video Lesson: Circuits in Context</h2>
+                <p>This video provides an overview of the arithmetic and decoder circuits and explains how these fundamental components will be used in our final CPU simulation.</p>
+                <div class="video-container">
+                    <!-- YouTube video placeholder -->
+                    <iframe src="https://www.youtube.com/embed/gI-qXk7XojA" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                 </div>
-
-                <div class="card">
-                    <div class="card-header">
-                        <h2 class="card-title">Course Progress</h2>
-                    </div>
-                    <div style="margin-bottom: 1rem;">
-                        <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
-                            <span>Overall Completion</span>
-                            <span><span id="progress-percentage">5</span>%</span>
-                        </div>
-                        <div class="progress-bar">
-                            <div class="progress-fill" style="width: 5%" id="progress-bar-fill"></div>
-                        </div>
-                    </div>
-                    <p>Ready to get started? Begin with the introduction video to get an overview of this week's material, then follow the recommended study path.</p>
-                    <div style="margin-top: 1.5rem;">
-                        <a href="#" class="btn btn-primary" onclick="showSection('intro-video')">
-                            Watch Introduction Video
-                            <span style="margin-left: 0.5rem;" aria-hidden="true">→</span>
-                        </a>
-                    </div>
+                <div class="transcript">
+                    <details>
+                        <summary>Show Transcript</summary>
+                        <p>[Transcript Placeholder] Welcome, everyone. In this video, we'll bridge the gap between the theory of combinational logic and its practical application. We've just explored arithmetic circuits, the foundation of how a computer's Arithmetic Logic Unit, or ALU, performs calculations. We also looked at decoders, which are crucial for selecting the correct memory location or enabling the right component at the right time. As we move forward, remember these building blocks. You'll see them again when we begin constructing our final CPU simulation, where the adder will become the heart of our ALU and the decoder will be the key to our memory and instruction-handling systems. Let's get started.</p>
+                    </details>
                 </div>
+            </section>
 
-                <div class="card">
-                    <div class="card-header">
-                        <h2 class="card-title">What You'll Build</h2>
-                        <span class="badge badge-secondary">Interactive</span>
+            <section id="learning-modules">
+                <h2>Interactive Learning Modules</h2>
+                <div class="modules-grid">
+                    <div class="card module-card">
+                        <h3>Arithmetic Circuits</h3>
+                        <p>Explore how computers perform addition with interactive half-adders, full-adders, and 4-bit adders.</p>
+                        <a href="modules/arithmetic-module.html" class="btn">Launch Module</a>
                     </div>
-                    <p>Throughout this week, you'll use interactive simulators to build and test:</p>
-                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; margin-top: 1rem;">
-                        <div style="background: var(--bg-secondary); padding: 1rem; border-radius: var(--border-radius);">
-                            <h4>🔢 Adder Circuits</h4>
-                            <p style="font-size: 0.875rem; margin-bottom: 0;">Create half-adders and full-adders, then chain them into multi-bit ripple-carry adders.</p>
-                        </div>
-                        <div style="background: var(--bg-secondary); padding: 1rem; border-radius: var(--border-radius);">
-                            <h4>🔄 Multiplexers</h4>
-                            <p style="font-size: 0.875rem; margin-bottom: 0;">Construct data selectors and learn how to implement logic functions using MUX.</p>
-                        </div>
-                        <div style="background: var(--bg-secondary); padding: 1rem; border-radius: var(--border-radius);">
-                            <h4>🔓 Decoder Systems</h4>
-                            <p style="font-size: 0.875rem; margin-bottom: 0;">Build binary-to-unary converters and connect them to 7-segment displays.</p>
-                        </div>
+                    <div class="card module-card">
+                        <h3>Decoder Circuits</h3>
+                        <p>Learn how decoders work to select memory addresses and activate specific outputs based on binary inputs.</p>
+                        <a href="modules/conversion-module.html" class="btn">Launch Module</a>
                     </div>
                 </div>
             </section>
 
-            <!-- Introduction Video Section -->
-            <section id="intro-video" class="content-section">
-                <h1>Introduction to Combinational Logic Design</h1>
-                
-                <div class="card">
-                    <div class="card-header">
-                        <h2 class="card-title">Week 3 Overview Video</h2>
-                        <span class="badge badge-primary">15 minutes</span>
+            <section id="assessment" class="card">
+                <h2>Knowledge Check</h2>
+                <p>Test your understanding of the concepts from this week's modules.</p>
+                <form id="quiz-form">
+                    <div id="quiz-container">
+                        <!-- Questions will be injected here by JavaScript -->
                     </div>
-                    
-                    <div class="video-container">
-                        <div class="video-placeholder">
-                            <div class="play-icon" aria-hidden="true">▶</div>
-                            <h3>Introduction to Week 3: Combinational Logic Design</h3>
-                            <p>Professor Johnson introduces the key concepts and learning objectives for this week.</p>
-                            <button class="btn btn-primary" style="margin-top: 1rem;" onclick="loadVideo('intro')">
-                                Play Video
-                            </button>
-                        </div>
-                    </div>
-                    
-                    <div style="margin-top: 1.5rem;">
-                        <h3>Video Topics Covered:</h3>
-                        <ul>
-                            <li>Overview of combinational vs. sequential circuits</li>
-                            <li>Introduction to arithmetic circuits (adders, subtractors)</li>
-                            <li>Data routing with multiplexers and demultiplexers</li>
-                            <li>Code conversion using decoders and encoders</li>
-                            <li>Real-world applications in computer systems</li>
-                            <li>Preview of hands-on lab exercises</li>
-                        </ul>
-                    </div>
-                    
-                    <div style="margin-top: 1.5rem;">
-                        <button class="btn btn-primary" onclick="showSection('study-path')">
-                            Continue to Study Path
-                            <span style="margin-left: 0.5rem;" aria-hidden="true">→</span>
-                        </button>
-                    </div>
-                </div>
+                    <button type="submit" class="btn">Submit Quiz</button>
+                    <div id="quiz-results"></div>
+                </form>
             </section>
 
-            <!-- Recommended Study Path Section -->
-            <section id="study-path" class="content-section">
-                <h1>Recommended Study Order</h1>
-                
-                <div class="card">
-                    <div class="card-header">
-                        <h2 class="card-title">Self-Paced Learning Path</h2>
-                        <span class="badge badge-secondary">Flexible Schedule</span>
-                    </div>
-                    <p>Follow this recommended sequence to build your understanding systematically. You can work through these modules at your own pace to fit your busy schedule.</p>
-                </div>
-
-                <div class="study-timeline">
-                    <div class="timeline-item">
-                        <div class="timeline-marker completed">
-                            <span aria-hidden="true">✓</span>
-                        </div>
-                        <div class="timeline-content">
-                            <h3>Getting Started</h3>
-                            <p><strong>Estimated time:</strong> 20 minutes</p>
-                            <p>Review learning objectives and watch the introduction video to understand the week's scope.</p>
-                            <div style="margin-top: 1rem;">
-                                <span class="badge badge-success">Completed</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="timeline-item">
-                        <div class="timeline-marker current">
-                            <span aria-hidden="true">1</span>
-                        </div>
-                        <div class="timeline-content">
-                            <h3>Module 1: Arithmetic Circuits</h3>
-                            <p><strong>Estimated time:</strong> 2-3 hours</p>
-                            <p>Start with the foundation of combinational logic by learning about half-adders, full-adders, and ripple-carry adders. Interactive simulators help you visualize circuit behavior.</p>
-                            <div style="margin-top: 1rem;">
-                                <button class="btn btn-primary" onclick="showSection('module-arithmetic')">Start Module 1</button>
-                                <span class="badge badge-warning" style="margin-left: 0.5rem;">Next</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="timeline-item">
-                        <div class="timeline-marker">
-                            <span aria-hidden="true">2</span>
-                        </div>
-                        <div class="timeline-content">
-                            <h3>Module 2: Data Routing Circuits</h3>
-                            <p><strong>Estimated time:</strong> 2-3 hours</p>
-                            <p>Learn about multiplexers and demultiplexers for data selection and distribution. Discover how these circuits enable flexible data routing in computer systems.</p>
-                            <div style="margin-top: 1rem;">
-                                <button class="btn btn-secondary" onclick="showSection('module-routing')" disabled>Available after Module 1</button>
-                                <span class="badge badge-secondary" style="margin-left: 0.5rem;">Locked</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="timeline-item">
-                        <div class="timeline-marker">
-                            <span aria-hidden="true">3</span>
-                        </div>
-                        <div class="timeline-content">
-                            <h3>Module 3: Code Conversion Circuits</h3>
-                            <p><strong>Estimated time:</strong> 2-3 hours</p>
-                            <p>Explore decoders and encoders for converting between different data representations. Build practical applications like 7-segment display drivers.</p>
-                            <div style="margin-top: 1rem;">
-                                <button class="btn btn-secondary" onclick="showSection('module-conversion')" disabled>Available after Module 2</button>
-                                <span class="badge badge-secondary" style="margin-left: 0.5rem;">Locked</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="timeline-item">
-                        <div class="timeline-marker">
-                            <span aria-hidden="true">✓</span>
-                        </div>
-                        <div class="timeline-content">
-                            <h3>Knowledge Check & Assignments</h3>
-                            <p><strong>Estimated time:</strong> 1-2 hours</p>
-                            <p>Test your understanding with interactive quizzes and complete the week's assignments. Get immediate feedback on your progress.</p>
-                            <div style="margin-top: 1rem;">
-                                <button class="btn btn-secondary" onclick="showSection('quiz')" disabled>Available after all modules</button>
-                                <span class="badge badge-secondary" style="margin-left: 0.5rem;">Locked</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="card">
-                    <div class="card-header">
-                        <h2 class="card-title">Study Tips</h2>
-                    </div>
-                    <ul>
-                        <li><strong>Take breaks:</strong> Each module is designed to be completed in one sitting, but feel free to pause and return later.</li>
-                        <li><strong>Use the simulators:</strong> The interactive circuit simulators are key to understanding how these circuits work in practice.</li>
-                        <li><strong>Ask questions:</strong> Use the discussion forum if you get stuck on any concepts.</li>
-                        <li><strong>Practice:</strong> Try building circuits with different input combinations to see how outputs change.</li>
-                        <li><strong>Connect concepts:</strong> Think about how each circuit type might be used in real computer systems.</li>
-                    </ul>
-                </div>
-            </section>
-
-            <!-- Module Placeholders -->
-            <section id="module-arithmetic" class="content-section">
-                <h1>Module 1: Arithmetic Circuits</h1>
-                
-                <div class="card">
-                    <div class="card-header">
-                        <h2 class="card-title">Interactive Module Integration</h2>
-                        <span class="badge badge-warning">Ready for Integration</span>
-                    </div>
-                    
-                    <div class="module-container">
-                        <div class="module-placeholder">
-                            <h3>🔢 Arithmetic Circuits Module</h3>
-                            <p>This is where Module 1 will be integrated</p>
-                            <p>Topics: Half-Adders, Full-Adders, Ripple-Carry Adders</p>
-                            <button class="btn btn-primary" onclick="loadModule('arithmetic')">Load Module (Iframe)</button>
-                        </div>
-                    </div>
-                    
-                    <div style="background: var(--bg-secondary); padding: 1rem; border-radius: var(--border-radius); margin-top: 1rem;">
-                        <h4>Module Integration Notes:</h4>
-                        <ul style="margin-bottom: 0;">
-                            <li>Module will be loaded via iframe for security and isolation</li>
-                            <li>Progress tracking will communicate back to parent platform</li>
-                            <li>Interactive simulators will be fully contained within module</li>
-                            <li>Module completion will unlock next section</li>
-                        </ul>
-                    </div>
-                </div>
-            </section>
-
-            <section id="module-routing" class="content-section">
-                <h1>Module 2: Data Routing Circuits</h1>
-                
-                <div class="card">
-                    <div class="card-header">
-                        <h2 class="card-title">Interactive Module Integration</h2>
-                        <span class="badge badge-secondary">Awaiting Module 1</span>
-                    </div>
-                    
-                    <div class="module-container">
-                        <div class="module-placeholder">
-                            <h3>🔄 Data Routing Module</h3>
-                            <p>Complete Module 1 to unlock this section</p>
-                            <p>Topics: Multiplexers, Demultiplexers, Data Selection</p>
-                            <button class="btn btn-secondary" disabled>Module Locked</button>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <section id="module-conversion" class="content-section">
-                <h1>Module 3: Code Conversion Circuits</h1>
-                
-                <div class="card">
-                    <div class="card-header">
-                        <h2 class="card-title">Interactive Module Integration</h2>
-                        <span class="badge badge-secondary">Awaiting Modules 1-2</span>
-                    </div>
-                    
-                    <div class="module-container">
-                        <div class="module-placeholder">
-                            <h3>🔓 Code Conversion Module</h3>
-                            <p>Complete Modules 1-2 to unlock this section</p>
-                            <p>Topics: Decoders, Encoders, 7-Segment Displays</p>
-                            <button class="btn btn-secondary" disabled>Module Locked</button>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Quiz Section -->
-            <section id="quiz" class="content-section">
-                <h1>Interactive Knowledge Check</h1>
-                
-                <div class="card">
-                    <div class="card-header">
-                        <h2 class="card-title">Comprehensive Quiz</h2>
-                        <span class="badge badge-secondary">Complete All Modules First</span>
-                    </div>
-                    
-                    <div class="module-container">
-                        <div class="module-placeholder">
-                            <h3>📝 Assessment Module</h3>
-                            <p>Complete all learning modules to unlock the quiz</p>
-                            <p>Topics: All combinational logic concepts from Week 3</p>
-                            <button class="btn btn-secondary" disabled>Quiz Locked</button>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Assignments Section -->
-            <section id="assignments" class="content-section">
-                <h1>Week 3 Assignments</h1>
-                
-                <div class="card">
-                    <div class="card-header">
-                        <h2 class="card-title">Course Assignments</h2>
-                        <span class="badge badge-primary">CSC210</span>
-                    </div>
-                    
-                    <h3>Lecture Assignment: Combinational Circuit Analysis and Design</h3>
-                    <p><strong>Total Points:</strong> 100 points | <strong>Due Date:</strong> End of Week 3</p>
-                    
-                    <h4>Part A: Circuit Analysis (40 points)</h4>
-                    <ol>
-                        <li><strong>4-bit Ripple Carry Adder Analysis</strong> (15 points)
-                            <ul>
-                                <li>Determine sum and carry outputs for specific input combinations</li>
-                                <li>Calculate worst-case propagation delay</li>
-                                <li>Identify critical path and timing considerations</li>
-                            </ul>
-                        </li>
-                        <li><strong>8:1 Multiplexer Function Implementation</strong> (15 points)
-                            <ul>
-                                <li>Analyze MUX circuit implementing 3-variable Boolean function</li>
-                                <li>Derive truth table from circuit diagram</li>
-                                <li>Write simplified Boolean expression using K-maps</li>
-                            </ul>
-                        </li>
-                        <li><strong>Combined Decoder/Encoder System</strong> (10 points)
-                            <ul>
-                                <li>Trace signals through 3:8 decoder connected to 8:3 priority encoder</li>
-                                <li>Explain system function and identify issues</li>
-                                <li>Suggest improvements for reliability and performance</li>
-                            </ul>
-                        </li>
-                    </ol>
-
-                    <h4>Part B: Design Problems (45 points)</h4>
-                    <ol start="4">
-                        <li><strong>Multi-Level Arithmetic Circuit</strong> (20 points)</li>
-                        <li><strong>Data Selector with Enable</strong> (15 points)</li>
-                        <li><strong>BCD-to-Decimal Decoder</strong> (10 points)</li>
-                    </ol>
-
-                    <h4>Part C: Application Analysis (15 points)</h4>
-                    <ol start="7">
-                        <li><strong>Computer System Integration</strong> (15 points)</li>
-                    </ol>
-
-                    <div style="background: var(--bg-secondary); padding: 1rem; border-radius: var(--border-radius); margin: 1.5rem 0;">
-                        <h4>Lab Assignment: Advanced Combinational Circuits in Logisim</h4>
-                        <p><strong>Completion Time:</strong> 2.5 hours (in-lab)</p>
-                        <p><strong>Deliverables:</strong></p>
-                        <ul>
-                            <li>Logisim circuit file (.circ)</li>
-                            <li>Test documentation with screenshots</li>
-                            <li>Performance analysis report</li>
-                            <li>Design reflection (1-2 pages)</li>
-                        </ul>
-                    </div>
-                </div>
-            </section>
         </main>
     </div>
 
     <script>
-        // Global Variables for Platform Management
-        let courseProgress = {
-            overview: true,
-            'intro-video': false,
-            'study-path': false,
-            'module-arithmetic': false,
-            'module-routing': false,
-            'module-conversion': false,
-            quiz: false,
-            assignments: false
-        };
-
-        let moduleCompletionStatus = {
-            arithmetic: false,
-            routing: false,
-            conversion: false
-        };
-
-        // Navigation Functions
-        function showSection(sectionId) {
-            // Hide all sections
-            const sections = document.querySelectorAll('.content-section');
-            sections.forEach(section => section.classList.remove('active'));
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- Mobile Navigation ---
+            const sidebar = document.getElementById('sidebar');
+            const toggleButton = document.getElementById('mobile-nav-toggle');
             
-            // Show selected section
-            const targetSection = document.getElementById(sectionId);
-            if (targetSection) {
-                targetSection.classList.add('active');
-                
-                // Announce the change for screen readers
-                const sectionTitle = targetSection.querySelector('h1').textContent;
-                announceChange(`Now viewing: ${sectionTitle}`);
-            }
-            
-            // Update navigation
-            const navLinks = document.querySelectorAll('.nav-link');
-            navLinks.forEach(link => link.classList.remove('active'));
-            
-            // Find and activate the corresponding nav link
-            const activeLink = document.querySelector(`[onclick="showSection('${sectionId}')"]`);
-            if (activeLink) {
-                activeLink.classList.add('active');
-            }
-            
-            // Update progress
-            updateProgress(sectionId);
-            
-            // Close mobile menu if open
-            closeMobileNav();
-        }
-
-        function updateProgress(sectionId) {
-            if (sectionId in courseProgress) {
-                courseProgress[sectionId] = true;
-                
-                // Calculate progress
-                const completedCount = Object.values(courseProgress).filter(Boolean).length;
-                const totalCount = Object.keys(courseProgress).length;
-                const percentage = Math.round((completedCount / totalCount) * 100);
-                
-                // Update UI
-                document.getElementById('progress-percentage').textContent = percentage;
-                document.getElementById('progress-bar-fill').style.width = percentage + '%';
-                
-                // Update navigation indicators
-                updateNavProgressIndicators();
-                
-                // Check for module unlocks
-                checkModuleUnlocks();
-            }
-        }
-
-        function updateNavProgressIndicators() {
-            Object.keys(courseProgress).forEach(section => {
-                const indicator = document.querySelector(`[onclick="showSection('${section}')"] .progress-indicator`);
-                if (indicator) {
-                    indicator.className = 'progress-indicator ' + 
-                        (courseProgress[section] ? 'progress-completed' : 'progress-not-started');
-                }
+            toggleButton.addEventListener('click', () => {
+                const isOpen = sidebar.classList.toggle('open');
+                toggleButton.setAttribute('aria-expanded', isOpen);
+                toggleButton.innerHTML = isOpen ? '&times;' : '&#9776;';
             });
-        }
 
-        function checkModuleUnlocks() {
-            // Module progression logic
-            if (courseProgress['intro-video'] && courseProgress['study-path']) {
-                unlockModule('arithmetic');
-            }
-            if (moduleCompletionStatus.arithmetic) {
-                unlockModule('routing');
-            }
-            if (moduleCompletionStatus.routing) {
-                unlockModule('conversion');
-            }
-            if (moduleCompletionStatus.arithmetic && moduleCompletionStatus.routing && moduleCompletionStatus.conversion) {
-                unlockAssessments();
-            }
-        }
+            // --- Interactive Quiz ---
+            const quizContainer = document.getElementById('quiz-container');
+            const quizForm = document.getElementById('quiz-form');
+            const resultsContainer = document.getElementById('quiz-results');
 
-        function unlockModule(moduleType) {
-            const button = document.querySelector(`button[onclick="loadModule('${moduleType}')"]`);
-            const badge = button?.parentElement.querySelector('.badge');
-            
-            if (button) {
-                button.disabled = false;
-                button.textContent = `Load ${moduleType.charAt(0).toUpperCase() + moduleType.slice(1)} Module`;
-                button.className = 'btn btn-primary';
-            }
-            
-            if (badge) {
-                badge.textContent = 'Ready';
-                badge.className = 'badge badge-success';
-            }
-        }
+            const quizData = [
+                {
+                    question: "What are the two primary outputs of a half-adder circuit?",
+                    options: ["Input and Output", "Sum and Carry", "A and B", "Clock and Data"],
+                    answer: 1
+                },
+                {
+                    question: "A full-adder can be constructed from which combination of components?",
+                    options: ["Two AND gates and one OR gate", "Two half-adders and an OR gate", "Two XOR gates and an AND gate", "One half-adder and two OR gates"],
+                    answer: 1
+                },
+                {
+                    question: "What is the main function of a decoder circuit?",
+                    options: ["To add multiple binary numbers together", "To select one of many inputs to pass to a single output", "To convert a binary code into a single active output signal", "To store a bit of information"],
+                    answer: 2
+                },
+                {
+                    question: "How many output lines would a 3-to-8 decoder have?",
+                    options: ["3", "4", "8", "16"],
+                    answer: 2
+                }
+            ];
 
-        function unlockAssessments() {
-            // Unlock quiz and ensure assignments are accessible
-            const quizButton = document.querySelector(`button[onclick="showSection('quiz')"]`);
-            if (quizButton) {
-                quizButton.disabled = false;
-                quizButton.textContent = 'Take Quiz';
-                quizButton.className = 'btn btn-primary';
-            }
-        }
+            function buildQuiz() {
+                quizData.forEach((currentQuestion, questionIndex) => {
+                    const questionDiv = document.createElement('div');
+                    questionDiv.classList.add('question');
 
-        // Mobile Navigation
-        function toggleMobileNav() {
-            const sidebar = document.querySelector('.sidebar');
-            sidebar.classList.toggle('open');
-        }
-
-        function closeMobileNav() {
-            const sidebar = document.querySelector('.sidebar');
-            sidebar.classList.remove('open');
-        }
-
-        // Module Loading Function (for iframe integration)
-        function loadModule(moduleType) {
-            const container = document.querySelector('#module-' + moduleType + ' .module-container');
-            
-            if (container) {
-                // Create iframe for module
-                const iframe = document.createElement('iframe');
-                iframe.src = `modules/${moduleType}-module.html`;
-                iframe.style.width = '100%';
-                iframe.style.height = '600px';
-                iframe.style.border = 'none';
-                iframe.style.borderRadius = 'var(--border-radius)';
-                iframe.setAttribute('title', `${moduleType.charAt(0).toUpperCase() + moduleType.slice(1)} Module`);
-                iframe.setAttribute('sandbox', 'allow-scripts allow-same-origin');
-                
-                // Replace placeholder with iframe
-                container.innerHTML = '';
-                container.appendChild(iframe);
-                
-                // Listen for completion messages from iframe
-                window.addEventListener('message', function(event) {
-                    if (event.data.type === 'moduleComplete' && event.data.module === moduleType) {
-                        moduleCompletionStatus[moduleType] = true;
-                        checkModuleUnlocks();
+                    const questionText = document.createElement('p');
+                    questionText.innerHTML = `<strong>${questionIndex + 1}. ${currentQuestion.question}</strong>`;
+                    questionDiv.appendChild(questionText);
+                    
+                    const optionsList = document.createElement('ul');
+                    currentQuestion.options.forEach((option, optionIndex) => {
+                        const li = document.createElement('li');
+                        const input = document.createElement('input');
+                        input.type = 'radio';
+                        input.name = `question${questionIndex}`;
+                        input.value = optionIndex;
+                        input.id = `q${questionIndex}o${optionIndex}`;
                         
-                        // Show completion notification
-                        announceChange(`${moduleType.charAt(0).toUpperCase() + moduleType.slice(1)} module completed!`);
-                    }
+                        const label = document.createElement('label');
+                        label.htmlFor = `q${questionIndex}o${optionIndex}`;
+                        label.textContent = option;
+                        
+                        li.appendChild(input);
+                        li.appendChild(label);
+                        optionsList.appendChild(li);
+                    });
+                    questionDiv.appendChild(optionsList);
+                    questionDiv.appendChild(document.createElement('div')); // For feedback
+                    quizContainer.appendChild(questionDiv);
                 });
             }
-        }
 
-        // Video Loading Function
-        function loadVideo(videoType) {
-            const container = document.querySelector('.video-container');
-            const placeholder = container.querySelector('.video-placeholder');
-            
-            // In a real implementation, this would load the actual video
-            placeholder.innerHTML = `
-                <div style="display: flex; align-items: center; justify-content: center; height: 100%; background: #000; color: white;">
-                    <div style="text-align: center;">
-                        <div style="font-size: 2rem; margin-bottom: 1rem;">🎥</div>
-                        <p>Video would load here</p>
-                        <p style="font-size: 0.875rem;">Integration with video platform (YouTube, Vimeo, or LMS video service)</p>
-                        <button class="btn btn-primary" onclick="markVideoComplete()" style="margin-top: 1rem;">
-                            Mark as Watched
-                        </button>
-                    </div>
-                </div>
-            `;
-        }
+            function showResults() {
+                let score = 0;
+                quizData.forEach((currentQuestion, questionIndex) => {
+                    const questionDiv = quizContainer.children[questionIndex];
+                    const feedbackDiv = questionDiv.querySelector('div');
+                    feedbackDiv.className = 'quiz-feedback';
 
-        function markVideoComplete() {
-            updateProgress('intro-video');
-            announceChange('Introduction video completed');
-        }
+                    const selector = `input[name="question${questionIndex}"]:checked`;
+                    const userAnswerNode = (quizForm.querySelector(selector) || {});
+                    const userAnswer = parseInt(userAnswerNode.value);
 
-        // Accessibility Functions
-        function announceChange(message) {
-            let liveRegion = document.getElementById('live-region');
-            if (!liveRegion) {
-                liveRegion = document.createElement('div');
-                liveRegion.setAttribute('aria-live', 'polite');
-                liveRegion.setAttribute('aria-atomic', 'true');
-                liveRegion.className = 'sr-only';
-                liveRegion.id = 'live-region';
-                document.body.appendChild(liveRegion);
+                    if (userAnswer === currentQuestion.answer) {
+                        score++;
+                        feedbackDiv.textContent = 'Correct!';
+                        feedbackDiv.classList.add('correct');
+                    } else {
+                        feedbackDiv.textContent = `Incorrect. The correct answer was: ${currentQuestion.options[currentQuestion.answer]}`;
+                        feedbackDiv.classList.add('incorrect');
+                    }
+                });
+                
+                resultsContainer.textContent = `You scored ${score} out of ${quizData.length}`;
+                if (score === quizData.length) {
+                    resultsContainer.style.backgroundColor = 'var(--success-color)';
+                    resultsContainer.style.color = 'white';
+                } else {
+                    resultsContainer.style.backgroundColor = 'var(--warning-color)';
+                    resultsContainer.style.color = 'var(--text-primary)';
+                }
             }
             
-            liveRegion.textContent = message;
-            setTimeout(() => {
-                liveRegion.textContent = '';
-            }, 1000);
-        }
+            quizForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                showResults();
+            });
 
-        // Responsive Design Handler
-        function handleResize() {
-            const mobileToggle = document.querySelector('.mobile-nav-toggle');
-            if (window.innerWidth <= 768) {
-                mobileToggle.style.display = 'block';
-            } else {
-                mobileToggle.style.display = 'none';
-                closeMobileNav();
-            }
-        }
-
-        // Keyboard Navigation Support
-        function handleKeyboard(event) {
-            if (event.key === 'Escape') {
-                closeMobileNav();
-            }
-        }
-
-        // Initialize Application
-        function initializeApp() {
-            // Set up event listeners
-            window.addEventListener('resize', handleResize);
-            document.addEventListener('keydown', handleKeyboard);
-            
-            // Initialize responsive design
-            handleResize();
-            
-            console.log('CSC210 Interactive Learning Platform initialized successfully!');
-            console.log('Ready for module integration via iframe');
-        }
-
-        // Initialize when DOM is loaded
-        document.addEventListener('DOMContentLoaded', initializeApp);
-
-        // Platform communication API for iframe modules
-        window.platformAPI = {
-            markModuleComplete: function(moduleType) {
-                moduleCompletionStatus[moduleType] = true;
-                checkModuleUnlocks();
-                announceChange(`${moduleType} module completed!`);
-            },
-            
-            updateModuleProgress: function(moduleType, progress) {
-                // Update progress indicators
-                console.log(`Module ${moduleType} progress: ${progress}%`);
-            },
-            
-            showNotification: function(message, type = 'info') {
-                announceChange(message);
-            }
-        };
+            buildQuiz();
+        });
     </script>
 </body>
 </html>
+
