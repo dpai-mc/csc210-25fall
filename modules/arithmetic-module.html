@@ -111,7 +111,7 @@
 
         /* SVG Specific Styles */
         .gate { fill: var(--gate-fill); stroke: var(--primary-color); stroke-width: 2.5; }
-        .label { font-size: 14px; font-weight: bold; fill: var(--text-color); user-select: none; }
+        .label, .gate-label { font-size: 14px; font-weight: bold; fill: var(--text-color); user-select: none; }
         .value { font-size: 16px; font-weight: bold; fill: var(--primary-color); }
         .wire { stroke: var(--wire-off-color); stroke-width: 3; fill: none; transition: stroke 0.2s ease; }
         .wire.on { stroke: var(--wire-on-color); stroke-width: 4; }
@@ -170,14 +170,16 @@
                 <div class="diagram-container">
                     <svg id="ha-svg" class="simulation-svg" viewBox="0 0 350 250" aria-labelledby="ha-title" role="img">
                         <title id="ha-title">Half-Adder Interactive Diagram</title>
-                        <path id="ha-wire-a1" class="wire" d="M 50 50 H 130" />
-                        <path id="ha-wire-b1" class="wire" d="M 50 125 H 130" />
-                        <path id="ha-wire-a2" class="wire" d="M 50 50 H 70 V 175 H 130" />
-                        <path id="ha-wire-b2" class="wire" d="M 50 125 H 70 V 200 H 130" />
-                        <path id="ha-wire-s" class="wire" d="M 230 88 H 300" />
-                        <path id="ha-wire-c" class="wire" d="M 230 188 H 300" />
-                        <path class="gate" d="M130,63 v50 q20,0 20,-25 q0,-25 -20,-25 m0,50 c30,0 30,-50 0,-50" />
-                        <path class="gate" d="M130,163 h50 a25,25 0 0 1 0,50 h-50 z" />
+                        <path id="ha-wire-a1" class="wire" d="M 50 50 H 125" />
+                        <path id="ha-wire-b1" class="wire" d="M 50 125 H 125" />
+                        <path id="ha-wire-a2" class="wire" d="M 70 50 v 110 H 125" />
+                        <path id="ha-wire-b2" class="wire" d="M 70 125 v 60 H 125" />
+                        <path id="ha-wire-s" class="wire" d="M 215 88 H 300" />
+                        <path id="ha-wire-c" class="wire" d="M 185 185 H 300" />
+                        <path class="gate" d="M140,63 v50 q20,0 20,-25 q0,-25 -20,-25 m-15,55 c10,-5 15,-22.5 15,-27.5 s-5,-22.5 -15,-27.5" />
+                        <path class="gate" d="M125,160 h30 a30,30 0 0 1 0,50 h-30 z" />
+                        <text class="gate-label" x="150" y="55">XOR</text>
+                        <text class="gate-label" x="145" y="150">AND</text>
                         <g id="ha-input-a" class="input-switch" tabindex="0" role="button" aria-pressed="false" aria-label="Input A">
                             <rect x="20" y="38" width="30" height="25" rx="5" fill="#e9ecef" stroke="#6c757d" stroke-width="2"/>
                             <text class="label" x="8" y="55">A</text><text id="ha-val-a" class="value" x="32" y="56">0</text>
@@ -188,10 +190,8 @@
                         </g>
                         <circle id="ha-light-s" class="output-light" cx="315" cy="88" r="12" fill="var(--wire-off-color)" stroke="#6c757d" stroke-width="2"/>
                         <text class="label" x="335" y="93">Sum</text><text id="ha-val-s" class="value" x="310" y="93" aria-live="polite">0</text>
-                        <circle id="ha-light-c" class="output-light" cx="315" cy="188" r="12" fill="var(--wire-off-color)" stroke="#6c757d" stroke-width="2"/>
-                        <text class="label" x="335" y="193">Carry</text><text id="ha-val-c" class="value" x="310" y="193" aria-live="polite">0</text>
-                        <text class="label" x="160" y="50">XOR</text>
-                        <text class="label" x="160" y="150">AND</text>
+                        <circle id="ha-light-c" class="output-light" cx="315" cy="185" r="12" fill="var(--wire-off-color)" stroke="#6c757d" stroke-width="2"/>
+                        <text class="label" x="335" y="190">Carry</text><text id="ha-val-c" class="value" x="310" y="190" aria-live="polite">0</text>
                     </svg>
                 </div>
             </div>
@@ -222,25 +222,33 @@
                 <div class="diagram-container">
                     <svg id="fa-svg" class="simulation-svg" viewBox="0 0 450 300" aria-labelledby="fa-title" role="img">
                         <title id="fa-title">Full-Adder Interactive Diagram</title>
-                        <path id="fa-wire-a1" class="wire" d="M50 50 h 70" />
-                        <path id="fa-wire-b1" class="wire" d="M50 100 h 70" />
-                        <path id="fa-wire-s1" class="wire" d="M170 75 h 40" />
-                        <path id="fa-wire-c1" class="wire" d="M145 125 h 110 v 75 h 40" />
-                        <path id="fa-wire-cin1" class="wire" d="M50 150 h 160" />
-                        <path id="fa-wire-s1-s2" class="wire" d="M210 75 h 40" />
-                        <path id="fa-wire-s2" class="wire" d="M350 113 h 50" />
-                        <path id="fa-wire-c2" class="wire" d="M325 163 h 25 v -25 h 30" />
-                        <path id="fa-wire-cout" class="wire" d="M360 175 h 40" />
-                        <rect class="gate" x="120" y="50" width="50" height="75" rx="5" />
-                        <text class="label" x="130" y="90">HA 1</text>
-                        <rect class="gate" x="250" y="75" width="75" height="88" rx="5" />
-                        <text class="label" x="260" y="125">HA 2</text>
-                        <path class="gate" d="M320,150 a40,40 0 0 1 0,50 c15,0 15,-50 0,-50" />
-                        <g id="fa-input-a" class="input-switch" tabindex="0" role="button" aria-pressed="false" aria-label="Input A"><rect x="20" y="38" width="30" height="25" rx="5" fill="#e9ecef" stroke="#6c757d" stroke-width="2"/><text class="label" x="8" y="55">A</text><text id="fa-val-a" class="value" x="32" y="56">0</text></g>
-                        <g id="fa-input-b" class="input-switch" tabindex="0" role="button" aria-pressed="false" aria-label="Input B"><rect x="20" y="88" width="30" height="25" rx="5" fill="#e9ecef" stroke="#6c757d" stroke-width="2"/><text class="label" x="8" y="105">B</text><text id="fa-val-b" class="value" x="32" y="106">0</text></g>
-                        <g id="fa-input-cin" class="input-switch" tabindex="0" role="button" aria-pressed="false" aria-label="Input Carry In"><rect x="20" y="138" width="30" height="25" rx="5" fill="#e9ecef" stroke="#6c757d" stroke-width="2"/><text class="label" x="-2" y="155">Cin</text><text id="fa-val-cin" class="value" x="32" y="156">0</text></g>
-                        <circle id="fa-light-s" class="output-light" cx="415" cy="113" r="12" fill="var(--wire-off-color)" stroke="#6c757d" stroke-width="2"/><text class="label" x="435" y="118">Sum</text><text id="fa-val-s" class="value" x="410" y="118" aria-live="polite">0</text>
-                        <circle id="fa-light-cout" class="output-light" cx="415" cy="175" r="12" fill="var(--wire-off-color)" stroke="#6c757d" stroke-width="2"/><text class="label" x="435" y="180">Cout</text><text id="fa-val-cout" class="value" x="410" y="180" aria-live="polite">0</text>
+                        <rect class="gate" x="120" y="50" width="60" height="80" rx="5" />
+                        <text class="gate-label" x="135" y="95">HA 1</text>
+                        <path id="fa-wire-a1" class="wire" d="M50 70 h 70" />
+                        <path id="fa-wire-b1" class="wire" d="M50 110 h 70" />
+                        <path id="fa-wire-s1" class="wire" d="M180 80 h 70" />
+                        <path id="fa-wire-c1" class="wire" d="M180 120 h 20 v 80 h 110" />
+                        <text class="label" x="200" y="75">S1</text>
+                        <text class="label" x="200" y="125">C1</text>
+
+                        <rect class="gate" x="250" y="50" width="60" height="80" rx="5" />
+                        <text class="gate-label" x="265" y="95">HA 2</text>
+                        <path id="fa-wire-cin1" class="wire" d="M50 200 h 200 v -90 h -0" />
+                        <path id="fa-wire-s2" class="wire" d="M310 80 h 90" />
+                        <path id="fa-wire-c2" class="wire" d="M310 120 h 20 v 60 H 310" />
+                        <text class="label" x="330" y="75">S2</text>
+                        <text class="label" x="330" y="125">C2</text>
+                        
+                        <path class="gate" d="M310,180 q25,0 45,20 q-20,20 -45,20 c10,-10 10,-30 0,-40 z" />
+                        <path id="fa-wire-cout" class="wire" d="M385 200 h 15" />
+                        <text class="gate-label" x="325" y="170">OR</text>
+
+                        <g id="fa-input-a" class="input-switch" tabindex="0" role="button" aria-pressed="false" aria-label="Input A"><rect x="20" y="58" width="30" height="25" rx="5" fill="#e9ecef" stroke="#6c757d" stroke-width="2"/><text class="label" x="8" y="75">A</text><text id="fa-val-a" class="value" x="32" y="76">0</text></g>
+                        <g id="fa-input-b" class="input-switch" tabindex="0" role="button" aria-pressed="false" aria-label="Input B"><rect x="20" y="98" width="30" height="25" rx="5" fill="#e9ecef" stroke="#6c757d" stroke-width="2"/><text class="label" x="8" y="115">B</text><text id="fa-val-b" class="value" x="32" y="116">0</text></g>
+                        <g id="fa-input-cin" class="input-switch" tabindex="0" role="button" aria-pressed="false" aria-label="Input Carry In"><rect x="20" y="188" width="30" height="25" rx="5" fill="#e9ecef" stroke="#6c757d" stroke-width="2"/><text class="label" x="-2" y="205">Cin</text><text id="fa-val-cin" class="value" x="32" y="206">0</text></g>
+                        
+                        <circle id="fa-light-s" class="output-light" cx="415" cy="80" r="12" fill="var(--wire-off-color)" stroke="#6c757d" stroke-width="2"/><text class="label" x="435" y="85">Sum</text><text id="fa-val-s" class="value" x="410" y="85" aria-live="polite">0</text>
+                        <circle id="fa-light-cout" class="output-light" cx="415" cy="200" r="12" fill="var(--wire-off-color)" stroke="#6c757d" stroke-width="2"/><text class="label" x="435" y="205">Cout</text><text id="fa-val-cout" class="value" x="410" y="205" aria-live="polite">0</text>
                     </svg>
                 </div>
             </div>
@@ -366,8 +374,8 @@
                     valA: 'fa-val-a', valB: 'fa-val-b', valCin: 'fa-val-cin',
                     valS: 'fa-val-s', valCout: 'fa-val-cout',
                     wireA1: 'fa-wire-a1', wireB1: 'fa-wire-b1', wireCin1: 'fa-wire-cin1',
-                    wireS1: 'fa-wire-s1', wireC1: 'fa-wire-c1', wireS1S2: 'fa-wire-s1-s2',
-                    wireC2: 'fa-wire-c2', wireS2: 'fa-wire-s2', wireCout: 'fa-wire-cout',
+                    wireS1: 'fa-wire-s1', wireC1: 'fa-wire-c1',
+                    wireS2: 'fa-wire-s2', wireC2: 'fa-wire-c2', wireCout: 'fa-wire-cout',
                     lightS: 'fa-light-s', lightCout: 'fa-light-cout'
                 };
                 setupInput(getEl('fa-input-a'), () => this.toggle('a'));
@@ -405,9 +413,8 @@
                 setClass(this.elements.wireCin1, 'on', this.cin);
                 setClass(this.elements.wireS1, 'on', s1);
                 setClass(this.elements.wireC1, 'on', c1);
-                setClass(this.elements.wireS1S2, 'on', s1);
-                setClass(this.elements.wireC2, 'on', c2);
                 setClass(this.elements.wireS2, 'on', sum);
+                setClass(this.elements.wireC2, 'on', c2);
                 setClass(this.elements.wireCout, 'on', cout);
 
                 // Update lights
