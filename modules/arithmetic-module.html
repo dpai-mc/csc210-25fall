@@ -135,6 +135,29 @@
             color: white;
         }
 
+        /* New button link style */
+        .external-link-container {
+            text-align: center;
+            margin: 2rem 0;
+        }
+
+        .button-link {
+            display: inline-block;
+            background-color: var(--primary-color);
+            color: white;
+            padding: 12px 24px;
+            border-radius: var(--radius);
+            text-decoration: none;
+            font-weight: bold;
+            transition: background-color 0.2s ease, transform 0.2s ease;
+        }
+
+        .button-link:hover, .button-link:focus {
+            background-color: var(--primary-hover);
+            transform: translateY(-2px);
+            color: white;
+        }
+
     </style>
 </head>
 <body>
@@ -291,6 +314,12 @@
                 </div>
             </div>
         </section>
+
+        <div class="external-link-container">
+            <a href="https://mendocino.instructure.com/courses/19705/pages/circuits-adder" class="button-link" target="_blank" rel="noopener noreferrer">
+                Build half-adder, full-adder, ripple-adder in Logisim 2.7.1
+            </a>
+        </div>
 
     </div>
 
