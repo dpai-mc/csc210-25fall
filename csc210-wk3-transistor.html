@@ -196,35 +196,97 @@
 
     <main id="main-content">
         <section aria-labelledby="video-resource">
-            <h2 id="video-resource">Further Learning: Video Resource</h2>
+            <h2 id="video-resource">Learning Resource: Video Introduction</h2>
             <p>Watch this video to see transistors and logic gates explained visually.</p>
             <div class="video-container">
-                <iframe src="https://www.youtube.com/embed/RPK7WvPqf0A?rel=0" 
-                        title="YouTube video about Transistors and Logic Gates" 
+                <!-- This is a placeholder for a relevant YouTube video -->
+                <iframe src="https://www.youtube.com/embed/nJTPsotd_nc?si=qAgI1uDJ7JZUyR4j" 
+                        title="YouTube video player explaining transistors" 
                         frameborder="0" 
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
                         allowfullscreen>
                 </iframe>
             </div>
 
             <div class="transcript-container">
-                <h3>Video Transcript (Placeholder)</h3>
+                <h3>Video Transcript</h3>
                 <div class="transcript-text" tabindex="0">
-                    <p>[Transcript will go here. This section is designed to be accessible and scrollable.]</p>
-                    <p>Welcome to this module on transistors and logic gates. Today, we'll explore the tiny switches that power all our modern electronics.</p>
-                    <p>A transistor is essentially a semiconductor device that can either amplify an electronic signal or act as a switch. Think of it like a light switch, but instead of your finger, another electrical signal controls it.</p>
-                    <p>There are two main types: BJTs and FETs. BJTs were the first, but FETs, especially MOSFETs, dominate modern digital circuits due to their efficiency.</p>
-                    <p>In a MOSFET, applying a voltage to the 'gate' terminal creates an electrical field that allows current to flow between the 'drain' and 'source' terminals. Remove the voltage, and the current stops. This ON/OFF behavior is perfect for representing the 1s and 0s of digital logic.</p>
-                    <p>Now, let's see how these switches combine to form logic gates. The simplest is the NOT gate, or inverter. If the input is 0, the output is 1. If the input is 1, the output is 0.</p>
-                    <p>Using CMOS technology, which uses both N-type and P-type MOSFETs, we can create very efficient gates. An NMOS transistor turns ON with a high gate voltage, while a PMOS turns ON with a low gate voltage.</p>
-                    <p>For a NOT gate, we use one PMOS and one NMOS. When the input is low, the PMOS turns on, connecting the output to the high voltage (1). When the input is high, the NMOS turns on, connecting the output to ground (0).</p>
-                    <p>Next, let's look at the NAND gate. This gate outputs 0 only if all its inputs are 1. Otherwise, the output is 1.</p>
-                    <p>A 2-input NAND gate uses two PMOS transistors in parallel for the pull-up network and two NMOS transistors in series for the pull-down network. Only when both inputs are high do both NMOS transistors conduct, pulling the output to 0.</p>
-                    <p>Similarly, the NOR gate outputs 1 only if all its inputs are 0. Otherwise, the output is 0.</p>
-                    <p>The 2-input NOR gate has two PMOS transistors in series for the pull-up and two NMOS in parallel for the pull-down. Only when both inputs are low do both PMOS transistors conduct, pulling the output to 1.</p>
-                    <p>We can combine these basic gates to create others. An AND gate is simply a NAND gate followed by a NOT gate. An OR gate is a NOR gate followed by a NOT gate.</p>
-                    <p>These simple transistor-based gates form the very foundation of all digital electronics, from calculators to supercomputers. Understanding them is key to understanding how computers work at a fundamental level.</p>
-                    <p>Thank you for watching this module. Feel free to explore the interactive examples and resources provided on this page to deepen your understanding.</p>
+                    <p><strong>[00:00:00]</strong> Aloha. So what I want to talk a little bit about in this video is how a transistor works.</p>
+                    <p><strong>[00:00:09]</strong> Now in the big scheme of things, it's not critical that you understand transistors.</p>
+                    <p><strong>[00:00:15]</strong> Okay, what you need to know is that transistors are kind of the base unit.</p>
+                    <p><strong>[00:00:20]</strong> Okay, and we put transistors together or we use transistors to make gates.</p>
+                    <p><strong>[00:00:26]</strong> Okay, and then we take gates, which for us is going to be our fundamental or atomic unit of stuff,</p>
+                    <p><strong>[00:00:35]</strong> and we use those gates to make digital circuits to do stuff.</p>
+                    <p><strong>[00:00:39]</strong> Okay, so I'm just going to explore a little bit about a transistor, what it is, how it works.</p>
+                    <p><strong>[00:00:45]</strong> Okay, and I'm going to simplify it a little bit just to make it easier to understand.</p>
+                    <p><strong>[00:00:50]</strong> Okay, so let's look at this and let's call this our transistor.</p>
+                    <p><strong>[00:00:56]</strong> Okay, so a transistor has a bunch of connections,</p>
+                    <p><strong>[01:05:00]</strong> but there's two primary ones that we're concerned with first,</p>
+                    <p><strong>[01:08:00]</strong> and one is to a 5-volt source voltage.</p>
+                    <p><strong>[01:15:00]</strong> Okay, so V source equals 5 volts.</p>
+                    <p><strong>[01:24:00]</strong> Okay, 5 volts.</p>
+                    <p><strong>[01:26:00]</strong> The other side of the transistor here connects to ground.</p>
+                    <p><strong>[01:32:00]</strong> Okay, and what ground is,</p>
+                    <p><strong>[01:35:00]</strong> ground is just like a big energy sink.</p>
+                    <p><strong>[01:40:00]</strong> So electricity will flow to ground.</p>
+                    <p><strong>[01:42:00]</strong> Okay, so electricity always follows the path of least resistance.</p>
+                    <p><strong>[01:46:00]</strong> It's like water flowing downhill.</p>
+                    <p><strong>[01:50:00]</strong> And so if it can get to ground, it'll go to ground because the ground is a huge potential.</p>
+                    <p><strong>[01:55:00]</strong> It'll absorb all the electricity there's known to man and be happy.</p>
+                    <p><strong>[02:01:00]</strong> Now, we have two more critical things to the transistor.</p>
+                    <p><strong>[02:06:00]</strong> We have our voltage in, which is going to be our 0 or 1, right?</p>
+                    <p><strong>[02:10:00]</strong> And we have our voltage out, which is going to be our 0 or 1 going out.</p>
+                    <p><strong>[02:15:00]</strong> Okay, and we know that typically a 1 equals, you know, 5 volts,</p>
+                    <p><strong>[02:23:00]</strong> and a 0 equals 0 volts.</p>
+                    <p><strong>[02:38:00]</strong> So we have our voltage in.</p>
+                    <p><strong>[02:44:00]</strong> This is our voltage in, which will be our 0 or 1 coming in.</p>
+                    <p><strong>[02:52:00]</strong> And then we have a voltage out.</p>
+                    <p><strong>[02:58:00]</strong> Except what we do, or what we used to do, we don't do this anymore,</p>
+                    <p><strong>[03:02:00]</strong> but what we used to do is we had a resistor here.</p>
+                    <p><strong>[03:14:00]</strong> This is our voltage out, and this is a resistor.</p>
+                    <p><strong>[03:20:00]</strong> And what a resistor does is it resists the flow of electricity.</p>
+                    <p><strong>[03:24:00]</strong> So if this electricity here, this 5 volts, if it can go to ground,</p>
+                    <p><strong>[03:28:00]</strong> it's going to all go to ground, and none of it's going to go that way.</p>
+                    <p><strong>[03:32:00]</strong> It can't go to ground.</p>
+                    <p><strong>[03:33:00]</strong> It's all going to go through this resistor.</p>
+                    <p><strong>[03:35:00]</strong> It'll go, well, there's no place else for it to go,</p>
+                    <p><strong>[03:39:00]</strong> so it'll go across the resistor.</p>
+                    <p><strong>[03:43:00]</strong> And so what we have in here, inside the resistor,</p>
+                    <p><strong>[03:47:00]</strong> we have kind of a little, switch, okay,</p>
+                    <p><strong>[03:53:00]</strong> that may or may not, it may be connected or it may not be connected.</p>
+                    <p><strong>[03:58:00]</strong> And that's what it is.</p>
+                    <p><strong>[03:59:00]</strong> A transistor is just a little switch.</p>
+                    <p><strong>[04:02:00]</strong> That's going to either let that flow there or make it flow there.</p>
+                    <p><strong>[04:09:00]</strong> when we have a zero input,</p>
+                    <p><strong>[04:12:00]</strong> which means zero volts,</p>
+                    <p><strong>[04:17:00]</strong> what happens is the switch is open.</p>
+                    <p><strong>[04:26:00]</strong> meaning all the electricity is going to flow this way,</p>
+                    <p><strong>[04:33:00]</strong> right, and it's going to run into dead end,</p>
+                    <p><strong>[04:36:00]</strong> and then it's going to go up and go through the resistor.</p>
+                    <p><strong>[04:43:00]</strong> So, when voltage is zero in,</p>
+                    <p><strong>[04:49:00]</strong> zero signals in, our Vout equals five volts, which is one.</p>
+                    <p><strong>[05:10:00]</strong> the same as a one.</p>
+                    <p><strong>[05:14:00]</strong> Now, when we have a one in, that means five volts in.</p>
+                    <p><strong>[05:22:00]</strong> our transistor is closed.</p>
+                    <p><strong>[05:27:00]</strong> So now it makes a connection and all the voltage comes here and flows straight through and goes to ground.</p>
+                    <p><strong>[05:39:00]</strong> in this case, Vout equals zero volts, which is a zero.</p>
+                    <p><strong>[05:52:00]</strong> a simple transistor is a NOT gate</p>
+                    <p><strong>[06:04:00]</strong> because when we have zero in, we get one out,</p>
+                    <p><strong>[06:09:00]</strong> and when we have a one in, we get zero out.</p>
+                    <p><strong>[06:15:00]</strong> all a transistor is, an electrical switch.</p>
+                    <p><strong>[06:21:00]</strong> sort of a mechanical silicon switch that when I have voltage in, it closes so that electricity from the source flows to ground.</p>
+                    <p><strong>[06:33:00]</strong> And when I don't have electricity in on this side, it opens, not letting any of this source voltage flow through.</p>
+                    <p><strong>[06:42:00]</strong> So the source voltage will go on the output.</p>
+                    <p><strong>[06:47:00]</strong> So that's kind of a transistor, how it works.</p>
+                    <p><strong>[06:49:00]</strong> And that's really all I want to talk about, about transistors.</p>
+                    <p><strong>[06:53:00]</strong> Other than you can take transistors, you know, for two inputs, we need a minimum of two transistors, one for each input.</p>
+                    <p><strong>[07:02:00]</strong> And we put them in different configurations, parallel to the source voltage, series to the source voltage, to get different results going outward.</p>
+                    <p><strong>[07:16:00]</strong> And we can add other, more transistors on the outputs and mix the outputs together and stuff like that to get more, to create different gates, to get the responses that we want for the different types of gates.</p>
+                    <p><strong>[07:33:00]</strong> And in the discussion below, it talks about how to build a a NOT gate, an AND gate, a NAND gate, a NOR gate, an OR gate, all those kind of things.</p>
+                    <p><strong>[07:44:00]</strong> that's transistor.</p>
+                    <p><strong>[07:49:00]</strong> And, it's our base unit of stuff because it's what gates are made from.</p>
+                    <p><strong>[07:56:00]</strong> But we're going to work at the gate level.</p>
+                    <p><strong>[07:58:00]</strong> So, we're going to hide the details of transistors, you know, abstract away from transistors and use gates.</p>
                 </div>
             </div>
         </section>
@@ -321,6 +383,7 @@
     </main>
 
     <footer role="contentinfo">
+        <p>© 2025 Transistor Learning Module. All rights reserved.</p>
         <p><a href="#main-content" aria-label="Back to top of content">Back to Top</a></p>
     </footer>
 
@@ -342,10 +405,6 @@
             toggleNotInputButton.addEventListener('click', function() {
                 notGateInput = 1 - notGateInput; // Toggles between 0 and 1
                 updateNotGate();
-                // Announce change for screen readers
-                this.setAttribute('aria-live', 'polite');
-                this.setAttribute('aria-atomic', 'true');
-                this.innerHTML = `Toggle Input (Input is now ${notGateInput})`;
             });
 
             // Initial state update
@@ -354,3 +413,4 @@
     </script>
 </body>
 </html>
+
