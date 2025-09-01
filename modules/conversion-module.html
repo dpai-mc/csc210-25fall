@@ -1,0 +1,859 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSC210 - Module 2: Decoder Circuits</title>
+    <style>
+        /*
+         * CSC210 Module Shared Styles
+         * This content is embedded from shared-module-styles.css
+         */
+        :root {
+            --primary-color: #2563eb;
+            --secondary-color: #3b82f6;
+            --accent-color: #f59e0b;
+            --success-color: #059669;
+            --error-color: #dc2626;
+            --warning-color: #d97706;
+            --info-color: #0891b2;
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8fafc;
+            --bg-tertiary: #f1f5f9;
+            --text-primary: #1e293b;
+            --text-secondary: #475569;
+            --text-muted: #64748b;
+            --text-inverse: #f8fafc;
+            --border-color: #e2e8f0;
+            --border-color-hover: #cbd5e1;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+            --space-1: 0.25rem;
+            --space-2: 0.5rem;
+            --space-4: 1rem;
+            --space-6: 1.5rem;
+            --space-8: 2rem;
+            --font-family-sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+            --font-size-sm: 0.875rem;
+            --font-size-base: 1rem;
+            --font-size-lg: 1.125rem;
+            --font-size-xl: 1.25rem;
+            --font-size-2xl: 1.5rem;
+            --border-radius: 0.375rem;
+            --border-radius-lg: 0.5rem;
+        }
+
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: var(--font-family-sans);
+            background-color: var(--bg-secondary);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        .module-container {
+            max-width: 1200px;
+            margin: var(--space-8) auto;
+            padding: 0 var(--space-4);
+        }
+
+        .module-header {
+            text-align: center;
+            margin-bottom: var(--space-8);
+        }
+
+        .module-header h1 {
+            font-size: 2.25rem;
+            color: var(--primary-color);
+            margin-bottom: var(--space-2);
+        }
+
+        .module-header p {
+            font-size: var(--font-size-lg);
+            color: var(--text-secondary);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .progress-tracker {
+            margin-bottom: var(--space-6);
+        }
+
+        .progress-bar-container {
+            width: 100%;
+            background-color: var(--bg-tertiary);
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .progress-bar {
+            width: 0%;
+            height: 24px;
+            background-color: var(--success-color);
+            text-align: center;
+            line-height: 24px;
+            color: var(--text-inverse);
+            font-weight: 600;
+            transition: width 0.5s ease-in-out;
+            white-space: nowrap;
+        }
+
+        .card {
+            background-color: var(--bg-primary);
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--shadow-md);
+            margin-bottom: var(--space-8);
+            overflow: hidden;
+        }
+
+        .card-header {
+            padding: var(--space-4) var(--space-6);
+            border-bottom: 1px solid var(--border-color);
+            background-color: var(--bg-secondary);
+        }
+
+        .card-header h2 {
+            font-size: var(--font-size-2xl);
+            margin: 0;
+        }
+
+        .card-body {
+            padding: var(--space-6);
+        }
+        
+        .card-body p, .card-body ul, .card-body ol {
+            margin-bottom: var(--space-4);
+            color: var(--text-secondary);
+        }
+
+        .card-body p:last-child {
+            margin-bottom: 0;
+        }
+
+        .card-body strong {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+        
+        .card-body code {
+            background-color: var(--bg-tertiary);
+            color: var(--primary-color);
+            padding: var(--space-1) var(--space-2);
+            border-radius: var(--border-radius);
+            font-family: monospace;
+        }
+
+        .interactive-section {
+            display: flex;
+            flex-wrap: wrap;
+            gap: var(--space-6);
+            align-items: flex-start;
+        }
+
+        .controls-panel {
+            flex: 1;
+            min-width: 280px;
+        }
+        
+        .controls-panel h3, .explanation h3, .quiz-container h3 {
+            font-size: var(--font-size-xl);
+            margin-bottom: var(--space-4);
+            color: var(--text-primary);
+        }
+        
+        .input-group {
+            margin-bottom: var(--space-4);
+        }
+        
+        .input-group label {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            padding: var(--space-2);
+            border-radius: var(--border-radius);
+            transition: background-color 0.2s;
+        }
+        
+        .input-group label:hover {
+            background-color: var(--bg-tertiary);
+        }
+        
+        .input-group input[type="checkbox"], .input-group input[type="radio"] {
+            margin-right: var(--space-2);
+            width: 1.2rem;
+            height: 1.2rem;
+            accent-color: var(--primary-color);
+        }
+        
+        .simulator-container {
+            flex: 2;
+            min-width: 350px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .simulator-container canvas {
+            border: 1px solid var(--border-color);
+            background-color: #fff;
+            border-radius: var(--border-radius);
+            width: 100%;
+            height: auto;
+        }
+
+        .output-display {
+            font-size: var(--font-size-lg);
+            font-weight: bold;
+            text-align: center;
+            padding: var(--space-4);
+            margin-top: var(--space-4);
+            background-color: var(--bg-tertiary);
+            border-radius: var(--border-radius);
+            width: 100%;
+            max-width: 400px;
+        }
+        
+        .output-display span {
+            font-family: monospace;
+            background-color: var(--bg-primary);
+            color: var(--primary-color);
+            padding: var(--space-1) var(--space-2);
+            border-radius: var(--border-radius);
+            margin-left: var(--space-2);
+        }
+        .output-display span.active {
+            background-color: var(--success-color);
+            color: var(--text-inverse);
+        }
+
+        .truth-table-container {
+            margin-top: var(--space-6);
+            width: 100%;
+        }
+        
+        .truth-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: var(--font-size-base);
+            text-align: center;
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .truth-table th, .truth-table td {
+            border: 1px solid var(--border-color);
+            padding: var(--space-2);
+        }
+        
+        .truth-table th {
+            background-color: var(--bg-tertiary);
+            font-weight: 600;
+        }
+        
+        .truth-table .output-col {
+            font-weight: bold;
+            background-color: var(--success-color);
+            color: var(--text-inverse);
+        }
+        
+        .truth-table tr.active {
+            background-color: var(--accent-color);
+            color: var(--text-primary);
+            transition: background-color 0.3s;
+        }
+
+        .btn {
+            display: inline-block;
+            background-color: var(--primary-color);
+            color: var(--text-inverse);
+            padding: var(--space-2) var(--space-4);
+            border-radius: var(--border-radius);
+            text-decoration: none;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s, box-shadow 0.2s;
+            margin-top: var(--space-2);
+        }
+
+        .btn:hover {
+            background-color: var(--secondary-color);
+            box-shadow: var(--shadow-md);
+        }
+        
+        .ram-visualization {
+            flex: 3;
+            min-width: 400px;
+        }
+        
+        .ram-grid {
+            display: grid;
+            grid-template-columns: repeat(16, 1fr);
+            border: 1px solid var(--border-color);
+            background-color: #fff;
+        }
+        
+        .ram-cell {
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            border: 1px solid var(--border-color);
+            transition: background-color 0.3s;
+        }
+        
+        .ram-cell.selected {
+            background-color: var(--accent-color);
+            border-color: var(--primary-color);
+        }
+        
+        #address-input {
+            width: 100%;
+            padding: var(--space-2);
+            font-family: monospace;
+            font-size: var(--font-size-lg);
+            text-align: center;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius);
+        }
+        
+        #address-feedback {
+            margin-top: var(--space-2);
+            font-size: var(--font-size-sm);
+            text-align: center;
+            min-height: 1.2em;
+        }
+        #address-feedback.error {
+            color: var(--error-color);
+        }
+        
+        .quiz-container {
+            margin-top: var(--space-6);
+        }
+        
+        .quiz-question {
+            margin-bottom: var(--space-6);
+            padding: var(--space-4);
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius);
+        }
+
+        .quiz-feedback {
+            font-weight: bold;
+            margin-left: var(--space-2);
+        }
+
+        .quiz-feedback.correct {
+            color: var(--success-color);
+        }
+
+        .quiz-feedback.incorrect {
+            color: var(--error-color);
+        }
+
+        #quiz-results {
+            margin-top: var(--space-4);
+            padding: var(--space-4);
+            border-radius: var(--border-radius);
+            text-align: center;
+            font-size: var(--font-size-lg);
+            display: none;
+        }
+        
+        #quiz-results.success {
+            background-color: #d1fae5;
+            color: var(--success-color);
+        }
+        
+        #quiz-results.fail {
+            background-color: #fee2e2;
+            color: var(--error-color);
+        }
+
+    </style>
+</head>
+<body>
+
+    <main class="module-container" id="decoder-module">
+        <header class="module-header">
+            <h1>Module 2: Decoder Circuits</h1>
+            <p>Learn how decoder circuits work, from basic principles to their essential role in selecting memory addresses within a computer system.</p>
+        </header>
+
+        <div class="progress-tracker">
+            <div class="progress-bar-container" aria-label="Module Progress">
+                <div id="module-progress-bar" class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%;">0% Complete</div>
+            </div>
+        </div>
+
+        <!-- Section 1: 2:4 Decoder -->
+        <section id="section-1" class="card" aria-labelledby="section-1-heading">
+            <div class="card-header">
+                <h2 id="section-1-heading">1. The 2:4 Decoder: Activating Outputs</h2>
+            </div>
+            <div class="card-body">
+                <p>A <strong>decoder</strong> is a circuit that takes <em>n</em> input lines and activates exactly one of its 2<sup>n</sup> output lines. For a given binary input, the corresponding output line is set to 1 (HIGH), while all others are 0 (LOW).</p>
+                <p>The simplest example is a <strong>2:4 decoder</strong>. It has two input lines (A, B) and four output lines (Y₀, Y₁, Y₂, Y₃). We can think of the inputs (A, B) as a 2-bit memory address. The decoder's job is to select one of the four possible memory locations (00, 01, 10, or 11). For example, if the address (A,B) is (1,0), which is binary for 2, then output line Y₂ will be activated to enable memory location 2.</p>
+                <p>Decoders are fundamental in computer architecture for tasks like memory address decoding, where you need to select a single memory location out of millions. Interact with the simulator below to see how inputs control the outputs.</p>
+                
+                <div class="interactive-section">
+                    <div class="controls-panel">
+                        <h3>Controls</h3>
+                        <div class="input-group">
+                            <label><input type="checkbox" id="decoder24-a" aria-label="Input A"> Address Bit A (MSB)</label>
+                            <label><input type="checkbox" id="decoder24-b" aria-label="Input B"> Address Bit B (LSB)</label>
+                        </div>
+                        <div class="truth-table-container">
+                            <h3>Truth Table</h3>
+                            <table class="truth-table" id="decoder24-truth-table">
+                                <thead><tr><th>A</th><th>B</th><th class="output-col">Active Output</th></tr></thead>
+                                <tbody>
+                                    <tr><td>0</td><td>0</td><td>Y₀</td></tr>
+                                    <tr><td>0</td><td>1</td><td>Y₁</td></tr>
+                                    <tr><td>1</td><td>0</td><td>Y₂</td></tr>
+                                    <tr><td>1</td><td>1</td><td>Y₃</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="simulator-container">
+                        <canvas id="decoder24-circuit" width="450" height="300" aria-label="2:4 Decoder circuit diagram"></canvas>
+                        <div class="output-display">
+                            Outputs: 
+                            <span id="decoder24-y0">Y₀=0</span> 
+                            <span id="decoder24-y1">Y₁=0</span> 
+                            <span id="decoder24-y2">Y₂=0</span> 
+                            <span id="decoder24-y3">Y₃=0</span>
+                        </div>
+                    </div>
+                </div>
+                <hr style="margin: var(--space-6) 0; border-color: var(--border-color);">
+                <div style="text-align: center;">
+                    <p>Now that you've seen the simulation, follow this guide for hands-on practice:</p>
+                    <a href="https://mendocino.instructure.com/courses/19705/pages/circuits-building-a-decoder-2" target="_blank" class="btn" rel="noopener noreferrer">Building a Decoder in Logisim 2.7.1</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 2: Use Case: RAM Address Selection -->
+        <section id="section-2" class="card" aria-labelledby="section-2-heading">
+            <div class="card-header"><h2 id="section-2-heading">2. Use Case: 8-Bit RAM Address Selection</h2></div>
+            <div class="card-body">
+                <p>The most common use for decoders in computing is <strong>memory address selection</strong>. A computer's main memory (RAM) is a large collection of storage locations, each with a unique binary address.</p>
+                <p>To read or write data, the CPU places an address on the address bus. A decoder connected to this bus is responsible for activating the single, correct memory location. For an <strong>8-bit address bus</strong>, there are 2<sup>8</sup> = 256 possible unique addresses (from 00000000 to 11111111). An <strong>8:256 decoder</strong> is used to manage this address space.</p>
+                <p>In the visualization below, enter an 8-bit binary address. The decoder will convert this address to a single active line, which in turn selects one of the 256 bytes in our simulated RAM block.</p>
+                
+                <div class="interactive-section">
+                    <div class="controls-panel">
+                        <h3>Enter 8-Bit Address</h3>
+                        <input type="text" id="address-input" maxlength="8" placeholder="e.g., 10101010" aria-label="8-bit binary address input">
+                        <div id="address-feedback"></div>
+                         <div class="output-display" id="address-info">
+                            Decimal: <span id="decimal-value">-</span>
+                        </div>
+                    </div>
+                    <div class="ram-visualization">
+                        <h3>256-Byte RAM Block (16x16)</h3>
+                        <div class="ram-grid" id="ram-grid" aria-label="RAM memory grid">
+                            <!-- RAM cells will be generated by JS -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 3: Final Assessment -->
+        <section id="section-3" class="card" aria-labelledby="section-3-heading">
+            <div class="card-header"><h2 id="section-3-heading">3. Final Assessment</h2></div>
+            <div class="card-body">
+                <p>Test your understanding of decoder circuits and their application in memory addressing.</p>
+                <div class="quiz-container">
+                    <form id="decoder-quiz">
+                        <div class="quiz-question">
+                            <p><strong>1. A decoder with 4 input lines can be used to select one of how many possible memory locations?</strong></p>
+                            <label><input type="radio" name="q1" value="a"> 4</label><br>
+                            <label><input type="radio" name="q1" value="b"> 8</label><br>
+                            <label><input type="radio" name="q1" value="c"> 16</label><br>
+                            <label><input type="radio" name="q1" value="d"> 32</label>
+                            <span class="quiz-feedback" id="q1-feedback"></span>
+                        </div>
+                        <div class="quiz-question">
+                            <p><strong>2. In a 3:8 decoder, if the binary input address is 110, which output line will be active?</strong></p>
+                            <label><input type="radio" name="q2" value="a"> Y₃</label><br>
+                            <label><input type="radio" name="q2" value="b"> Y₅</label><br>
+                            <label><input type="radio" name="q2" value="c"> Y₆</label><br>
+                            <label><input type="radio" name="q2" value="d"> Y₇</label>
+                            <span class="quiz-feedback" id="q2-feedback"></span>
+                        </div>
+                        <div class="quiz-question">
+                            <p><strong>3. What is the primary role of a decoder in a computer's memory system?</strong></p>
+                            <label><input type="radio" name="q3" value="a"> To store data temporarily.</label><br>
+                            <label><input type="radio" name="q3" value="b"> To perform arithmetic calculations on the address.</label><br>
+                            <label><input type="radio" name="q3" value="c"> To select a unique memory location based on a binary address.</label><br>
+                            <label><input type="radio" name="q3" value="d"> To refresh the contents of the RAM.</label>
+                            <span class="quiz-feedback" id="q3-feedback"></span>
+                        </div>
+                        <button type="submit" class="btn">Submit Answers</button>
+                    </form>
+                    <div id="quiz-results"></div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <script type="module">
+        /*
+         * CSC210 Module Shared Utilities
+         * This content is embedded from shared-module-utils.js
+         */
+        class ProgressTracker {
+            constructor(moduleId, totalSections) {
+                this.moduleId = moduleId;
+                this.totalSections = totalSections;
+                this.storageKey = `csc210_progress_${moduleId}`;
+                this.completedSections = this.loadProgress();
+            }
+
+            loadProgress() {
+                try {
+                    const data = sessionStorage.getItem(this.storageKey);
+                    return data ? new Set(JSON.parse(data)) : new Set();
+                } catch (e) {
+                    console.error("Failed to load progress:", e);
+                    return new Set();
+                }
+            }
+
+            saveProgress() {
+                try {
+                    sessionStorage.setItem(this.storageKey, JSON.stringify([...this.completedSections]));
+                } catch (e) {
+                    console.error("Failed to save progress:", e);
+                }
+            }
+
+            completeSection(sectionId) {
+                if (!this.completedSections.has(sectionId)) {
+                    this.completedSections.add(sectionId);
+                    this.saveProgress();
+                }
+                this.updateUI();
+            }
+
+            getProgress() {
+                const percentage = (this.completedSections.size / this.totalSections) * 100;
+                return Math.round(percentage);
+            }
+            
+            updateUI() {
+                const progress = this.getProgress();
+                const progressBar = document.getElementById('module-progress-bar');
+                if (progressBar) {
+                    progressBar.style.width = `${progress}%`;
+                    progressBar.textContent = `${progress}% Complete`;
+                    progressBar.setAttribute('aria-valuenow', progress);
+                }
+            }
+        }
+        
+        /*
+         * CSC210 Circuit Simulation Library
+         * This content is embedded from shared-circuit-simulator.js
+         */
+        class CircuitComponent {
+            constructor(id, type, x = 0, y = 0) {
+                this.id = id;
+                this.type = type;
+                this.x = x;
+                this.y = y;
+                this.inputs = [];
+                this.outputs = [];
+                this.width = 60;
+                this.height = 40;
+            }
+            
+            addInput(input) { this.inputs.push(input); }
+            addOutput(output) { this.outputs.push(output); }
+            
+            getInputPosition(index) {
+                const totalInputs = this.inputs.length > 1 ? this.inputs.length : 2;
+                const spacing = this.height / (totalInputs + 1);
+                return { x: this.x - this.width / 2, y: this.y - this.height / 2 + spacing * (index + 1) };
+            }
+
+            getOutputPosition(index) {
+                 return { x: this.x + this.width / 2, y: this.y };
+            }
+            
+            compute() { throw new Error('compute() must be implemented'); }
+            draw(ctx) { throw new Error('draw() must be implemented'); }
+        }
+
+        class CircuitConnection {
+            constructor(fromComponent, fromOutputIndex, toComponent, toInputIndex) {
+                this.from = fromComponent;
+                this.fromOutputIndex = fromOutputIndex;
+                this.to = toComponent;
+                this.toInputIndex = toInputIndex;
+                this.value = false;
+            }
+
+            draw(ctx) {
+                const fromPos = this.from.getOutputPosition(this.fromOutputIndex);
+                const toPos = this.to.getInputPosition(this.toInputIndex);
+                
+                ctx.strokeStyle = this.value ? '#059669' : '#64748b'; // Green for HIGH, Slate for LOW
+                ctx.lineWidth = this.value ? 3 : 2;
+                ctx.beginPath();
+                ctx.moveTo(fromPos.x, fromPos.y);
+                ctx.bezierCurveTo(fromPos.x + 40, fromPos.y, toPos.x - 40, toPos.y, toPos.x, toPos.y);
+                ctx.stroke();
+            }
+        }
+
+        class CircuitSimulator {
+            constructor(canvasId) {
+                this.canvas = document.getElementById(canvasId);
+                this.ctx = this.canvas.getContext('2d');
+                this.components = {};
+                this.connections = [];
+                this.computationOrder = [];
+            }
+
+            addComponent(component) { this.components[component.id] = component; }
+
+            addConnection(fromId, fromOutputIndex, toId, toInputIndex) {
+                const from = this.components[fromId];
+                const to = this.components[toId];
+                const conn = new CircuitConnection(from, fromOutputIndex, to, toInputIndex);
+                to.inputs[toInputIndex] = conn;
+                this.connections.push(conn);
+            }
+            
+            compute() {
+                if (this.computationOrder.length === 0) this.determineComputationOrder();
+                this.computationOrder.forEach(id => this.components[id]?.compute());
+                this.connections.forEach(conn => conn.value = conn.from.outputs[conn.fromOutputIndex]);
+            }
+            
+            draw() {
+                this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+                this.connections.forEach(conn => conn.draw(this.ctx));
+                Object.values(this.components).forEach(comp => comp.draw(this.ctx));
+            }
+            
+            run() { this.compute(); this.draw(); }
+            
+            determineComputationOrder() {
+                const order = [];
+                const visited = new Set();
+                const inputs = Object.values(this.components).filter(c => c.type === 'INPUT');
+
+                function visit(component) {
+                    if (!component || visited.has(component.id)) return;
+                    visited.add(component.id);
+                    this.connections.forEach(conn => {
+                        if (conn.from === component) visit.call(this, conn.to);
+                    });
+                    order.unshift(component.id);
+                }
+                
+                inputs.forEach(input => visit.call(this, input));
+                this.computationOrder = order.reverse();
+            }
+        }
+
+        /*
+         * CUSTOM GATE LIBRARY
+         */
+        class InputNode extends CircuitComponent {
+            constructor(id, x, y, label = '') { super(id, 'INPUT', x, y); this.width = 40; this.height = 20; this.outputs = [false]; this.label = label; }
+            setValue(value) { this.outputs[0] = value; }
+            compute() { /* Value is set externally */ }
+            draw(ctx) {
+                ctx.strokeStyle = '#334155'; ctx.lineWidth = 2; ctx.fillStyle = this.outputs[0] ? '#a3e635' : '#e2e8f0';
+                ctx.beginPath(); ctx.rect(this.x - this.width / 2, this.y - this.height / 2, this.width, this.height); ctx.fill(); ctx.stroke();
+                ctx.fillStyle = '#1e293b'; ctx.font = '12px sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(this.label, this.x, this.y);
+            }
+        }
+        
+        class OutputNode extends CircuitComponent {
+            constructor(id, x, y, label = '') { super(id, 'OUTPUT', x, y); this.width = 40; this.height = 20; this.label = label; }
+            compute() { this.value = this.inputs[0] ? this.inputs[0].value : false; }
+            getOutputPosition(index) { return { x: this.x, y: this.y }; }
+            getInputPosition(index) { return { x: this.x - this.width / 2, y: this.y }; }
+            draw(ctx) {
+                const val = this.inputs[0] ? this.inputs[0].value : false;
+                ctx.strokeStyle = '#334155'; ctx.lineWidth = 2; ctx.fillStyle = val ? '#a3e635' : '#e2e8f0';
+                ctx.beginPath(); ctx.rect(this.x - this.width / 2, this.y - this.height / 2, this.width, this.height); ctx.fill(); ctx.stroke();
+                ctx.fillStyle = '#1e293b'; ctx.font = '12px sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(this.label, this.x, this.y);
+            }
+        }
+        
+        class AndGate extends CircuitComponent {
+            constructor(id, x, y, numInputs = 2) { super(id, 'AND', x, y); this.outputs = [false]; this.height = 50; this.numInputs = numInputs; }
+            compute() { this.outputs[0] = this.inputs.slice(0, this.numInputs).every(i => i && i.value); }
+            draw(ctx) {
+                ctx.strokeStyle = '#334155'; ctx.lineWidth = 2; ctx.fillStyle = '#f0f9ff';
+                const [halfW, halfH] = [this.width / 2, this.height / 2];
+                ctx.beginPath(); ctx.moveTo(this.x - halfW, this.y - halfH); ctx.lineTo(this.x, this.y - halfH);
+                ctx.arc(this.x, this.y, halfH, -Math.PI / 2, Math.PI / 2); ctx.lineTo(this.x - halfW, this.y + halfH); ctx.closePath(); ctx.fill(); ctx.stroke();
+            }
+        }
+        
+        class NotGate extends CircuitComponent {
+            constructor(id, x, y) { super(id, 'NOT', x, y); this.outputs = [false]; this.width = 40; this.height = 30; }
+            compute() { this.outputs[0] = this.inputs[0] ? !this.inputs[0].value : true; }
+            getInputPosition(index) { return { x: this.x - this.width / 2, y: this.y }; }
+            draw(ctx) {
+                ctx.strokeStyle = '#334155'; ctx.lineWidth = 2; ctx.fillStyle = '#f0f9ff';
+                const [halfW, halfH] = [this.width / 2, this.height / 2];
+                ctx.beginPath(); ctx.moveTo(this.x - halfW, this.y - halfH); ctx.lineTo(this.x + halfW - 5, this.y); ctx.lineTo(this.x - halfW, this.y + halfH); ctx.closePath(); ctx.fill(); ctx.stroke();
+                ctx.beginPath(); ctx.arc(this.x + halfW - 2.5, this.y, 2.5, 0, 2 * Math.PI); ctx.stroke();
+            }
+        }
+
+        /**
+         * ===================================================================
+         * MODULE 2: DECODER CIRCUITS - MAIN SCRIPT
+         * ===================================================================
+         */
+        document.addEventListener('DOMContentLoaded', () => {
+
+            const MODULE_ID = 'decoders';
+            const TOTAL_SECTIONS = 3;
+            const progressTracker = new ProgressTracker(MODULE_ID, TOTAL_SECTIONS);
+            progressTracker.updateUI();
+
+            // --- Section 1: 2:4 Decoder Simulator ---
+            const decoder24Sim = new CircuitSimulator('decoder24-circuit');
+            const components24 = {
+                inA: new InputNode('inA', 50, 50, 'A'), inB: new InputNode('inB', 50, 250, 'B'),
+                notA: new NotGate('notA', 150, 50), notB: new NotGate('notB', 150, 250),
+                and0: new AndGate('and0', 300, 40), and1: new AndGate('and1', 300, 110),
+                and2: new AndGate('and2', 300, 180), and3: new AndGate('and3', 300, 250),
+                out0: new OutputNode('out0', 400, 40, 'Y₀'), out1: new OutputNode('out1', 400, 110, 'Y₁'),
+                out2: new OutputNode('out2', 400, 180, 'Y₂'), out3: new OutputNode('out3', 400, 250, 'Y₃'),
+            };
+            Object.values(components24).forEach(c => decoder24Sim.addComponent(c));
+            
+            decoder24Sim.addConnection('inA', 0, 'notA', 0); decoder24Sim.addConnection('inB', 0, 'notB', 0);
+            decoder24Sim.addConnection('notA', 0, 'and0', 0); decoder24Sim.addConnection('notB', 0, 'and0', 1); // Y0 = A'B'
+            decoder24Sim.addConnection('notA', 0, 'and1', 0); decoder24Sim.addConnection('inB', 0, 'and1', 1);   // Y1 = A'B
+            decoder24Sim.addConnection('inA', 0, 'and2', 0);  decoder24Sim.addConnection('notB', 0, 'and2', 1); // Y2 = AB'
+            decoder24Sim.addConnection('inA', 0, 'and3', 0);  decoder24Sim.addConnection('inB', 0, 'and3', 1);   // Y3 = AB
+            decoder24Sim.addConnection('and0', 0, 'out0', 0); decoder24Sim.addConnection('and1', 0, 'out1', 0);
+            decoder24Sim.addConnection('and2', 0, 'out2', 0); decoder24Sim.addConnection('and3', 0, 'out3', 0);
+
+            const decoder24Controls = {
+                a: document.getElementById('decoder24-a'), b: document.getElementById('decoder24-b'),
+                y: [0,1,2,3].map(i => document.getElementById(`decoder24-y${i}`)),
+                table: document.getElementById('decoder24-truth-table'),
+            };
+
+            function updateDecoder24() {
+                const aVal = decoder24Controls.a.checked;
+                const bVal = decoder24Controls.b.checked;
+                components24.inA.setValue(aVal);
+                components24.inB.setValue(bVal);
+                decoder24Sim.run();
+
+                const activeIndex = (aVal << 1) | bVal;
+                decoder24Controls.y.forEach((span, i) => {
+                    const isActive = i === activeIndex;
+                    span.textContent = `Y${i}=${isActive ? 1 : 0}`;
+                    span.classList.toggle('active', isActive);
+                });
+                decoder24Controls.table.querySelectorAll('tr').forEach((row, i) => {
+                    row.classList.toggle('active', i - 1 === activeIndex);
+                });
+                progressTracker.completeSection('section-1');
+            }
+            decoder24Controls.a.addEventListener('change', updateDecoder24);
+            decoder24Controls.b.addEventListener('change', updateDecoder24);
+            updateDecoder24();
+
+            // --- Section 2: RAM Address Selection ---
+            const ramGrid = document.getElementById('ram-grid');
+            const addressInput = document.getElementById('address-input');
+            const feedbackEl = document.getElementById('address-feedback');
+            const decimalValueEl = document.getElementById('decimal-value');
+            let ramCells = [];
+
+            for (let i = 0; i < 256; i++) {
+                const cell = document.createElement('div');
+                cell.className = 'ram-cell';
+                cell.dataset.address = i;
+                cell.setAttribute('aria-label', `Memory address ${i}`);
+                ramGrid.appendChild(cell);
+                ramCells.push(cell);
+            }
+
+            addressInput.addEventListener('input', () => {
+                const value = addressInput.value;
+                feedbackEl.textContent = '';
+                feedbackEl.className = '';
+
+                if (value.length > 8 || !/^[01]*$/.test(value)) {
+                    feedbackEl.textContent = 'Invalid input. Please use only 8 bits (0s and 1s).';
+                    feedbackEl.className = 'error';
+                    return;
+                }
+                
+                if (value.length === 8) {
+                    const decimalAddress = parseInt(value, 2);
+                    decimalValueEl.textContent = decimalAddress;
+                    ramCells.forEach((cell, i) => {
+                        cell.classList.toggle('selected', i === decimalAddress);
+                    });
+                    progressTracker.completeSection('section-2');
+                } else {
+                    decimalValueEl.textContent = '-';
+                     ramCells.forEach(cell => cell.classList.remove('selected'));
+                }
+            });
+
+            // --- Section 3: Final Assessment Quiz ---
+            const quizForm = document.getElementById('decoder-quiz');
+            const quizResultsEl = document.getElementById('quiz-results');
+            const answers = { q1: 'c', q2: 'c', q3: 'c' };
+
+            quizForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                let score = 0;
+                const totalQuestions = Object.keys(answers).length;
+                
+                for (const [q, correct] of Object.entries(answers)) {
+                    const feedbackEl = document.getElementById(`${q}-feedback`);
+                    const selected = quizForm.elements[q].value;
+                    if (selected === correct) {
+                        score++;
+                        feedbackEl.textContent = '✔ Correct';
+                        feedbackEl.className = 'quiz-feedback correct';
+                    } else {
+                        feedbackEl.textContent = '❌ Incorrect';
+                        feedbackEl.className = 'quiz-feedback incorrect';
+                    }
+                }
+                
+                quizResultsEl.innerHTML = `<strong>Your Score: ${score} out of ${totalQuestions}</strong>`;
+                quizResultsEl.className = score === totalQuestions ? 'success' : 'fail';
+                quizResultsEl.innerHTML += score === totalQuestions ? '<p>Excellent! You have a solid understanding of decoders.</p>' : '<p>Review the module content and try again.</p>';
+                quizResultsEl.style.display = 'block';
+                if(score === totalQuestions) progressTracker.completeSection('section-3');
+            });
+        });
+    </script>
+</body>
+</html>
+
+
