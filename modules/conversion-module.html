@@ -155,44 +155,55 @@
                         <rect x="20" y="280" width="60" height="30" fill="#e9ecef" stroke="#6c757d" rx="5"/>
                         <text class="label" x="35" y="300">B = <tspan id="val-b" class="value">0</tspan></text>
                     </g>
-                    <!-- Input Wires -->
-                    <path id="wire-a" class="wire" d="M 80 105 H 120"/>
-                    <path id="wire-b" class="wire" d="M 80 295 H 120"/>
-                    <!-- NOT Gates -->
-                    <path class="gate" d="M 120 105 L 150 105 L 135 90 L 135 120 Z"/>
-                    <circle class="gate" cx="155" cy="105" r="5"/>
-                    <path class="gate" d="M 120 295 L 150 295 L 135 280 L 135 310 Z"/>
-                    <circle class="gate" cx="155" cy="295" r="5"/>
-                    <!-- Vertical Wires -->
-                    <path id="wire-a-not" class="wire" d="M 160 105 H 180 V 50 H 200"/>
-                    <path id="wire-a-true" class="wire" d="M 120 105 V 150 H 220"/>
-                    <path id="wire-b-not" class="wire" d="M 160 295 H 180 V 250 H 240"/>
-                    <path id="wire-b-true" class="wire" d="M 120 295 V 350 H 260"/>
+
+                    <!-- Main wires and NOT gates -->
+                    <path id="wire-a-main" class="wire" d="M 80 105 H 120"/>
+                    <path class="gate" d="M 120 105 h 25 l -12.5 -15 v 30 z"/> <circle class="gate" cx="150" cy="105" r="5"/>
+                    <path id="wire-a-not-main" class="wire" d="M 155 105 H 180"/>
+                    <path id="wire-b-main" class="wire" d="M 80 295 H 120"/>
+                    <path class="gate" d="M 120 295 h 25 l -12.5 -15 v 30 z"/> <circle class="gate" cx="150" cy="295" r="5"/>
+                    <path id="wire-b-not-main" class="wire" d="M 155 295 H 180"/>
+                    
+                    <!-- Vertical Busses -->
+                    <text class="label" x="195" y="40">A'</text><path id="bus-a-not" class="wire" d="M 200 50 V 350"/>
+                    <text class="label" x="225" y="40">A</text><path id="bus-a-true" class="wire" d="M 230 50 V 350"/>
+                    <text class="label" x="255" y="40">B'</text><path id="bus-b-not" class="wire" d="M 260 50 V 350"/>
+                    <text class="label" x="285" y="40">B</text><path id="bus-b-true" class="wire" d="M 290 50 V 350"/>
+                    
+                    <!-- Taps from main wires to busses -->
+                    <path class="wire on" d="M 180 105 h 20"/> <!-- A' tap -->
+                    <path id="tap-a-true" class="wire" d="M 130 105 v 45 h 100"/> <!-- A tap -->
+                    <path class="wire on" d="M 180 295 h 80"/> <!-- B' tap -->
+                    <path id="tap-b-true" class="wire" d="M 130 295 v -45 h 160"/> <!-- B tap -->
+
                     <!-- AND Gates and Output Wires -->
                     <!-- Y0 = A'B' -->
-                    <path class="wire" d="M 200 65 v 20"/>
-                    <path class="wire" d="M 240 85 v -20"/>
-                    <path id="wire-y0" class="wire" d="M 350 75 H 450"/>
-                    <path class="gate" d="M 250 50 h 50 a 25 25 0 0 1 0 50 h -50 z"/>
-                    <text class="label" x="460" y="80">Y0 (A'B')</text>
+                    <path id="tap-y0-anot" class="wire" d="M 200 75 H 320"/>
+                    <path id="tap-y0-bnot" class="wire" d="M 260 75 H 320"/>
+                    <path id="wire-y0" class="wire" d="M 420 75 H 480"/>
+                    <path class="gate" d="M 320 50 h 50 a 25 25 0 0 1 0 50 h -50 z"/>
+                    <text class="label" x="485" y="80">Y0</text>
+
                     <!-- Y1 = A'B -->
-                    <path class="wire" d="M 200 135 v 20"/>
-                    <path class="wire" d="M 260 155 v -20"/>
-                    <path id="wire-y1" class="wire" d="M 350 145 H 450"/>
-                    <path class="gate" d="M 250 120 h 50 a 25 25 0 0 1 0 50 h -50 z"/>
-                    <text class="label" x="460" y="150">Y1 (A'B)</text>
+                    <path id="tap-y1-anot" class="wire" d="M 200 145 H 320"/>
+                    <path id="tap-y1-b" class="wire" d="M 290 145 H 320"/>
+                    <path id="wire-y1" class="wire" d="M 420 145 H 480"/>
+                    <path class="gate" d="M 320 120 h 50 a 25 25 0 0 1 0 50 h -50 z"/>
+                    <text class="label" x="485" y="150">Y1</text>
+                    
                     <!-- Y2 = AB' -->
-                    <path class="wire" d="M 220 205 v 20"/>
-                    <path class="wire" d="M 240 225 v -20"/>
-                    <path id="wire-y2" class="wire" d="M 350 215 H 450"/>
-                    <path class="gate" d="M 250 190 h 50 a 25 25 0 0 1 0 50 h -50 z"/>
-                    <text class="label" x="460" y="220">Y2 (AB')</text>
+                    <path id="tap-y2-a" class="wire" d="M 230 215 H 320"/>
+                    <path id="tap-y2-bnot" class="wire" d="M 260 215 H 320"/>
+                    <path id="wire-y2" class="wire" d="M 420 215 H 480"/>
+                    <path class="gate" d="M 320 190 h 50 a 25 25 0 0 1 0 50 h -50 z"/>
+                    <text class="label" x="485" y="220">Y2</text>
+                    
                     <!-- Y3 = AB -->
-                    <path class="wire" d="M 220 275 v 20"/>
-                    <path class="wire" d="M 260 295 v -20"/>
-                    <path id="wire-y3" class="wire" d="M 350 285 H 450"/>
-                    <path class="gate" d="M 250 260 h 50 a 25 25 0 0 1 0 50 h -50 z"/>
-                    <text class="label" x="460" y="290">Y3 (AB)</text>
+                    <path id="tap-y3-a" class="wire" d="M 230 285 H 320"/>
+                    <path id="tap-y3-b" class="wire" d="M 290 285 H 320"/>
+                    <path id="wire-y3" class="wire" d="M 420 285 H 480"/>
+                    <path class="gate" d="M 320 260 h 50 a 25 25 0 0 1 0 50 h -50 z"/>
+                    <text class="label" x="485" y="290">Y3</text>
                 </svg>
             </div>
         </section>
@@ -252,7 +263,7 @@
             <h2>Apply Your Knowledge</h2>
             <p>Now that you've explored how decoders work, apply this knowledge by building one yourself in a circuit simulator.</p>
             <div style="text-align: center; margin-top: 1.5rem;">
-                <a href="https://mendocino.instructure.com/courses/19705/pages/circuits-decoder" class="btn" target="_blank" rel="noopener noreferrer">
+                <a href="https://mendocino.instructure.com/courses/19705/pages/circuits-building-a-decoder-2" class="btn" target="_blank" rel="noopener noreferrer">
                     Build a 3-to-8 Decoder in Logisim 2.7.1
                 </a>
             </div>
@@ -273,18 +284,41 @@
                 getEl('val-a').textContent = a;
                 getEl('val-b').textContent = b;
 
-                getEl('wire-a').classList.toggle('on', a === 1);
-                getEl('wire-b').classList.toggle('on', b === 1);
-                getEl('wire-a-true').classList.toggle('on', a === 1);
-                getEl('wire-b-true').classList.toggle('on', b === 1);
-                getEl('wire-a-not').classList.toggle('on', notA === 1);
-                getEl('wire-b-not').classList.toggle('on', notB === 1);
+                // Main input lines
+                getEl('wire-a-main').classList.toggle('on', a === 1);
+                getEl('wire-b-main').classList.toggle('on', b === 1);
 
+                // Inverted lines
+                getEl('wire-a-not-main').classList.toggle('on', notA === 1);
+                getEl('wire-b-not-main').classList.toggle('on', notB === 1);
+                
+                // Busses
+                getEl('bus-a-not').classList.toggle('on', notA === 1);
+                getEl('bus-a-true').classList.toggle('on', a === 1);
+                getEl('bus-b-not').classList.toggle('on', notB === 1);
+                getEl('bus-b-true').classList.toggle('on', b === 1);
+                
+                // Taps to busses
+                getEl('tap-a-true').classList.toggle('on', a === 1);
+                getEl('tap-b-true').classList.toggle('on', b === 1);
+
+                // Logic for each output
                 const y0 = notA && notB;
                 const y1 = notA && b;
                 const y2 = a && notB;
                 const y3 = a && b;
+                
+                // Taps to AND gates
+                getEl('tap-y0-anot').classList.toggle('on', y0);
+                getEl('tap-y0-bnot').classList.toggle('on', y0);
+                getEl('tap-y1-anot').classList.toggle('on', y1);
+                getEl('tap-y1-b').classList.toggle('on', y1);
+                getEl('tap-y2-a').classList.toggle('on', y2);
+                getEl('tap-y2-bnot').classList.toggle('on', y2);
+                getEl('tap-y3-a').classList.toggle('on', y3);
+                getEl('tap-y3-b').classList.toggle('on', y3);
 
+                // Final output wires
                 getEl('wire-y0').classList.toggle('on', y0);
                 getEl('wire-y1').classList.toggle('on', y1);
                 getEl('wire-y2').classList.toggle('on', y2);
