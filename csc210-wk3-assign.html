@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Assignment for CSC210 Week 3: Designing an 8-bit adder and a 3-to-8 decoder in Logisim.">
+    <title>CSC210 Week 3: Logisim Design Assignment</title>
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8fafc;
+            --bg-tertiary: #e2e8f0;
+            --text-primary: #1e293b;
+            --text-secondary: #475569;
+            --border-radius-lg: 0.5rem;
+        }
+
+        /* Base Styles */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.7;
+            margin: 0;
+            padding: 2rem 1.5rem;
+        }
+
+        /* Single-Column Layout */
+        .assignment-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        /* Typography */
+        h1, h2, h3 {
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+        h1 { 
+            font-size: 2.25rem; 
+            border-bottom: 2px solid var(--bg-tertiary);
+            padding-bottom: 1rem;
+        }
+        h2 { 
+            font-size: 1.75rem; 
+            margin-top: 2.5rem;
+        }
+        h3 {
+            font-size: 1.25rem;
+            margin-top: 2rem;
+            border-bottom: 1px solid var(--bg-tertiary);
+            padding-bottom: 0.5rem;
+        }
+        p { 
+            margin-bottom: 1rem; 
+            color: var(--text-secondary);
+        }
+        ul, ol { 
+            list-style-position: inside;
+            padding-left: 1.5rem; 
+            margin-bottom: 1rem;
+        }
+        strong {
+            color: var(--text-primary);
+        }
+
+        /* Rubric Table Styling */
+        .rubric-table {
+            width: 100%;
+            margin-top: 1rem;
+            border-collapse: collapse;
+            font-size: 0.95rem;
+        }
+        .rubric-table th, .rubric-table td {
+            border: 1px solid var(--bg-tertiary);
+            padding: 0.75rem 1rem;
+            text-align: left;
+            vertical-align: top;
+        }
+        .rubric-table th {
+            background-color: var(--bg-secondary);
+            font-weight: 700;
+        }
+
+        /* Accessibility */
+        a:focus, button:focus, [tabindex="0"]:focus {
+            outline: 2px solid var(--primary-color);
+            outline-offset: 2px;
+        }
+    </style>
+</head>
+<body>
+
+    <main class="assignment-container">
+        <header>
+            <h1>Logisim Design Assignment</h1>
+            <p>This assignment requires you to apply the concepts learned this week by building two fundamental circuits in Logisim 2.7.1 that will be essential for our final CPU simulation project.</p>
+        </header>
+        
+        <section>
+            <h2>Assignment Tasks</h2>
+            <ol>
+                <li>
+                    <strong>Part 1: 8-Bit Ripple-Carry Adder</strong><br>
+                    Construct an 8-bit ripple-carry adder. Your main circuit should take two 8-bit inputs (A and B) and produce an 8-bit sum output (S) and a single final Carry-Out (Cout). You must first build a full-adder as a sub-circuit and then use eight instances of it to create your final 8-bit adder.
+                </li>
+                <li>
+                    <strong>Part 2: 3-to-8 Decoder</strong><br>
+                    Construct a 3-to-8 decoder. This circuit should have a 3-bit input and eight outputs. Based on the 3-bit binary input, only one of the eight output lines should be active (high).
+                </li>
+                <li>
+                    <strong>Part 3: Discussion Question</strong><br>
+                    In a text document or in your submission comments, explain how you would construct a 4-to-16 decoder using two of the 3-to-8 decoders you just built. What additional logic gate(s) would be required? Describe the connections.
+                </li>
+            </ol>
+        </section>
+
+        <section>
+            <h2>Submission Requirements</h2>
+            <ul>
+                <li>A single Logisim project file (<code>.circ</code>) containing your 8-bit adder and 3-to-8 decoder in separate circuits within the file. Ensure all inputs and outputs are clearly labeled.</li>
+                <li>Your written answer to the discussion question.</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>Grading Rubric</h2>
+            <table class="rubric-table">
+                <thead>
+                    <tr>
+                        <th>Criteria</th>
+                        <th>Description</th>
+                        <th>Points</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>8-Bit Adder Functionality</td>
+                        <td>The adder correctly calculates the sum and final carry-out for various 8-bit inputs. It is correctly constructed from full-adder sub-circuits.</td>
+                        <td>40</td>
+                    </tr>
+                    <tr>
+                        <td>3-to-8 Decoder Functionality</td>
+                        <td>The decoder activates the correct single output line for all possible 3-bit inputs (000 through 111).</td>
+                        <td>30</td>
+                    </tr>
+                    <tr>
+                        <td>Circuit Organization & Labeling</td>
+                        <td>Circuits are neat, logically organized, and all inputs/outputs in the main circuits and sub-circuits are clearly labeled for readability.</td>
+                        <td>10</td>
+                    </tr>
+                     <tr>
+                        <td>4-to-16 Decoder Discussion</td>
+                        <td>The explanation is clear, accurate, and correctly identifies the need for an additional input line (as a selector for the two decoders) and any necessary logic (e.g., a NOT gate or using an enable pin).</td>
+                        <td>20</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Total</strong></td>
+                        <td></td>
+                        <td><strong>100</strong></td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+    </main>
+
+</body>
+</html>
