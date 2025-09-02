@@ -121,6 +121,62 @@
         </section>
 
         <section id="section-2" class="content-section">
+            <h2>2-to-4 Decoder Simulation</h2>
+            <p>The simplest decoder is a 2-to-4 decoder. It takes a 2-bit binary input (A and B) and activates one of four corresponding output lines. Click on the inputs A and B to see how the logic changes and a different output line is selected.</p>
+            <div class="simulation-container">
+                <svg id="decoder-2-4-svg" viewBox="0 0 500 400">
+                    <!-- Inputs -->
+                    <g class="interactive-area" id="input-a-group">
+                        <rect x="20" y="90" width="60" height="30" fill="#e9ecef" stroke="#6c757d" rx="5"/>
+                        <text class="label" x="35" y="110">A = <tspan id="val-a" class="value">0</tspan></text>
+                    </g>
+                    <g class="interactive-area" id="input-b-group">
+                        <rect x="20" y="280" width="60" height="30" fill="#e9ecef" stroke="#6c757d" rx="5"/>
+                        <text class="label" x="35" y="300">B = <tspan id="val-b" class="value">0</tspan></text>
+                    </g>
+                    <!-- Input Wires -->
+                    <path id="wire-a" class="wire" d="M 80 105 H 120"/>
+                    <path id="wire-b" class="wire" d="M 80 295 H 120"/>
+                    <!-- NOT Gates -->
+                    <path class="gate" d="M 120 105 L 150 105 L 135 90 L 135 120 Z"/>
+                    <circle class="gate" cx="155" cy="105" r="5"/>
+                    <path class="gate" d="M 120 295 L 150 295 L 135 280 L 135 310 Z"/>
+                    <circle class="gate" cx="155" cy="295" r="5"/>
+                    <!-- Vertical Wires -->
+                    <path id="wire-a-not" class="wire" d="M 160 105 H 180 V 50 H 200"/>
+                    <path id="wire-a-true" class="wire" d="M 120 105 V 150 H 220"/>
+                    <path id="wire-b-not" class="wire" d="M 160 295 H 180 V 250 H 240"/>
+                    <path id="wire-b-true" class="wire" d="M 120 295 V 350 H 260"/>
+                    <!-- AND Gates and Output Wires -->
+                    <!-- Y0 = A'B' -->
+                    <path class="wire" d="M 200 65 v 20"/>
+                    <path class="wire" d="M 240 85 v -20"/>
+                    <path id="wire-y0" class="wire" d="M 350 75 H 450"/>
+                    <path class="gate" d="M 250 50 h 50 a 25 25 0 0 1 0 50 h -50 z"/>
+                    <text class="label" x="460" y="80">Y0 (A'B')</text>
+                    <!-- Y1 = A'B -->
+                    <path class="wire" d="M 200 135 v 20"/>
+                    <path class="wire" d="M 260 155 v -20"/>
+                    <path id="wire-y1" class="wire" d="M 350 145 H 450"/>
+                    <path class="gate" d="M 250 120 h 50 a 25 25 0 0 1 0 50 h -50 z"/>
+                    <text class="label" x="460" y="150">Y1 (A'B)</text>
+                    <!-- Y2 = AB' -->
+                    <path class="wire" d="M 220 205 v 20"/>
+                    <path class="wire" d="M 240 225 v -20"/>
+                    <path id="wire-y2" class="wire" d="M 350 215 H 450"/>
+                    <path class="gate" d="M 250 190 h 50 a 25 25 0 0 1 0 50 h -50 z"/>
+                    <text class="label" x="460" y="220">Y2 (AB')</text>
+                    <!-- Y3 = AB -->
+                    <path class="wire" d="M 220 275 v 20"/>
+                    <path class="wire" d="M 260 295 v -20"/>
+                    <path id="wire-y3" class="wire" d="M 350 285 H 450"/>
+                    <path class="gate" d="M 250 260 h 50 a 25 25 0 0 1 0 50 h -50 z"/>
+                    <text class="label" x="460" y="290">Y3 (AB)</text>
+                </svg>
+            </div>
+        </section>
+
+        <section id="section-3" class="content-section">
             <h2>Use Case: 8-bit RAM Address Selection</h2>
             <p>Decoders are critical for selecting specific locations in memory. In a simplified 256-byte RAM, an 8-bit address can uniquely identify each byte. We can use two 4-to-16 decoders: one for the row and one for the column.</p>
             <p>In this simulation, the <strong>first 4 bits (RRRR) of the address select the row</strong>, and the <strong>last 4 bits (CCCC) select the column</strong>. Notice how the column addresses are mapped from right-to-left (column <code>0000</code> is on the far right), a common convention in memory diagrams.</p>
@@ -139,7 +195,7 @@
             </div>
         </section>
 
-        <section id="section-3" class="content-section">
+        <section id="section-4" class="content-section">
             <h2>Assessment Quiz</h2>
             <p>Test your understanding of decoders.</p>
             <form id="quiz-form">
@@ -174,6 +230,47 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+            // --- 2-to-4 Decoder ---
+            const decoderState = { a: 0, b: 0 };
+            const getEl = (id) => document.getElementById(id);
+
+            function updateDecoderVisuals() {
+                const { a, b } = decoderState;
+                const notA = a === 0 ? 1 : 0;
+                const notB = b === 0 ? 1 : 0;
+
+                getEl('val-a').textContent = a;
+                getEl('val-b').textContent = b;
+
+                getEl('wire-a').classList.toggle('on', a === 1);
+                getEl('wire-b').classList.toggle('on', b === 1);
+                getEl('wire-a-true').classList.toggle('on', a === 1);
+                getEl('wire-b-true').classList.toggle('on', b === 1);
+                getEl('wire-a-not').classList.toggle('on', notA === 1);
+                getEl('wire-b-not').classList.toggle('on', notB === 1);
+
+                const y0 = notA && notB;
+                const y1 = notA && b;
+                const y2 = a && notB;
+                const y3 = a && b;
+
+                getEl('wire-y0').classList.toggle('on', y0);
+                getEl('wire-y1').classList.toggle('on', y1);
+                getEl('wire-y2').classList.toggle('on', y2);
+                getEl('wire-y3').classList.toggle('on', y3);
+            }
+
+            getEl('input-a-group').addEventListener('click', () => {
+                decoderState.a = 1 - decoderState.a;
+                updateDecoderVisuals();
+            });
+            getEl('input-b-group').addEventListener('click', () => {
+                decoderState.b = 1 - decoderState.b;
+                updateDecoderVisuals();
+            });
+            updateDecoderVisuals();
+
+
             // --- Interactive RAM Grid ---
             const addressInput = document.getElementById('ram-address-input');
             const gridContainer = document.getElementById('ram-grid');
@@ -250,3 +347,4 @@
     </script>
 </body>
 </html>
+
