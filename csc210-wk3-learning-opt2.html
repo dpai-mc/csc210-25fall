@@ -80,7 +80,7 @@
         }
         h1 { font-size: 2.25rem; }
         h2 { font-size: 1.75rem; border-bottom: 2px solid var(--bg-tertiary); padding-bottom: 0.5rem; margin-top: 2.5rem; }
-        h3 { font-size: 1.25rem; }
+        h3 { font-size: 1.25rem; margin-top: 1.5rem; }
         p { margin-bottom: 1rem; color: var(--text-secondary); }
         a { color: var(--primary-color); text-decoration: none; }
         a:hover { text-decoration: underline; }
@@ -156,12 +156,26 @@
             height: 100%;
         }
         .transcript {
-            margin-top: 1rem;
+            margin-top: 1.5rem;
+            max-height: 300px;
+            overflow-y: auto;
+            background-color: var(--bg-secondary);
+            padding: 1rem;
+            border-radius: var(--border-radius-md);
         }
         .transcript summary {
             cursor: pointer;
             font-weight: bold;
             color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+        .transcript p {
+            margin-bottom: 0.5rem;
+        }
+        .transcript p strong {
+            color: var(--text-muted);
+            font-size: 0.9em;
+            margin-right: 0.5em;
         }
 
         /* Quiz Section */
@@ -260,13 +274,107 @@
                 <h2>Video Lesson: Circuits in Context</h2>
                 <p>This video provides an overview of the arithmetic and decoder circuits and explains how these fundamental components will be used in our final CPU simulation.</p>
                 <div class="video-container">
-                    <!-- YouTube video placeholder -->
-                    <iframe src="https://www.youtube.com/embed/gI-qXk7XojA" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    <iframe width="560" height="315" src="https://www.youtube.com/embed/aV0j2ytn_GM?si=JKeWlAZ_a1x2axkQ" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
                 </div>
                 <div class="transcript">
                     <details>
                         <summary>Show Transcript</summary>
-                        <p>[Transcript Placeholder] Welcome, everyone. In this video, we'll bridge the gap between the theory of combinational logic and its practical application. We've just explored arithmetic circuits, the foundation of how a computer's Arithmetic Logic Unit, or ALU, performs calculations. We also looked at decoders, which are crucial for selecting the correct memory location or enabling the right component at the right time. As we move forward, remember these building blocks. You'll see them again when we begin constructing our final CPU simulation, where the adder will become the heart of our ALU and the decoder will be the key to our memory and instruction-handling systems. Let's get started.</p>
+                        <p><strong>[00:00:00]</strong> Aloha and welcome to week three. This week we're talking a little bit about digital circuits,</p>
+                        <p><strong>[00:00:06]</strong> how we take gates and make circuits. In particular we're going to look at adders and decoders.</p>
+                        <p><strong>[00:00:13]</strong> Okay so first I posted as part of this, I posted this a little bit on transistors,</p>
+                        <p><strong>[00:00:21]</strong> what a transistor is and how do you make a gate out of a transistor. So there's a short like</p>
+                        <p><strong>[00:00:25]</strong> eight minute video here that you can watch. It talks about how transistors work and then</p>
+                        <p><strong>[00:00:31]</strong> there's a lot of discussion about how to build gates from transistors. Okay it's not a requirement</p>
+                        <p><strong>[00:00:39]</strong> that you totally understand this but I think it's good for you to watch this and get the basics</p>
+                        <p><strong>[00:00:42]</strong> so that you understand how a gate is made from a transistor.</p>
+                        <p><strong>[00:00:46]</strong> We're not going to deal with this level of detail again. It's just to give you the foundation,</p>
+                        <p><strong>[00:00:50]</strong> the foundational knowledge. Okay so that's the first thing you'll see on the canvas page</p>
+                        <p><strong>[00:00:54]</strong> that there's a link to that video. So please watch that. And then the next topic is,</p>
+                        <p><strong>[00:01:00]</strong> how do we build adders? And there's two videos here that I want you to watch. One is</p>
+                        <p><strong>[00:01:05]</strong> from a professor, I think it is at Cornell. I think it's a really well done video. He talks</p>
+                        <p><strong>[00:01:09]</strong> about how to add, how to subtract, how to deal with sign bits, how to do a carry,</p>
+                        <p><strong>[00:01:14]</strong> how to do an overflow, how to detect an overflow. So it's a good summary of all things</p>
+                        <p><strong>[00:01:19]</strong> we've been talking about, addition and subtraction in binary. Okay so then so that's</p>
+                        <p><strong>[00:01:24]</strong> the first video. The second video is somebody else. It's not a great video but it does</p>
+                        <p><strong>[01:30,000]</strong> talk about how do you build a half adder and a full adder from logic gates. Okay so it's</p>
+                        <p><strong>[01:34,000]</strong> a pretty simple process and I think you'll see that when you watch the video. Then</p>
+                        <p><strong>[01:38,000]</strong> there's an activity, a circuits activity here for you, which is actually going to</p>
+                        <p><strong>[01:43,000]</strong> have you build in Logisim a half adder, a full adder and then a four-bit ripple adder.</p>
+                        <p><strong>[01:49,000]</strong> Okay so then we switch gears a little bit. We're going to talk about decoders. And here's</p>
+                        <p><strong>[01:54,000]</strong> a good video on decoders. It's about five minutes. I suggest you watch this because</p>
+                        <p><strong>[01:59,000]</strong> it gives you a good feel for what a decoder is and why you need it. And then here's a</p>
+                        <p><strong>[02:03,000]</strong> second activity to build a decoder. There's two parts to this. One is to build</p>
+                        <p><strong>[02:08,000]</strong> a three by eight decoder in Logisim. And then the second part is just a text answer</p>
+                        <p><strong>[02:13,000]</strong> for you to give me on how would you take two three by eights and make a four by sixteen.</p>
+                        <p><strong>[02:18,000]</strong> All right? And then lastly we have the assignment for the week. The assignment for the week</p>
+                        <p><strong>[02:23,000]</strong> is very simple. I just want you to upload your two Logisim circuits, one for the adder,</p>
+                        <p><strong>[02:29,000]</strong> one for the decoder and then a written answer on how you would extend the three by eight</p>
+                        <p><strong>[02:34,000]</strong> to a four by sixteen. So there is a submission for this week. It is a Logisim file and</p>
+                        <p><strong>[02:40,000]</strong> a text answer. So there's two things I want from you. You can put them in the same file.</p>
+                        <p><strong>[02:44,000]</strong> You can do a zip file. I don't care. As long as I get both. A single Logisim file with</p>
+                        <p><strong>[02:49,000]</strong> the two circuits in it and the text answer. Okay. And then so let me go into a little</p>
+                        <p><strong>[02:54,000]</strong> more detail now about what is a half adder, what is a full adder, what's a ripple adder,</p>
+                        <p><strong>[02:58,000]</strong> what's a decoder. Okay. And then what's the assignment. Okay. So that's the agenda.</p>
+                        <p><strong>[03:06,000]</strong> Okay so let's first talk about adders. What are we trying to do? We're trying to do</p>
+                        <p><strong>[03:10,000]</strong> something like this where we have two four bit numbers. We're trying to add them. So</p>
+                        <p><strong>[03:15,000]</strong> we start from the right. We say one plus one is two. So that's a zero with a carry.</p>
+                        <p><strong>[03:19,000]</strong> Okay. One plus zero plus zero is one. Okay. One plus one is zero with a carry. Okay.</p>
+                        <p><strong>[03:26,000]</strong> And then one plus one plus zero is zero with a carry. Okay. And then we have the last</p>
+                        <p><strong>[03:31,000]</strong> carry. Okay. So this is what we're trying to do. This is a four bit add. All right.</p>
+                        <p><strong>[03:36,000]</strong> So the first thing you want to do is you want to build a half adder. A half adder only</p>
+                        <p><strong>[03:41,000]</strong> does this first column. Okay. It takes two inputs, A and B, and it generates a sum</p>
+                        <p><strong>[03:47,000]</strong> and a carry. Okay. So you can create a truth table for this where you have A and B are the</p>
+                        <p><strong>[03:52,000]</strong> inputs. The sum and the carry are the outputs. Okay. And then you can you can implement that</p>
+                        <p><strong>[03:58,000]</strong> in logic gates. Okay. Then the second thing you want to do is you want to build a full adder.</p>
+                        <p><strong>[04:03,000]</strong> So a full adder does all the other columns. What's different about the other columns is</p>
+                        <p><strong>[04:08,000]</strong> you have A and B as an input, but you also have a carry in. Okay. You have three inputs.</p>
+                        <p><strong>[04:13,000]</strong> Then you generate a sum and a carry out. Okay. So you're going to build a full adder that</p>
+                        <p><strong>[04:18,000]</strong> has three inputs and two outputs. And one way to do that is you can use two half adders</p>
+                        <p><strong>[04:24,000]</strong> to make a full adder. Okay. So you're going to do that in Logisim as a sub-circuit.</p>
+                        <p><strong>[04:29,000]</strong> So you're going to make a half adder, then you're going to make a full adder. And then</p>
+                        <p><strong>[04:32,000]</strong> the third step is you're going to make a four-bit ripple adder, which does this whole</p>
+                        <p><strong>[04:36,000]</strong> thing. Okay. And so that is four full adders cascaded. So the carry out of one becomes</p>
+                        <p><strong>[04:43,000]</strong> the carry in of the next. All right. And that's all in the activity. It's all spelled</p>
+                        <p><strong>[04:47,000]</strong> out for you, what you need to do. Okay. And then so the assignment is to give me a Logisim</p>
+                        <p><strong>[04:53,000]</strong> file that contains the half adder, the full adder and the four-bit ripple adder. Okay.</p>
+                        <p><strong>[04:58,000]</strong> So that is that's the first part of the assignment. And it's based on the activity for the adders.</p>
+                        <p><strong>[05:05,000]</strong> Okay. And so I'm hoping that this is kind of a fun little exercise for you to do to learn</p>
+                        <p><strong>[05:10,000]</strong> how adders are built. Okay. Then the second part of the class for this week is decoders.</p>
+                        <p><strong>[05:16,000]</strong> Okay. So what's a decoder? A decoder is a way to take a binary number and convert</p>
+                        <p><strong>[05:22,000]</strong> it to a selection. Okay. So for example, if I have a two-bit number, there's four possibilities,</p>
+                        <p><strong>[05:28,000]</strong> 00, 01, 10, 11. What I want to do is I want to have four outputs and depending on</p>
+                        <p><strong>[05:34,000]</strong> which of the four possibilities comes in, a different output is selected. Is is turned</p>
+                        <p><strong>[05:39,000]</strong> on. Okay. So this is called a two to four decoder. All right. You can also do a three</p>
+                        <p><strong>[05:44,000]</strong> to eight decoder. So if you have a three-bit number, there's eight possibilities. So you</p>
+                        <p><strong>[05:49,000]</strong> have eight outputs and based on what the three-bit number is, a different one of the eight outputs</p>
+                        <p><strong>[05:55,000]</strong> is selected. So why do we do this? Okay. The main reason we do this is for memories.</p>
+                        <p><strong>[06:01,000]</strong> So if you have a memory, let's say you have a 256 byte memory, you need to have a way to</p>
+                        <p><strong>[06:08,000]</strong> select which of the 256 bytes you're interested in reading or writing. So you have an address</p>
+                        <p><strong>[06:14,000]</strong> bus and that address bus is in this case eight bits because two to the eighth is 256.</p>
+                        <p><strong>[06:20,000]</strong> So you have an eight-bit address and that tells you which of the 256 bytes you're interested</p>
+                        <p><strong>[06:26,000]</strong> in. Okay. And so the way this is typically implemented is the 256 bytes are organized</p>
+                        <p><strong>[06:33,000]</strong> as a grid. So in this case, 16 by 16. Okay. So you take four of the bits for the</p>
+                        <p><strong>[06:39,000]</strong> row and four of the bits for the column. And so for the row, you have a four to sixteen</p>
+                        <p><strong>[06:45,000]</strong> decoder. And for the column, you have a four to sixteen decoder. Okay. And based on the</p>
+                        <p><strong>[06:50,000]</strong> four bits of the row and the four bits of the column, a single byte is selected. A single</p>
+                        <p><strong>[06:56,000]</strong> one of the 256 bytes is selected that you can then either read or write. Okay. So</p>
+                        <p><strong>[07:02,000]</strong> that's what a decoder is used for primarily is memories. All right. So the activity that</p>
+                        <p><strong>[07:08,000]</strong> I have for you and the assignment that I have for you is to build a three to eight decoder.</p>
+                        <p><strong>[07:13,000]</strong> Okay. And then the second part of it is a text answer, just for you to tell me how</p>
+                        <p><strong>[07:18,000]</strong> would you take two three to eights and make a four to sixteen. Okay. And that's pretty</p>
+                        <p><strong>[07:23,000]</strong> straightforward if you think about it. If you have a four-bit number, the first three bits</p>
+                        <p><strong>[07:28,000]</strong> can go to both decoders, right, in parallel. And then the fourth bit, the most significant</p>
+                        <p><strong>[07:34,000]</strong> bit of the four bits can be used to select which of the two decoders you're interested</p>
+                        <p><strong>[07:40,000]</strong> in. Okay. So that's the idea. And there's an enable line on these decoders that allows</p>
+                        <p><strong>[07:45,000]</strong> you to turn them on or off. Okay. So you're going to learn about decoders and you're going</p>
+                        <p><strong>[07:49,000]</strong> to build me a three to eight decoder and then you're going to tell me how to make a four</p>
+                        <p><strong>[07:53,000]</strong> to sixteen from two three to eights. All right. And then the assignment, like I said before,</p>
+                        <p><strong>[07:59,000]</strong> is I want the Logisim file that has both the adder circuits and the decoder circuit</p>
+                        <p><strong>[08:04,000]</strong> and the answer to the extension question. How do you go from a three to eight to a four</p>
+                        <p><strong>[08:09,000]</strong> to sixteen? Okay. So that is week three. If you have any questions, please post them on</p>
+                        <p><strong>[08:14,000]</strong> the discussion board. I will be monitoring that. And I hope you have some fun with this.</p>
+                        <p><strong>[08:18,000]</strong> I think Logisim is a great tool. I think it's a lot of fun to build these circuits</p>
+                        <p><strong>[08:22,000]</strong> and see them work. And so I hope you enjoy it. All right. Aloha.</p>
                     </details>
                 </div>
             </section>
