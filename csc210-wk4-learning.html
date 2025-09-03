@@ -18,6 +18,8 @@
             --warning-color: #ffc107;
             --danger-color: #dc3545;
             --light-text: #6c757d;
+            --logic-high: #28a745;
+            --logic-low: #6c757d;
         }
 
         html {
@@ -119,15 +121,38 @@
             margin-top: 0;
         }
         
-        .circuit-diagram {
+        .circuit-diagram-svg {
+            display: block;
+            margin: 20px auto;
+            max-width: 500px;
+            width: 100%;
+            height: auto;
+        }
+        
+        /* SVG Diagram Styling */
+        .circuit-diagram-svg .gate {
+            fill: none;
+            stroke: var(--primary-text);
+            stroke-width: 2;
+        }
+        .circuit-diagram-svg .wire {
+            fill: none;
+            stroke-width: 2;
+            transition: stroke 0.3s ease;
+        }
+        .circuit-diagram-svg .label {
             font-family: "Courier New", Courier, monospace;
-            background-color: var(--code-bg);
-            padding: 15px;
-            border-radius: 5px;
-            white-space: pre;
-            text-align: center;
-            font-size: 1rem;
-            overflow-x: auto;
+            font-size: 20px;
+            font-weight: bold;
+            transition: fill 0.3s ease;
+        }
+        .circuit-diagram-svg .high {
+            stroke: var(--logic-high);
+            fill: var(--logic-high);
+        }
+        .circuit-diagram-svg .low {
+            stroke: var(--logic-low);
+            fill: var(--logic-low);
         }
 
         .led {
@@ -172,7 +197,7 @@
         }
         
         .toggle-button.active {
-            background-color: var(--success-color);
+            background-color: var(--danger-color); /* Active low is "active" */
         }
 
         /* ADA Compliance & Privacy */
@@ -256,7 +281,8 @@
             <li><a href="#part2">Part 2: Latches</a></li>
             <li><a href="#part3">Part 3: Registers</a></li>
             <li><a href="#part4">Part 4: RAM</a></li>
-            <li><a href="#quiz">Check Your Understanding</a></li>
+            <li><a href="#quiz">Quiz</a></li>
+            <li><a href="#references">References</a></li>
         </ul>
     </nav>
 
@@ -264,7 +290,7 @@
 
         <section id="part1" aria-labelledby="part1-heading">
             <h2 id="part1-heading">Part 1: Introduction to Sequential Logic</h2>
-            <p>Welcome! [cite_start]This week, we transition from circuits that just calculate (combinational) to circuits that can **remember** (sequential)[cite: 1, 2]. [cite_start]The key ingredient is the **feedback loop**, where a circuit's output is fed back into its own input, creating a state[cite: 5].</p>
+            <p>Welcome! This week, we transition from circuits that just calculate (combinational) to circuits that can **remember** (sequential). The key ingredient is the **feedback loop**, where a circuit's output is fed back into its own input, creating a state.</p>
 
             <h3>Combinational vs. Sequential Logic</h3>
             <ul>
@@ -273,7 +299,7 @@
             </ul>
 
             <div class="interactive-box">
-                [cite_start]<h4>Analogy: Light Switch vs. Toggle Button [cite: 5]</h4>
+                <h4>Analogy: Light Switch vs. Toggle Button</h4>
                 <p>A simple light switch is **combinational**. Its state (up/down) directly determines if the light is on or off. A TV power button is **sequential**. You press the same button to turn it on (if it's off) and to turn it off (if it's on). The button's action depends on the TV's current state.</p>
                 <button id="toggle-button" class="toggle-button" aria-pressed="false">TV Power Button</button>
                 <div style="display: inline-block; vertical-align: middle;">
@@ -284,7 +310,7 @@
             </div>
             
             <div class="info-box">
-                [cite_start]<strong>Key Insight:</strong> The simple act of connecting NOR gates (or NAND gates) in a cross-coupled loop creates a 1-bit memory element, the foundation of all computer memory[cite: 6].
+                <strong>Key Insight:</strong> The simple act of connecting NAND gates (or NOR gates) in a cross-coupled loop creates a 1-bit memory element, the foundation of all computer memory.
             </div>
         </section>
 
@@ -292,30 +318,53 @@
 
         <section id="part2" aria-labelledby="part2-heading">
             <h2 id="part2-heading">Part 2: Building Memory from Gates - The Latch</h2>
-            <p>The most fundamental memory element is the **latch**. We can build one using just two NOR gates in a feedback loop. [cite_start]This is called an **SR Latch** (Set-Reset Latch)[cite: 7].</p>
+            <p>The most fundamental memory element is the **latch**. We can build one using just two NAND gates in a feedback loop. This is called an **S'R' Latch** (Set-Reset Latch with active-low inputs).</p>
             
-            <h3>Interactive SR Latch (from NOR Gates)</h3>
-            <p>An SR latch has two inputs, S (Set) and R (Reset), and two outputs, Q and Q' (Q-not). In a stable state, Q' is always the opposite of Q.</p>
+            <h3>Interactive S'R' Latch (from NAND Gates)</h3>
+            <p>This latch has two inputs, S' (Set-not) and R' (Reset-not), and two outputs, Q and Q'. Because it's built from NAND gates, the inputs are **active-low**. This means you activate a signal by setting its input to 0, not 1.</p>
             <ul>
-                [cite_start]<li><strong>Set (S=1, R=0):</strong> Forces the output Q to 1[cite: 9].</li>
-                [cite_start]<li><strong>Reset (S=0, R=1):</strong> Forces the output Q to 0[cite: 8].</li>
-                [cite_start]<li><strong>Hold (S=0, R=0):</strong> The latch "remembers" or holds its previous state[cite: 8].</li>
-                <li><strong>Invalid (S=1, R=1):</strong> This state is problematic because it forces both Q and Q' to 0, breaking the Q/Q' rule. [cite_start]This is called the illegal or invalid state[cite: 7, 8, 9].</li>
+                <li><strong>Hold (S'=1, R'=1):</strong> This is the inactive, "remembering" state. The latch holds its previous value.</li>
+                <li><strong>Set (S'=0, R'=1):</strong> The active-low S' input forces the output Q to 1.</li>
+                <li><strong>Reset (S'=1, R'=0):</strong> The active-low R' input forces the output Q to 0.</li>
+                <li><strong>Invalid (S'=0, R'=0):</strong> Activating both inputs at once forces both Q and Q' to 1, which breaks the rule that they must be opposites.</li>
             </ul>
 
             <div class="interactive-box">
-                <h4>SR Latch Simulator</h4>
-                <div class="circuit-diagram" aria-hidden="true">
-                    S ---->|NOR|---- Q'
-                          / \  |
-                           |   |
-                           |   V
-                          / \  |
-                    R ---->|NOR|---- Q
-                </div>
+                <h4>S'R' Latch Simulator</h4>
+                
+                <!-- SVG Diagram -->
+                <svg viewBox="0 0 500 250" class="circuit-diagram-svg" aria-label="S'R' Latch Diagram">
+                    <!-- Top NAND Gate -->
+                    <path d="M150,50 H200 A50,50 0 0 1 200,100 H150 Z" class="gate"/>
+                    <circle cx="255" cy="75" r="5" fill="var(--primary-text)"/>
+                    
+                    <!-- Bottom NAND Gate -->
+                    <path d="M150,150 H200 A50,50 0 0 1 200,200 H150 Z" class="gate"/>
+                    <circle cx="255" cy="175" r="5" fill="var(--primary-text)"/>
+
+                    <!-- Wires and Labels -->
+                    <!-- Inputs -->
+                    <line id="s-wire-in" x1="50" y1="60" x2="150" y2="60" class="wire low"/>
+                    <text id="s-label" x="30" y="65" class="label low">S'</text>
+                    
+                    <line id="r-wire-in" x1="50" y1="190" x2="150" y2="190" class="wire high"/>
+                    <text id="r-label" x="30" y="195" class="label high">R'</text>
+
+                    <!-- Outputs -->
+                    <line id="q-not-wire-out" x1="260" y1="75" x2="360" y2="75" class="wire high"/>
+                    <text id="q-not-label" x="370" y="80" class="label high">Q'</text>
+
+                    <line id="q-wire-out" x1="260" y1="175" x2="360" y2="175" class="wire low"/>
+                    <text id="q-label" x="370" y="180" class="label low">Q</text>
+
+                    <!-- Feedback Loops -->
+                    <polyline id="feedback-q" points="320,175 320,160 140,160 140,90 150,90" class="wire low"/>
+                    <polyline id="feedback-q-not" points="320,75 320,90 140,90 140,140 150,140" class="wire high"/>
+                </svg>
+
                 <div style="text-align: center; margin-top: 20px;">
-                    <button id="sr-s-button" class="toggle-button" aria-pressed="false">S = 0</button>
-                    <button id="sr-r-button" class="toggle-button" aria-pressed="false">R = 0</button>
+                    <button id="sr-s-button" class="toggle-button" aria-pressed="false">S' = 1</button>
+                    <button id="sr-r-button" class="toggle-button" aria-pressed="false">R' = 1</button>
                 </div>
                 <div style="text-align: center; margin-top: 15px;">
                     <strong>Q:</strong><div id="sr-q-led" class="led"></div>
@@ -324,10 +373,11 @@
                 <div id="sr-status" style="text-align:center; font-weight: bold; margin-top:10px; height: 20px;" aria-live="polite">
                     State: Hold
                 </div>
-                 <div class="info-box">
-                    [cite_start]<strong>AI Tutor Prompt:</strong> "Help me understand why SR latches have invalid states"[cite: 13].<br>
-                    <strong>Answer:</strong> With S=1 and R=1, the definition of a NOR gate (output is 1 only if *both* inputs are 0) forces both Q and Q' to become 0. This violates the fundamental principle that Q and Q' must be opposites. If the inputs then change from 1,1 to 0,0 simultaneously, the final state of the latch is unpredictable, creating a "race condition." The **D Latch** was invented to solve this exact problem.
-                </div>
+            </div>
+
+            <div class="info-box">
+                <h4>A Note on Startup Dynamics & Race Conditions</h4>
+                <p>You might notice in a simulator like Logisim that when the simulation starts, the latch outputs flicker between red (error/indeterminate) and random states. This is because a real-world latch has no defined state at power-on. Both gates "race" to determine the output based on tiny physical imperfections. Eventually, one "wins" and the circuit settles into a stable, but random, state (either Q=0 or Q=1). This is why most sequential systems include a global **reset signal** to force all memory elements into a known starting state.</p>
             </div>
         </section>
 
@@ -335,26 +385,30 @@
         
         <section id="part3" aria-labelledby="part3-heading">
             <h2 id="part3-heading">Part 3: Registers and Clocked Systems</h2>
-            <p>A single latch holds one bit. To store a byte (8 bits), we need eight memory elements working together. [cite_start]A **register** is a group of flip-flops (an improved, clock-controlled latch) that store multiple bits in parallel[cite: 10]. To ensure all bits are updated at the exact same time, we use a common **clock signal**.</p>
+            <p>A single latch holds one bit. To store a byte (8 bits), we need eight memory elements working together. A **register** is a group of flip-flops (an improved, clock-controlled latch) that store multiple bits in parallel. To ensure all bits are updated at the exact same time, we use a common **clock signal**.</p>
             
             <h3>Interactive 4-Bit Register</h3>
             <p>This register uses D Flip-Flops. Data is only loaded from the input when the **Load/Enable** signal is high (1) and the **Clock** transitions from low to high (a "rising edge"). The **Clear** signal asynchronously resets all bits to 0.</p>
 
             <div class="interactive-box">
                 <h4>4-Bit Register Simulator</h4>
+                <!-- Data Inputs -->
                 <div>
                     <strong>Data Input (D):</strong>
                     <input type="text" id="reg-input" maxlength="4" value="1010" pattern="[01]{4}" title="Enter a 4-bit binary value">
                 </div>
+                <!-- Control Signals -->
                 <div style="margin-top: 15px;">
                     <strong>Controls:</strong>
                     <button id="reg-load-button" class="toggle-button" aria-pressed="false">Load Enable = 0</button>
                     <button id="reg-clear-button" class="reset">Clear</button>
                 </div>
+                <!-- Clock Signal -->
                 <div style="margin-top: 15px;">
                     <strong>Clock:</strong>
                     <button id="reg-clock-button">Pulse Clock ( rising edge)</button>
                 </div>
+                <!-- Register Output -->
                 <div style="margin-top: 20px;">
                     <strong>Register Stored Value (Q):</strong>
                     <div class="register-bits" id="register-q-output" aria-label="Register output">
@@ -374,7 +428,7 @@
         
         <section id="part4" aria-labelledby="part4-heading">
             <h2 id="part4-heading">Part 4: Introduction to RAM</h2>
-            [cite_start]<p>How do we go from an 8-bit register to the kilobytes or gigabytes of RAM in a computer? By arranging our memory cells in a grid and using an **address decoder** to select which specific location (or "word") we want to read from or write to[cite: 11].</p>
+            <p>How do we go from an 8-bit register to the kilobytes or gigabytes of RAM in a computer? By arranging our memory cells in a grid and using an **address decoder** to select which specific location (or "word") we want to read from or write to.</p>
             
             <h3>Simplified RAM Model (8 words x 4 bits)</h3>
             <p>This model has 8 memory locations (addresses 000 through 111). Each location stores a 4-bit word.</p>
@@ -387,6 +441,7 @@
             <div class="interactive-box">
                 <h4>Interactive 8x4 RAM</h4>
                 <div style="display: flex; flex-wrap: wrap; gap: 20px; justify-content: space-between;">
+                    <!-- Controls -->
                     <div style="flex-basis: 300px;">
                         <strong>Controls:</strong><br>
                         Address (3-bit): <input type="text" id="ram-address" maxlength="3" value="000" pattern="[01]{3}"><br>
@@ -394,6 +449,7 @@
                         <button id="ram-read-btn">Read from Address</button>
                         <button id="ram-write-btn">Write to Address</button>
                     </div>
+                    <!-- Data Bus -->
                     <div style="flex-basis: 300px;">
                         <strong>Data Bus (MDR):</strong>
                         <div id="ram-data-out" class="register-bits" style="background-color: var(--code-bg); padding: 5px; border-radius: 4px;">
@@ -402,10 +458,12 @@
                         <div id="ram-status" aria-live="polite" style="text-align: center; margin-top: 10px; height: 20px;">Ready</div>
                     </div>
                 </div>
-                 <div style="margin-top: 20px;">
+                 <!-- RAM Grid -->
+                <div style="margin-top: 20px;">
                     <strong>RAM Memory Cells:</strong>
                     <div id="ram-grid-container" class="ram-grid" style="display: grid; grid-template-columns: auto 1fr; gap: 5px;">
-                        </div>
+                        <!-- Generated by JS -->
+                    </div>
                 </div>
             </div>
 
@@ -425,10 +483,10 @@
                         <label><input type="radio" name="q1" value="c"> Arithmetic Logic Unit</label>
                     </div>
                     <div class="quiz-question" style="margin-top: 20px;">
-                        <p><strong>2. [cite_start]In a standard SR latch built from NOR gates, what is the state when S=1 and R=1? [cite: 8, 9]</strong></p>
-                        <label><input type="radio" name="q2" value="a"> Set</label><br>
-                        <label><input type="radio" name="q2" value="b"> Reset</label><br>
-                        <label><input type="radio" name="q2" value="c"> Invalid/Illegal</label>
+                        <p><strong>2. In a standard S'R' latch built from NAND gates, what is the hold state?</strong></p>
+                        <label><input type="radio" name="q2" value="a"> S'=0, R'=0</label><br>
+                        <label><input type="radio" name="q2" value="b"> S'=0, R'=1</label><br>
+                        <label><input type="radio" name="q2" value="c"> S'=1, R'=1</label>
                     </div>
                     <div class="quiz-question" style="margin-top: 20px;">
                         <p><strong>3. What is the primary purpose of a clock signal in a multi-bit register?</strong></p>
@@ -442,6 +500,20 @@
             </div>
         </section>
         
+        <hr>
+
+        <section id="references" aria-labelledby="references-heading">
+            <h2 id="references-heading">References and Further Reading</h2>
+            <ul style="list-style-type: none; padding-left: 0;">
+                <li style="margin-bottom: 10px;">
+                    Scott, J. C. (2009). <em>But How Do It Know? - The Basic Principles of Computers for Everyone</em>. A valuable, simplified introduction to the core concepts of computer operation.
+                </li>
+                <li>
+                    Harris, D. M., & Harris, S. L. (2012). <em>Digital Design and Computer Architecture</em>. Morgan Kaufmann. A comprehensive textbook for a deeper dive into digital logic and computer architecture.
+                </li>
+            </ul>
+        </section>
+
     </main>
     
     <footer>
@@ -470,27 +542,37 @@
             }
         });
 
-        // --- Part 2: SR Latch Simulator ---
+        // --- Part 2: S'R' NAND Latch Simulator ---
         const sButton = document.getElementById('sr-s-button');
         const rButton = document.getElementById('sr-r-button');
         const qLed = document.getElementById('sr-q-led');
         const qnLed = document.getElementById('sr-qn-led');
         const srStatus = document.getElementById('sr-status');
         
-        let s = 0;
-        let r = 0;
-        let q = 0; // Start in reset state
+        // SVG Elements
+        const sWireIn = document.getElementById('s-wire-in');
+        const sLabel = document.getElementById('s-label');
+        const rWireIn = document.getElementById('r-wire-in');
+        const rLabel = document.getElementById('r-label');
+        const qWireOut = document.getElementById('q-wire-out');
+        const qLabel = document.getElementById('q-label');
+        const qNotWireOut = document.getElementById('q-not-wire-out');
+        const qNotLabel = document.getElementById('q-not-label');
+        const feedbackQ = document.getElementById('feedback-q');
+        const feedbackQNot = document.getElementById('feedback-q-not');
+
+        // S'R' Latch is active low, so initial state is 1,1 (Hold)
+        let s_not = 1;
+        let r_not = 1;
+        let q = 0; // Start in a known reset state
         let qn = 1;
 
         function updateSrLatch() {
-            // NOR Gate Logic
-            // In a real circuit this happens near-instantly, we simulate it
-            const prevQ = q;
-            
-            // Re-calculate multiple times to allow feedback to settle
-            for (let i=0; i < 5; i++) {
-                q = (r || qn) ? 0 : 1;
-                qn = (s || q) ? 0 : 1;
+            // NAND Gate Logic Simulation
+            // We loop a few times to allow the feedback to stabilize
+            for (let i = 0; i < 5; i++) {
+                qn = (s_not && q) ? 0 : 1; // Top gate
+                q = (r_not && qn) ? 0 : 1; // Bottom gate
             }
             
             // Update LEDs
@@ -498,38 +580,55 @@
             qnLed.classList.toggle('on', qn === 1);
 
             // Update Status Text
-            if (s === 1 && r === 1) {
+            if (s_not === 0 && r_not === 0) {
                 srStatus.textContent = 'State: Invalid!';
                 srStatus.style.color = 'var(--danger-color)';
-            } else if (s === 1 && r === 0) {
+            } else if (s_not === 0 && r_not === 1) {
                 srStatus.textContent = 'State: Set';
                 srStatus.style.color = 'var(--primary-text)';
-            } else if (s === 0 && r === 1) {
+            } else if (s_not === 1 && r_not === 0) {
                 srStatus.textContent = 'State: Reset';
                 srStatus.style.color = 'var(--primary-text)';
-            } else { // s=0, r=0
+            } else { // s_not=1, r_not=1
                 srStatus.textContent = 'State: Hold';
                 srStatus.style.color = 'var(--primary-text)';
             }
+            
+            // Update SVG Diagram
+            updateSvgClass(sWireIn, s_not);
+            updateSvgClass(sLabel, s_not);
+            updateSvgClass(rWireIn, r_not);
+            updateSvgClass(rLabel, r_not);
+            updateSvgClass(qWireOut, q);
+            updateSvgClass(qLabel, q);
+            updateSvgClass(qNotWireOut, qn);
+            updateSvgClass(qNotLabel, qn);
+            updateSvgClass(feedbackQ, q);
+            updateSvgClass(feedbackQNot, qn);
+        }
+        
+        function updateSvgClass(element, state) {
+            element.classList.remove('high', 'low');
+            element.classList.add(state === 1 ? 'high' : 'low');
         }
         
         sButton.addEventListener('click', () => {
-            s = 1 - s; // toggle 0/1
-            sButton.textContent = `S = ${s}`;
-            sButton.classList.toggle('active');
-            sButton.setAttribute('aria-pressed', s === 1);
+            s_not = 1 - s_not; // toggle 0/1
+            sButton.textContent = `S' = ${s_not}`;
+            sButton.classList.toggle('active', s_not === 0);
+            sButton.setAttribute('aria-pressed', s_not === 0);
             updateSrLatch();
         });
         
         rButton.addEventListener('click', () => {
-            r = 1 - r; // toggle 0/1
-            rButton.textContent = `R = ${r}`;
-            rButton.classList.toggle('active');
-            rButton.setAttribute('aria-pressed', r === 1);
+            r_not = 1 - r_not; // toggle 0/1
+            rButton.textContent = `R' = ${r_not}`;
+            rButton.classList.toggle('active', r_not === 0);
+            rButton.setAttribute('aria-pressed', r_not === 0);
             updateSrLatch();
         });
 
-        // Initial state
+        // Initialize
         updateSrLatch();
 
         // --- Part 3: Register Simulator ---
@@ -551,7 +650,7 @@
 
         loadButton.addEventListener('click', () => {
             loadEnabled = !loadEnabled;
-            loadButton.classList.toggle('active');
+            loadButton.classList.toggle('active', loadEnabled);
             loadButton.textContent = `Load Enable = ${loadEnabled ? 1 : 0}`;
             loadButton.setAttribute('aria-pressed', loadEnabled);
         });
@@ -564,11 +663,11 @@
         
         clockButton.addEventListener('click', () => {
             if (loadEnabled) {
-                const inputValue = regInput.value.padStart(4, '0').split('');
-                if (/^[01]{4}$/.test(regInput.value)) {
-                    registerValue = inputValue.map(Number);
+                const inputValue = regInput.value.padStart(4, '0');
+                if (/^[01]{4}$/.test(inputValue)) {
+                    registerValue = inputValue.split('').map(Number);
                     updateRegisterDisplay();
-                    regStatus.textContent = `Loaded value ${regInput.value} on clock pulse.`;
+                    regStatus.textContent = `Loaded value ${inputValue} on clock pulse.`;
                 } else {
                     regStatus.textContent = "Invalid input. Use 4 binary digits.";
                 }
@@ -612,10 +711,7 @@
         }
         
         function updateRamSelection(address) {
-            document.querySelectorAll('.ram-grid .register-bits').forEach(row => {
-                row.style.backgroundColor = 'transparent';
-                row.querySelectorAll('.ram-cell').forEach(cell => cell.classList.remove('selected'));
-            });
+            document.querySelectorAll('.ram-grid .register-bits .ram-cell').forEach(cell => cell.classList.remove('selected'));
             if (address >= 0 && address < 8) {
                 const selectedRow = document.querySelector(`.ram-grid .register-bits[data-address='${address}']`);
                 if(selectedRow) {
