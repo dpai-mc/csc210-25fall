@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSC210 - Week 4: Sequential Logic & Memory</title>
+    <style>
+        /* General Styling & Accessibility */
+        :root {
+            --primary-bg: #ffffff;
+            --primary-text: #1a1a1a;
+            --accent-color: #0056b3;
+            --accent-hover: #004494;
+            --border-color: #dcdcdc;
+            --header-bg: #f8f9fa;
+            --code-bg: #e9ecef;
+            --success-color: #28a745;
+            --warning-color: #ffc107;
+            --danger-color: #dc3545;
+            --light-text: #6c757d;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            background-color: var(--primary-bg);
+            color: var(--primary-text);
+        }
+
+        /* Responsive Layout */
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header and Navigation */
+        header {
+            background-color: var(--header-bg);
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--border-color);
+            text-align: center;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 2.5rem;
+            color: var(--accent-color);
+        }
+
+        nav {
+            background-color: #f1f1f1;
+            padding: 10px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        nav ul li a {
+            padding: 10px 15px;
+            text-decoration: none;
+            color: var(--accent-color);
+            font-weight: bold;
+            display: block;
+        }
+        nav ul li a:hover, nav ul li a:focus {
+            background-color: var(--border-color);
+            border-radius: 5px;
+        }
+
+        /* Main Content Sections */
+        h2 {
+            border-bottom: 2px solid var(--accent-color);
+            padding-bottom: 10px;
+            margin-top: 40px;
+            color: var(--primary-text);
+        }
+
+        h3 {
+            color: var(--accent-color);
+            margin-top: 30px;
+        }
+
+        p, li {
+            font-size: 1.1rem;
+        }
+
+        hr {
+            margin: 40px 0;
+            border: 0;
+            border-top: 1px solid var(--border-color);
+        }
+
+        /* Interactive Elements Styling */
+        .interactive-box {
+            border: 2px solid var(--border-color);
+            padding: 20px;
+            margin-top: 20px;
+            border-radius: 8px;
+            background-color: #fdfdfd;
+        }
+
+        .interactive-box h4 {
+            margin-top: 0;
+        }
+        
+        .circuit-diagram {
+            font-family: "Courier New", Courier, monospace;
+            background-color: var(--code-bg);
+            padding: 15px;
+            border-radius: 5px;
+            white-space: pre;
+            text-align: center;
+            font-size: 1rem;
+            overflow-x: auto;
+        }
+
+        .led {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            border: 2px solid #333;
+            background-color: #888;
+            transition: background-color 0.2s;
+            margin: 0 10px;
+            vertical-align: middle;
+        }
+
+        .led.on {
+            background-color: var(--success-color);
+            box-shadow: 0 0 10px var(--success-color);
+        }
+
+        button, .button {
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            margin: 5px;
+            transition: background-color 0.2s;
+        }
+
+        button:hover, .button:hover {
+            background-color: var(--accent-hover);
+        }
+        
+        button.reset {
+             background-color: var(--danger-color);
+        }
+        
+        .toggle-button {
+            padding: 8px 15px;
+        }
+        
+        .toggle-button.active {
+            background-color: var(--success-color);
+        }
+
+        /* ADA Compliance & Privacy */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border-width: 0;
+        }
+        
+        .privacy-notice {
+            text-align: center;
+            color: var(--light-text);
+            font-style: italic;
+            padding: 20px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .info-box {
+            background-color: #e7f3fe;
+            border-left: 6px solid #2196F3;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        
+        .info-box strong {
+             color: #1a252f;
+        }
+
+        /* Register and RAM styling */
+        .register-bits, .ram-grid {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin: 15px 0;
+        }
+        .bit, .ram-cell {
+            width: 40px;
+            height: 40px;
+            border: 1px solid var(--border-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.5rem;
+            font-family: "Courier New", monospace;
+            background-color: #fff;
+        }
+        
+        .ram-cell.selected {
+            background-color: #fffbe6;
+            border-color: var(--warning-color);
+        }
+        
+        input[type="text"] {
+            font-family: "Courier New", monospace;
+            padding: 8px;
+            font-size: 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+        }
+
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="container">
+            <h1>CSC210 Week 4</h1>
+            <p>From Combinational Logic to Sequential Logic & Memory</p>
+        </div>
+    </header>
+
+    <nav>
+        <ul>
+            <li><a href="#part1">Part 1: Intro</a></li>
+            <li><a href="#part2">Part 2: Latches</a></li>
+            <li><a href="#part3">Part 3: Registers</a></li>
+            <li><a href="#part4">Part 4: RAM</a></li>
+            <li><a href="#quiz">Check Your Understanding</a></li>
+        </ul>
+    </nav>
+
+    <main class="container">
+
+        <section id="part1" aria-labelledby="part1-heading">
+            <h2 id="part1-heading">Part 1: Introduction to Sequential Logic</h2>
+            <p>Welcome! [cite_start]This week, we transition from circuits that just calculate (combinational) to circuits that can **remember** (sequential)[cite: 1, 2]. [cite_start]The key ingredient is the **feedback loop**, where a circuit's output is fed back into its own input, creating a state[cite: 5].</p>
+
+            <h3>Combinational vs. Sequential Logic</h3>
+            <ul>
+                <li><strong>Combinational:</strong> The output depends *only* on the current inputs. Think of a simple calculator; 2 + 2 will always be 4.</li>
+                <li><strong>Sequential:</strong> The output depends on the current inputs *and* the circuit's past state. It has memory.</li>
+            </ul>
+
+            <div class="interactive-box">
+                [cite_start]<h4>Analogy: Light Switch vs. Toggle Button [cite: 5]</h4>
+                <p>A simple light switch is **combinational**. Its state (up/down) directly determines if the light is on or off. A TV power button is **sequential**. You press the same button to turn it on (if it's off) and to turn it off (if it's on). The button's action depends on the TV's current state.</p>
+                <button id="toggle-button" class="toggle-button" aria-pressed="false">TV Power Button</button>
+                <div style="display: inline-block; vertical-align: middle;">
+                    <span>TV Status: </span>
+                    <div id="tv-led" class="led"></div>
+                    <span id="tv-status" class="sr-only">Off</span>
+                </div>
+            </div>
+            
+            <div class="info-box">
+                [cite_start]<strong>Key Insight:</strong> The simple act of connecting NOR gates (or NAND gates) in a cross-coupled loop creates a 1-bit memory element, the foundation of all computer memory[cite: 6].
+            </div>
+        </section>
+
+        <hr>
+
+        <section id="part2" aria-labelledby="part2-heading">
+            <h2 id="part2-heading">Part 2: Building Memory from Gates - The Latch</h2>
+            <p>The most fundamental memory element is the **latch**. We can build one using just two NOR gates in a feedback loop. [cite_start]This is called an **SR Latch** (Set-Reset Latch)[cite: 7].</p>
+            
+            <h3>Interactive SR Latch (from NOR Gates)</h3>
+            <p>An SR latch has two inputs, S (Set) and R (Reset), and two outputs, Q and Q' (Q-not). In a stable state, Q' is always the opposite of Q.</p>
+            <ul>
+                [cite_start]<li><strong>Set (S=1, R=0):</strong> Forces the output Q to 1[cite: 9].</li>
+                [cite_start]<li><strong>Reset (S=0, R=1):</strong> Forces the output Q to 0[cite: 8].</li>
+                [cite_start]<li><strong>Hold (S=0, R=0):</strong> The latch "remembers" or holds its previous state[cite: 8].</li>
+                <li><strong>Invalid (S=1, R=1):</strong> This state is problematic because it forces both Q and Q' to 0, breaking the Q/Q' rule. [cite_start]This is called the illegal or invalid state[cite: 7, 8, 9].</li>
+            </ul>
+
+            <div class="interactive-box">
+                <h4>SR Latch Simulator</h4>
+                <div class="circuit-diagram" aria-hidden="true">
+                    S ---->|NOR|---- Q'
+                          / \  |
+                           |   |
+                           |   V
+                          / \  |
+                    R ---->|NOR|---- Q
+                </div>
+                <div style="text-align: center; margin-top: 20px;">
+                    <button id="sr-s-button" class="toggle-button" aria-pressed="false">S = 0</button>
+                    <button id="sr-r-button" class="toggle-button" aria-pressed="false">R = 0</button>
+                </div>
+                <div style="text-align: center; margin-top: 15px;">
+                    <strong>Q:</strong><div id="sr-q-led" class="led"></div>
+                    <strong>Q':</strong><div id="sr-qn-led" class="led"></div>
+                </div>
+                <div id="sr-status" style="text-align:center; font-weight: bold; margin-top:10px; height: 20px;" aria-live="polite">
+                    State: Hold
+                </div>
+                 <div class="info-box">
+                    [cite_start]<strong>AI Tutor Prompt:</strong> "Help me understand why SR latches have invalid states"[cite: 13].<br>
+                    <strong>Answer:</strong> With S=1 and R=1, the definition of a NOR gate (output is 1 only if *both* inputs are 0) forces both Q and Q' to become 0. This violates the fundamental principle that Q and Q' must be opposites. If the inputs then change from 1,1 to 0,0 simultaneously, the final state of the latch is unpredictable, creating a "race condition." The **D Latch** was invented to solve this exact problem.
+                </div>
+            </div>
+        </section>
+
+        <hr>
+        
+        <section id="part3" aria-labelledby="part3-heading">
+            <h2 id="part3-heading">Part 3: Registers and Clocked Systems</h2>
+            <p>A single latch holds one bit. To store a byte (8 bits), we need eight memory elements working together. [cite_start]A **register** is a group of flip-flops (an improved, clock-controlled latch) that store multiple bits in parallel[cite: 10]. To ensure all bits are updated at the exact same time, we use a common **clock signal**.</p>
+            
+            <h3>Interactive 4-Bit Register</h3>
+            <p>This register uses D Flip-Flops. Data is only loaded from the input when the **Load/Enable** signal is high (1) and the **Clock** transitions from low to high (a "rising edge"). The **Clear** signal asynchronously resets all bits to 0.</p>
+
+            <div class="interactive-box">
+                <h4>4-Bit Register Simulator</h4>
+                <div>
+                    <strong>Data Input (D):</strong>
+                    <input type="text" id="reg-input" maxlength="4" value="1010" pattern="[01]{4}" title="Enter a 4-bit binary value">
+                </div>
+                <div style="margin-top: 15px;">
+                    <strong>Controls:</strong>
+                    <button id="reg-load-button" class="toggle-button" aria-pressed="false">Load Enable = 0</button>
+                    <button id="reg-clear-button" class="reset">Clear</button>
+                </div>
+                <div style="margin-top: 15px;">
+                    <strong>Clock:</strong>
+                    <button id="reg-clock-button">Pulse Clock ( rising edge)</button>
+                </div>
+                <div style="margin-top: 20px;">
+                    <strong>Register Stored Value (Q):</strong>
+                    <div class="register-bits" id="register-q-output" aria-label="Register output">
+                        <div class="bit" aria-label="Bit 3">0</div>
+                        <div class="bit" aria-label="Bit 2">0</div>
+                        <div class="bit" aria-label="Bit 1">0</div>
+                        <div class="bit" aria-label="Bit 0">0</div>
+                    </div>
+                </div>
+                <div id="reg-status" style="text-align:center; font-style: italic; color: var(--light-text); height: 20px;" aria-live="polite">
+                    Register holding state.
+                </div>
+            </div>
+        </section>
+
+        <hr>
+        
+        <section id="part4" aria-labelledby="part4-heading">
+            <h2 id="part4-heading">Part 4: Introduction to RAM</h2>
+            [cite_start]<p>How do we go from an 8-bit register to the kilobytes or gigabytes of RAM in a computer? By arranging our memory cells in a grid and using an **address decoder** to select which specific location (or "word") we want to read from or write to[cite: 11].</p>
+            
+            <h3>Simplified RAM Model (8 words x 4 bits)</h3>
+            <p>This model has 8 memory locations (addresses 000 through 111). Each location stores a 4-bit word.</p>
+            <ul>
+                <li><strong>Memory Address Register (MAR):</strong> Holds the address of the location to be accessed.</li>
+                <li><strong>Memory Data Register (MDR):</strong> Holds the data to be written or the data that was just read.</li>
+                <li><strong>Control Signals:</strong> A Read/Write signal determines the operation.</li>
+            </ul>
+
+            <div class="interactive-box">
+                <h4>Interactive 8x4 RAM</h4>
+                <div style="display: flex; flex-wrap: wrap; gap: 20px; justify-content: space-between;">
+                    <div style="flex-basis: 300px;">
+                        <strong>Controls:</strong><br>
+                        Address (3-bit): <input type="text" id="ram-address" maxlength="3" value="000" pattern="[01]{3}"><br>
+                        Data (4-bit): <input type="text" id="ram-data-in" maxlength="4" value="1100" pattern="[01]{4}"><br><br>
+                        <button id="ram-read-btn">Read from Address</button>
+                        <button id="ram-write-btn">Write to Address</button>
+                    </div>
+                    <div style="flex-basis: 300px;">
+                        <strong>Data Bus (MDR):</strong>
+                        <div id="ram-data-out" class="register-bits" style="background-color: var(--code-bg); padding: 5px; border-radius: 4px;">
+                            <div class="bit">-</div><div class="bit">-</div><div class="bit">-</div><div class="bit">-</div>
+                        </div>
+                        <div id="ram-status" aria-live="polite" style="text-align: center; margin-top: 10px; height: 20px;">Ready</div>
+                    </div>
+                </div>
+                 <div style="margin-top: 20px;">
+                    <strong>RAM Memory Cells:</strong>
+                    <div id="ram-grid-container" class="ram-grid" style="display: grid; grid-template-columns: auto 1fr; gap: 5px;">
+                        </div>
+                </div>
+            </div>
+
+        </section>
+
+        <hr>
+        
+        <section id="quiz" aria-labelledby="quiz-heading">
+            <h2 id="quiz-heading">Check Your Understanding</h2>
+            <p>Test your knowledge of this week's key concepts.</p>
+            <div class="interactive-box">
+                <form id="quiz-form">
+                    <div class="quiz-question">
+                        <p><strong>1. A circuit's output depends on both its current inputs and its previous state. This describes a:</strong></p>
+                        <label><input type="radio" name="q1" value="a"> Combinational circuit</label><br>
+                        <label><input type="radio" name="q1" value="b"> Sequential circuit</label><br>
+                        <label><input type="radio" name="q1" value="c"> Arithmetic Logic Unit</label>
+                    </div>
+                    <div class="quiz-question" style="margin-top: 20px;">
+                        <p><strong>2. [cite_start]In a standard SR latch built from NOR gates, what is the state when S=1 and R=1? [cite: 8, 9]</strong></p>
+                        <label><input type="radio" name="q2" value="a"> Set</label><br>
+                        <label><input type="radio" name="q2" value="b"> Reset</label><br>
+                        <label><input type="radio" name="q2" value="c"> Invalid/Illegal</label>
+                    </div>
+                    <div class="quiz-question" style="margin-top: 20px;">
+                        <p><strong>3. What is the primary purpose of a clock signal in a multi-bit register?</strong></p>
+                        <label><input type="radio" name="q3" value="a"> To provide power to the flip-flops</label><br>
+                        <label><input type="radio" name="q3" value="b"> To synchronize the state change of all bits</label><br>
+                        <label><input type="radio" name="q3" value="c"> To clear the register to zero</label>
+                    </div>
+                    <button type="submit" style="margin-top: 20px;">Submit Answers</button>
+                </form>
+                <div id="quiz-results" style="margin-top: 20px; font-weight: bold;"></div>
+            </div>
+        </section>
+        
+    </main>
+    
+    <footer>
+         <p class="privacy-notice">Privacy Notice: This is a self-contained educational tool. No data is tracked or stored. All interactions are limited to your current session.</p>
+    </footer>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+
+        // --- Part 1: TV Toggle Button ---
+        const toggleButton = document.getElementById('toggle-button');
+        const tvLed = document.getElementById('tv-led');
+        const tvStatus = document.getElementById('tv-status');
+        let isTvOn = false;
+
+        toggleButton.addEventListener('click', () => {
+            isTvOn = !isTvOn;
+            if (isTvOn) {
+                tvLed.classList.add('on');
+                tvStatus.textContent = 'On';
+                toggleButton.setAttribute('aria-pressed', 'true');
+            } else {
+                tvLed.classList.remove('on');
+                tvStatus.textContent = 'Off';
+                toggleButton.setAttribute('aria-pressed', 'false');
+            }
+        });
+
+        // --- Part 2: SR Latch Simulator ---
+        const sButton = document.getElementById('sr-s-button');
+        const rButton = document.getElementById('sr-r-button');
+        const qLed = document.getElementById('sr-q-led');
+        const qnLed = document.getElementById('sr-qn-led');
+        const srStatus = document.getElementById('sr-status');
+        
+        let s = 0;
+        let r = 0;
+        let q = 0; // Start in reset state
+        let qn = 1;
+
+        function updateSrLatch() {
+            // NOR Gate Logic
+            // In a real circuit this happens near-instantly, we simulate it
+            const prevQ = q;
+            
+            // Re-calculate multiple times to allow feedback to settle
+            for (let i=0; i < 5; i++) {
+                q = (r || qn) ? 0 : 1;
+                qn = (s || q) ? 0 : 1;
+            }
+            
+            // Update LEDs
+            qLed.classList.toggle('on', q === 1);
+            qnLed.classList.toggle('on', qn === 1);
+
+            // Update Status Text
+            if (s === 1 && r === 1) {
+                srStatus.textContent = 'State: Invalid!';
+                srStatus.style.color = 'var(--danger-color)';
+            } else if (s === 1 && r === 0) {
+                srStatus.textContent = 'State: Set';
+                srStatus.style.color = 'var(--primary-text)';
+            } else if (s === 0 && r === 1) {
+                srStatus.textContent = 'State: Reset';
+                srStatus.style.color = 'var(--primary-text)';
+            } else { // s=0, r=0
+                srStatus.textContent = 'State: Hold';
+                srStatus.style.color = 'var(--primary-text)';
+            }
+        }
+        
+        sButton.addEventListener('click', () => {
+            s = 1 - s; // toggle 0/1
+            sButton.textContent = `S = ${s}`;
+            sButton.classList.toggle('active');
+            sButton.setAttribute('aria-pressed', s === 1);
+            updateSrLatch();
+        });
+        
+        rButton.addEventListener('click', () => {
+            r = 1 - r; // toggle 0/1
+            rButton.textContent = `R = ${r}`;
+            rButton.classList.toggle('active');
+            rButton.setAttribute('aria-pressed', r === 1);
+            updateSrLatch();
+        });
+
+        // Initial state
+        updateSrLatch();
+
+        // --- Part 3: Register Simulator ---
+        const regInput = document.getElementById('reg-input');
+        const loadButton = document.getElementById('reg-load-button');
+        const clearButton = document.getElementById('reg-clear-button');
+        const clockButton = document.getElementById('reg-clock-button');
+        const regOutputBits = document.querySelectorAll('#register-q-output .bit');
+        const regStatus = document.getElementById('reg-status');
+
+        let registerValue = [0, 0, 0, 0];
+        let loadEnabled = false;
+
+        function updateRegisterDisplay() {
+            registerValue.forEach((bit, index) => {
+                regOutputBits[index].textContent = bit;
+            });
+        }
+
+        loadButton.addEventListener('click', () => {
+            loadEnabled = !loadEnabled;
+            loadButton.classList.toggle('active');
+            loadButton.textContent = `Load Enable = ${loadEnabled ? 1 : 0}`;
+            loadButton.setAttribute('aria-pressed', loadEnabled);
+        });
+
+        clearButton.addEventListener('click', () => {
+            registerValue = [0, 0, 0, 0];
+            updateRegisterDisplay();
+            regStatus.textContent = "Register cleared.";
+        });
+        
+        clockButton.addEventListener('click', () => {
+            if (loadEnabled) {
+                const inputValue = regInput.value.padStart(4, '0').split('');
+                if (/^[01]{4}$/.test(regInput.value)) {
+                    registerValue = inputValue.map(Number);
+                    updateRegisterDisplay();
+                    regStatus.textContent = `Loaded value ${regInput.value} on clock pulse.`;
+                } else {
+                    regStatus.textContent = "Invalid input. Use 4 binary digits.";
+                }
+            } else {
+                regStatus.textContent = "Clock pulsed, but Load was disabled. Holding state.";
+            }
+        });
+
+        // --- Part 4: RAM Simulator ---
+        const ramAddressInput = document.getElementById('ram-address');
+        const ramDataInInput = document.getElementById('ram-data-in');
+        const readBtn = document.getElementById('ram-read-btn');
+        const writeBtn = document.getElementById('ram-write-btn');
+        const dataOutBits = document.querySelectorAll('#ram-data-out .bit');
+        const ramStatus = document.getElementById('ram-status');
+        const ramGridContainer = document.getElementById('ram-grid-container');
+
+        let ram = Array(8).fill(null).map(() => Array(4).fill(0));
+
+        function createRamGrid() {
+            ramGridContainer.innerHTML = ''; // Clear existing
+            for (let i = 0; i < 8; i++) {
+                const addressLabel = document.createElement('div');
+                addressLabel.textContent = i.toString(2).padStart(3, '0');
+                addressLabel.style.textAlign = 'right';
+                addressLabel.style.fontFamily = '"Courier New", monospace';
+                
+                const row = document.createElement('div');
+                row.classList.add('register-bits');
+                row.dataset.address = i;
+
+                for (let j = 0; j < 4; j++) {
+                    const cell = document.createElement('div');
+                    cell.classList.add('ram-cell');
+                    cell.textContent = ram[i][j];
+                    row.appendChild(cell);
+                }
+                ramGridContainer.appendChild(addressLabel);
+                ramGridContainer.appendChild(row);
+            }
+        }
+        
+        function updateRamSelection(address) {
+            document.querySelectorAll('.ram-grid .register-bits').forEach(row => {
+                row.style.backgroundColor = 'transparent';
+                row.querySelectorAll('.ram-cell').forEach(cell => cell.classList.remove('selected'));
+            });
+            if (address >= 0 && address < 8) {
+                const selectedRow = document.querySelector(`.ram-grid .register-bits[data-address='${address}']`);
+                if(selectedRow) {
+                    selectedRow.querySelectorAll('.ram-cell').forEach(cell => cell.classList.add('selected'));
+                }
+            }
+        }
+        
+        ramAddressInput.addEventListener('input', () => {
+             const addr = parseInt(ramAddressInput.value, 2);
+             if(!isNaN(addr)) updateRamSelection(addr);
+        });
+
+        writeBtn.addEventListener('click', () => {
+            const addr = parseInt(ramAddressInput.value, 2);
+            const data = ramDataInInput.value;
+            if (isNaN(addr) || addr < 0 || addr > 7 || !/^[01]{4}$/.test(data)) {
+                ramStatus.textContent = "Invalid address or data.";
+                return;
+            }
+            ram[addr] = data.split('').map(Number);
+            createRamGrid(); // Redraw grid with new data
+            updateRamSelection(addr);
+            ramStatus.textContent = `Wrote ${data} to address ${addr.toString(2).padStart(3, '0')}.`;
+        });
+        
+        readBtn.addEventListener('click', () => {
+            const addr = parseInt(ramAddressInput.value, 2);
+            if (isNaN(addr) || addr < 0 || addr > 7) {
+                ramStatus.textContent = "Invalid address.";
+                return;
+            }
+            const data = ram[addr];
+            data.forEach((bit, index) => {
+                dataOutBits[index].textContent = bit;
+            });
+            updateRamSelection(addr);
+            ramStatus.textContent = `Read ${data.join('')} from address ${addr.toString(2).padStart(3, '0')}.`;
+        });
+
+        // Initial RAM setup
+        createRamGrid();
+
+        // --- Quiz Section ---
+        const quizForm = document.getElementById('quiz-form');
+        const quizResults = document.getElementById('quiz-results');
+        
+        quizForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const answers = {
+                q1: document.querySelector('input[name="q1"]:checked')?.value,
+                q2: document.querySelector('input[name="q2"]:checked')?.value,
+                q3: document.querySelector('input[name="q3"]:checked')?.value
+            };
+            
+            const correctAnswers = { q1: 'b', q2: 'c', q3: 'b' };
+            let score = 0;
+            if (answers.q1 === correctAnswers.q1) score++;
+            if (answers.q2 === correctAnswers.q2) score++;
+            if (answers.q3 === correctAnswers.q3) score++;
+
+            quizResults.textContent = `You scored ${score} out of 3.`;
+             if(score === 3) {
+                quizResults.style.color = 'var(--success-color)';
+            } else {
+                 quizResults.style.color = 'var(--danger-color)';
+            }
+        });
+    });
+    </script>
+</body>
+</html>
