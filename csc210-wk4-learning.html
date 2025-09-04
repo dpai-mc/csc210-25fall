@@ -377,7 +377,7 @@
 
             <div class="interactive-box">
                 <h4>Example: Gated S-R Latch in Logisim</h4>
-                <p>The basic S'R' latch is always "listening" to its inputs. To control *when* it can change state, we can add two more NAND gates and an "Enable" input. This creates a <strong>Gated S-R Latch</strong>. The latch will only respond to the Set and Reset inputs when the Enable signal is high (1). The image below shows this configuration in Logisim 2.7.1.</p>
+                <p>In Logisim, when we create our S-R latch, we have 2 inputs that we will call "In" and "Set" where the "In" bit is the value to be stored in this memory bit and the "Set" allows us to change what is stored in this bit. We only care about the Q output which is what is stored so we truncate the wire to Q' since it is not needed.</p>
                 <img src="images/S-R-latch-logisim.png" alt="Gated S-R Latch circuit built in Logisim using four NAND gates" style="max-width: 100%; height: auto; border: 1px solid var(--border-color); border-radius: 5px; margin-top: 10px;">
             </div>
 
@@ -828,5 +828,4 @@
     </script>
 </body>
 </html>
-
 
