@@ -375,6 +375,12 @@
                 </div>
             </div>
 
+            <div class="interactive-box">
+                <h4>Example: Gated S-R Latch in Logisim</h4>
+                <p>The basic S'R' latch is always "listening" to its inputs. To control *when* it can change state, we can add two more NAND gates and an "Enable" input. This creates a <strong>Gated S-R Latch</strong>. The latch will only respond to the Set and Reset inputs when the Enable signal is high (1). The image below shows this configuration in Logisim 2.7.1.</p>
+                <img src="images/S-R-latch-logisim.png" alt="Gated S-R Latch circuit built in Logisim using four NAND gates" style="max-width: 100%; height: auto; border: 1px solid var(--border-color); border-radius: 5px; margin-top: 10px;">
+            </div>
+
             <div class="info-box">
                 <h4>A Note on Startup Dynamics & Race Conditions</h4>
                 <p>You might notice in a simulator like Logisim that when the simulation starts, the latch outputs flicker between red (error/indeterminate) and random states. This is because a real-world latch has no defined state at power-on. Both gates "race" to determine the output based on tiny physical imperfections. Eventually, one "wins" and the circuit settles into a stable, but random, state (either Q=0 or Q=1). This is why most sequential systems include a global **reset signal** to force all memory elements into a known starting state.</p>
@@ -481,18 +487,21 @@
                         <label><input type="radio" name="q1" value="a"> Combinational circuit</label><br>
                         <label><input type="radio" name="q1" value="b"> Sequential circuit</label><br>
                         <label><input type="radio" name="q1" value="c"> Arithmetic Logic Unit</label>
+                        <div id="q1-feedback"></div>
                     </div>
                     <div class="quiz-question" style="margin-top: 20px;">
                         <p><strong>2. In a standard S'R' latch built from NAND gates, what is the hold state?</strong></p>
                         <label><input type="radio" name="q2" value="a"> S'=0, R'=0</label><br>
                         <label><input type="radio" name="q2" value="b"> S'=0, R'=1</label><br>
                         <label><input type="radio" name="q2" value="c"> S'=1, R'=1</label>
+                        <div id="q2-feedback"></div>
                     </div>
                     <div class="quiz-question" style="margin-top: 20px;">
                         <p><strong>3. What is the primary purpose of a clock signal in a multi-bit register?</strong></p>
                         <label><input type="radio" name="q3" value="a"> To provide power to the flip-flops</label><br>
                         <label><input type="radio" name="q3" value="b"> To synchronize the state change of all bits</label><br>
                         <label><input type="radio" name="q3" value="c"> To clear the register to zero</label>
+                        <div id="q3-feedback"></div>
                     </div>
                     <button type="submit" style="margin-top: 20px;">Submit Answers</button>
                 </form>
@@ -768,10 +777,45 @@
             };
             
             const correctAnswers = { q1: 'b', q2: 'c', q3: 'b' };
+            const feedback = {
+                q1: "The correct answer is <strong>b) Sequential circuit</strong>. A sequential circuit's output depends on its past state (memory), while a combinational circuit's output depends only on its current inputs.",
+                q2: "The correct answer is <strong>c) S'=1, R'=1</strong>. In a NAND-based S'R' latch, the inputs are active-low. Setting both to the inactive high state (1) causes the latch to hold its value.",
+                q3: "The correct answer is <strong>b) To synchronize the state change of all bits</strong>. A clock pulse ensures all flip-flops in a register update at the exact same moment for coherent data storage."
+            };
+
             let score = 0;
-            if (answers.q1 === correctAnswers.q1) score++;
-            if (answers.q2 === correctAnswers.q2) score++;
-            if (answers.q3 === correctAnswers.q3) score++;
+            const q1Feedback = document.getElementById('q1-feedback');
+            const q2Feedback = document.getElementById('q2-feedback');
+            const q3Feedback = document.getElementById('q3-feedback');
+
+            // Clear previous feedback
+            q1Feedback.innerHTML = '';
+            q2Feedback.innerHTML = '';
+            q3Feedback.innerHTML = '';
+
+            // Question 1
+            if (answers.q1 === correctAnswers.q1) {
+                score++;
+                q1Feedback.innerHTML = `<p style="color: var(--success-color); margin-top: 10px;"><strong>Correct!</strong></p>`;
+            } else {
+                q1Feedback.innerHTML = `<p style="color: var(--danger-color); margin-top: 10px;"><strong>Incorrect.</strong> ${feedback.q1}</p>`;
+            }
+
+            // Question 2
+            if (answers.q2 === correctAnswers.q2) {
+                score++;
+                q2Feedback.innerHTML = `<p style="color: var(--success-color); margin-top: 10px;"><strong>Correct!</strong></p>`;
+            } else {
+                q2Feedback.innerHTML = `<p style="color: var(--danger-color); margin-top: 10px;"><strong>Incorrect.</strong> ${feedback.q2}</p>`;
+            }
+
+            // Question 3
+            if (answers.q3 === correctAnswers.q3) {
+                score++;
+                q3Feedback.innerHTML = `<p style="color: var(--success-color); margin-top: 10px;"><strong>Correct!</strong></p>`;
+            } else {
+                q3Feedback.innerHTML = `<p style="color: var(--danger-color); margin-top: 10px;"><strong>Incorrect.</strong> ${feedback.q3}</p>`;
+            }
 
             quizResults.textContent = `You scored ${score} out of 3.`;
              if(score === 3) {
@@ -784,3 +828,5 @@
     </script>
 </body>
 </html>
+
+
