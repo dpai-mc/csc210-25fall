@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assignment: Building Memory Circuits - Computer Architecture</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f8f9fa;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+            font-weight: 300;
+        }
+
+        .header .subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            font-weight: 300;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .assignment-info {
+            background-color: #e3f2fd;
+            border-left: 4px solid #2196f3;
+            padding: 20px;
+            margin-bottom: 30px;
+            border-radius: 0 4px 4px 0;
+        }
+
+        .assignment-info h2 {
+            color: #1976d2;
+            margin-bottom: 15px;
+            font-size: 1.4rem;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .info-item {
+            background: white;
+            padding: 15px;
+            border-radius: 4px;
+            border: 1px solid #bbdefb;
+        }
+
+        .info-item strong {
+            color: #1976d2;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        h2 {
+            color: #2c3e50;
+            margin: 30px 0 20px 0;
+            font-size: 1.6rem;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+
+        h3 {
+            color: #34495e;
+            margin: 25px 0 15px 0;
+            font-size: 1.3rem;
+        }
+
+        .part {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 25px;
+            margin: 25px 0;
+            position: relative;
+        }
+
+        .part::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(to bottom, #3498db, #2980b9);
+            border-radius: 4px 0 0 4px;
+        }
+
+        .part-header {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            padding: 15px 20px;
+            margin: -25px -25px 20px -25px;
+            border-radius: 8px 8px 0 0;
+        }
+
+        .part-header h3 {
+            margin: 0;
+            color: white;
+            font-size: 1.4rem;
+        }
+
+        .requirements {
+            background-color: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 6px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .requirements h4 {
+            color: #856404;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+        }
+
+        .requirements ul {
+            margin-left: 20px;
+        }
+
+        .requirements li {
+            margin-bottom: 8px;
+            color: #856404;
+        }
+
+        .button-link {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-decoration: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            margin: 10px 10px 10px 0;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            box-shadow: 0 2px 10px rgba(102, 126, 234, 0.3);
+        }
+
+        .button-link:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+            text-decoration: none;
+            color: white;
+        }
+
+        .button-link:focus {
+            outline: 2px solid #667eea;
+            outline-offset: 2px;
+        }
+
+        .resource-links {
+            background-color: #e8f5e8;
+            border: 1px solid #c3e6c3;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 25px 0;
+        }
+
+        .resource-links h4 {
+            color: #2e7d32;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+        }
+
+        .collapsible {
+            background-color: #f1f3f4;
+            color: #444;
+            cursor: pointer;
+            padding: 18px;
+            width: 100%;
+            border: none;
+            text-align: left;
+            outline: none;
+            font-size: 16px;
+            border-radius: 4px;
+            margin: 10px 0;
+            transition: background-color 0.3s ease;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .collapsible:hover {
+            background-color: #e8eaed;
+        }
+
+        .collapsible.active {
+            background-color: #3498db;
+            color: white;
+        }
+
+        .collapsible::after {
+            content: '+';
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .collapsible.active::after {
+            content: '−';
+        }
+
+        .collapsible-content {
+            padding: 0 18px;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+            background-color: white;
+            border-radius: 0 0 4px 4px;
+        }
+
+        .collapsible-content.active {
+            padding: 18px;
+            border: 1px solid #ddd;
+            border-top: none;
+        }
+
+        .submission-info {
+            background-color: #fff8e1;
+            border: 2px solid #ffcc02;
+            border-radius: 8px;
+            padding: 25px;
+            margin: 30px 0;
+            text-align: center;
+        }
+
+        .submission-info h3 {
+            color: #f57f17;
+            margin-bottom: 15px;
+        }
+
+        .deadline {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #e65100;
+            margin: 10px 0;
+        }
+
+        .note {
+            background-color: #e1f5fe;
+            border-left: 4px solid #03a9f4;
+            padding: 15px 20px;
+            margin: 20px 0;
+            border-radius: 0 4px 4px 0;
+        }
+
+        .note strong {
+            color: #0288d1;
+        }
+
+        .progress-tracker {
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 25px 0;
+        }
+
+        .progress-item {
+            display: flex;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .progress-item:last-child {
+            border-bottom: none;
+        }
+
+        .checkbox {
+            width: 20px;
+            height: 20px;
+            margin-right: 15px;
+            cursor: pointer;
+        }
+
+        .progress-item label {
+            cursor: pointer;
+            flex-grow: 1;
+        }
+
+        .progress-item.completed {
+            text-decoration: line-through;
+            opacity: 0.6;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                margin: 10px;
+                border-radius: 0;
+            }
+            
+            .header {
+                padding: 20px;
+            }
+            
+            .header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .content {
+                padding: 20px;
+            }
+            
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .button-link {
+                display: block;
+                text-align: center;
+                margin: 10px 0;
+            }
+        }
+
+        /* High contrast mode support */
+        @media (prefers-contrast: high) {
+            .button-link {
+                border: 2px solid currentColor;
+            }
+            
+            .part {
+                border-width: 2px;
+            }
+        }
+
+        /* Reduced motion support */
+        @media (prefers-reduced-motion: reduce) {
+            .button-link {
+                transition: none;
+            }
+            
+            .collapsible-content {
+                transition: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>Building Memory Circuits</h1>
+            <div class="subtitle">Computer Architecture Assignment - Memory Components</div>
+        </header>
+
+        <main class="content">
+            <section class="assignment-info">
+                <h2>Assignment Overview</h2>
+                <p>In this assignment, you will build the fundamental memory components that are essential for creating an 8-bit CPU, following the concepts outlined in "But How Do it Know?". You'll construct a 1-bit memory circuit using NAND gate S-R latches and then scale it up to create an 8-bit register.</p>
+                
+                <div class="info-grid">
+                    <div class="info-item">
+                        <strong>Tool Required</strong>
+                        Logisim 2.7.1
+                    </div>
+                    <div class="info-item">
+                        <strong>Build On</strong>
+                        Existing .circ file with 8-bit adder
+                    </div>
+                    <div class="info-item">
+                        <strong>Parts</strong>
+                        2 main components
+                    </div>
+                    <div class="info-item">
+                        <strong>Duration</strong>
+                        1-2 weeks
+                    </div>
+                </div>
+            </section>
+
+            <section class="progress-tracker">
+                <h3>Progress Tracker</h3>
+                <div class="progress-item">
+                    <input type="checkbox" id="task1" class="checkbox">
+                    <label for="task1">Review S-R latch theory and NAND gate implementation</label>
+                </div>
+                <div class="progress-item">
+                    <input type="checkbox" id="task2" class="checkbox">
+                    <label for="task2">Build 1-bit memory circuit in Logisim</label>
+                </div>
+                <div class="progress-item">
+                    <input type="checkbox" id="task3" class="checkbox">
+                    <label for="task3">Test 1-bit memory circuit functionality</label>
+                </div>
+                <div class="progress-item">
+                    <input type="checkbox" id="task4" class="checkbox">
+                    <label for="task4">Design 8-bit register using 1-bit memory circuits</label>
+                </div>
+                <div class="progress-item">
+                    <input type="checkbox" id="task5" class="checkbox">
+                    <label for="task5">Implement shared enable/clock signals</label>
+                </div>
+                <div class="progress-item">
+                    <input type="checkbox" id="task6" class="checkbox">
+                    <label for="task6">Test complete 8-bit register</label>
+                </div>
+                <div class="progress-item">
+                    <input type="checkbox" id="task7" class="checkbox">
+                    <label for="task7">Document and submit assignment</label>
+                </div>
+            </section>
+
+            <section class="part">
+                <div class="part-header">
+                    <h3>Part 1: 1-Bit Memory Circuit (NAND Gate S-R Latch)</h3>
+                </div>
+                
+                <p>Create a fundamental 1-bit memory circuit using NAND gates to implement an S-R (Set-Reset) latch. This circuit forms the basic building block for all computer memory systems.</p>
+
+                <div class="requirements">
+                    <h4>Technical Requirements</h4>
+                    <ul>
+                        <li><strong>Input pins:</strong> Set (S), Reset (R), and Enable (optional)</li>
+                        <li><strong>Output pins:</strong> Q (stored bit) and Q̄ (complement)</li>
+                        <li><strong>Implementation:</strong> Use only NAND gates from Logisim's library</li>
+                        <li><strong>Behavior:</strong> Must maintain stored state when inputs are inactive</li>
+                        <li><strong>Integration:</strong> Add to your existing .circ file containing the 8-bit adder</li>
+                    </ul>
+                </div>
+
+                <button class="collapsible" aria-expanded="false" aria-controls="part1-details">Circuit Design Details</button>
+                <div class="collapsible-content" id="part1-details">
+                    <h4>Understanding S-R Latch Operation</h4>
+                    <p>The S-R latch is a bistable circuit that can store one bit of information. When the Set input is activated, the output Q becomes 1. When Reset is activated, Q becomes 0. The key feature is that the circuit "remembers" its state even after the input signals are removed.</p>
+                    
+                    <h4>NAND Gate Implementation Benefits</h4>
+                    <p>Using NAND gates provides several advantages: they are universal gates (can implement any logic function), are typically faster than other gate types, and closely match how real computer memory is implemented in hardware.</p>
+                    
+                    <h4>Testing Your Circuit</h4>
+                    <ul>
+                        <li>Test all input combinations: 00, 01, 10, 11</li>
+                        <li>Verify that the circuit maintains its state when both inputs are 0</li>
+                        <li>Confirm that the forbidden state (both inputs = 1) behaves predictably</li>
+                        <li>Use Logisim's simulation tools to observe the timing behavior</li>
+                    </ul>
+                </div>
+
+                <div class="resource-links">
+                    <h4>📚 Essential Resource</h4>
+                    <a href="https://mendocino.instructure.com/courses/19705/pages/circuits-1-bit-memory" class="button-link" target="_blank" rel="noopener noreferrer">1-Bit Memory Circuit Guide</a>
+                    <p>This link provides step-by-step instructions for building your 1-bit memory circuit in Logisim 2.7.1.</p>
+                </div>
+            </section>
+
+            <section class="part">
+                <div class="part-header">
+                    <h3>Part 2: 8-Bit Register</h3>
+                </div>
+                
+                <p>Expand your 1-bit memory circuit to create an 8-bit register capable of storing a full byte of data. This register will use eight instances of your 1-bit memory circuit with shared control signals.</p>
+
+                <div class="requirements">
+                    <h4>Technical Requirements</h4>
+                    <ul>
+                        <li><strong>Capacity:</strong> Store 8 bits of data simultaneously</li>
+                        <li><strong>Input:</strong> 8-bit data input bus + control signals (Enable/Clock)</li>
+                        <li><strong>Output:</strong> 8-bit data output bus</li>
+                        <li><strong>Control:</strong> Shared enable signal for all 8 bits</li>
+                        <li><strong>Components:</strong> Built using eight of your 1-bit memory circuits</li>
+                        <li><strong>Organization:</strong> Clear, organized layout in Logisim</li>
+                    </ul>
+                </div>
+
+                <button class="collapsible" aria-expanded="false" aria-controls="part2-details">Register Design Details</button>
+                <div class="collapsible-content" id="part2-details">
+                    <h4>Register Architecture</h4>
+                    <p>An 8-bit register consists of 8 individual 1-bit storage elements (your memory circuits) that operate in parallel. All bits share common control signals, allowing the entire byte to be loaded or read simultaneously.</p>
+                    
+                    <h4>Control Signal Design</h4>
+                    <p>Implement a shared enable signal that controls when data is loaded into the register. Consider how this signal should be distributed to all 8 memory circuits and how it affects the Set and Reset inputs of each latch.</p>
+                    
+                    <h4>Data Bus Organization</h4>
+                    <p>Organize your inputs and outputs as 8-bit buses in Logisim. Use consistent naming conventions (e.g., D0-D7 for inputs, Q0-Q7 for outputs) and maintain a clean, readable layout.</p>
+                    
+                    <h4>Testing Strategy</h4>
+                    <ul>
+                        <li>Test loading different 8-bit values (00000000, 11111111, 10101010, etc.)</li>
+                        <li>Verify that data persists when the enable signal is inactive</li>
+                        <li>Test individual bit operations if your design supports them</li>
+                        <li>Use Logisim's probe tool to monitor all 8 outputs simultaneously</li>
+                    </ul>
+                </div>
+
+                <div class="resource-links">
+                    <h4>📚 Essential Resource</h4>
+                    <a href="https://mendocino.instructure.com/courses/19705/pages/circuits-creating-an-8-bit-register" class="button-link" target="_blank" rel="noopener noreferrer">8-Bit Register Creation Guide</a>
+                    <p>This link provides detailed instructions for building your 8-bit register using your 1-bit memory circuits.</p>
+                </div>
+            </section>
+
+            <section class="note">
+                <strong>Integration Note:</strong> Both circuits must be added to your existing .circ file that contains your 8-bit adder from the previous assignment. This builds toward your final 8-bit CPU simulation project.
+            </section>
+
+            <h2>Learning Objectives</h2>
+            <button class="collapsible" aria-expanded="false" aria-controls="objectives">View Learning Objectives</button>
+            <div class="collapsible-content" id="objectives">
+                <ul>
+                    <li>Understand the fundamental principles of digital memory storage</li>
+                    <li>Implement S-R latches using NAND gates in a circuit simulator</li>
+                    <li>Design and build scalable memory components</li>
+                    <li>Apply concepts from "But How Do it Know?" to practical circuit design</li>
+                    <li>Integrate memory components with existing digital circuits</li>
+                    <li>Develop skills in circuit testing and verification</li>
+                    <li>Prepare foundation knowledge for CPU design principles</li>
+                </ul>
+            </div>
+
+            <h2>Grading Criteria</h2>
+            <button class="collapsible" aria-expanded="false" aria-controls="grading">View Grading Rubric</button>
+            <div class="collapsible-content" id="grading">
+                <h4>Part 1: 1-Bit Memory Circuit (40 points)</h4>
+                <ul>
+                    <li><strong>Functionality (20 points):</strong> Circuit correctly implements S-R latch behavior</li>
+                    <li><strong>Implementation (15 points):</strong> Uses only NAND gates as specified</li>
+                    <li><strong>Testing (5 points):</strong> Evidence of thorough testing and verification</li>
+                </ul>
+                
+                <h4>Part 2: 8-Bit Register (40 points)</h4>
+                <ul>
+                    <li><strong>Functionality (20 points):</strong> Register correctly stores and outputs 8-bit data</li>
+                    <li><strong>Design (15 points):</strong> Proper use of 1-bit circuits with shared control</li>
+                    <li><strong>Organization (5 points):</strong> Clean, logical layout and labeling</li>
+                </ul>
+                
+                <h4>Integration and Documentation (20 points)</h4>
+                <ul>
+                    <li><strong>File Integration (10 points):</strong> Properly added to existing .circ file</li>
+                    <li><strong>Documentation (10 points):</strong> Clear labeling and circuit organization</li>
+                </ul>
+            </div>
+
+            <section class="submission-info">
+                <h3>📋 Submission Instructions</h3>
+                <p>Submit your updated .circ file containing:</p>
+                <ul style="text-align: left; display: inline-block;">
+                    <li>Your original 8-bit adder from the previous assignment</li>
+                    <li>The new 1-bit memory circuit</li>
+                    <li>The new 8-bit register</li>
+                    <li>Clear labels and organized layout</li>
+                </ul>
+                <div class="deadline">Due: September 14, 2025 at 11:59 PM</div>
+                <p><strong>File Format:</strong> .circ file created with Logisim 2.7.1</p>
+            </section>
+
+            <div class="note">
+                <strong>Academic Integrity:</strong> While you may discuss concepts with classmates, your circuit implementations must be your own original work. Collaboration on understanding S-R latch theory is encouraged, but copying circuit designs is not permitted.
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Collapsible sections functionality
+        const collapsibles = document.querySelectorAll('.collapsible');
+        
+        collapsibles.forEach(collapsible => {
+            collapsible.addEventListener('click', function() {
+                this.classList.toggle('active');
+                const content = this.nextElementSibling;
+                const isExpanded = this.classList.contains('active');
+                
+                // Update ARIA attribute
+                this.setAttribute('aria-expanded', isExpanded);
+                
+                if (isExpanded) {
+                    content.style.maxHeight = content.scrollHeight + "px";
+                    content.classList.add('active');
+                } else {
+                    content.style.maxHeight = "0";
+                    content.classList.remove('active');
+                }
+            });
+        });
+
+        // Progress tracker functionality
+        const checkboxes = document.querySelectorAll('.progress-tracker .checkbox');
+        
+        checkboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                const progressItem = this.closest('.progress-item');
+                if (this.checked) {
+                    progressItem.classList.add('completed');
+                } else {
+                    progressItem.classList.remove('completed');
+                }
+                
+                // Save progress to localStorage
+                saveProgress();
+                updateProgressSummary();
+            });
+        });
+
+        // Save progress to localStorage
+        function saveProgress() {
+            const progress = {};
+            checkboxes.forEach(checkbox => {
+                progress[checkbox.id] = checkbox.checked;
+            });
+            localStorage.setItem('memoryCircuitProgress', JSON.stringify(progress));
+        }
+
+        // Load progress from localStorage
+        function loadProgress() {
+            const saved = localStorage.getItem('memoryCircuitProgress');
+            if (saved) {
+                const progress = JSON.parse(saved);
+                checkboxes.forEach(checkbox => {
+                    if (progress[checkbox.id]) {
+                        checkbox.checked = true;
+                        checkbox.closest('.progress-item').classList.add('completed');
+                    }
+                });
+                updateProgressSummary();
+            }
+        }
+
+        // Update progress summary
+        function updateProgressSummary() {
+            const total = checkboxes.length;
+            const completed = document.querySelectorAll('.progress-tracker .checkbox:checked').length;
+            const percentage = Math.round((completed / total) * 100);
+            
+            // You could add a progress bar or percentage display here
+            console.log(`Progress: ${completed}/${total} (${percentage}%)`);
+        }
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Enhanced keyboard navigation
+        document.addEventListener('keydown', function(e) {
+            // Allow Enter or Space to toggle collapsibles
+            if ((e.key === 'Enter' || e.key === ' ') && e.target.classList.contains('collapsible')) {
+                e.preventDefault();
+                e.target.click();
+            }
+        });
+
+        // Load saved progress on page load
+        window.addEventListener('load', loadProgress);
+
+        // Add focus indicators for better accessibility
+        document.addEventListener('DOMContentLoaded', function() {
+            // Ensure all interactive elements have proper focus indicators
+            const interactiveElements = document.querySelectorAll('button, a, input, [tabindex]');
+            interactiveElements.forEach(element => {
+                element.addEventListener('focus', function() {
+                    this.style.outline = '2px solid #667eea';
+                    this.style.outlineOffset = '2px';
+                });
+                element.addEventListener('blur', function() {
+                    this.style.outline = '';
+                    this.style.outlineOffset = '';
+                });
+            });
+        });
+    </script>
+</body>
+</html>
