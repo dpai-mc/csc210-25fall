@@ -250,6 +250,14 @@
             padding: 15px;
             background-color: #fdfdfd;
             border-radius: 0 0 7px 7px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .transcript-content p {
+            margin: 0 0 10px 0;
+        }
+        .transcript-content p strong {
+            color: var(--accent-color);
         }
 
 
@@ -330,6 +338,7 @@
 
     <nav>
         <ul>
+            <li><a href="#summary-review">Summary</a></li>
             <li><a href="#part1">Part 1: Intro</a></li>
             <li><a href="#part2">Part 2: Latches</a></li>
             <li><a href="#part3">Part 3: Registers</a></li>
@@ -347,12 +356,11 @@
             
             <!-- Responsive Video Embed -->
             <div class="video-container">
-                <!-- Placeholder for the YouTube video. Replace the src with the actual video URL. -->
                 <iframe 
-                    src="" 
+                    src="https://www.youtube.com/embed/D0cOMld4w_U?si=itq-BypX2CyP0hx4" 
                     title="YouTube video player: CSC210 Week 4 Summary" 
                     frameborder="0" 
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
                     allowfullscreen>
                 </iframe>
             </div>
@@ -361,11 +369,8 @@
             <div class="transcript-container">
                 <details>
                     <summary>View Video Transcript</summary>
-                    <div class="transcript-content">
-                        <p><strong>[Video Host]:</strong> "Welcome, everyone, to Week 4 of CSC210. So far, we've explored the world of combinational logic, where a circuit's output is determined solely by its current inputs. This week, we're taking a monumental step forward into sequential logic by introducing the concept of memory."</p>
-                        <p>"The magic ingredient is something called a feedback loop. By feeding a gate's output back into its own input, we can create a circuit that holds a value—it has a 'state'. The most basic form of this is the S-R latch, which we'll build using just two cross-coupled NAND gates. This simple circuit is the fundamental building block of all computer memory."</p>
-                        <p>"From there, we'll see how to control these latches with a clock signal to create registers, which store multi-bit values like bytes. Finally, we'll arrange these memory cells into a grid to understand how Random Access Memory, or RAM, is structured and accessed using addresses. By the end of this week, you'll understand how a computer doesn't just calculate, but also remembers."</p>
-                        <p><em>[End of transcript placeholder]</em></p>
+                    <div class="transcript-content" id="transcript-content-box">
+                        <!-- Transcript will be loaded here by JavaScript -->
                     </div>
                 </details>
             </div>
@@ -617,6 +622,303 @@
     <script>
     document.addEventListener('DOMContentLoaded', function() {
 
+        // --- SRT Data ---
+        const srtContent = `1
+00:00:00,720 --> 00:00:05,700
+Aloha. So I just want to talk a little bit about sequential logic and memory.
+
+2
+00:00:06,260 --> 00:00:10,780
+And that's this week. And I'll also talk a little bit about our assignment for this week.
+
+3
+00:00:11,580 --> 00:00:19,420
+So in this module and learning platform, I'll be this video is going to be right here in the beginning.
+
+4
+00:00:21,160 --> 00:00:25,620
+And then we'll get into what is sequential logic.
+
+5
+00:00:25,620 --> 00:00:32,260
+OK, so memory is sequential, meaning there's a feedback loop.
+
+6
+00:00:32,380 --> 00:00:35,380
+Something has to happen for something else to happen. Kind of a thing.
+
+7
+00:00:36,040 --> 00:00:40,960
+So like in this case, a TV power button, there's no on off switch.
+
+8
+00:00:41,400 --> 00:00:44,520
+It's just a button you push and it toggles it.
+
+9
+00:00:44,520 --> 00:00:49,160
+So if the TV is off and you push the button, it turns on.
+
+10
+00:00:49,160 --> 00:00:52,980
+If it's on and you push the button, it turns off.
+
+11
+00:00:52,980 --> 00:00:57,480
+That's a sequential logic, meaning there's memory in that circuit.
+
+12
+00:00:57,480 --> 00:01:03,640
+It knows what the state is, what the current state is, and it does the opposite to change the state.
+
+13
+00:01:04,360 --> 00:01:08,240
+So we'll talk a little bit about that, how memory works.
+
+14
+00:01:08,240 --> 00:01:13,000
+And in this case, we have a little simulator here that you can run.
+
+15
+00:01:13,000 --> 00:01:14,480
+That's the interactive portion of this.
+
+16
+00:01:15,300 --> 00:01:16,880
+We go into latches.
+
+17
+00:01:17,400 --> 00:01:23,800
+OK, so this is another interactive learning experience where we can play with this.
+
+18
+00:01:23,800 --> 00:01:28,380
+And we'll go through this in class as well, so that you can see how it works.
+
+19
+00:01:29,200 --> 00:01:31,440
+Then we get into registers.
+
+20
+00:01:31,440 --> 00:01:35,900
+And a register is a clocked system, meaning there's a clock.
+
+21
+00:01:36,120 --> 00:01:41,260
+The clock provides a pulse and things happen on that pulse.
+
+22
+00:01:41,260 --> 00:01:46,620
+So it's either on the leading edge or the trailing edge of the pulse where things get updated.
+
+23
+00:01:47,160 --> 00:01:48,960
+So this is another simulation.
+
+24
+00:01:49,460 --> 00:01:54,780
+Then we go to RAM, Random Access Memory, and there's a little simulation on this.
+
+25
+00:01:54,780 --> 00:01:58,840
+Then we have a check your understanding, which is our little quiz.
+
+26
+00:01:58,840 --> 00:02:00,740
+There's no points for this.
+
+27
+00:02:00,740 --> 00:02:05,040
+It's just for you to see if you understood the content and the references.
+
+28
+00:02:05,960 --> 00:02:11,540
+Now, the assignment for this week is to create an 8-bit register.
+
+29
+00:02:11,540 --> 00:02:15,720
+OK, we need an 8-bit register for our CPU.
+
+30
+00:02:15,720 --> 00:02:17,460
+We'll have three of them.
+
+31
+00:02:17,460 --> 00:02:22,820
+So if we create one, we can just copy and paste the other two and then just change the labels on it.
+
+32
+00:02:23,520 --> 00:02:26,600
+So to do this, we're going to use Logisim.
+
+33
+00:02:27,200 --> 00:02:32,840
+And here are the requirements for that 8-bit register.
+
+34
+00:02:32,840 --> 00:02:39,080
+Now, you can do this by using the built-in register in Logisim.
+
+35
+00:02:39,080 --> 00:02:40,560
+There is a register in there.
+
+36
+00:02:40,940 --> 00:02:45,920
+You can go in there and do that, but you have to know how to connect it.
+
+37
+00:02:45,920 --> 00:02:48,160
+So you have to know how to read the documentation.
+
+38
+00:02:48,160 --> 00:02:50,960
+So that's part of the assignment is to go in and read the documentation.
+
+39
+00:02:50,960 --> 00:02:53,460
+See how to do it and then implement it.
+
+40
+00:02:53,460 --> 00:02:54,460
+It's very easy.
+
+41
+00:02:55,200 --> 00:03:00,560
+The alternative is to create it from a D flip flop.
+
+42
+00:03:00,560 --> 00:03:02,100
+There's a D flip flop in there.
+
+43
+00:03:02,100 --> 00:03:07,460
+So an 8 bit register is eight D flip flops side-by-side.
+
+44
+00:03:07,460 --> 00:03:10,340
+And then you just manage all the wires.
+
+45
+00:03:10,340 --> 00:03:11,580
+There's a lot of wires.
+
+46
+00:03:12,160 --> 00:03:15,900
+Or you can go all the way down to the NAND gates.
+
+47
+00:03:15,900 --> 00:03:19,260
+We saw in this S-R latch, we can do it with NAND gates.
+
+48
+00:03:19,260 --> 00:03:20,060
+So we know that.
+
+49
+00:03:20,060 --> 00:03:23,880
+So a D flip flop is just a couple of S-R latches.
+
+50
+00:03:23,880 --> 00:03:27,100
+And then eight of those makes an 8 bit register.
+
+51
+00:03:27,100 --> 00:03:32,040
+So you could build the whole thing from scratch with NAND gates if you want it.
+
+52
+00:03:32,040 --> 00:03:33,880
+It is a lot of work.
+
+53
+00:03:33,880 --> 00:03:38,620
+There's going to be a lot of wires, so you have to be very good with your wire management.
+
+54
+00:03:39,180 --> 00:03:41,200
+But it's very doable.
+
+55
+00:03:41,200 --> 00:03:46,280
+And it shows that you have a mastery of what's going on.
+
+56
+00:03:46,280 --> 00:03:52,480
+Now, I recommend that you build this as a sub-circuit in our CPU.
+
+57
+00:03:52,480 --> 00:03:55,600
+So we're going to build our entire CPU in one file.
+
+58
+00:03:55,900 --> 00:03:59,780
+And we'll just have sub-circuits for each of the components.
+
+59
+00:03:59,780 --> 00:04:04,180
+So that way, we have our main, which is our CPU.
+
+60
+00:04:04,180 --> 00:04:09,000
+And then from our main, we'll have our sub-circuits, which will have our registers and our RAM.
+
+61
+00:04:09,000 --> 00:04:10,240
+And then our ALU.
+
+62
+00:04:10,240 --> 00:04:13,240
+And we'll have all the different components as sub-circuits.
+
+63
+00:04:13,240 --> 00:04:17,320
+So that our main wiring diagram isn't that cluttered.
+
+64
+00:04:18,040 --> 00:04:22,860
+OK, so that's the assignment. That's what we'll be doing.
+
+65
+00:04:22,860 --> 00:04:26,780
+And we'll be doing this over the next couple of weeks.
+
+66
+00:04:26,780 --> 00:04:30,220
+This week, we're doing the register and the RAM.
+
+67
+00:04:30,220 --> 00:04:33,020
+Next week, we'll be doing something else and so forth.
+
+68
+00:04:33,020 --> 00:04:36,780
+So we'll just be building this up as we go along.
+
+69
+00:04:36,780 --> 00:04:39,020
+And we'll be doing this in class as well.
+
+70
+00:04:39,020 --> 00:04:41,260
+So you'll have plenty of time to work on it.
+
+71
+00:04:41,260 --> 00:04:43,420
+Plenty of time to ask questions.
+
+72
+00:04:43,420 --> 00:04:45,920
+I have office hours for you to come and ask questions.
+
+73
+00:04:46,440 --> 00:04:49,140
+So it should be a pretty fun project.
+
+74
+00:04:49,700 --> 00:04:51,940
+So let's get into it.`;
+
         // --- Part 1: TV Toggle Button ---
         const toggleButton = document.getElementById('toggle-button');
         const tvLed = document.getElementById('tv-led');
@@ -635,6 +937,34 @@
                 toggleButton.setAttribute('aria-pressed', 'false');
             }
         });
+
+        // --- Transcript Loader ---
+        function parseSRT(srt) {
+            const transcriptBox = document.getElementById('transcript-content-box');
+            if (!transcriptBox) return;
+            
+            const entries = srt.trim().split(/\n\s*\n/);
+            let html = '';
+
+            for (const entry of entries) {
+                const lines = entry.split('\n');
+                if (lines.length >= 3) {
+                    const time = lines[1].split(' --> ')[0];
+                    const text = lines.slice(2).join(' ');
+                    
+                    // Format time as [mm:ss]
+                    const timeParts = time.split(':');
+                    const minutes = timeParts[1];
+                    const seconds = timeParts[2].split(',')[0];
+                    const formattedTime = `[${minutes}:${seconds}]`;
+
+                    html += `<p><strong>${formattedTime}</strong> ${text}</p>`;
+                }
+            }
+            transcriptBox.innerHTML = html;
+        }
+        
+        parseSRT(srtContent);
 
         // --- Part 2: S'R' NAND Latch Simulator ---
         const sButton = document.getElementById('sr-s-button');
@@ -769,6 +1099,8 @@
                 regStatus.textContent = "Clock pulsed, but Load was disabled. Holding state.";
             }
         });
+        
+        updateRegisterDisplay();
 
         // --- Part 4: RAM Simulator ---
         const ramAddressInput = document.getElementById('ram-address');
@@ -913,5 +1245,4 @@
     </script>
 </body>
 </html>
-
 
