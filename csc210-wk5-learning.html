@@ -73,10 +73,24 @@
             transform: scale(1.1);
             background-color: rgba(255, 255, 255, 0.3);
         }
+        .skip-link {
+            position: absolute;
+            top: -100px;
+            left: 0;
+            background: #EADDD7;
+            color: #1a1a1a;
+            padding: 0.5rem 1rem;
+            z-index: 100;
+            transition: top 0.3s ease-in-out;
+            border-bottom-right-radius: 0.5rem;
+        }
+        .skip-link:focus {
+            top: 0;
+        }
     </style>
 </head>
 <body class="antialiased">
-
+    <a href="#content-container" class="skip-link font-semibold">Skip to main content</a>
     <div class="flex flex-col md:flex-row min-h-screen">
         <!-- Sidebar Navigation -->
         <aside class="w-full md:w-64 bg-[#F4F1EE] border-r border-[#EADDD7] p-4 md:p-6 shrink-0">
@@ -119,7 +133,7 @@
                     <p class="text-lg text-gray-700 leading-relaxed mb-8">
                         The Instruction Set Architecture (ISA) is one of the most important concepts in computer organization. It serves as the abstract interface, or "contract," between the hardware and the software. The ISA defines everything a programmer needs to know to write correct machine code, including the set of instructions, registers, memory access methods, and data types, without needing to know the specific details of the hardware implementation.
                     </p>
-                    <div class="mb-8 video-embed rounded-lg aspect-video flex items-center justify-center p-4">
+                    <div role="button" tabindex="0" aria-label="Play video: Overview of the MIPS Architecture" class="mb-8 video-embed rounded-lg aspect-video flex items-center justify-center p-4 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
                         <div class="text-center">
                             <div class="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4 play-button">
                                 <span class="text-4xl text-white ml-1">&#9658;</span>
@@ -221,8 +235,8 @@
                     
                     <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
                         <div class="mb-6">
-                            <label class="font-semibold mr-4">Instruction Type:</label>
-                            <div id="instruction-type-selector" class="inline-flex rounded-md shadow-sm" role="group">
+                            <label for="instruction-type-selector" class="font-semibold mr-4">Instruction Type:</label>
+                            <div id="instruction-type-selector" role="group" class="inline-flex rounded-md shadow-sm">
                                <button type="button" data-type="R" class="px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-l-lg hover:bg-gray-100 focus:z-10 focus:ring-2 focus:ring-blue-500">R-type</button>
                                <button type="button" data-type="I" class="px-4 py-2 text-sm font-medium text-gray-900 bg-white border-t border-b border-gray-200 hover:bg-gray-100 focus:z-10 focus:ring-2 focus:ring-blue-500">I-type</button>
                                <button type="button" data-type="J" class="px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-r-md hover:bg-gray-100 focus:z-10 focus:ring-2 focus:ring-blue-500">J-type</button>
@@ -242,7 +256,7 @@
                         <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
                            <h3 class="font-semibold mb-2">Resulting 32-bit Machine Code:</h3>
                             <p class="text-sm text-gray-600 mb-4">
-                                This is the final 32-bit binary string that the CPU actually reads. Notice how for R-type instructions, the `opcode` field is always `000000`. The CPU knows that when it sees this opcode, it must look at the `funct` field at the end of the instruction to determine the specific operation to perform (like `add` vs `sub`). For I-type and J-type instructions, the `opcode` itself is unique and tells the CPU everything it needs to know about the operation.
+                                This is the final 32-bit binary string that the CPU actually reads. Notice how for R-type instructions, the `opcode` field is always `000000`. The CPU knows that when it sees this opcode, it must look at the `funct` field at the end of the instruction to determine the specific ALU operation to perform (like `add` vs `sub`). For I-type and J-type instructions, the `opcode` itself is unique and tells the CPU everything it needs to know about the operation.
                             </p>
                             <div class="bg-gray-100 p-4 rounded-md font-mono text-center tracking-wider text-lg" id="machine-code-output">
                                 0000 0000 0000 0000 0000 0000 0000 0000
@@ -255,7 +269,7 @@
                 <section id="tasks" class="content-section">
                     <h2 class="text-3xl font-bold mb-6">Tools & Weekly Tasks</h2>
                     <p class="text-lg text-gray-700 leading-relaxed mb-8">
-                        To succeed this week, you'll need to engage with the reading material, watch the supplementary videos, and get hands-on with the MARS simulator. This checklist outlines the required activities. Completing the lab is especially important as it provides practical experience with the concepts discussed in the modules.
+                        To succeed this week, you'll need to engage with the reading material, watch the supplementary videos, and get hands-on with the MARS simulator. This checklist outlines the required activities.
                     </p>
                     <div class="grid md:grid-cols-2 gap-8">
                         <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
@@ -267,7 +281,7 @@
                                 <li>Simulator to execute code step-by-step.</li>
                                 <li>Debugger to view register and memory contents.</li>
                             </ul>
-                            <div class="video-embed rounded-lg aspect-video flex items-center justify-center p-4">
+                             <div role="button" tabindex="0" aria-label="Play video: Getting started with the MARS simulator" class="video-embed rounded-lg aspect-video flex items-center justify-center p-4 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
                                <div class="text-center">
                                     <div class="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4 play-button">
                                         <span class="text-4xl text-white ml-1">&#9658;</span>
@@ -280,8 +294,8 @@
                         <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
                             <h3 class="text-xl font-semibold mb-4">Weekly To-Do List</h3>
                             <ul class="space-y-3">
-                                <li class="flex items-start"><span class="mr-2 text-blue-600">&#10003;</span> <strong>Reading:</strong> Review the "MIPS Reference Data" sheet and supplementary materials on RISC/CISC.</li>
-                                <li class="flex items-start"><span class="mr-2 text-blue-600">&#10003;</span> <strong>Assignment:</strong> Complete the "Instruction Encoding & Decoding" worksheet.</li>
+                                <li class="flex items-start"><span class="mr-2 text-blue-600" aria-hidden="true">&#10003;</span> <strong>Reading:</strong> Review the "MIPS Reference Data" sheet and supplementary materials on RISC/CISC.</li>
+                                <li class="flex items-start"><span class="mr-2 text-blue-600" aria-hidden="true">&#10003;</span> <strong>Assignment:</strong> Complete the "Instruction Encoding & Decoding" worksheet.</li>
                             </ul>
                         </div>
                     </div>
@@ -346,7 +360,6 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // State
     let currentInstructionType = 'R';
-    let currentInstructionValues = {};
 
     // Navigation
     const navLinks = document.querySelectorAll('#sidebar-nav a');
@@ -411,7 +424,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return `
             <div>
                 <label for="${id}" class="block text-sm font-medium text-gray-700 mb-1">${label}</label>
-                <select id="${id}" class="w-full p-2 rounded-md">${options}</select>
+                <select id="${id}" class="w-full p-2 rounded-md border-gray-300 focus:border-blue-500 focus:ring-blue-500">${options}</select>
             </div>`;
     }
 
@@ -419,7 +432,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return `
              <div>
                 <label for="${id}" class="block text-sm font-medium text-gray-700 mb-1">${label}</label>
-                <input type="number" id="${id}" placeholder="${placeholder}" class="w-full p-2 rounded-md" value="0">
+                <input type="number" id="${id}" placeholder="${placeholder}" class="w-full p-2 rounded-md border-gray-300 focus:border-blue-500 focus:ring-blue-500" value="0">
             </div>
         `;
     }
@@ -430,7 +443,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return `
             <div>
                 <label for="opcode-select" class="block text-sm font-medium text-gray-700 mb-1">Instruction</label>
-                <select id="opcode-select" class="w-full p-2 rounded-md">${options}</select>
+                <select id="opcode-select" class="w-full p-2 rounded-md border-gray-300 focus:border-blue-500 focus:ring-blue-500">${options}</select>
             </div>`;
     }
 
@@ -477,7 +490,6 @@ document.addEventListener('DOMContentLoaded', () => {
         instructionDisplay.innerHTML = displayHTML;
         instructionBuilder.innerHTML = builderHTML;
         
-        // Add event listeners after rendering
         instructionBuilder.querySelectorAll('select, input').forEach(el => {
             el.addEventListener('change', updateMachineCode);
             el.addEventListener('keyup', updateMachineCode);
@@ -498,7 +510,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const rs = registerMap.get(instructionBuilder.querySelector('#rs-select').value) || 0;
                 const rt = registerMap.get(instructionBuilder.querySelector('#rt-select').value) || 0;
                 const rd = registerMap.get(instructionBuilder.querySelector('#rd-select').value) || 0;
-                const shamt = 0; // Not implemented for simplicity
+                const shamt = 0;
 
                 const opcodeBin = toBinary(0, 6);
                 const rsBin = toBinary(rs, 5);
@@ -556,14 +568,19 @@ document.addEventListener('DOMContentLoaded', () => {
         typeSelector.addEventListener('click', (e) => {
             if (e.target.tagName === 'BUTTON') {
                 currentInstructionType = e.target.dataset.type;
-                renderFormatter();
                 
                 typeSelector.querySelectorAll('button').forEach(btn => {
-                    btn.classList.toggle('bg-gray-200', btn === e.target);
+                    const isActive = btn === e.target;
+                    btn.classList.toggle('bg-gray-200', isActive);
+                    btn.setAttribute('aria-pressed', isActive);
                 });
+                renderFormatter();
             }
         });
-        typeSelector.querySelector('button[data-type="R"]').classList.add('bg-gray-200');
+        
+        const initialActiveBtn = typeSelector.querySelector('button[data-type="R"]');
+        initialActiveBtn.classList.add('bg-gray-200');
+        initialActiveBtn.setAttribute('aria-pressed', 'true');
         renderFormatter();
     }
 });
