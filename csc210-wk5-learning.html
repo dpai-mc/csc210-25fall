@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Week 5: Introduction to MIPS Architecture</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Scholarly Neutrals -->
+    <!-- Application Structure Plan: The application is designed as an interactive learning dashboard. It deviates from the linear document structure by using a persistent sidebar for thematic navigation, allowing students to non-linearly access different sections: Overview, Core Concepts, Registers, an interactive Instruction Formatter, and a checklist for Tasks. This structure was chosen because it mirrors how a student studies: jumping between reference material (registers), conceptual explanations (ISA), and practical tools (instruction encoder). The core of the app is the interactive instruction formatter, which transforms passive learning (reading about formats) into active engagement (building instructions). -->
+    <!-- Visualization & Content Choices: 
+        - Report Info: RISC vs CISC comparison -> Goal: Compare -> Viz/Presentation: Side-by-side textual comparison using a two-column flex layout. Interaction: None, it's a direct comparison. Justification: Clear, direct comparison is most effective for these two core concepts. Method: HTML/Tailwind.
+        - Report Info: MIPS Register Table -> Goal: Organize/Inform -> Viz/Presentation: Interactive HTML table. Interaction: On-hover highlighting of rows to draw attention and improve readability. Justification: Makes dense reference material slightly more engaging and easier to parse visually. Method: HTML/Tailwind/JS for hover effects.
+        - Report Info: MIPS Instruction Formats -> Goal: Teach/Organize -> Viz/Presentation: A dynamic, interactive diagram. Interaction: Users select an instruction type (R/I/J) and use dropdowns to pick opcodes and registers. The diagram and the final 32-bit machine code value update in real-time. Justification: This is the most complex topic, and an interactive tool that directly connects assembly to machine code is a far superior teaching method than static text and examples. It directly addresses the "Encode/Decode" learning objectives. Method: HTML/Tailwind for structure, JS for all logic.
+        - Report Info: Learning Objectives & To-Do List -> Goal: Inform -> Viz/Presentation: Styled lists. Interaction: None. Justification: These are informational and best presented clearly and concisely. Method: HTML/Tailwind. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #FDFBF8;
+            color: #383838;
+        }
+        .active-nav {
+            background-color: #EADDD7;
+            color: #1a1a1a;
+            font-weight: 600;
+        }
+        .nav-link {
+            transition: all 0.2s ease-in-out;
+        }
+        .nav-link:hover {
+            background-color: #F0EBE8;
+        }
+        .content-section {
+            display: none;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        .content-section.active {
+            display: block;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .register-table tr:hover {
+            background-color: #F0EBE8;
+        }
+        .instruction-field {
+            border: 1px solid #D1C7BF;
+            padding: 0.5rem;
+            text-align: center;
+            font-family: monospace;
+            font-size: 0.875rem;
+            transition: background-color 0.3s;
+        }
+        .field-label {
+            font-size: 0.75rem;
+            color: #6B6B6B;
+        }
+        select, input {
+            background-color: #FDFBF8;
+            border: 1px solid #D1C7BF;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <div class="flex flex-col md:flex-row min-h-screen">
+        <!-- Sidebar Navigation -->
+        <aside class="w-full md:w-64 bg-[#F4F1EE] border-r border-[#EADDD7] p-4 md:p-6 shrink-0">
+            <h1 class="text-xl font-bold text-gray-800 mb-6">MIPS Architecture</h1>
+            <nav id="sidebar-nav" class="space-y-2">
+                <a href="#overview" class="nav-link block px-4 py-2 rounded-md active-nav">Overview & Objectives</a>
+                <a href="#concepts" class="nav-link block px-4 py-2 rounded-md">Core Concepts</a>
+                <a href="#registers" class="nav-link block px-4 py-2 rounded-md">MIPS Registers</a>
+                <a href="#formats" class="nav-link block px-4 py-2 rounded-md">Instruction Formatter</a>
+                <a href="#tasks" class="nav-link block px-4 py-2 rounded-md">Tools & Tasks</a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 p-6 md:p-10">
+            <div id="content-container">
+                <!-- Section 1: Overview -->
+                <section id="overview" class="content-section active">
+                    <h2 class="text-3xl font-bold mb-4">Welcome to Week 5</h2>
+                    <p class="text-lg text-gray-700 leading-relaxed mb-8">
+                        Welcome to Phase 2 of the course! We are now moving from the fundamental building blocks of digital logic to the next level of abstraction: the Instruction Set Architecture (ISA). This week, we will be introduced to MIPS, a classic Reduced Instruction Set Computer (RISC) architecture. Understanding MIPS is essential as it provides a clear, foundational model for how a CPU actually understands and executes software commands. We will explore the "contract" between hardware and software, learn about the registers that serve as the CPU's workspace, and decode the binary format of the instructions themselves.
+                    </p>
+                    <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+                        <h3 class="text-xl font-semibold mb-4">Learning Objectives</h3>
+                        <ul class="list-disc list-inside space-y-2 text-gray-800">
+                            <li>Define an Instruction Set Architecture (ISA) and explain its role as the hardware/software interface.</li>
+                            <li>Differentiate between RISC and CISC architectures.</li>
+                            <li>Identify and describe the purpose of the 32 general-purpose registers in the MIPS architecture.</li>
+                            <li>Distinguish between the three MIPS instruction formats (R-type, I-type, and J-type).</li>
+                            <li>Decode a 32-bit MIPS machine instruction into its assembly language equivalent.</li>
+                            <li>Encode a simple MIPS assembly instruction into its 32-bit machine code representation.</li>
+                            <li>Navigate the basic features of the MARS (MIPS Assembler and Runtime Simulator) environment.</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <!-- Section 2: Core Concepts -->
+                <section id="concepts" class="content-section">
+                    <h2 class="text-3xl font-bold mb-6">Core Concepts: The ISA</h2>
+                    <p class="text-lg text-gray-700 leading-relaxed mb-8">
+                        The Instruction Set Architecture (ISA) is one of the most important concepts in computer organization. It serves as the abstract interface, or "contract," between the hardware and the software. The ISA defines everything a programmer needs to know to write correct machine code, including the set of instructions, registers, memory access methods, and data types, without needing to know the specific details of the hardware implementation.
+                    </p>
+                    <div class="grid md:grid-cols-2 gap-8">
+                        <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+                            <h3 class="text-xl font-semibold mb-3">RISC (Reduced Instruction Set Computer)</h3>
+                            <p class="mb-4">A design philosophy that favors a smaller and simpler set of instructions that all take about the same amount of time to execute. MIPS is our primary example.</p>
+                            <ul class="list-disc list-inside space-y-2">
+                                <li>Simple, fixed-length instructions.</li>
+                                <li>Most instructions execute in a single clock cycle.</li>
+                                <li>Relies on a "load/store" architecture.</li>
+                                <li>Emphasis on software to perform complex tasks.</li>
+                            </ul>
+                        </div>
+                        <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+                            <h3 class="text-xl font-semibold mb-3">CISC (Complex Instruction Set Computer)</h3>
+                            <p class="mb-4">A design philosophy where single instructions can execute several low-level operations, making them more complex but potentially more powerful. Intel's x86 is a common example.</p>
+                            <ul class="list-disc list-inside space-y-2">
+                                <li>Variable-length, complex instructions.</li>
+                                <li>Instructions can perform multi-step operations.</li>
+                                <li>Direct memory-to-memory operations are common.</li>
+                                <li>Emphasis on hardware to perform complex tasks.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- Section 3: MIPS Registers -->
+                <section id="registers" class="content-section">
+                    <h2 class="text-3xl font-bold mb-4">The MIPS Register Set</h2>
+                    <p class="text-lg text-gray-700 leading-relaxed mb-8">
+                        MIPS provides 32 general-purpose 32-bit registers. Using registers for data is significantly faster than accessing main memory. By convention, these registers have specific names and purposes to make assembly code more readable and maintainable. Understanding these conventions is crucial for writing MIPS programs. In addition to these, there are special registers like the Program Counter (PC), `HI`, and `LO` for multiplication/division results.
+                    </p>
+                    <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+                        <table class="w-full text-left register-table">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="p-4 font-semibold">Register Name</th>
+                                    <th class="p-4 font-semibold">Number</th>
+                                    <th class="p-4 font-semibold">Usage</th>
+                                </tr>
+                            </thead>
+                            <tbody id="register-table-body" class="divide-y divide-gray-200">
+                                <!-- JS will populate this -->
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- Section 4: Instruction Formatter -->
+                <section id="formats" class="content-section">
+                    <h2 class="text-3xl font-bold mb-4">Interactive Instruction Formatter</h2>
+                     <p class="text-lg text-gray-700 leading-relaxed mb-8">
+                        All MIPS instructions are exactly 32 bits long. The meaning of these bits is determined by the instruction's format. Use this tool to see how assembly instructions are encoded into machine code. Select an instruction type, choose an operation and registers, and watch the 32-bit representation build itself in real-time. This hands-on experience is key to understanding the hardware-software connection.
+                    </p>
+                    
+                    <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+                        <div class="mb-6">
+                            <label class="font-semibold mr-4">Instruction Type:</label>
+                            <div id="instruction-type-selector" class="inline-flex rounded-md shadow-sm" role="group">
+                               <button type="button" data-type="R" class="px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-l-lg hover:bg-gray-100 focus:z-10 focus:ring-2 focus:ring-blue-500">R-type</button>
+                               <button type="button" data-type="I" class="px-4 py-2 text-sm font-medium text-gray-900 bg-white border-t border-b border-gray-200 hover:bg-gray-100 focus:z-10 focus:ring-2 focus:ring-blue-500">I-type</button>
+                               <button type="button" data-type="J" class="px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-r-md hover:bg-gray-100 focus:z-10 focus:ring-2 focus:ring-blue-500">J-type</button>
+                            </div>
+                        </div>
+
+                        <!-- Instruction Format Display -->
+                        <div id="instruction-display" class="mb-6 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-px bg-[#D1C7BF] rounded-md overflow-hidden">
+                            <!-- JS will populate this -->
+                        </div>
+
+                        <!-- Instruction Builder Controls -->
+                        <div id="instruction-builder" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+                            <!-- JS will populate this -->
+                        </div>
+
+                        <!-- Final Machine Code Output -->
+                        <div>
+                           <h3 class="font-semibold mb-2">Resulting 32-bit Machine Code:</h3>
+                            <div class="bg-gray-100 p-4 rounded-md font-mono text-center tracking-wider text-lg" id="machine-code-output">
+                                0000 0000 0000 0000 0000 0000 0000 0000
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Section 5: Tools & Tasks -->
+                <section id="tasks" class="content-section">
+                    <h2 class="text-3xl font-bold mb-6">Tools & Weekly Tasks</h2>
+                    <p class="text-lg text-gray-700 leading-relaxed mb-8">
+                        To succeed this week, you'll need to engage with the reading material, watch the supplementary videos, and get hands-on with the MARS simulator. This checklist outlines the required activities. Completing the lab is especially important as it provides practical experience with the concepts discussed in the modules.
+                    </p>
+                    <div class="grid md:grid-cols-2 gap-8">
+                        <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+                            <h3 class="text-xl font-semibold mb-4">Primary Tool: MARS Simulator</h3>
+                            <p class="mb-4">The MARS (MIPS Assembler and Runtime Simulator) is the software tool we will use for writing, running, and debugging our MIPS assembly programs. Its key features include:</p>
+                            <ul class="list-disc list-inside space-y-2">
+                                <li>Text editor for writing assembly code.</li>
+                                <li>Assembler to convert MIPS assembly to machine code.</li>
+                                <li>Simulator to execute code step-by-step.</li>
+                                <li>Debugger to view register and memory contents.</li>
+                            </ul>
+                        </div>
+                        <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+                            <h3 class="text-xl font-semibold mb-4">Weekly To-Do List</h3>
+                            <ul class="space-y-3">
+                                <li class="flex items-start"><span class="mr-2 text-blue-600">&#10003;</span> <strong>Reading:</strong> Review the "MIPS Reference Data" sheet and supplementary materials on RISC/CISC.</li>
+                                <li class="flex items-start"><span class="mr-2 text-blue-600">&#10003;</span> <strong>Videos:</strong> Watch "Overview of the MIPS Architecture" and "Getting Started with the MARS Simulator".</li>
+                                <li class="flex items-start"><span class="mr-2 text-blue-600">&#10003;</span> <strong>Assignment:</strong> Complete the "Instruction Encoding & Decoding" worksheet.</li>
+                                <li class="flex items-start"><span class="mr-2 text-blue-600">&#10003;</span> <strong>Lab:</strong> Install MARS and complete Lab 5, "MARS Environment & Basic Programs."</li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+
+    const mipsData = {
+        registers: [
+            { name: '$zero', number: 0, usage: 'Constant value 0' },
+            { name: '$at', number: 1, usage: 'Reserved for assembler' },
+            { name: '$v0-$v1', number: '2-3', usage: 'Values for results and expression evaluation' },
+            { name: '$a0-$a3', number: '4-7', usage: 'Arguments' },
+            { name: '$t0-$t7', number: '8-15', usage: 'Temporaries (caller-saved)' },
+            { name: '$s0-$s7', number: '16-23', usage: 'Saved temporaries (callee-saved)' },
+            { name: '$t8-$t9', number: '24-25', usage: 'More temporaries (caller-saved)' },
+            { name: '$k0-$k1', number: '26-27', usage: 'Reserved for OS kernel' },
+            { name: '$gp', number: 28, usage: 'Global pointer' },
+            { name: '$sp', number: 29, usage: 'Stack pointer' },
+            { name: '$fp', number: 30, usage: 'Frame pointer' },
+            { name: '$ra', number: 31, usage: 'Return address' }
+        ],
+        instructions: {
+            'R': [
+                { name: 'add', funct: '100000' }, 
+                { name: 'sub', funct: '100010' }, 
+                { name: 'and', funct: '100100' },
+                { name: 'or', funct: '100101' },
+                { name: 'slt', funct: '101010' }
+            ],
+            'I': [
+                { name: 'addi', opcode: '001000' }, 
+                { name: 'lw', opcode: '100011' }, 
+                { name: 'sw', opcode: '101011' },
+                { name: 'beq', opcode: '000100' }
+            ],
+            'J': [
+                { name: 'j', opcode: '000010' },
+                { name: 'jal', opcode: '000011' }
+            ]
+        }
+    };
+
+    const registerMap = new Map();
+    mipsData.registers.forEach(reg => {
+        if (typeof reg.number === 'number') {
+            registerMap.set(reg.name, reg.number);
+        } else {
+            const [start, end] = reg.number.split('-').map(Number);
+            const baseName = reg.name.split('-')[0].slice(0, -1);
+            for (let i = start; i <= end; i++) {
+                const regNum = i - start;
+                registerMap.set(`${baseName}${regNum}`, i);
+            }
+        }
+    });
+     const fullRegisterList = Array.from(registerMap.keys()).sort((a,b) => registerMap.get(a) - registerMap.get(b));
+    
+    // State
+    let currentInstructionType = 'R';
+    let currentInstructionValues = {};
+
+    // Navigation
+    const navLinks = document.querySelectorAll('#sidebar-nav a');
+    const contentSections = document.querySelectorAll('.content-section');
+
+    function updateNav(hash) {
+        navLinks.forEach(link => {
+            link.classList.toggle('active-nav', link.hash === hash);
+        });
+        contentSections.forEach(section => {
+            section.classList.toggle('active', `#${section.id}` === hash);
+        });
+    }
+
+    navLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            const targetHash = e.currentTarget.hash;
+            history.pushState(null, null, targetHash);
+            updateNav(targetHash);
+        });
+    });
+
+    window.addEventListener('popstate', () => {
+        updateNav(window.location.hash || '#overview');
+    });
+
+    updateNav(window.location.hash || '#overview');
+
+
+    // Populate Register Table
+    const registerTableBody = document.getElementById('register-table-body');
+    if (registerTableBody) {
+        registerTableBody.innerHTML = mipsData.registers.map(reg => `
+            <tr class="border-b border-gray-200">
+                <td class="p-4 font-mono">${reg.name}</td>
+                <td class="p-4">${reg.number}</td>
+                <td class="p-4">${reg.usage}</td>
+            </tr>
+        `).join('');
+    }
+
+    // Instruction Formatter Logic
+    const typeSelector = document.getElementById('instruction-type-selector');
+    const instructionDisplay = document.getElementById('instruction-display');
+    const instructionBuilder = document.getElementById('instruction-builder');
+    const machineCodeOutput = document.getElementById('machine-code-output');
+
+    function toBinary(num, bits) {
+        return num.toString(2).padStart(bits, '0');
+    }
+
+    function formatBinary(binaryStr) {
+        return binaryStr.match(/.{1,4}/g).join(' ');
+    }
+    
+    function createRegisterDropdown(id, label) {
+        const options = fullRegisterList.map(name => `<option value="${name}">${name}</option>`).join('');
+        return `
+            <div>
+                <label for="${id}" class="block text-sm font-medium text-gray-700 mb-1">${label}</label>
+                <select id="${id}" class="w-full p-2 rounded-md">${options}</select>
+            </div>`;
+    }
+
+    function createImmediateInput(id, label, placeholder) {
+        return `
+             <div>
+                <label for="${id}" class="block text-sm font-medium text-gray-700 mb-1">${label}</label>
+                <input type="number" id="${id}" placeholder="${placeholder}" class="w-full p-2 rounded-md" value="0">
+            </div>
+        `;
+    }
+    
+    function createOpcodeDropdown(type) {
+        const instructions = mipsData.instructions[type];
+        const options = instructions.map(inst => `<option value="${inst.name}">${inst.name}</option>`).join('');
+        return `
+            <div>
+                <label for="opcode-select" class="block text-sm font-medium text-gray-700 mb-1">Instruction</label>
+                <select id="opcode-select" class="w-full p-2 rounded-md">${options}</select>
+            </div>`;
+    }
+
+    function renderFormatter() {
+        let displayHTML = '';
+        let builderHTML = '';
+        
+        builderHTML += createOpcodeDropdown(currentInstructionType);
+
+        switch (currentInstructionType) {
+            case 'R':
+                displayHTML = `
+                    <div class="instruction-field bg-red-100"><span class="field-label">opcode (6)</span><div id="df-opcode">000000</div></div>
+                    <div class="instruction-field bg-blue-100"><span class="field-label">rs (5)</span><div id="df-rs">00000</div></div>
+                    <div class="instruction-field bg-blue-100"><span class="field-label">rt (5)</span><div id="df-rt">00000</div></div>
+                    <div class="instruction-field bg-green-100"><span class="field-label">rd (5)</span><div id="df-rd">00000</div></div>
+                    <div class="instruction-field bg-yellow-100"><span class="field-label">shamt (5)</span><div id="df-shamt">00000</div></div>
+                    <div class="instruction-field bg-purple-100"><span class="field-label">funct (6)</span><div id="df-funct">000000</div></div>
+                `;
+                builderHTML += createRegisterDropdown('rs-select', 'rs (source)');
+                builderHTML += createRegisterDropdown('rt-select', 'rt (source)');
+                builderHTML += createRegisterDropdown('rd-select', 'rd (destination)');
+                break;
+            case 'I':
+                displayHTML = `
+                    <div class="instruction-field bg-red-100 col-span-1"><span class="field-label">opcode (6)</span><div id="df-opcode">000000</div></div>
+                    <div class="instruction-field bg-blue-100 col-span-1"><span class="field-label">rs (5)</span><div id="df-rs">00000</div></div>
+                    <div class="instruction-field bg-green-100 col-span-1"><span class="field-label">rt (5)</span><div id="df-rt">00000</div></div>
+                    <div class="instruction-field bg-yellow-100 col-span-3"><span class="field-label">immediate (16)</span><div id="df-imm">0000000000000000</div></div>
+                `;
+                builderHTML += createRegisterDropdown('rs-select', 'rs (source/base)');
+                builderHTML += createRegisterDropdown('rt-select', 'rt (dest/source)');
+                builderHTML += createImmediateInput('imm-input', 'Immediate Value', 'e.g., 100');
+                break;
+            case 'J':
+                 displayHTML = `
+                    <div class="instruction-field bg-red-100 col-span-1"><span class="field-label">opcode (6)</span><div id="df-opcode">000000</div></div>
+                    <div class="instruction-field bg-yellow-100 col-span-5"><span class="field-label">address (26)</span><div id="df-addr">00000000000000000000000000</div></div>
+                `;
+                builderHTML += createImmediateInput('addr-input', 'Address', 'e.g., 1024');
+                break;
+        }
+
+        instructionDisplay.innerHTML = displayHTML;
+        instructionBuilder.innerHTML = builderHTML;
+        
+        // Add event listeners after rendering
+        instructionBuilder.querySelectorAll('select, input').forEach(el => {
+            el.addEventListener('change', updateMachineCode);
+        });
+
+        updateMachineCode();
+    }
+
+    function updateMachineCode() {
+        const instName = instructionBuilder.querySelector('#opcode-select')?.value;
+        if (!instName) return;
+        
+        let binaryCode = '';
+        const instruction = mipsData.instructions[currentInstructionType].find(i => i.name === instName);
+        
+        switch (currentInstructionType) {
+            case 'R':
+                const rs = registerMap.get(instructionBuilder.querySelector('#rs-select').value) || 0;
+                const rt = registerMap.get(instructionBuilder.querySelector('#rt-select').value) || 0;
+                const rd = registerMap.get(instructionBuilder.querySelector('#rd-select').value) || 0;
+                const shamt = 0; // Not implemented for simplicity
+
+                const opcodeBin = toBinary(0, 6);
+                const rsBin = toBinary(rs, 5);
+                const rtBin = toBinary(rt, 5);
+                const rdBin = toBinary(rd, 5);
+                const shamtBin = toBinary(shamt, 5);
+                const functBin = instruction.funct;
+
+                binaryCode = opcodeBin + rsBin + rtBin + rdBin + shamtBin + functBin;
+
+                document.getElementById('df-opcode').textContent = opcodeBin;
+                document.getElementById('df-rs').textContent = rsBin;
+                document.getElementById('df-rt').textContent = rtBin;
+                document.getElementById('df-rd').textContent = rdBin;
+                document.getElementById('df-shamt').textContent = shamtBin;
+                document.getElementById('df-funct').textContent = functBin;
+                break;
+                
+            case 'I':
+                const i_rs = registerMap.get(instructionBuilder.querySelector('#rs-select').value) || 0;
+                const i_rt = registerMap.get(instructionBuilder.querySelector('#rt-select').value) || 0;
+                const immediate = parseInt(instructionBuilder.querySelector('#imm-input').value, 10) || 0;
+
+                const i_opcodeBin = instruction.opcode;
+                const i_rsBin = toBinary(i_rs, 5);
+                const i_rtBin = toBinary(i_rt, 5);
+                const i_immBin = toBinary(immediate, 16);
+
+                binaryCode = i_opcodeBin + i_rsBin + i_rtBin + i_immBin;
+
+                document.getElementById('df-opcode').textContent = i_opcodeBin;
+                document.getElementById('df-rs').textContent = i_rsBin;
+                document.getElementById('df-rt').textContent = i_rtBin;
+                document.getElementById('df-imm').textContent = i_immBin;
+                break;
+
+            case 'J':
+                const address = parseInt(instructionBuilder.querySelector('#addr-input').value, 10) || 0;
+
+                const j_opcodeBin = instruction.opcode;
+                const j_addrBin = toBinary(address, 26);
+
+                binaryCode = j_opcodeBin + j_addrBin;
+
+                document.getElementById('df-opcode').textContent = j_opcodeBin;
+                document.getElementById('df-addr').textContent = j_addrBin;
+                break;
+        }
+
+        machineCodeOutput.textContent = formatBinary(binaryCode);
+    }
+
+
+    if (typeSelector) {
+        typeSelector.addEventListener('click', (e) => {
+            if (e.target.tagName === 'BUTTON') {
+                currentInstructionType = e.target.dataset.type;
+                renderFormatter();
+                
+                typeSelector.querySelectorAll('button').forEach(btn => {
+                    btn.classList.toggle('bg-gray-200', btn === e.target);
+                });
+            }
+        });
+        typeSelector.querySelector('button[data-type="R"]').classList.add('bg-gray-200');
+        renderFormatter();
+    }
+});
+</script>
+
+</body>
+</html>
