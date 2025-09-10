@@ -61,6 +61,18 @@
             background-color: #FDFBF8;
             border: 1px solid #D1C7BF;
         }
+        .video-embed {
+            background-color: #2D3748;
+            cursor: pointer;
+            position: relative;
+        }
+        .video-embed .play-button {
+             transition: all 0.2s ease-in-out;
+        }
+        .video-embed:hover .play-button {
+            transform: scale(1.1);
+            background-color: rgba(255, 255, 255, 0.3);
+        }
     </style>
 </head>
 <body class="antialiased">
@@ -107,6 +119,15 @@
                     <p class="text-lg text-gray-700 leading-relaxed mb-8">
                         The Instruction Set Architecture (ISA) is one of the most important concepts in computer organization. It serves as the abstract interface, or "contract," between the hardware and the software. The ISA defines everything a programmer needs to know to write correct machine code, including the set of instructions, registers, memory access methods, and data types, without needing to know the specific details of the hardware implementation.
                     </p>
+                    <div class="mb-8 video-embed rounded-lg aspect-video flex items-center justify-center p-4">
+                        <div class="text-center">
+                            <div class="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4 play-button">
+                                <span class="text-4xl text-white ml-1">&#9658;</span>
+                            </div>
+                            <h4 class="font-semibold text-white">Video: Overview of the MIPS Architecture</h4>
+                            <p class="text-sm text-gray-300">A visual introduction to the key concepts of the MIPS ISA.</p>
+                        </div>
+                    </div>
                     <div class="grid md:grid-cols-2 gap-8">
                         <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
                             <h3 class="text-xl font-semibold mb-3">RISC (Reduced Instruction Set Computer)</h3>
@@ -128,6 +149,9 @@
                                 <li>Emphasis on hardware to perform complex tasks.</li>
                             </ul>
                         </div>
+                    </div>
+                    <div class="mt-8 bg-blue-50 border border-blue-200 p-4 rounded-lg text-center">
+                        <p class="text-blue-800">For a deeper dive into practical differences, see the <a href="csc210-assy-compare.html" class="font-semibold underline hover:text-blue-600">Detailed MIPS vs. x86 Assembly Comparison</a>.</p>
                     </div>
                 </section>
                 
@@ -155,9 +179,44 @@
 
                 <!-- Section 4: Instruction Formatter -->
                 <section id="formats" class="content-section">
-                    <h2 class="text-3xl font-bold mb-4">Interactive Instruction Formatter</h2>
+                    <h2 class="text-3xl font-bold mb-4">MIPS Instruction Formats</h2>
                      <p class="text-lg text-gray-700 leading-relaxed mb-8">
-                        All MIPS instructions are exactly 32 bits long. The meaning of these bits is determined by the instruction's format. Use this tool to see how assembly instructions are encoded into machine code. Select an instruction type, choose an operation and registers, and watch the 32-bit representation build itself in real-time. This hands-on experience is key to understanding the hardware-software connection.
+                        All MIPS instructions are exactly 32 bits long. The meaning of these bits is determined by the instruction's format. There are three main formats, each designed for a different type of operation. Understanding these formats is the key to converting human-readable assembly code into the binary machine code that the processor can execute.
+                    </p>
+                    
+                    <div class="mb-8 p-6 bg-white rounded-lg shadow-sm border border-gray-200 space-y-6">
+                        <div>
+                            <h3 class="text-xl font-semibold mb-2">The Three Formats</h3>
+                            <p class="mb-4">MIPS uses three instruction formats to accommodate different types of commands:</p>
+                            <ul class="list-disc list-inside space-y-2">
+                                <li><strong>R-type (Register):</strong> Used for arithmetic and logical operations that occur between registers (e.g., `add`, `sub`, `and`). All operands are sourced from, and written to, the register file.</li>
+                                <li><strong>I-type (Immediate):</strong> Used when an instruction needs a constant value (an "immediate"), such as adding a number to a register (`addi`). Also used for data transfer instructions like load (`lw`) and store (`sw`), and for conditional branches (`beq`).</li>
+                                <li><strong>J-type (Jump):</strong> Used for unconditional jumps, which change the program counter to a new address.</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-semibold mb-2">Field Definitions</h3>
+                            <p class="mb-4">Each part of the 32-bit instruction is a "field" that tells the CPU something specific:</p>
+                             <dl class="space-y-2">
+                                <dt class="font-semibold">opcode:</dt>
+                                <dd class="ml-4">The primary operation code that tells the CPU the general category of the instruction.</dd>
+                                <dt class="font-semibold">rs, rt:</dt>
+                                <dd class="ml-4">Source (`rs`) and target/source (`rt`) register numbers.</dd>
+                                <dt class="font-semibold">rd:</dt>
+                                <dd class="ml-4">The destination register number where the result is stored.</dd>
+                                <dt class="font-semibold">shamt:</dt>
+                                <dd class="ml-4">Shift amount, used only in shift instructions (we'll treat it as 0).</dd>
+                                <dt class="font-semibold">funct:</dt>
+                                <dd class="ml-4">The function code. This specifies the exact operation for R-type instructions, which all share an opcode of 0.</dd>
+                                <dt class="font-semibold">immediate/address:</dt>
+                                <dd class="ml-4">A 16-bit constant value (for I-type) or a 26-bit address (for J-type).</dd>
+                            </dl>
+                        </div>
+                    </div>
+
+                    <h2 class="text-3xl font-bold mb-4 mt-12">Interactive Instruction Formatter</h2>
+                    <p class="text-lg text-gray-700 leading-relaxed mb-8">
+                        Use this tool to see how assembly instructions are encoded. Select an instruction type, choose an operation and registers, and watch the 32-bit representation build itself in real-time. This hands-on experience is key to understanding the hardware-software connection.
                     </p>
                     
                     <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
@@ -179,10 +238,12 @@
                         <div id="instruction-builder" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
                             <!-- JS will populate this -->
                         </div>
-
-                        <!-- Final Machine Code Output -->
-                        <div>
+                        
+                        <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
                            <h3 class="font-semibold mb-2">Resulting 32-bit Machine Code:</h3>
+                            <p class="text-sm text-gray-600 mb-4">
+                                This is the final 32-bit binary string that the CPU actually reads. Notice how for R-type instructions, the `opcode` field is always `000000`. The CPU knows that when it sees this opcode, it must look at the `funct` field at the end of the instruction to determine the specific operation to perform (like `add` vs `sub`). For I-type and J-type instructions, the `opcode` itself is unique and tells the CPU everything it needs to know about the operation.
+                            </p>
                             <div class="bg-gray-100 p-4 rounded-md font-mono text-center tracking-wider text-lg" id="machine-code-output">
                                 0000 0000 0000 0000 0000 0000 0000 0000
                             </div>
@@ -200,20 +261,27 @@
                         <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
                             <h3 class="text-xl font-semibold mb-4">Primary Tool: MARS Simulator</h3>
                             <p class="mb-4">The MARS (MIPS Assembler and Runtime Simulator) is the software tool we will use for writing, running, and debugging our MIPS assembly programs. Its key features include:</p>
-                            <ul class="list-disc list-inside space-y-2">
+                            <ul class="list-disc list-inside space-y-2 mb-6">
                                 <li>Text editor for writing assembly code.</li>
                                 <li>Assembler to convert MIPS assembly to machine code.</li>
                                 <li>Simulator to execute code step-by-step.</li>
                                 <li>Debugger to view register and memory contents.</li>
                             </ul>
+                            <div class="video-embed rounded-lg aspect-video flex items-center justify-center p-4">
+                               <div class="text-center">
+                                    <div class="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4 play-button">
+                                        <span class="text-4xl text-white ml-1">&#9658;</span>
+                                    </div>
+                                    <h4 class="font-semibold text-white">Video: Getting Started with MARS</h4>
+                                    <p class="text-sm text-gray-300">A walkthrough of installing and using the simulator.</p>
+                                </div>
+                            </div>
                         </div>
                         <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
                             <h3 class="text-xl font-semibold mb-4">Weekly To-Do List</h3>
                             <ul class="space-y-3">
                                 <li class="flex items-start"><span class="mr-2 text-blue-600">&#10003;</span> <strong>Reading:</strong> Review the "MIPS Reference Data" sheet and supplementary materials on RISC/CISC.</li>
-                                <li class="flex items-start"><span class="mr-2 text-blue-600">&#10003;</span> <strong>Videos:</strong> Watch "Overview of the MIPS Architecture" and "Getting Started with the MARS Simulator".</li>
                                 <li class="flex items-start"><span class="mr-2 text-blue-600">&#10003;</span> <strong>Assignment:</strong> Complete the "Instruction Encoding & Decoding" worksheet.</li>
-                                <li class="flex items-start"><span class="mr-2 text-blue-600">&#10003;</span> <strong>Lab:</strong> Install MARS and complete Lab 5, "MARS Environment & Basic Programs."</li>
                             </ul>
                         </div>
                     </div>
@@ -328,6 +396,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const machineCodeOutput = document.getElementById('machine-code-output');
 
     function toBinary(num, bits) {
+        if (num < 0) {
+            return (Math.pow(2, bits) + num).toString(2).padStart(bits, '0');
+        }
         return num.toString(2).padStart(bits, '0');
     }
 
@@ -409,6 +480,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Add event listeners after rendering
         instructionBuilder.querySelectorAll('select, input').forEach(el => {
             el.addEventListener('change', updateMachineCode);
+            el.addEventListener('keyup', updateMachineCode);
         });
 
         updateMachineCode();
@@ -499,3 +571,4 @@ document.addEventListener('DOMContentLoaded', () => {
 
 </body>
 </html>
+
