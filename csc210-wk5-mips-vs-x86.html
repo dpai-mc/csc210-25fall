@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MIPS vs. x86 Assembly Comparison</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Scholarly Neutrals -->
+    <!-- Application Structure Plan: This page is designed as a focused, comparative study guide. The primary structure is a tabbed interface, which was chosen to break down the dense topic of architecture comparison into clear, thematic sections (e.g., Philosophy, Memory Access, Registers). This prevents cognitive overload and allows students to focus on one concept at a time. The structure flows from a high-level philosophical overview to specific, practical code examples, and concludes with a summary table. This progression helps build understanding from the abstract to the concrete. -->
+    <!-- Visualization & Content Choices: 
+        - Report Info: RISC vs CISC Philosophies -> Goal: Compare -> Viz/Presentation: Two-column layout for a direct, high-level comparison. Interaction: None. Justification: A simple, clear textual comparison is most effective for foundational concepts. Method: HTML/Tailwind Flexbox.
+        - Report Info: Specific architectural differences -> Goal: Compare/Organize -> Viz/Presentation: An interactive tabbed interface. Interaction: Clicking tabs reveals different content sections. Justification: Tabs are an excellent way to organize distinct but related categories of information, making the content less intimidating and easier to navigate than a single long page. Method: HTML/Tailwind for structure, JS for tab functionality and ARIA state management.
+        - Report Info: Practical coding differences -> Goal: Compare/Inform -> Viz/Presentation: Side-by-side annotated code blocks. Interaction: Hovering over lines of code can reveal tooltips (not implemented here to maintain clarity, but a potential extension). Justification: Showing the same simple task implemented in both languages makes the theoretical differences tangible and easy to understand. Method: HTML/Tailwind with preformatted text.
+        - Report Info: Summary of differences -> Goal: Organize/Inform -> Viz/Presentation: A clear summary table. Interaction: None. Justification: A table is the most effective way to present a dense summary of comparative data for quick review and study. Method: HTML/Tailwind.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #FDFBF8;
+            color: #383838;
+        }
+        pre, code {
+            font-family: 'Fira Code', monospace;
+        }
+        .tab {
+            transition: all 0.2s ease-in-out;
+            border-bottom: 2px solid transparent;
+        }
+        .tab.active {
+            border-bottom-color: #A58A78;
+            color: #1a1a1a;
+            font-weight: 600;
+        }
+        .tab-panel {
+            display: none;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        .tab-panel.active {
+            display: block;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .skip-link {
+            position: absolute;
+            top: -100px;
+            left: 0;
+            background: #EADDD7;
+            color: #1a1a1a;
+            padding: 0.5rem 1rem;
+            z-index: 100;
+            transition: top 0.3s ease-in-out;
+            border-bottom-right-radius: 0.5rem;
+        }
+        .skip-link:focus {
+            top: 0;
+        }
+    </style>
+</head>
+<body class="antialiased">
+    <a href="#main-content" class="skip-link font-semibold">Skip to main content</a>
+    <div class="container mx-auto p-4 md:p-8 max-w-5xl">
+        <header class="mb-8">
+            <a href="mips_interactive_guide.html" class="text-blue-600 hover:underline mb-2 block">&larr; Back to Week 5 Guide</a>
+            <h1 class="text-4xl font-bold text-gray-800">MIPS vs. x86 Assembly</h1>
+            <p class="text-xl text-gray-600 mt-2">A practical comparison of RISC and CISC architectures.</p>
+        </header>
+
+        <main id="main-content">
+            <!-- Section 1: Philosophy -->
+            <section class="mb-12">
+                <h2 class="text-3xl font-bold mb-4">Architectural Philosophy</h2>
+                <div class="grid md:grid-cols-2 gap-8">
+                    <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+                        <h3 class="text-2xl font-semibold mb-3">MIPS: The RISC Approach</h3>
+                        <p>MIPS exemplifies the <strong>Reduced Instruction Set Computer (RISC)</strong> philosophy. The core idea is to make the hardware simple by using a small, highly-optimized set of instructions. Simplicity in hardware leads to faster execution for each instruction and a design that is easier to pipeline. Complex tasks are not handled by complex instructions, but by combining multiple simple instructions in software.</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+                        <h3 class="text-2xl font-semibold mb-3">x86: The CISC Approach</h3>
+                        <p>Intel's x86 architecture is the classic example of a <strong>Complex Instruction Set Computer (CISC)</strong>. The goal is to make the software simpler by providing powerful, high-level instructions in hardware. A single x86 instruction can perform a multi-step operation, such as loading a value from memory, performing an arithmetic operation, and storing the result back to memory. This reduces the number of instructions needed for a program.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 2: Core Differences (Tabs) -->
+            <section class="mb-12">
+                <h2 class="text-3xl font-bold mb-4">Core Differences</h2>
+                <div class="border-b border-gray-300">
+                    <nav id="tab-nav" class="flex space-x-8" aria-label="Architectural Differences">
+                        <button role="tab" aria-selected="true" id="tab-instructions" aria-controls="panel-instructions" class="tab active py-2 px-1 text-lg">Instructions</button>
+                        <button role="tab" aria-selected="false" id="tab-memory" aria-controls="panel-memory" class="tab py-2 px-1 text-lg">Memory Access</button>
+                        <button role="tab" aria-selected="false" id="tab-registers" aria-controls="panel-registers" class="tab py-2 px-1 text-lg">Registers</button>
+                    </nav>
+                </div>
+                <div id="tab-panels" class="mt-6">
+                    <!-- Instruction Panel -->
+                    <div role="tabpanel" id="panel-instructions" aria-labelledby="tab-instructions" class="tab-panel active">
+                        <h3 class="text-2xl font-semibold mb-3">Instruction Set</h3>
+                        <p class="mb-4"><strong>MIPS</strong> uses a fixed-length (32-bit) instruction format. This makes decoding simple and fast for the hardware. There are very few instruction formats (R, I, J), and the layout of fields like the opcode is consistent.</p>
+                        <p><strong>x86</strong> instructions are variable-length, ranging from 1 to 15 bytes. This allows for a massive number of instructions and addressing modes but makes decoding a complex, multi-step process for the hardware. Modern x86 CPUs use an extra decoding step to translate CISC instructions into simpler, internal RISC-like micro-operations.</p>
+                    </div>
+                    <!-- Memory Panel -->
+                    <div role="tabpanel" id="panel-memory" aria-labelledby="tab-memory" class="tab-panel">
+                        <h3 class="text-2xl font-semibold mb-3">Memory Access</h3>
+                        <p class="mb-4"><strong>MIPS</strong> is a strict <strong>load/store architecture</strong>. This means that data must be moved from memory into a register before it can be used in an arithmetic or logical operation. The only instructions that access memory are explicit `load` (e.g., `lw`) and `store` (e.g., `sw`) commands.</p>
+                        <p><strong>x86</strong> allows for direct <strong>memory-to-register</strong> and even <strong>memory-to-memory</strong> operations. For example, you can add a number from a memory location directly to a register without a separate load instruction. E.g., `ADD EAX, [mem_location]`.</p>
+                    </div>
+                    <!-- Registers Panel -->
+                    <div role="tabpanel" id="panel-registers" aria-labelledby="tab-registers" class="tab-panel">
+                        <h3 class="text-2xl font-semibold mb-3">Register Set</h3>
+                        <p class="mb-4"><strong>MIPS</strong> provides 32 general-purpose registers (GPRs). They are largely interchangeable, though conventions dictate their use (e.g., `$a0` for arguments, `$s0` for saved values). This large, uniform register set is a compiler's dream, making register allocation easier.</p>
+                        <p><strong>x86</strong> has fewer GPRs (e.g., 8 in classic 32-bit mode), and many of them have specialized or historical purposes (e.g., `EAX` as the primary accumulator, `ECX` as a counter). While modern x86-64 has more registers, the legacy of specialized roles remains. This can make optimal code generation more complex.</p>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Section 3: Code Examples -->
+            <section class="mb-12">
+                <h2 class="text-3xl font-bold mb-4">Code Example: Summing Two Numbers</h2>
+                <p class="mb-6">Let's compare a simple task: loading two numbers from memory, adding them, and storing the result back to memory. This highlights the load/store nature of MIPS versus the memory-operand model of x86.</p>
+                <div class="grid md:grid-cols-2 gap-8">
+                    <div class="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
+                        <h3 class="text-xl font-semibold mb-3 text-center">MIPS (RISC)</h3>
+                        <pre class="bg-gray-100 p-4 rounded-md text-sm"><code class="language-assembly"># Assume $s0 holds the base address of our data
+# varA is at offset 0, varB is at 4, sum is at 8
+
+lw   $t0, 0($s0)   # Load varA into temporary reg $t0
+lw   $t1, 4($s0)   # Load varB into temporary reg $t1
+add  $t2, $t0, $t1 # Add the two values, result in $t2
+sw   $t2, 8($s0)   # Store the result into sum's location
+</code></pre>
+                        <p class="mt-4 text-sm">Notice the four distinct steps: two loads, one operation, one store. All arithmetic happens exclusively on registers.</p>
+                    </div>
+                     <div class="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
+                        <h3 class="text-xl font-semibold mb-3 text-center">x86 (CISC)</h3>
+                        <pre class="bg-gray-100 p-4 rounded-md text-sm"><code class="language-assembly">; Assume EBX holds the base address of our data
+; varA is at [ebx], varB is at [ebx+4], sum is at [ebx+8]
+
+mov  eax, [ebx]     ; Load varA into accumulator eax
+add  eax, [ebx+4]   ; Add varB from memory directly to eax
+mov  [ebx+8], eax   ; Store the result into sum's location
+</code></pre>
+                         <p class="mt-4 text-sm">Only three steps are needed. The `add` instruction directly reads from memory, combining a load and an operation into one command.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 4: Summary -->
+            <section>
+                 <h2 class="text-3xl font-bold mb-4">Summary of Differences</h2>
+                 <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+                     <table class="w-full text-left">
+                         <thead class="bg-gray-50">
+                             <tr>
+                                 <th class="p-4 font-semibold">Feature</th>
+                                 <th class="p-4 font-semibold">MIPS (RISC)</th>
+                                 <th class="p-4 font-semibold">x86 (CISC)</th>
+                             </tr>
+                         </thead>
+                         <tbody class="divide-y divide-gray-200">
+                             <tr>
+                                 <td class="p-4 font-semibold">Instruction Length</td>
+                                 <td class="p-4">Fixed (32 bits)</td>
+                                 <td class="p-4">Variable (1-15 bytes)</td>
+                             </tr>
+                              <tr>
+                                 <td class="p-4 font-semibold">Memory Access</td>
+                                 <td class="p-4">Load/Store only</td>
+                                 <td class="p-4">Allows direct memory operands</td>
+                             </tr>
+                             <tr>
+                                 <td class="p-4 font-semibold">Registers</td>
+                                 <td class="p-4">Many general-purpose (32)</td>
+                                 <td class="p-4">Fewer, more specialized registers</td>
+                             </tr>
+                             <tr>
+                                 <td class="p-4 font-semibold">Complexity Focus</td>
+                                 <td class="p-4">Shifted to the compiler/software</td>
+                                 <td class="p-4">Embedded in the hardware</td>
+                             </tr>
+                         </tbody>
+                     </table>
+                 </div>
+            </section>
+        </main>
+    </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const tabs = document.querySelectorAll('[role="tab"]');
+    const tabPanels = document.querySelectorAll('[role="tabpanel"]');
+
+    tabs.forEach(tab => {
+        tab.addEventListener('click', (e) => {
+            e.preventDefault();
+            
+            // Deactivate all tabs and panels
+            tabs.forEach(t => {
+                t.setAttribute('aria-selected', 'false');
+                t.classList.remove('active');
+            });
+            tabPanels.forEach(p => {
+                p.classList.remove('active');
+            });
+
+            // Activate the clicked tab and its corresponding panel
+            const targetTab = e.currentTarget;
+            const targetPanelId = targetTab.getAttribute('aria-controls');
+            const targetPanel = document.getElementById(targetPanelId);
+
+            targetTab.setAttribute('aria-selected', 'true');
+            targetTab.classList.add('active');
+            
+            if (targetPanel) {
+                targetPanel.classList.add('active');
+            }
+        });
+    });
+});
+</script>
+
+</body>
+</html>
