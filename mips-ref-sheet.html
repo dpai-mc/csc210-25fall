@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MIPS Reference Data Sheet</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Scholarly Neutrals -->
+    <!-- Application Structure Plan: This application is structured as an interactive, multi-tabbed reference sheet. The core design uses a tab system to logically separate the different categories of MIPS data: Registers, Instruction types (R, I, J), and Syscall codes. This segmented approach was chosen to prevent overwhelming the user with a single, massive table. An interactive search bar is included for the instruction tabs to allow students to quickly filter and find specific commands, which is a primary task when using a reference sheet. This prioritizes quick information retrieval over linear content consumption. -->
+    <!-- Visualization & Content Choices: 
+        - Report Info: All MIPS data -> Goal: Organize/Inform -> Viz/Presentation: A multi-tabbed interface with searchable tables. Interaction: Clicking tabs switches content panels; typing in the search box filters the instruction tables in real-time. Justification: This structure is ideal for a reference document. Tabs categorize the data logically, and the search functionality provides immediate access to specific information, dramatically improving usability over a static document. Method: HTML/Tailwind for structure, JS for tab and search functionality.
+        - Report Info: Register Table, Instruction Tables, Syscall Table -> Goal: Inform -> Viz/Presentation: Clearly structured HTML tables. Interaction: Table rows are highlighted on hover to improve readability. The instruction tables are dynamically filtered by the search JS. Justification: Tables are the standard and most effective way to present this type of structured reference data. Adding hover effects and filtering makes them easier to use. Method: HTML/Tailwind/JS.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #FDFBF8;
+            color: #383838;
+        }
+        pre, code {
+            font-family: 'Fira Code', monospace;
+        }
+        .tab {
+            transition: all 0.2s ease-in-out;
+            border-bottom: 2px solid transparent;
+        }
+        .tab.active {
+            border-bottom-color: #A58A78;
+            color: #1a1a1a;
+            font-weight: 600;
+        }
+        .tab-panel {
+            display: none;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        .tab-panel.active {
+            display: block;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .skip-link {
+            position: absolute;
+            top: -100px;
+            left: 0;
+            background: #EADDD7;
+            color: #1a1a1a;
+            padding: 0.5rem 1rem;
+            z-index: 100;
+            transition: top 0.3s ease-in-out;
+            border-bottom-right-radius: 0.5rem;
+        }
+        .skip-link:focus {
+            top: 0;
+        }
+        .data-table tr:hover {
+            background-color: #F0EBE8;
+        }
+        @media print {
+            body {
+                background-color: #ffffff;
+                color: #000000;
+            }
+            header, #tab-nav, input[type="search"], .skip-link, #save-pdf-btn {
+                display: none;
+            }
+            main {
+                padding: 0 !important;
+                margin: 0 !important;
+            }
+            .container {
+                max-width: 100% !important;
+                padding: 0 !important;
+            }
+            .tab-panel {
+                display: block !important;
+                animation: none !important;
+                margin-bottom: 2rem;
+            }
+            .bg-white, .data-table tr:hover {
+                box-shadow: none !important;
+                border: 1px solid #ccc !important;
+                background-color: #ffffff !important;
+            }
+            table {
+                page-break-inside: auto;
+            }
+            tr {
+                page-break-inside: avoid;
+                page-break-after: auto;
+            }
+            thead {
+                display: table-header-group;
+            }
+            caption {
+                padding: 0.5rem 0;
+            }
+        }
+    </style>
+</head>
+<body class="antialiased">
+    <a href="#main-content" class="skip-link font-semibold">Skip to main content</a>
+    <div class="container mx-auto p-4 md:p-8 max-w-6xl">
+        <header class="mb-8">
+            <a href="mips_interactive_guide.html" class="text-blue-600 hover:underline mb-2 block">&larr; Back to Week 5 Guide</a>
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center">
+                <div>
+                    <h1 class="text-4xl font-bold text-gray-800">MIPS Reference Data</h1>
+                    <p class="text-xl text-gray-600 mt-2">A quick reference for registers, instructions, and system calls.</p>
+                </div>
+                <button id="save-pdf-btn" class="mt-4 md:mt-0 bg-[#A58A78] text-white font-bold py-2 px-4 rounded-lg hover:bg-[#8d7363] transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#A58A78]">
+                    Save as PDF
+                </button>
+            </div>
+        </header>
+
+        <main id="main-content">
+            <div class="border-b border-gray-300">
+                <nav id="tab-nav" class="flex flex-wrap -mb-px" aria-label="Reference Sections">
+                    <button role="tab" aria-selected="true" id="tab-registers" aria-controls="panel-registers" class="tab active py-3 px-4 text-lg">Registers</button>
+                    <button role="tab" aria-selected="false" id="tab-rtype" aria-controls="panel-rtype" class="tab py-3 px-4 text-lg">R-Type</button>
+                    <button role="tab" aria-selected="false" id="tab-itype" aria-controls="panel-itype" class="tab py-3 px-4 text-lg">I-Type</button>
+                    <button role="tab" aria-selected="false" id="tab-jtype" aria-controls="panel-jtype" class="tab py-3 px-4 text-lg">J-Type</button>
+                    <button role="tab" aria-selected="false" id="tab-syscall" aria-controls="panel-syscall" class="tab py-3 px-4 text-lg">Syscalls</button>
+                </nav>
+            </div>
+
+            <div id="tab-panels" class="mt-6">
+                <!-- Registers Panel -->
+                <div role="tabpanel" id="panel-registers" aria-labelledby="tab-registers" class="tab-panel active">
+                     <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-x-auto">
+                         <table class="w-full text-left data-table">
+                             <caption class="text-2xl font-bold p-4 text-left">MIPS32 Register File</caption>
+                             <thead class="bg-gray-50">
+                                 <tr>
+                                     <th class="p-4 font-semibold">Name</th>
+                                     <th class="p-4 font-semibold">Number</th>
+                                     <th class="p-4 font-semibold">Usage Convention</th>
+                                 </tr>
+                             </thead>
+                             <tbody id="registers-table-body" class="divide-y divide-gray-200">
+                                 <!-- JS will populate this -->
+                             </tbody>
+                         </table>
+                     </div>
+                </div>
+
+                <!-- R-Type Panel -->
+                <div role="tabpanel" id="panel-rtype" aria-labelledby="tab-rtype" class="tab-panel">
+                    <input type="search" id="rtype-search" placeholder="Search R-Type instructions..." class="w-full p-2 mb-4 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
+                    <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-x-auto">
+                        <table class="w-full text-left data-table">
+                            <caption class="text-2xl font-bold p-4 text-left">Common R-Type Instructions (opcode=0)</caption>
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="p-4 font-semibold">Mnemonic</th>
+                                    <th class="p-4 font-semibold">Syntax</th>
+                                    <th class="p-4 font-semibold">Funct</th>
+                                    <th class="p-4 font-semibold">Description</th>
+                                </tr>
+                            </thead>
+                            <tbody id="rtype-table-body" class="divide-y divide-gray-200">
+                                <!-- JS will populate this -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- I-Type Panel -->
+                <div role="tabpanel" id="panel-itype" aria-labelledby="tab-itype" class="tab-panel">
+                    <input type="search" id="itype-search" placeholder="Search I-Type instructions..." class="w-full p-2 mb-4 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
+                     <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-x-auto">
+                        <table class="w-full text-left data-table">
+                             <caption class="text-2xl font-bold p-4 text-left">Common I-Type Instructions</caption>
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="p-4 font-semibold">Mnemonic</th>
+                                    <th class="p-4 font-semibold">Syntax</th>
+                                    <th class="p-4 font-semibold">Opcode</th>
+                                    <th class="p-4 font-semibold">Description</th>
+                                </tr>
+                            </thead>
+                            <tbody id="itype-table-body" class="divide-y divide-gray-200">
+                                <!-- JS will populate this -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- J-Type Panel -->
+                 <div role="tabpanel" id="panel-jtype" aria-labelledby="tab-jtype" class="tab-panel">
+                     <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-x-auto">
+                        <table class="w-full text-left data-table">
+                            <caption class="text-2xl font-bold p-4 text-left">Common J-Type Instructions</caption>
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="p-4 font-semibold">Mnemonic</th>
+                                    <th class="p-4 font-semibold">Syntax</th>
+                                    <th class="p-4 font-semibold">Opcode</th>
+                                    <th class="p-4 font-semibold">Description</th>
+                                </tr>
+                            </thead>
+                            <tbody id="jtype-table-body" class="divide-y divide-gray-200">
+                                <!-- JS will populate this -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Syscall Panel -->
+                 <div role="tabpanel" id="panel-syscall" aria-labelledby="tab-syscall" class="tab-panel">
+                     <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-x-auto">
+                        <table class="w-full text-left data-table">
+                             <caption class="text-2xl font-bold p-4 text-left">Common MARS System Call Codes</caption>
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="p-4 font-semibold">Service</th>
+                                    <th class="p-4 font-semibold">Code ($v0)</th>
+                                    <th class="p-4 font-semibold">Arguments / Return Value</th>
+                                </tr>
+                            </thead>
+                            <tbody id="syscall-table-body" class="divide-y divide-gray-200">
+                                <!-- JS will populate this -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const referenceData = {
+        registers: [
+            { name: '$zero', number: 0, usage: 'Constant value 0' },
+            { name: '$at', number: 1, usage: 'Reserved for assembler' },
+            { name: '$v0-$v1', number: '2-3', usage: 'Return values from functions, expression eval' },
+            { name: '$a0-$a3', number: '4-7', usage: 'Arguments to functions' },
+            { name: '$t0-$t7', number: '8-15', usage: 'Temporary registers (caller-saved)' },
+            { name: '$s0-$s7', number: '16-23', usage: 'Saved registers (callee-saved)' },
+            { name: '$t8-$t9', number: '24-25', usage: 'More temporary registers' },
+            { name: '$k0-$k1', number: '26-27', usage: 'Reserved for OS kernel' },
+            { name: '$gp', number: 28, usage: 'Global pointer' },
+            { name: '$sp', number: 29, usage: 'Stack pointer' },
+            { name: '$fp', number: 30, usage: 'Frame pointer' },
+            { name: '$ra', number: 31, usage: 'Return address' }
+        ],
+        r_type: [
+            { mnemonic: 'add', syntax: 'add $rd, $rs, $rt', funct: '100000', desc: 'Add $rs and $rt, store in $rd' },
+            { mnemonic: 'sub', syntax: 'sub $rd, $rs, $rt', funct: '100010', desc: 'Subtract $rt from $rs, store in $rd' },
+            { mnemonic: 'and', syntax: 'and $rd, $rs, $rt', funct: '100100', desc: 'Bitwise AND $rs and $rt, store in $rd' },
+            { mnemonic: 'or', syntax: 'or $rd, $rs, $rt', funct: '100101', desc: 'Bitwise OR $rs and $rt, store in $rd' },
+            { mnemonic: 'xor', syntax: 'xor $rd, $rs, $rt', funct: '100110', desc: 'Bitwise XOR $rs and $rt, store in $rd' },
+            { mnemonic: 'slt', syntax: 'slt $rd, $rs, $rt', funct: '101010', desc: 'Set $rd to 1 if $rs < $rt, else 0' },
+            { mnemonic: 'sll', syntax: 'sll $rd, $rt, shamt', funct: '000000', desc: 'Shift $rt left by shamt bits, store in $rd' },
+            { mnemonic: 'srl', syntax: 'srl $rd, $rt, shamt', funct: '000010', desc: 'Shift $rt right by shamt bits, store in $rd' },
+            { mnemonic: 'jr', syntax: 'jr $rs', funct: '001000', desc: 'Jump to the address in $rs' }
+        ],
+        i_type: [
+            { mnemonic: 'addi', syntax: 'addi $rt, $rs, imm', opcode: '001000', desc: 'Add $rs and sign-extended immediate, store in $rt' },
+            { mnemonic: 'lw', syntax: 'lw $rt, imm($rs)', opcode: '100011', desc: 'Load word from memory at address $rs + imm into $rt' },
+            { mnemonic: 'sw', syntax: 'sw $rt, imm($rs)', opcode: '101011', desc: 'Store word from $rt into memory at address $rs + imm' },
+            { mnemonic: 'beq', syntax: 'beq $rs, $rt, label', opcode: '000100', desc: 'Branch to label if $rs equals $rt' },
+            { mnemonic: 'bne', syntax: 'bne $rs, $rt, label', opcode: '000101', desc: 'Branch to label if $rs does not equal $rt' },
+            { mnemonic: 'andi', syntax: 'andi $rt, $rs, imm', opcode: '001100', desc: 'Bitwise AND $rs and zero-extended immediate, store in $rt' },
+            { mnemonic: 'ori', syntax: 'ori $rt, $rs, imm', opcode: '001101', desc: 'Bitwise OR $rs and zero-extended immediate, store in $rt' }
+        ],
+        j_type: [
+            { mnemonic: 'j', syntax: 'j label', opcode: '000010', desc: 'Unconditional jump to label' },
+            { mnemonic: 'jal', syntax: 'jal label', opcode: '000011', desc: 'Jump and link: Jump to label, store return address in $ra' }
+        ],
+        syscalls: [
+            { service: 'print integer', code: 1, args: '$a0 = integer to print' },
+            { service: 'print string', code: 4, args: '$a0 = address of null-terminated string' },
+            { service: 'read integer', code: 5, args: 'Returns integer in $v0' },
+            { service: 'read string', code: 8, args: '$a0 = buffer address, $a1 = buffer length' },
+            { service: 'sbrk (allocate memory)', code: 9, args: '$a0 = bytes to allocate, returns address in $v0' },
+            { service: 'exit', code: 10, args: 'Terminates the program' }
+        ]
+    };
+
+    function populateTable(tableId, data, renderFn) {
+        const tableBody = document.getElementById(tableId);
+        if (tableBody) {
+            tableBody.innerHTML = data.map(renderFn).join('');
+        }
+    }
+
+    populateTable('registers-table-body', referenceData.registers, item => `
+        <tr>
+            <td class="p-4 font-mono">${item.name}</td>
+            <td class="p-4">${item.number}</td>
+            <td class="p-4">${item.usage}</td>
+        </tr>
+    `);
+    
+    populateTable('rtype-table-body', referenceData.r_type, item => `
+        <tr>
+            <td class="p-4 font-mono font-semibold">${item.mnemonic}</td>
+            <td class="p-4 font-mono">${item.syntax}</td>
+            <td class="p-4 font-mono">${item.funct}</td>
+            <td class="p-4">${item.desc}</td>
+        </tr>
+    `);
+
+    populateTable('itype-table-body', referenceData.i_type, item => `
+        <tr>
+            <td class="p-4 font-mono font-semibold">${item.mnemonic}</td>
+            <td class="p-4 font-mono">${item.syntax}</td>
+            <td class="p-4 font-mono">${item.opcode}</td>
+            <td class="p-4">${item.desc}</td>
+        </tr>
+    `);
+
+    populateTable('jtype-table-body', referenceData.j_type, item => `
+        <tr>
+            <td class="p-4 font-mono font-semibold">${item.mnemonic}</td>
+            <td class="p-4 font-mono">${item.syntax}</td>
+            <td class="p-4 font-mono">${item.opcode}</td>
+            <td class="p-4">${item.desc}</td>
+        </tr>
+    `);
+
+    populateTable('syscall-table-body', referenceData.syscalls, item => `
+        <tr>
+            <td class="p-4 font-semibold">${item.service}</td>
+            <td class="p-4 text-center">${item.code}</td>
+            <td class="p-4">${item.args}</td>
+        </tr>
+    `);
+
+    // Tab Logic
+    const tabs = document.querySelectorAll('[role="tab"]');
+    const tabPanels = document.querySelectorAll('[role="tabpanel"]');
+
+    tabs.forEach(tab => {
+        tab.addEventListener('click', e => {
+            e.preventDefault();
+            tabs.forEach(t => t.setAttribute('aria-selected', 'false') || t.classList.remove('active'));
+            tabPanels.forEach(p => p.classList.remove('active'));
+            
+            const targetTab = e.currentTarget;
+            targetTab.setAttribute('aria-selected', 'true');
+            targetTab.classList.add('active');
+            document.getElementById(targetTab.getAttribute('aria-controls')).classList.add('active');
+        });
+    });
+    
+    // Search/Filter Logic
+    function setupFilter(inputId, tableBodyId) {
+        const searchInput = document.getElementById(inputId);
+        const tableBody = document.getElementById(tableBodyId);
+        if (!searchInput || !tableBody) return;
+        
+        const tableRows = tableBody.getElementsByTagName('tr');
+
+        searchInput.addEventListener('keyup', () => {
+            const searchTerm = searchInput.value.toLowerCase();
+            for (let i = 0; i < tableRows.length; i++) {
+                const rowText = tableRows[i].textContent || tableRows[i].innerText;
+                if (rowText.toLowerCase().indexOf(searchTerm) > -1) {
+                    tableRows[i].style.display = "";
+                } else {
+                    tableRows[i].style.display = "none";
+                }
+            }
+        });
+    }
+
+    setupFilter('rtype-search', 'rtype-table-body');
+    setupFilter('itype-search', 'itype-table-body');
+    
+    // PDF Button Logic
+    const savePdfBtn = document.getElementById('save-pdf-btn');
+    if (savePdfBtn) {
+        savePdfBtn.addEventListener('click', () => {
+            window.print();
+        });
+    }
+});
+</script>
+
+</body>
+</html>
+
