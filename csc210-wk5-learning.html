@@ -51,7 +51,7 @@
             text-align: center;
             font-family: monospace;
             font-size: 0.875rem;
-            transition: background-color 0.3s;
+            transition: background-color: 0.3s;
         }
         .field-label {
             font-size: 0.75rem;
@@ -271,7 +271,7 @@
                     <p class="text-lg text-gray-700 leading-relaxed mb-8">
                         To succeed this week, you'll need to engage with the reading material, watch the supplementary videos, and get hands-on with the MARS simulator. This checklist outlines the required activities.
                     </p>
-                    <div class="grid md:grid-cols-2 gap-8">
+                    <div class="space-y-8">
                         <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
                             <h3 class="text-xl font-semibold mb-4">Primary Tool: MARS Simulator</h3>
                             <p class="mb-4">The MARS (MIPS Assembler and Runtime Simulator) is the software tool we will use for writing, running, and debugging our MIPS assembly programs. Its key features include:</p>
@@ -293,10 +293,16 @@
                         </div>
                         <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
                             <h3 class="text-xl font-semibold mb-4">Weekly To-Do List</h3>
-                            <ul class="space-y-3">
-                                <li class="flex items-start"><span class="mr-2 text-blue-600" aria-hidden="true">&#10003;</span> <strong>Reading:</strong> Review the <a href="mips-ref-sheet.html" class="font-semibold underline hover:text-blue-600">"MIPS Reference Data" sheet</a> and supplementary materials on RISC/CISC.</li>
-                                <li class="flex items-start"><span class="mr-2 text-blue-600" aria-hidden="true">&#10003;</span> <strong>Assignment:</strong> Complete the "Instruction Encoding & Decoding" worksheet.</li>
-                            </ul>
+                            <div class="space-y-4">
+                                <div>
+                                    <h4 class="text-md font-semibold text-gray-800">Reading</h4>
+                                    <p class="mt-1 text-gray-700 pl-4">Review the <a href="mips-ref-sheet.html" class="font-semibold underline hover:text-blue-600">"MIPS Reference Data" sheet</a> and supplementary materials on RISC/CISC.</p>
+                                </div>
+                                <div>
+                                    <h4 class="text-md font-semibold text-gray-800">Comprehension Check</h4>
+                                    <p class="mt-1 text-gray-700 pl-4">Complete the <a href="csc210-wk5-comprehension-check.html" class="font-semibold underline hover:text-blue-600">"Instruction Encoding & Decoding" worksheet</a>.</p>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </section>
