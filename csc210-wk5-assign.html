@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Graded Assignment: MIPS Instruction Encoding & Decoding</title>
+    
+    <!-- 1. CDN Links -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    
+    <!-- 2. Meta Comments (Required) -->
+    <!-- Chosen Palette: Scholarly Neutrals -->
+    <!-- Application Structure Plan: Single-column graded assignment sheet. The structure guides the student through the assignment requirements, provides input fields for their answers, and includes a "Save as PDF" function for submission. The layout is optimized for both on-screen completion and clean PDF output. Max width is constrained to 800px for readability. -->
+    <!-- Visualization & Content Choices: The page uses standard HTML form inputs for students to enter their answers. Unlike the comprehension check, there is no answer-checking logic. A button triggers the browser's print dialog to facilitate PDF submission. This method was chosen to create a clear, unassisted assessment tool. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    
+    <!-- 3. Embedded CSS -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #FDFBF8;
+            color: #383838;
+        }
+        main {
+            max-width: 800px; /* Tailwind: max-w-3xl */
+        }
+        h1, h2, h3 {
+            font-weight: 700;
+        }
+        code, .mono {
+            font-family: 'Fira Code', monospace;
+        }
+        .worksheet-input {
+            font-family: 'Fira Code', monospace;
+            border: 1px solid #D1C7BF;
+            background-color: #FFFFFF;
+            padding: 0.5rem;
+            border-radius: 0.375rem;
+            text-align: center;
+        }
+        .worksheet-input:focus {
+            outline: none;
+            border-color: #4A90E2;
+            box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.5);
+        }
+        .submit-btn {
+            background-color: #4A90E2;
+            color: white;
+            transition: background-color 0.2s ease-in-out;
+        }
+        .submit-btn:hover {
+            background-color: #357ABD;
+        }
+        .skip-link {
+            position: absolute;
+            top: -100px;
+            left: 0;
+            background: #EADDD7;
+            color: #1a1a1a;
+            padding: 0.5rem 1rem;
+            z-index: 100;
+            transition: top 0.3s ease-in-out;
+            border-bottom-right-radius: 0.5rem;
+        }
+        .skip-link:focus {
+            top: 0;
+        }
+
+        @media print {
+            body {
+                background-color: #FFFFFF;
+            }
+            header, #submission, .skip-link, #rubric {
+                display: none;
+            }
+            main {
+                max-width: 100%;
+                padding: 0;
+                border: none;
+                box-shadow: none;
+            }
+            .worksheet-input {
+                border: 1px solid #AAAAAA;
+            }
+            .bg-white {
+                box-shadow: none;
+                border: 1px solid #DDDDDD;
+            }
+        }
+    </style>
+</head>
+<body class="antialiased">
+    <a href="#main-content" class="skip-link font-semibold">Skip to main content</a>
+    <main id="main-content" class="mx-auto p-4 md:p-8">
+        <header class="mb-8 border-b pb-4 border-[#EADDD7]">
+            <h1 class="text-3xl md:text-4xl">Graded Assignment: Instruction Encoding & Decoding</h1>
+            <p class="text-lg text-gray-600 mt-2">CSC210: Computer Organization & Architecture</p>
+        </header>
+
+        <section id="student-info" class="mb-10 bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+             <h2 class="text-2xl mb-4">Student Information</h2>
+             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label for="student-name" class="block text-sm font-medium text-gray-700">Full Name</label>
+                    <input type="text" id="student-name" class="worksheet-input w-full mt-1 text-left px-3">
+                </div>
+                <div>
+                    <label for="submission-date" class="block text-sm font-medium text-gray-700">Date</label>
+                    <input type="date" id="submission-date" class="worksheet-input w-full mt-1 text-left px-3">
+                </div>
+             </div>
+        </section>
+
+        <section id="instructions" class="mb-10">
+            <h2 class="text-2xl mb-3">Instructions</h2>
+            <p class="text-base leading-relaxed text-gray-700 mb-4">
+                Complete all problems in the worksheet below. For each problem, fill in the provided text boxes with your answers. Use the <a href="https://mendocino.instructure.com/courses/19705/pages/mips-reference-sheet" class="font-semibold underline hover:text-blue-600" target="_blank">MIPS Reference Sheet</a> for register numbers and opcodes/functs.
+            </p>
+            <p class="text-base leading-relaxed text-gray-700">
+                Once you have completed all questions, click the "Save as PDF for Submission" button at the bottom of the page to generate a PDF file to submit to the course learning management system.
+            </p>
+        </section>
+
+        <section id="worksheet" class="mb-10">
+            <h2 class="text-2xl mb-6">Worksheet</h2>
+            
+            <!-- Part 1: Encoding -->
+            <div id="part1">
+                <h3 class="text-xl font-semibold mb-4">Part 1: Encoding (Assembly to Machine Code)</h3>
+                
+                <!-- Problem 1.1 -->
+                <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200 mb-6">
+                    <p class="mb-4"><strong>Problem 1.1 (R-type):</strong> <code>sub $s0, $t8, $t9</code></p>
+                    <div class="grid grid-cols-6 gap-2 text-center text-sm">
+                       <div>opcode<br><input type="text" maxlength="6" class="worksheet-input w-full mt-1"></div>
+                       <div>rs<br><input type="text" maxlength="5" class="worksheet-input w-full mt-1"></div>
+                       <div>rt<br><input type="text" maxlength="5" class="worksheet-input w-full mt-1"></div>
+                       <div>rd<br><input type="text" maxlength="5" class="worksheet-input w-full mt-1"></div>
+                       <div>shamt<br><input type="text" maxlength="5" class="worksheet-input w-full mt-1"></div>
+                       <div>funct<br><input type="text" maxlength="6" class="worksheet-input w-full mt-1"></div>
+                    </div>
+                </div>
+
+                <!-- Problem 1.2 -->
+                <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200 mb-6">
+                    <p class="mb-4"><strong>Problem 1.2 (I-type, memory):</strong> <code>lw $t1, 64($sp)</code></p>
+                    <div class="grid grid-cols-4 gap-2 text-center text-sm">
+                       <div class="col-span-1">opcode<br><input type="text" maxlength="6" class="worksheet-input w-full mt-1"></div>
+                       <div class="col-span-1">rs<br><input type="text" maxlength="5" class="worksheet-input w-full mt-1"></div>
+                       <div class="col-span-1">rt<br><input type="text" maxlength="5" class="worksheet-input w-full mt-1"></div>
+                       <div class="col-span-1">immediate<br><input type="text" maxlength="16" class="worksheet-input w-full mt-1"></div>
+                    </div>
+                </div>
+
+                <!-- Problem 1.3 -->
+                <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200 mb-6">
+                    <p class="mb-4"><strong>Problem 1.3 (I-type, immediate):</strong> <code>addi $v0, $a1, -50</code></p>
+                    <div class="grid grid-cols-4 gap-2 text-center text-sm">
+                       <div class="col-span-1">opcode<br><input type="text" maxlength="6" class="worksheet-input w-full mt-1"></div>
+                       <div class="col-span-1">rs<br><input type="text" maxlength="5" class="worksheet-input w-full mt-1"></div>
+                       <div class="col-span-1">rt<br><input type="text" maxlength="5" class="worksheet-input w-full mt-1"></div>
+                       <div class="col-span-1">immediate<br><input type="text" maxlength="16" class="worksheet-input w-full mt-1"></div>
+                    </div>
+                </div>
+                
+                <!-- Problem 1.4 -->
+                <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200 mb-6">
+                    <p class="mb-4"><strong>Problem 1.4 (J-type):</strong> <code>j 8192</code></p>
+                    <div class="grid grid-cols-6 gap-2 text-center text-sm">
+                       <div class="col-span-1">opcode<br><input type="text" maxlength="6" class="worksheet-input w-full mt-1"></div>
+                       <div class="col-span-5">address<br><input type="text" maxlength="26" class="worksheet-input w-full mt-1"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Part 2: Decoding -->
+            <div id="part2" class="mt-12">
+                <h3 class="text-xl font-semibold mb-4">Part 2: Decoding (Machine Code to Assembly)</h3>
+                
+                <!-- Problem 2.1 -->
+                <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200 mb-6">
+                    <p class="mb-4 mono"><strong>Problem 2.1 (R-type):</strong> <code>000000 01001 01010 11000 00000 100101</code></p>
+                    <input type="text" placeholder="e.g., add $s0, $s1, $s2" class="worksheet-input w-full text-left px-3">
+                </div>
+                
+                <!-- Problem 2.2 -->
+                <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200 mb-6">
+                    <p class="mb-4 mono"><strong>Problem 2.2 (I-type):</strong> <code>101011 11101 01000 0000000000010000</code></p>
+                    <input type="text" placeholder="e.g., lw $t0, 32($s1)" class="worksheet-input w-full text-left px-3">
+                </div>
+
+                <!-- Problem 2.3 -->
+                <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200 mb-6">
+                    <p class="mb-4 mono"><strong>Problem 2.3 (J-type):</strong> <code>000011 000001000000000000000100</code></p>
+                    <input type="text" placeholder="e.g., j 1024" class="worksheet-input w-full text-left px-3">
+                </div>
+            </div>
+        </section>
+
+        <section id="rubric" class="mb-10">
+            <h2 class="text-2xl mb-4">Grading Rubric</h2>
+            <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+                <table class="w-full text-left">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="p-4 font-semibold">Criteria</th>
+                            <th class="p-4 font-semibold text-right">Points</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-200">
+                        <tr class="font-semibold bg-gray-50"><td colspan="2" class="p-4">Part 1: Encoding</td></tr>
+                        <tr>
+                            <td class="p-4 text-gray-700">Problem 1.1 (R-type): All fields correct.</td>
+                            <td class="p-4 text-right">15</td>
+                        </tr>
+                        <tr>
+                            <td class="p-4 text-gray-700">Problem 1.2 (I-type, memory): All fields correct.</td>
+                            <td class="p-4 text-right">15</td>
+                        </tr>
+                        <tr>
+                            <td class="p-4 text-gray-700">Problem 1.3 (I-type, immediate): All fields correct.</td>
+                            <td class="p-4 text-right">15</td>
+                        </tr>
+                        <tr>
+                            <td class="p-4 text-gray-700">Problem 1.4 (J-type): Both fields correct.</td>
+                            <td class="p-4 text-right">15</td>
+                        </tr>
+                        <tr class="font-semibold bg-gray-50"><td colspan="2" class="p-4">Part 2: Decoding</td></tr>
+                        <tr>
+                            <td class="p-4 text-gray-700">Problem 2.1 (R-type): Assembly instruction fully correct.</td>
+                            <td class="p-4 text-right">10</td>
+                        </tr>
+                         <tr>
+                            <td class="p-4 text-gray-700">Problem 2.2 (I-type): Assembly instruction fully correct.</td>
+                            <td class="p-4 text-right">10</td>
+                        </tr>
+                         <tr>
+                            <td class="p-4 text-gray-700">Problem 2.3 (J-type): Assembly instruction fully correct.</td>
+                            <td class="p-4 text-right">10</td>
+                        </tr>
+                        <tr class="font-semibold bg-gray-50"><td colspan="2" class="p-4">Completeness</td></tr>
+                        <tr>
+                            <td class="p-4 text-gray-700">Student Information section is complete.</td>
+                            <td class="p-4 text-right">10</td>
+                        </tr>
+                    </tbody>
+                    <tfoot class="bg-gray-100">
+                        <tr>
+                            <td class="p-4 font-bold text-lg">Total</td>
+                            <td class="p-4 text-right font-bold text-lg">100</td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </section>
+
+        <section id="submission">
+            <h2 class="text-2xl mb-3">Submission</h2>
+            <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200 text-center">
+                 <p class="mb-4 text-gray-700">After filling out your name, date, and all answers, click here to save your work as a PDF for submission.</p>
+                <button id="save-pdf-btn" class="submit-btn font-semibold py-3 px-6 rounded-lg">
+                    Save as PDF for Submission
+                </button>
+            </div>
+        </section>
+    </main>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const saveButton = document.getElementById('save-pdf-btn');
+            if(saveButton) {
+                saveButton.addEventListener('click', () => {
+                    window.print();
+                });
+            }
+
+            // Set default date
+            const dateInput = document.getElementById('submission-date');
+            if(dateInput) {
+                const today = new Date();
+                const year = today.getFullYear();
+                const month = String(today.getMonth() + 1).padStart(2, '0');
+                const day = String(today.getDate()).padStart(2, '0');
+                dateInput.value = `${year}-${month}-${day}`;
+            }
+        });
+    </script>
+</body>
+</html>
+
