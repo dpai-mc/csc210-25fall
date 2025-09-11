@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comprehension Check: MIPS Instruction Encoding & Decoding</title>
+    
+    <!-- 1. CDN Links -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    
+    <!-- 2. Meta Comments (Required) -->
+    <!-- Chosen Palette: Scholarly Neutrals -->
+    <!-- Application Structure Plan: Single-column comprehension check with integrated interactive worksheet sections for self-assessment. The structure guides the student through the requirements, provides interactive practice problems, and details submission instructions in a clear, linear flow. Max width is constrained to 800px for readability. -->
+    <!-- Visualization & Content Choices: The core of this page is an interactive worksheet. It uses HTML form inputs for students to enter answers and buttons to trigger answer-checking logic. Feedback is provided dynamically via text and color-coded input borders. This was chosen over a static document to provide immediate feedback, which is crucial for reinforcing learning in a technical subject like instruction encoding. No charts or complex visualizations are needed. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    
+    <!-- 3. Embedded CSS -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #FDFBF8;
+            color: #383838;
+        }
+        main {
+            max-width: 800px; /* Tailwind: max-w-3xl */
+        }
+        h1, h2, h3 {
+            font-weight: 700;
+        }
+        code, .mono {
+            font-family: 'Fira Code', monospace;
+        }
+        .worksheet-input {
+            font-family: 'Fira Code', monospace;
+            border: 1px solid #D1C7BF;
+            background-color: #FFFFFF;
+            padding: 0.5rem;
+            border-radius: 0.375rem;
+            text-align: center;
+        }
+        .worksheet-input:focus {
+            outline: none;
+            border-color: #4A90E2;
+            box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.5);
+        }
+        .correct {
+            border-color: #28a745 !important;
+            background-color: #f0fff4;
+        }
+        .incorrect {
+            border-color: #dc3545 !important;
+            background-color: #fff5f5;
+        }
+        .check-btn {
+            background-color: #EADDD7;
+            transition: background-color 0.2s ease-in-out;
+        }
+        .check-btn:hover {
+            background-color: #D1C7BF;
+        }
+        .skip-link {
+            position: absolute;
+            top: -100px;
+            left: 0;
+            background: #EADDD7;
+            color: #1a1a1a;
+            padding: 0.5rem 1rem;
+            z-index: 100;
+            transition: top 0.3s ease-in-out;
+            border-bottom-right-radius: 0.5rem;
+        }
+        .skip-link:focus {
+            top: 0;
+        }
+    </style>
+</head>
+<body class="antialiased">
+    <a href="#main-content" class="skip-link font-semibold">Skip to main content</a>
+    <main id="main-content" class="mx-auto p-4 md:p-8">
+        <header class="mb-8 border-b pb-4 border-[#EADDD7]">
+            <h1 class="text-3xl md:text-4xl">Comprehension Check: Instruction Encoding & Decoding</h1>
+            <p class="text-lg text-gray-600 mt-2">CSC210: Computer Organization & Architecture</p>
+        </header>
+
+        <section id="overview" class="mb-10">
+            <h2 class="text-2xl mb-3">Overview</h2>
+            <p class="text-base leading-relaxed text-gray-700">
+                This comprehension check is a hands-on exercise designed to solidify your understanding of MIPS instruction formats. You will act as the assembler, manually converting human-readable MIPS assembly instructions into their 32-bit binary machine code equivalents (encoding), and then reverse the process by converting binary machine code back into assembly (decoding). This is a self-assessment worksheet; you can check your answers as you go.
+            </p>
+        </section>
+
+        <section id="learning-objectives" class="mb-10">
+            <h2 class="text-2xl mb-3">Learning Objectives</h2>
+            <ul class="list-disc list-inside space-y-2 text-gray-700">
+                <li>Correctly identify an instruction as R-type, I-type, or J-type.</li>
+                <li>Isolate the specific bit-fields (opcode, rs, rt, rd, etc.) for each instruction type.</li>
+                <li>Look up register numbers and opcode/funct values from a reference sheet.</li>
+                <li>Convert decimal and hexadecimal values to their binary representations.</li>
+                <li>Assemble a final 32-bit machine code instruction from its component fields.</li>
+            </ul>
+        </section>
+
+        <section id="worksheet" class="mb-10">
+            <h2 class="text-2xl mb-6">Interactive Worksheet</h2>
+            
+            <!-- Part 1: Encoding -->
+            <div id="part1">
+                <h3 class="text-xl font-semibold mb-4">Part 1: Encoding (Assembly to Machine Code)</h3>
+                <p class="mb-6 text-gray-700">For each assembly instruction below, determine the instruction format and fill in the binary values for each field. Use the <a href="mips-ref-sheet.html" class="font-semibold underline hover:text-blue-600" target="_blank">MIPS Reference Sheet</a> to find register numbers and opcode/funct values. Then, press "Check Answer".</p>
+
+                <!-- Problem 1.1 -->
+                <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200 mb-6">
+                    <p class="mb-4"><strong>Problem 1.1:</strong> <code>add $s1, $t2, $t3</code></p>
+                    <div id="q1" class="space-y-4">
+                        <div class="grid grid-cols-6 gap-2 text-center text-sm">
+                           <div>opcode<br><input type="text" data-field="opcode" maxlength="6" class="worksheet-input w-full mt-1"></div>
+                           <div>rs<br><input type="text" data-field="rs" maxlength="5" class="worksheet-input w-full mt-1"></div>
+                           <div>rt<br><input type="text" data-field="rt" maxlength="5" class="worksheet-input w-full mt-1"></div>
+                           <div>rd<br><input type="text" data-field="rd" maxlength="5" class="worksheet-input w-full mt-1"></div>
+                           <div>shamt<br><input type="text" data-field="shamt" maxlength="5" class="worksheet-input w-full mt-1"></div>
+                           <div>funct<br><input type="text" data-field="funct" maxlength="6" class="worksheet-input w-full mt-1"></div>
+                        </div>
+                        <div class="flex items-center justify-end space-x-4">
+                            <p id="q1-feedback" class="text-sm font-semibold"></p>
+                            <button class="check-btn font-semibold py-2 px-4 rounded-md" data-question="q1">Check Answer</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Problem 1.2 -->
+                <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200 mb-6">
+                    <p class="mb-4"><strong>Problem 1.2:</strong> <code>addi $t0, $s3, 256</code></p>
+                    <div id="q2" class="space-y-4">
+                        <div class="grid grid-cols-4 gap-2 text-center text-sm">
+                           <div class="col-span-1">opcode<br><input type="text" data-field="opcode" maxlength="6" class="worksheet-input w-full mt-1"></div>
+                           <div class="col-span-1">rs<br><input type="text" data-field="rs" maxlength="5" class="worksheet-input w-full mt-1"></div>
+                           <div class="col-span-1">rt<br><input type="text" data-field="rt" maxlength="5" class="worksheet-input w-full mt-1"></div>
+                           <div class="col-span-1">immediate<br><input type="text" data-field="immediate" maxlength="16" class="worksheet-input w-full mt-1"></div>
+                        </div>
+                        <div class="flex items-center justify-end space-x-4">
+                            <p id="q2-feedback" class="text-sm font-semibold"></p>
+                            <button class="check-btn font-semibold py-2 px-4 rounded-md" data-question="q2">Check Answer</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Part 2: Decoding -->
+            <div id="part2" class="mt-12">
+                <h3 class="text-xl font-semibold mb-4">Part 2: Decoding (Machine Code to Assembly)</h3>
+                <p class="mb-6 text-gray-700">For each 32-bit machine code value below, determine the instruction type and convert it back into its MIPS assembly language equivalent. Type the full assembly instruction in the box provided.</p>
+                
+                <!-- Problem 2.1 -->
+                <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200 mb-6">
+                    <p class="mb-4 mono"><strong>Problem 2.1:</strong> <code>000000 10001 10010 01000 00000 100010</code></p>
+                     <div id="q3" class="space-y-4">
+                        <input type="text" data-field="assembly" placeholder="e.g., sub $t0, $s1, $s2" class="worksheet-input w-full text-left">
+                        <div class="flex items-center justify-end space-x-4">
+                            <p id="q3-feedback" class="text-sm font-semibold"></p>
+                            <button class="check-btn font-semibold py-2 px-4 rounded-md" data-question="q3">Check Answer</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="submission">
+            <h2 class="text-2xl mb-3">Completion</h2>
+            <div class="bg-blue-50 border border-blue-200 p-4 rounded-lg text-blue-800">
+                <p>This is a self-assessment worksheet and is not graded. There is nothing to submit. Use this tool to practice and verify your understanding of the concepts from Week 5. If you are struggling with these problems, please review the learning guide and MIPS reference sheet, and ask questions in the course discussion forum.</p>
+            </div>
+        </section>
+    </main>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const answers = {
+                q1: {
+                    opcode: '000000',
+                    rs: '01010', // $t2 = 10
+                    rt: '01011', // $t3 = 11
+                    rd: '10001', // $s1 = 17
+                    shamt: '00000',
+                    funct: '100000'
+                },
+                q2: {
+                    opcode: '001000',
+                    rs: '10011', // $s3 = 19
+                    rt: '01000', // $t0 = 8
+                    immediate: '0000000100000000' // 256
+                },
+                q3: {
+                    assembly: 'sub $t0, $s1, $s2'
+                }
+            };
+
+            document.querySelectorAll('.check-btn').forEach(button => {
+                button.addEventListener('click', () => {
+                    const questionId = button.dataset.question;
+                    const questionContainer = document.getElementById(questionId);
+                    const feedbackEl = document.getElementById(`${questionId}-feedback`);
+                    const correctAnswers = answers[questionId];
+                    let allCorrect = true;
+
+                    questionContainer.querySelectorAll('input').forEach(input => {
+                        const field = input.dataset.field;
+                        const userAnswer = input.value.trim().replace(/\s+/g, ''); // Normalize assembly answer
+                        const correctAnswer = correctAnswers[field];
+
+                        if (userAnswer.toLowerCase() === correctAnswer) {
+                            input.classList.remove('incorrect');
+                            input.classList.add('correct');
+                        } else {
+                            input.classList.remove('correct');
+                            input.classList.add('incorrect');
+                            allCorrect = false;
+                        }
+                    });
+
+                    if (allCorrect) {
+                        feedbackEl.textContent = 'Correct!';
+                        feedbackEl.style.color = '#28a745';
+                    } else {
+                        feedbackEl.textContent = 'Some fields are incorrect. Try again!';
+                        feedbackEl.style.color = '#dc3545';
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
+
