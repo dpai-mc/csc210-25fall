@@ -131,7 +131,7 @@
                 <section id="concepts" class="content-section">
                     <h2 class="text-3xl font-bold mb-6">Core Concepts: The ISA</h2>
                     <p class="text-lg text-gray-700 leading-relaxed mb-8">
-                        The Instruction Set Architecture (ISA) is one of the most important concepts in computer organization. It serves as the abstract interface, or "contract," between the hardware and the software. The ISA defines everything a programmer needs to know to write correct machine code, including the set of instructions, registers, memory access methods, and data types, without needing to know the specific details of the hardware implementation.
+                        The Instruction Set Architecture (ISA) is one of the most important concepts in computer organization. It serves as the abstract interface, or "contract," between the hardware and the software. The ISA defines everything a programmer needs to know to write correct machine code, including the set of instructions, registers, memory access methods, and data types, without needing to know the specific details of the hardware implementation. Two dominant philosophies guide the design of an ISA: RISC and CISC.
                     </p>
                     <div role="button" tabindex="0" aria-label="Play video: Overview of the MIPS Architecture" class="mb-8 video-embed rounded-lg aspect-video flex items-center justify-center p-4 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
                         <div class="text-center">
@@ -145,22 +145,24 @@
                     <div class="grid md:grid-cols-2 gap-8">
                         <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
                             <h3 class="text-xl font-semibold mb-3">RISC (Reduced Instruction Set Computer)</h3>
-                            <p class="mb-4">A design philosophy that favors a smaller and simpler set of instructions that all take about the same amount of time to execute. MIPS is our primary example.</p>
+                            <p class="mb-4">The RISC philosophy, exemplified by MIPS, prioritizes simplicity and speed. It uses a small, highly optimized set of instructions that are all the same length and can be executed quickly, often in a single clock cycle. This simplicity makes the hardware easier to design and allows for techniques like pipelining to work very efficiently.</p>
                             <ul class="list-disc list-inside space-y-2">
+                                <li><strong>Goal:</strong> Make the hardware simple and fast.</li>
                                 <li>Simple, fixed-length instructions.</li>
                                 <li>Most instructions execute in a single clock cycle.</li>
-                                <li>Relies on a "load/store" architecture.</li>
-                                <li>Emphasis on software to perform complex tasks.</li>
+                                <li>Relies on a "load/store" architecture (only `lw` and `sw` access memory).</li>
+                                <li>Puts more complexity on the compiler/software to combine simple instructions for complex tasks.</li>
                             </ul>
                         </div>
                         <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
                             <h3 class="text-xl font-semibold mb-3">CISC (Complex Instruction Set Computer)</h3>
-                            <p class="mb-4">A design philosophy where single instructions can execute several low-level operations, making them more complex but potentially more powerful. Intel's x86 is a common example.</p>
-                            <ul class="list-disc list-inside space-y-2">
+                            <p class="mb-4">The CISC philosophy, seen in architectures like Intel's x86, aims to make the software simpler by providing powerful, complex instructions in the hardware. A single CISC instruction might perform a multi-step operation like loading data from memory, performing an arithmetic operation, and storing it back to memory. This can lead to shorter code but more complex hardware.</p>
+                             <ul class="list-disc list-inside space-y-2">
+                                <li><strong>Goal:</strong> Make programming easier with powerful instructions.</li>
                                 <li>Variable-length, complex instructions.</li>
-                                <li>Instructions can perform multi-step operations.</li>
-                                <li>Direct memory-to-memory operations are common.</li>
-                                <li>Emphasis on hardware to perform complex tasks.</li>
+                                <li>Instructions can take many clock cycles to complete.</li>
+                                <li>Memory can be accessed directly by many different instruction types.</li>
+                                <li>Puts more complexity on the hardware to decode and execute multi-step instructions.</li>
                             </ul>
                         </div>
                     </div>
@@ -296,7 +298,7 @@
                             <div class="space-y-4">
                                 <div>
                                     <h4 class="text-md font-semibold text-gray-800">Reading</h4>
-                                    <p class="mt-1 text-gray-700 pl-4">Review the <a href="mips-ref-sheet.html" class="font-semibold underline hover:text-blue-600">"MIPS Reference Data" sheet</a> and supplementary materials on RISC/CISC.</p>
+                                    <p class="mt-1 text-gray-700 pl-4">Review the <a href="mips-ref-sheet.html" class="font-semibold underline hover:text-blue-600">"MIPS Reference Data" sheet</a> and the concepts in this guide.</p>
                                 </div>
                                 <div>
                                     <h4 class="text-md font-semibold text-gray-800">Comprehension Check</h4>
