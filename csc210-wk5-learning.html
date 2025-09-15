@@ -61,18 +61,6 @@
             background-color: #FDFBF8;
             border: 1px solid #D1C7BF;
         }
-        .video-embed {
-            background-color: #2D3748;
-            cursor: pointer;
-            position: relative;
-        }
-        .video-embed .play-button {
-             transition: all 0.2s ease-in-out;
-        }
-        .video-embed:hover .play-button {
-            transform: scale(1.1);
-            background-color: rgba(255, 255, 255, 0.3);
-        }
         .skip-link {
             position: absolute;
             top: -100px;
@@ -86,6 +74,19 @@
         }
         .skip-link:focus {
             top: 0;
+        }
+        .responsive-iframe-container {
+            position: relative;
+            overflow: hidden;
+            padding-top: 56.25%; /* 16:9 Aspect Ratio */
+        }
+        .responsive-iframe-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 0;
         }
     </style>
 </head>
@@ -133,13 +134,17 @@
                     <p class="text-lg text-gray-700 leading-relaxed mb-8">
                         The Instruction Set Architecture (ISA) is one of the most important concepts in computer organization. It serves as the abstract interface, or "contract," between the hardware and the software. The ISA defines everything a programmer needs to know to write correct machine code, including the set of instructions, registers, memory access methods, and data types, without needing to know the specific details of the hardware implementation. Two dominant philosophies guide the design of an ISA: RISC and CISC.
                     </p>
-                    <div role="button" tabindex="0" aria-label="Play video: Overview of the MIPS Architecture" class="mb-8 video-embed rounded-lg aspect-video flex items-center justify-center p-4 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                        <div class="text-center">
-                            <div class="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4 play-button">
-                                <span class="text-4xl text-white ml-1">&#9658;</span>
+                    <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200 mb-8">
+                        <div class="responsive-iframe-container rounded-md overflow-hidden">
+                             <iframe src="https://www.youtube.com/embed/vM5YGcX0huU?si=qmiLepQ3tP1qCgia" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                        </div>
+                        <div class="mt-4">
+                            <button id="transcript-toggle" class="font-semibold text-blue-600 hover:underline" aria-expanded="false" aria-controls="transcript-content">
+                                Show Transcript
+                            </button>
+                            <div id="transcript-content" class="hidden mt-2 p-4 bg-gray-50 rounded-md border text-sm text-gray-700 max-h-48 overflow-y-auto">
+                                <!-- Transcript will be populated by JS -->
                             </div>
-                            <h4 class="font-semibold text-white">Video: Overview of the MIPS Architecture</h4>
-                            <p class="text-sm text-gray-300">A visual introduction to the key concepts of the MIPS ISA.</p>
                         </div>
                     </div>
                     <div class="grid md:grid-cols-2 gap-8">
@@ -283,13 +288,15 @@
                                 <li>Simulator to execute code step-by-step.</li>
                                 <li>Debugger to view register and memory contents.</li>
                             </ul>
-                             <div role="button" tabindex="0" aria-label="Play video: Getting started with the MARS simulator" class="video-embed rounded-lg aspect-video flex items-center justify-center p-4 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                               <div class="text-center">
-                                    <div class="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4 play-button">
-                                        <span class="text-4xl text-white ml-1">&#9658;</span>
-                                    </div>
-                                    <h4 class="font-semibold text-white">Video: Getting Started with MARS</h4>
-                                    <p class="text-sm text-gray-300">A walkthrough of installing and using the simulator.</p>
+                            <div class="responsive-iframe-container rounded-md overflow-hidden">
+                                <iframe src="https://www.youtube.com/embed/CN2qtTi8j1g?si=tIhpjGiiy2Q0sqHc" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                            </div>
+                            <div class="mt-4">
+                                <button id="transcript-toggle-mars" class="font-semibold text-blue-600 hover:underline" aria-expanded="false" aria-controls="transcript-content-mars">
+                                    Show Transcript
+                                </button>
+                                <div id="transcript-content-mars" class="hidden mt-2 p-4 bg-gray-50 rounded-md border text-sm text-gray-700 max-h-48 overflow-y-auto">
+                                    <!-- Transcript will be populated by JS -->
                                 </div>
                             </div>
                         </div>
@@ -314,6 +321,784 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', () => {
+    // --- Start of Transcript Logic ---
+    const srtContent = `1
+00:00:00,400 --> 00:00:05,520
+Aloha so we are in now week five which means we're a quarter of the way through the course
+2
+00:00:05,520 --> 00:00:12,960
+for the most part and we're going to make a little shift into away from the
+3
+00:00:14,560 --> 00:00:22,560
+circuits and we're going to talk about um MIPS or assembly language programming now assembly
+4
+00:00:22,560 --> 00:00:29,360
+language is still important because one it's going to help us understand better how the
+5
+00:00:29,360 --> 00:00:35,360
+computer works you know at its lowest level you know why things work the way they do
+6
+00:00:36,240 --> 00:00:39,440
+um assembly language is like a one-to-one
+7
+00:00:42,400 --> 00:00:49,520
+mnemonic for machine language machine language is the ones and zeros that actually do the
+8
+00:00:50,160 --> 00:00:56,800
+work in the computer and so what assembly language is is a way to have these mnemonics
+9
+00:00:56,800 --> 00:01:03,600
+that that represent the machine language so in a lot of ways assembly language is one
+10
+00:01:03,600 --> 00:01:12,880
+step above machine language but it is still you know very very close to the machine so so anyway
+11
+00:01:12,880 --> 00:01:17,840
+so we're going to get into that and the one we're going to use is called MIPS
+12
+00:01:18,480 --> 00:01:25,840
+and um MIPS is used in a lot of colleges to for for this very purpose for teaching
+13
+00:01:25,840 --> 00:01:32,480
+assembly language because it has all of the important parts of an assembly language but
+14
+00:01:32,480 --> 00:01:39,520
+it is also fairly simple and so it helps us to better understand what's going on so we're
+15
+00:01:39,520 --> 00:01:46,080
+going to use MIPS and MIPS stands for microprocessor without interlocked pipeline
+16
+00:01:46,080 --> 00:01:53,440
+stages so that's the acronym for it and it's a RISC architecture we're going to
+17
+00:01:53,440 --> 00:02:00,160
+get into what that means and so this is really cool so we're now in phase two of
+18
+00:02:00,160 --> 00:02:06,880
+the course we're going to get away from the hardware and focus on the software but very
+19
+00:02:06,880 --> 00:02:13,680
+very low level software okay so and what we're going to get out of this is we're going
+20
+00:02:13,680 --> 00:02:20,080
+to be able to define an instruction set architecture which is what an ISA is and
+21
+00:02:20,080 --> 00:02:26,640
+we're going to talk about the hardware software interface so so you have an idea of what that
+22
+00:02:26,640 --> 00:02:34,880
+is we're going to get into RISC versus CISC and then we're going to get into MIPS specific
+23
+00:02:34,880 --> 00:02:40,560
+so we're going to talk about MIPS registers the instruction formats how to decode
+24
+00:02:40,560 --> 00:02:46,000
+and encode um a MIPS machine instruction versus the assembly language
+25
+00:02:46,880 --> 00:02:53,760
+and then we're also going to talk about MARS which is the simulator we're going to use
+26
+00:02:53,760 --> 00:02:59,840
+to be able to program MIPS assembly language okay so let's get into it okay so
+27
+00:02:59,840 --> 00:03:07,520
+again we're at a new abstraction level so you know we first were at the transistor level
+28
+00:03:07,520 --> 00:03:13,680
+then we went up to the logic gate level then we went to the micro architecture level
+29
+00:03:13,680 --> 00:03:20,880
+which is where we created our ALU and you know all the different things that we have done
+30
+00:03:20,880 --> 00:03:27,200
+thus far and so now we're one level above that which is the instruction set architecture
+31
+00:03:27,200 --> 00:03:33,600
+level or the ISA and then you can see above that is where you get to the operating
+32
+00:03:33,600 --> 00:03:39,440
+system you know which helps manage what's going on in the computer so so we're moving
+33
+00:03:39,440 --> 00:03:45,520
+up so we're not talking about circuits anymore as much as we're going to be talking about
+34
+00:03:46,240 --> 00:03:52,160
+assembly language or software okay so so in this core concept we get into
+35
+00:03:52,160 --> 00:03:59,120
+the instruction set architecture what an ISA is and you can read all this it's a great
+36
+00:03:59,120 --> 00:04:05,280
+read but basically it is this this kind of contract between the hardware and the software
+37
+00:04:05,280 --> 00:04:11,520
+and this is really important concept because you know it is what allows you know
+38
+00:04:11,520 --> 00:04:19,280
+a piece of software to be written for an architecture like the Intel architecture and
+39
+00:04:19,280 --> 00:04:26,080
+be able to be run on any computer that has that intel chip or you know it doesn't
+40
+00:04:26,080 --> 00:04:32,800
+have to be intel it could be you know amd's version of the intel chip but they're all
+41
+00:04:32,800 --> 00:04:39,840
+speaking the same language and that's the important part and that's what the ISA is so
+42
+00:04:39,840 --> 00:04:47,440
+it's this contract and and this is where we have RISC versus CISC and this is a really
+43
+00:04:47,440 --> 00:04:53,600
+important concept to to understand so RISC stands for reduced instruction set
+44
+00:04:53,600 --> 00:05:00,800
+computer and what that means is that the language the machine language that a RISC
+45
+00:05:00,800 --> 00:05:06,640
+processor understands is a reduced set so it's a very small set so instead of
+46
+00:05:06,640 --> 00:05:13,200
+having you know 2,000 commands it might have you know 50 okay and so that that's a
+47
+00:05:13,200 --> 00:05:19,840
+huge difference in the number of commands that a that a a processor can can understand
+48
+00:05:20,560 --> 00:05:27,040
+and and so the idea behind RISC is to have it be reduced and simple and fast
+49
+00:05:27,760 --> 00:05:33,680
+and what this also means is that for the most part most of the commands will execute
+50
+00:05:33,680 --> 00:05:40,240
+in a single clock cycle and so so so you know if you have a 4 GHz machine that means that
+51
+00:05:40,240 --> 00:05:46,320
+the clock is cycling four billion times a second and so a command can be executed
+52
+00:05:46,320 --> 00:05:53,360
+in in one of those four billion cycles okay so it's a it's a it's a really good architecture
+53
+00:05:53,360 --> 00:06:00,720
+it's the architecture that's on your phone it's the architecture that's you know on your
+54
+00:06:00,720 --> 00:06:07,360
+Apple computer your Mac computer has a an ARM processor which is a RISC processor
+55
+00:06:08,240 --> 00:06:14,560
+MIPS is also a RISC processor and that's what we're going to be focusing on the other
+56
+00:06:14,560 --> 00:06:21,520
+side of that coin is a CISC processor or a complex instruction set computer and that's
+57
+00:06:21,520 --> 00:06:28,480
+what you know Intel and AMD create they are CISC processors so there's there's more
+58
+00:06:28,480 --> 00:06:35,280
+commands and they're more complex so one command can do a lot more things you can have a
+59
+00:06:35,280 --> 00:06:41,840
+command that has you know many steps to it and you know there's arguments for both
+60
+00:06:41,840 --> 00:06:48,000
+and against you know CISC versus RISC and you know there's no reason to have a holy war
+61
+00:06:48,000 --> 00:06:55,200
+over it but they're just two different ways of doing it two different what we call design
+62
+00:06:55,200 --> 00:07:01,920
+philosophies okay and so our focus is on MIPS which is a RISC processor so this is
+63
+00:07:01,920 --> 00:07:08,720
+going to be important and we have a link to a detailed MIPS versus x86 which is the
+64
+00:07:08,720 --> 00:07:15,360
+CISC processor for Intel so so you can you can go there as well now with MIPS there's
+65
+00:07:15,360 --> 00:07:22,880
+32 general purpose registers okay and registers are like variables that are on the
+66
+00:07:22,880 --> 00:07:28,720
+CPU itself so in in a high level language like Java or C++ or Python or whatever
+67
+00:07:29,280 --> 00:07:35,920
+you know you're you're using variables that are in RAM in memory somewhere but registers
+68
+00:07:35,920 --> 00:07:42,240
+are right there on the CPU so they are super fast okay so if you can do things in registers
+69
+00:07:42,240 --> 00:07:48,800
+it's it's an order of magnitude faster and so we have these 32 general purpose registers
+70
+00:07:48,800 --> 00:07:54,960
+and so this page here goes through and lists them all and what's interesting here is you
+71
+00:07:54,960 --> 00:08:00,720
+can see there's the register name there's the number and there's the usage so there's
+72
+00:08:00,720 --> 00:08:07,520
+a convention on how to use these registers and so this is really really important to
+73
+00:08:07,520 --> 00:08:14,480
+to understand so like for instance register zero is always the constant value zero so
+74
+00:08:14,480 --> 00:08:21,680
+so register zero will always have the value zero you can't write to it it will always be
+75
+00:08:21,680 --> 00:08:28,320
+zero and and we'll see that this is really important there's a lot of things that we can
+76
+00:08:28,320 --> 00:08:34,800
+do with this register zero that that makes our life easier then you get to you know
+77
+00:08:34,800 --> 00:08:41,200
+v0 and v1 these are where you're putting values for results and expression evaluations
+78
+00:08:41,200 --> 00:08:47,760
+and then you have your arguments a0 through a3 so so we'll see when we get into functions
+79
+00:08:47,760 --> 00:08:54,080
+that you know this is where you're going to put your arguments to your functions and then
+80
+00:08:54,080 --> 00:09:00,320
+you have a whole bunch of temporary registers here t0 through t7 then you have some saved
+81
+00:09:00,320 --> 00:09:06,640
+registers here s0 through s7 and then you have a few more temporaries and then you get
+82
+00:09:06,640 --> 00:09:12,880
+into some of the more you know specific registers like the global pointer the stack
+83
+00:09:12,880 --> 00:09:18,960
+pointer the frame pointer and the return address so we're going to use all these registers
+84
+00:09:18,960 --> 00:09:25,760
+at some point in this course and so this table is going to be really really important
+85
+00:09:25,760 --> 00:09:32,800
+and so you need to keep this handy okay now when it comes to the commands in MIPS
+86
+00:09:32,800 --> 00:09:39,200
+the instruction formats all of the commands all of the instructions in MIPS are 32 bits
+87
+00:09:39,200 --> 00:09:46,080
+long okay they are all 32 bits long now they may be of a different format and so there
+88
+00:09:46,080 --> 00:09:52,560
+are three formats there is the R type the I type and the J type so R stands for register
+89
+00:09:52,560 --> 00:09:59,200
+I stands for immediate and J stands for jump okay and so what you see here is the format
+90
+00:09:59,200 --> 00:10:06,000
+for each one of those so you can see that the register type has a an op code here
+91
+00:10:06,000 --> 00:10:12,640
+a register source a register target a register destination a shift amount and a function
+92
+00:10:12,640 --> 00:10:19,040
+and each one of these has a specific number of bits so for instance the op code is six
+93
+00:10:19,040 --> 00:10:25,840
+bits long the register source is five bits long the register target is five bits long
+94
+00:10:25,840 --> 00:10:32,160
+the register destination is five bits long the shift amount is five bits long and the
+95
+00:10:32,160 --> 00:10:38,400
+function is six bits long and if you add all those numbers up six plus five plus five
+96
+00:10:38,400 --> 00:10:45,280
+plus five plus five plus six you get 32 so so that's where the 32 bits come from okay
+97
+00:10:45,280 --> 00:10:51,760
+and so what's really interesting is that for an R type instruction the op code is
+98
+00:10:51,760 --> 00:10:58,400
+always zero it's always six zeros okay and what this means is that when the CPU sees
+99
+00:10:58,400 --> 00:11:04,960
+six zeros it says oh this is an R type instruction so what I need to do is I need to look
+100
+00:11:04,960 --> 00:11:11,520
+at the function here at the end these last six bits to figure out what to do and what
+101
+00:11:11,520 --> 00:11:17,840
+this means is we're going to have an add and a subtract and a and and a or and and
+102
+00:11:17,840 --> 00:11:24,320
+a bunch of these R type commands they all are going to have the same op code they're
+103
+00:11:24,320 --> 00:11:30,480
+going to have six zeros but what's going to be different is the function at the end
+104
+00:11:30,480 --> 00:11:36,720
+okay and so this is this is really kind of a cool thing because that means that for
+105
+00:11:36,720 --> 00:11:42,400
+R type commands it's all about the function okay now why five bits for the registers
+106
+00:11:43,200 --> 00:11:49,760
+well there's 32 registers right and if you have five bits two to the fifth is 32 and
+107
+00:11:49,760 --> 00:11:56,320
+so that's why we have five bits for each one of the registers because that allows us to
+108
+00:11:56,320 --> 00:12:02,720
+uniquely identify one of the 32 registers okay now the I type is is different so the
+109
+00:12:02,720 --> 00:12:09,360
+I type has a op code it has a register source a register target and then it has an
+110
+00:12:09,360 --> 00:12:15,680
+immediate value an immediate value is a constant so this is a constant that is part of the
+111
+00:12:15,680 --> 00:12:22,080
+instruction so you can see that the immediate value here is 16 bits long so it's a 16
+112
+00:12:22,080 --> 00:12:28,400
+bit number that can be part of this instruction and so the op code is still six bits the register
+113
+00:12:28,400 --> 00:12:35,120
+source is five bits the register target is five bits and the immediate value is 16 bits
+114
+00:12:35,120 --> 00:12:41,280
+and again if you add those all up six plus five plus five plus 16 you get 32 so again
+115
+00:12:41,280 --> 00:12:47,760
+it adds up to 32 bits now unlike the R type the I type has a unique op code for
+116
+00:12:47,760 --> 00:12:54,080
+each one of its commands so there's an add immediate command and it will have a specific
+117
+00:12:54,080 --> 00:13:00,480
+op code there's a load word and a store word command those are going to have unique op codes
+118
+00:13:00,480 --> 00:13:06,720
+and there's a branch of equal and that will have a unique op code okay and so what you'll
+119
+00:13:06,720 --> 00:13:12,960
+see is when we get into the instruction formatter you'll see how this works now the J type
+120
+00:13:12,960 --> 00:13:18,960
+is for jumping and so there's an op code and then there's a big address so there's a
+121
+00:13:18,960 --> 00:13:25,360
+26 bit address so six bits for the op code 26 bits for the address and that gives you
+122
+00:13:25,360 --> 00:13:31,440
+32 bits so so the J type has a very large you know address space there that we can jump
+123
+00:13:31,440 --> 00:13:37,760
+to okay and again just like the I type the J type instructions will have a unique
+124
+00:13:37,760 --> 00:13:43,680
+op code okay so this is the theory behind it now let's let's look at the practice so
+125
+00:13:43,680 --> 00:13:50,000
+so we get down to the interactive instruction formatter this is really cool so what we're
+126
+00:13:50,000 --> 00:13:56,400
+going to do is we're going to pick our instruction type R I or J and so let's pick R type okay
+127
+00:13:56,400 --> 00:14:02,800
+and so you can see right away that the op code is six zeros okay and then you have your
+128
+00:14:02,800 --> 00:14:09,120
+register source your register target your register destination your shift amount and your function
+129
+00:14:09,120 --> 00:14:15,120
+and then you can pick your instruction so we have an add a subtract an and a or and a set
+130
+00:14:15,120 --> 00:14:21,520
+on less than okay and so let's pick add okay and so you can see the add has this function
+131
+00:14:21,520 --> 00:14:27,920
+100000 okay so that means add if we were to change it to subtract it changes to 100010
+132
+00:14:27,920 --> 00:14:34,480
+okay so so the op code is still zero but the function has changed okay now we can pick our
+133
+00:14:34,480 --> 00:14:40,560
+registers and so we can say let's take register t0 okay and we can add that to register
+134
+00:14:40,560 --> 00:14:46,800
+t1 and let's put the result in register t2 okay and so you can see that the register
+135
+00:14:46,800 --> 00:14:52,960
+source the register target and the register destination these values have changed to be
+136
+00:14:52,960 --> 00:14:59,360
+the number of the register so t0 is register eight and if you look up at the table up here
+137
+00:14:59,360 --> 00:15:05,680
+you can see t0 is register eight t1 is register nine t2 is register 10 okay so you see
+138
+00:15:05,680 --> 00:15:11,520
+these are the binary equivalents of eight nine and 10 okay and so what's really cool
+139
+00:15:11,520 --> 00:15:17,440
+is you now have your 32-bit machine code so so the machine code for a subtract of
+140
+00:15:17,440 --> 00:15:23,920
+t0 and t1 and putting it in t2 is this 32-bit number here okay isn't that cool so
+141
+00:15:23,920 --> 00:15:30,240
+so you can change it let's let's do an I type and so here you can see the op code for
+142
+00:15:30,240 --> 00:15:36,400
+an add immediate is 001000 and it's always going to be that it's never going to change
+143
+00:15:36,400 --> 00:15:42,480
+okay but if we were to do a load word it would be different if we were to do a store
+144
+00:15:42,480 --> 00:15:48,320
+word it would be different so the op code is unique to the command so let's do an add
+145
+00:15:48,320 --> 00:15:54,720
+immediate so we're going to take a value in a register let's take you know s0 and
+146
+00:15:54,720 --> 00:16:00,880
+we're going to add an immediate value to it so let's just say 100 okay so we're going
+147
+00:16:00,880 --> 00:16:07,040
+to add 100 to what's in s0 and we're going to put it into let's say t5 okay so so here
+148
+00:16:07,040 --> 00:16:13,280
+you go you have your register source which is s0 you have your register target which
+149
+00:16:13,280 --> 00:16:19,200
+is t5 and then you have your immediate value of 100 which is this 16-bit number here
+150
+00:16:19,200 --> 00:16:25,520
+and so this is the 32-bit machine code for this command okay and then finally the
+151
+00:16:25,520 --> 00:16:32,080
+J type okay you can either jump or jump and link okay we'll get into what jump and link
+152
+00:16:32,080 --> 00:16:38,400
+is later but you can see that the op code for jump is 000010 and we can give it an address
+153
+00:16:38,400 --> 00:16:44,560
+so let's just say 2000 okay so we're going to jump to address 2000 and so here is the
+154
+00:16:44,560 --> 00:16:51,200
+32-bit machine code for this command so so this is a really cool little tool to play
+155
+00:16:51,200 --> 00:16:57,680
+with and this is what your assignment's going to be on okay so so the next thing is the tools
+156
+00:16:57,680 --> 00:17:03,840
+and weekly tasks and so so the main tool that we're going to use is called MARS and
+157
+00:17:03,840 --> 00:17:10,080
+it's a simulator for MIPS assembly language programming okay and so this is a really
+158
+00:17:10,080 --> 00:17:16,080
+cool tool it's a Java tool so it's going to run on any machine and it's what we're
+159
+00:17:16,080 --> 00:17:22,320
+going to use to write our programs to assemble our programs and to run our programs and
+160
+00:17:22,320 --> 00:17:28,400
+so I have a little video here on getting started with MARS so that's that's going
+161
+00:17:28,400 --> 00:17:34,800
+to be important and then we get to the weekly to-do list so so for this week you know
+162
+00:17:34,800 --> 00:17:41,200
+the reading is review the MIPS reference data sheet which is this sheet right here
+163
+00:17:41,200 --> 00:17:47,440
+it is another interactive page and what you can see here is that you have a list of all
+164
+00:17:47,440 --> 00:17:53,920
+the registers and their numbers you have a list of the instructions and so here are
+165
+00:17:53,920 --> 00:18:00,160
+the R type instructions and their functions you have the I type and their op codes and
+166
+00:18:00,160 --> 00:18:06,640
+you have the J type and their op codes and what's really cool is you can actually search
+167
+00:18:06,640 --> 00:18:12,640
+so you can put in a search and it will find it so so for instance if you want to find
+168
+00:18:12,640 --> 00:18:18,560
+all of the commands that have add in them you know you have add add immediate and add
+169
+00:18:18,560 --> 00:18:24,800
+immediate unsigned so so it's a good little reference sheet and it also has the system
+170
+00:18:24,800 --> 00:18:30,960
+call codes and we'll get into that when we get into writing our first programs okay so
+171
+00:18:30,960 --> 00:18:37,280
+so that's the that's the reference sheet and you're going to want to keep that handy you're
+172
+00:18:37,280 --> 00:18:43,440
+going to use that for your assignment okay and so the other thing is the comprehension
+173
+00:18:43,440 --> 00:18:49,760
+check this is another interactive page and this is where you're going to practice so
+174
+00:18:49,760 --> 00:18:56,320
+so I give you a problem and you're going to put in the appropriate you know binary
+175
+00:18:56,320 --> 00:19:02,400
+values and then check your answer and it will tell you whether you got it right or wrong okay
+176
+00:19:02,400 --> 00:19:09,280
+and you just fill in these exactly as they need to be from 1.2 1.3 um 1.4 j type
+177
+00:19:09,280 --> 00:19:13,760
+and then the opposite this is the part two is the opposite taking the machine language and converting
+178
+00:19:13,760 --> 00:19:21,680
+it into what the appropriate assembly language command is okay so this is the reverse and here's
+179
+00:19:21,680 --> 00:19:25,760
+the grading rubric you know it's going to add up to 100 because everything in this class can add up
+180
+00:19:25,760 --> 00:19:33,040
+to 100 every week um you can get 10 points for getting your name right amazing how how
+181
+00:19:35,680 --> 00:19:43,360
+free with points i'm gonna be i'm just kidding but anyway and then you save it as a pdf
+182
+00:19:43,760 --> 00:19:49,440
+i'll have all your stuff in it you save it save it somewhere on your computer so you can upload it okay so so that's the
+183
+00:19:49,440 --> 00:19:51,200
+assignment`;
+
+    const srtContentMars = `1
+00:00:00,040 --> 00:00:04,680
+Aloha so I want to just talk a little bit about making Mars work on your
+2
+00:00:04,680 --> 00:00:11,920
+computer the first thing I did want to say is that logic sim works there is a
+3
+00:00:11,920 --> 00:00:17,640
+page that talks about logic sim on Mac and how to get it to work and the key
+4
+00:00:17,640 --> 00:00:22,400
+will be once you've walked through that whole process if you go into finder
+5
+00:00:22,400 --> 00:00:31,040
+applications you'll scroll down to logic sim and you'll see logic sim dot app and
+6
+00:00:31,040 --> 00:00:38,840
+logic sim dot jar dot app does not work jar works you'll double click on that if
+7
+00:00:38,840 --> 00:00:43,280
+you load a Java if you haven't loaded Java it'll ask you to and you'll be able
+8
+00:00:43,280 --> 00:00:50,000
+to get that to work okay so that's logic sim now Mars is a little bit different
+9
+00:00:50,000 --> 00:00:56,360
+Mars is also a Java program so it requires Java to be installed on your computer
+10
+00:00:56,360 --> 00:01:03,040
+and I would highly recommend that you install the latest Java jdk which you can
+11
+00:01:03,040 --> 00:01:09,360
+get a link from the page in canvas and what you'll want to do is download Mars
+12
+00:01:09,360 --> 00:01:15,640
+and when you download it it will show up in your downloads folder and here's mine
+13
+00:01:15,640 --> 00:01:21,880
+right here and it's a jar file now you can just double click on it and it should
+14
+00:01:21,880 --> 00:01:28,040
+work okay if it doesn't then what you're going to need to do is open up a terminal
+15
+00:01:28,040 --> 00:01:34,360
+so you can go to applications and go to utilities and you can open up the terminal
+16
+00:01:34,360 --> 00:01:40,280
+app okay and once you do that you want to go to your downloads folder so you're
+17
+00:01:40,280 --> 00:01:46,200
+going to type CD for change directory and you're going to type downloads with a
+18
+00:01:46,200 --> 00:01:52,440
+capital D okay and once you do that you will be in the downloads folder and I can
+19
+00:01:52,440 --> 00:01:58,680
+type LS to see the files that are in there and so here is the Mars jar file
+20
+00:01:58,680 --> 00:02:05,240
+right here okay and so what you can do is you can type Java dash jar and then
+21
+00:02:05,240 --> 00:02:11,560
+the name of the Mars jar file okay so you type all that in hit enter and it will
+22
+00:02:11,560 --> 00:02:17,800
+open it up okay so so that's that's another way to open it if it doesn't open by just
+23
+00:02:17,800 --> 00:02:23,960
+double clicking now you you can see here there's a bunch of stuff that comes out
+24
+00:02:23,960 --> 00:02:29,880
+this is just standard you know output from from the program you don't have to worry
+25
+00:02:29,880 --> 00:02:35,960
+about it but Mars is open okay and so you can see Mars here has a file an edit
+26
+00:02:35,960 --> 00:02:41,960
+a run a settings and a help okay and so what's really cool is we can go in and
+27
+00:02:41,960 --> 00:02:47,960
+we can do a new file okay and this is our editor so we can type our program in
+28
+00:02:47,960 --> 00:02:53,880
+here and this is what we're going to do in in our next in our next module is we're
+29
+00:02:53,880 --> 00:02:59,800
+going to write our first program our hello world program okay and so we can we can
+30
+00:02:59,800 --> 00:03:06,040
+type our program in here and then we can go up to run and we can go assemble
+31
+00:03:06,040 --> 00:03:12,120
+okay and what's really cool is when we assemble it's going to it's going to ask
+32
+00:03:12,120 --> 00:03:17,800
+us to save it somewhere so we'll save it as you know hello or something like that
+33
+00:03:18,520 --> 00:03:24,600
+and it's an assembly file so it has an ASM extension okay and so you can you can
+34
+00:03:24,600 --> 00:03:31,000
+do that but once you once you assemble it then what you're going to get is an execute
+35
+00:03:31,000 --> 00:03:36,760
+tab here so right now we're in the edit tab and there'll be an execute tab and
+36
+00:03:36,760 --> 00:03:42,280
+in the execute tab this is where you're going to see all the registers you're going
+37
+00:03:42,280 --> 00:03:48,040
+to see what's in memory you're going to see the machine code that corresponds with
+38
+00:03:48,040 --> 00:03:54,200
+the assembly code and you'll be able to step through the program one line at a time
+39
+00:03:54,200 --> 00:03:59,880
+so it's a really really powerful tool to help us debug our program and better understand
+40
+00:03:59,880 --> 00:04:05,960
+what's going on so this is a really really cool tool and I look forward to you know
+41
+00:04:05,960 --> 00:04:12,280
+using it with you I wanted to also just show you that there's some settings here
+42
+00:04:12,280 --> 00:04:18,200
+and so you can you can change the font size you can change you know you know what what
+43
+00:04:18,200 --> 00:04:24,040
+you see in the editor you can you know do all kinds of stuff so you know I would
+44
+00:04:24,040 --> 00:04:30,200
+say just kind of poke around and and check it out and then the help is actually very
+45
+00:04:30,200 --> 00:04:36,280
+good so you can go to help and it has a pretty comprehensive help file and what's
+46
+00:04:36,280 --> 00:04:42,600
+really cool is under the MIPS instruction set it lists all of the instructions that
+47
+00:04:42,600 --> 00:04:48,600
+are supported by this simulator and so you can go in and you can you know check
+48
+00:04:48,600 --> 00:04:54,680
+out you know the add command and it will tell you exactly what it does what the syntax
+49
+00:04:54,680 --> 00:05:00,760
+is and what the machine code is so this is really really a great little tool it's
+50
+00:05:00,760 --> 00:05:06,600
+it's really nice so so and again this this help file is a great reference in addition
+51
+00:05:06,600 --> 00:05:12,680
+to the reference sheet that that is also on this page okay so so that's really
+52
+00:05:12,680 --> 00:05:18,760
+all I wanted to say about Mars now you will also see when you when you um assemble
+53
+00:05:18,760 --> 00:05:25,000
+your program you will also have um you know the text segment which is where you see your executable
+54
+00:05:25,000 --> 00:05:29,500
+executable code okay this is we're gonna see your extra code
+55
+00:05:29,500 --> 00:05:33,100
+and the data segment we all your memory and you'll see all the values stored in
+56
+00:05:33,100 --> 00:05:39,780
+all memory okay for your program all right that's really all I wanted to say
+57
+00:05:39,780 --> 00:05:49,180
+showing you that it works on a Macintosh I'm using a m3 so it's a silicon Mac and
+58
+00:05:49,180 --> 00:05:54,480
+Java base runs no matter what because as long as you have a Java virtual machine
+59
+00:05:54,480 --> 00:05:59,220
+installed all the same Java code will run on any computer that has that Java
+60
+00:05:59,220 --> 00:06:05,760
+virtual machine on it okay so that's all I wanted to say about Mars you can get
+61
+00:06:05,760 --> 00:06:13,640
+it up and running just download it`;
+
+    const transcriptToggle = document.getElementById('transcript-toggle');
+    const transcriptContent = document.getElementById('transcript-content');
+
+    function parseSrt(srtText) {
+        const lines = srtText.split(/\r?\n/);
+        const textLines = [];
+        for(let i = 0; i < lines.length; i++) {
+            const line = lines[i].trim();
+            if(line && !line.includes('-->') && !/^\d+$/.test(line)) {
+                textLines.push(line);
+            }
+        }
+        return textLines.join(' ');
+    }
+
+    if(transcriptToggle && transcriptContent) {
+        const fullTranscript = parseSrt(srtContent);
+        transcriptContent.textContent = fullTranscript;
+
+        transcriptToggle.addEventListener('click', () => {
+            const isHidden = transcriptContent.classList.contains('hidden');
+            transcriptContent.classList.toggle('hidden', !isHidden);
+            transcriptToggle.textContent = isHidden ? 'Hide Transcript' : 'Show Transcript';
+            transcriptToggle.setAttribute('aria-expanded', isHidden);
+        });
+    }
+
+    // --- Start of MARS Transcript Logic ---
+    const transcriptToggleMars = document.getElementById('transcript-toggle-mars');
+    const transcriptContentMars = document.getElementById('transcript-content-mars');
+
+    if(transcriptToggleMars && transcriptContentMars) {
+        const fullTranscriptMars = parseSrt(srtContentMars);
+        transcriptContentMars.textContent = fullTranscriptMars;
+
+        transcriptToggleMars.addEventListener('click', () => {
+            const isHidden = transcriptContentMars.classList.contains('hidden');
+            transcriptContentMars.classList.toggle('hidden', !isHidden);
+            transcriptToggleMars.textContent = isHidden ? 'Hide Transcript' : 'Show Transcript';
+            transcriptToggleMars.setAttribute('aria-expanded', isHidden);
+        });
+    }
+
 
     const mipsData = {
         registers: [
