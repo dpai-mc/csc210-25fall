@@ -1,0 +1,1080 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Week 6: MIPS Arithmetic & Logic Instructions</title>
+    
+    <!-- CDN Links -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500&display=swap" rel="stylesheet">
+    
+    <!-- Meta Comments -->
+    <!-- Chosen Palette: Background #FDFBF8, Text #383838, Primary Accent #EADDD7, Hover #F0EBE8 -->
+    <!-- Application Structure Plan: Tabbed interface with modules, interactive code examples, practice exercises -->
+    <!-- Visualization & Content Choices: Code syntax highlighting, interactive instruction decoder, step-by-step execution -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    
+    <!-- Embedded CSS -->
+    <style>
+        body {
+            background-color: #FDFBF8;
+            color: #383838;
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .code-font {
+            font-family: 'Fira Code', monospace;
+        }
+        
+        .primary-accent {
+            background-color: #EADDD7;
+        }
+        
+        .hover-accent:hover {
+            background-color: #F0EBE8;
+        }
+        
+        .tab-active {
+            background-color: #EADDD7;
+            border-bottom: 2px solid #383838;
+        }
+        
+        .code-highlight {
+            background-color: #F0EBE8;
+            border-left: 4px solid #EADDD7;
+        }
+        
+        .instruction-box {
+            border: 2px solid #EADDD7;
+            background-color: #FDFBF8;
+        }
+        
+        .register-display {
+            background-color: #F0EBE8;
+            border: 1px solid #EADDD7;
+        }
+        
+        @media print {
+            .no-print { display: none; }
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.3s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .pulse-highlight {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { background-color: #F0EBE8; }
+            50% { background-color: #EADDD7; }
+        }
+    </style>
+</head>
+<body class="antialiased">
+    <!-- Skip to Content Link -->
+    <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 bg-blue-600 text-white px-4 py-2 rounded">
+        Skip to main content
+    </a>
+
+    <div class="container mx-auto p-4 md:p-8 max-w-6xl">
+        <!-- Header -->
+        <header class="text-center mb-8">
+            <h1 class="text-4xl md:text-5xl font-bold mb-4">Week 6: MIPS Arithmetic & Logic Instructions</h1>
+            <p class="text-lg text-gray-600">Interactive Learning Guide</p>
+            <div class="mt-4 p-4 primary-accent rounded-lg">
+                <p class="font-medium">Learning Objectives: Master R-type and I-type instructions, implement arithmetic and logical operations, and debug MIPS programs effectively.</p>
+            </div>
+        </header>
+
+        <!-- Progress Tracker -->
+        <div class="mb-8 p-4 border-2 border-gray-300 rounded-lg">
+            <h3 class="font-semibold mb-2">Your Progress</h3>
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-2">
+                <div class="progress-item p-2 text-center rounded cursor-pointer hover-accent" data-module="1">
+                    <span class="block font-medium">Module 1</span>
+                    <span class="text-sm">R-Type Instructions</span>
+                    <div class="progress-indicator mt-1 h-2 bg-gray-200 rounded">
+                        <div class="progress-bar h-full bg-green-500 rounded" style="width: 0%"></div>
+                    </div>
+                </div>
+                <div class="progress-item p-2 text-center rounded cursor-pointer hover-accent" data-module="2">
+                    <span class="block font-medium">Module 2</span>
+                    <span class="text-sm">I-Type Instructions</span>
+                    <div class="progress-indicator mt-1 h-2 bg-gray-200 rounded">
+                        <div class="progress-bar h-full bg-green-500 rounded" style="width: 0%"></div>
+                    </div>
+                </div>
+                <div class="progress-item p-2 text-center rounded cursor-pointer hover-accent" data-module="3">
+                    <span class="block font-medium">Module 3</span>
+                    <span class="text-sm">Shift Operations</span>
+                    <div class="progress-indicator mt-1 h-2 bg-gray-200 rounded">
+                        <div class="progress-bar h-full bg-green-500 rounded" style="width: 0%"></div>
+                    </div>
+                </div>
+                <div class="progress-item p-2 text-center rounded cursor-pointer hover-accent" data-module="4">
+                    <span class="block font-medium">Module 4</span>
+                    <span class="text-sm">Programming & Debug</span>
+                    <div class="progress-indicator mt-1 h-2 bg-gray-200 rounded">
+                        <div class="progress-bar h-full bg-green-500 rounded" style="width: 0%"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Navigation Tabs -->
+        <nav class="mb-8" role="tablist">
+            <div class="flex flex-wrap border-b-2 border-gray-300">
+                <button class="tab-button px-6 py-3 font-medium hover-accent focus:ring-2 focus:ring-blue-500" 
+                        role="tab" aria-selected="true" aria-controls="overview-panel" data-tab="overview">
+                    Overview
+                </button>
+                <button class="tab-button px-6 py-3 font-medium hover-accent focus:ring-2 focus:ring-blue-500" 
+                        role="tab" aria-selected="false" aria-controls="instruction-decoder-panel" data-tab="instruction-decoder">
+                    Instruction Decoder
+                </button>
+                <button class="tab-button px-6 py-3 font-medium hover-accent focus:ring-2 focus:ring-blue-500" 
+                        role="tab" aria-selected="false" aria-controls="simulator-panel" data-tab="simulator">
+                    MIPS Simulator
+                </button>
+                <button class="tab-button px-6 py-3 font-medium hover-accent focus:ring-2 focus:ring-blue-500" 
+                        role="tab" aria-selected="false" aria-controls="exercises-panel" data-tab="exercises">
+                    Practice Exercises
+                </button>
+                <button class="tab-button px-6 py-3 font-medium hover-accent focus:ring-2 focus:ring-blue-500" 
+                        role="tab" aria-selected="false" aria-controls="reference-panel" data-tab="reference">
+                    Quick Reference
+                </button>
+            </div>
+        </nav>
+
+        <!-- Main Content Area -->
+        <main id="main-content">
+            <!-- Overview Panel -->
+            <div id="overview-panel" class="tab-panel fade-in" role="tabpanel" aria-labelledby="overview-tab">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <!-- Left Column: Module Selection -->
+                    <div>
+                        <h2 class="text-2xl font-bold mb-4">Learning Modules</h2>
+                        <div class="space-y-4">
+                            <div class="module-card p-6 border-2 border-gray-300 rounded-lg cursor-pointer hover-accent" data-module="1">
+                                <h3 class="text-xl font-semibold mb-2">Module 1: R-Type Arithmetic Instructions</h3>
+                                <p class="text-gray-600 mb-3">Learn register-to-register operations, instruction format, and basic arithmetic.</p>
+                                <div class="flex items-center text-sm">
+                                    <span class="bg-blue-100 text-blue-800 px-2 py-1 rounded mr-2">2-3 hours</span>
+                                    <span class="text-gray-500">Essential foundation</span>
+                                </div>
+                            </div>
+                            
+                            <div class="module-card p-6 border-2 border-gray-300 rounded-lg cursor-pointer hover-accent" data-module="2">
+                                <h3 class="text-xl font-semibold mb-2">Module 2: I-Type Instructions & Immediate Operands</h3>
+                                <p class="text-gray-600 mb-3">Master immediate operands, sign extension, and constant operations.</p>
+                                <div class="flex items-center text-sm">
+                                    <span class="bg-blue-100 text-blue-800 px-2 py-1 rounded mr-2">2-3 hours</span>
+                                    <span class="text-gray-500">Building complexity</span>
+                                </div>
+                            </div>
+                            
+                            <div class="module-card p-6 border-2 border-gray-300 rounded-lg cursor-pointer hover-accent" data-module="3">
+                                <h3 class="text-xl font-semibold mb-2">Module 3: Shift Operations & Bit Manipulation</h3>
+                                <p class="text-gray-600 mb-3">Explore shift instructions and advanced bit manipulation techniques.</p>
+                                <div class="flex items-center text-sm">
+                                    <span class="bg-blue-100 text-blue-800 px-2 py-1 rounded mr-2">2-3 hours</span>
+                                    <span class="text-gray-500">Advanced techniques</span>
+                                </div>
+                            </div>
+                            
+                            <div class="module-card p-6 border-2 border-gray-300 rounded-lg cursor-pointer hover-accent" data-module="4">
+                                <h3 class="text-xl font-semibold mb-2">Module 4: Programming & Debugging</h3>
+                                <p class="text-gray-600 mb-3">Convert C to MIPS, master debugging, and optimize performance.</p>
+                                <div class="flex items-center text-sm">
+                                    <span class="bg-blue-100 text-blue-800 px-2 py-1 rounded mr-2">3-4 hours</span>
+                                    <span class="text-gray-500">Practical application</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right Column: Module Content -->
+                    <div>
+                        <div id="module-content" class="border-2 border-gray-300 rounded-lg p-6">
+                            <h3 class="text-xl font-semibold mb-4">Select a Module to Begin</h3>
+                            <p class="text-gray-600">Click on any module card to view detailed content, activities, and interactive exercises.</p>
+                            
+                            <div class="mt-6 p-4 primary-accent rounded-lg">
+                                <h4 class="font-semibold mb-2">Prerequisites Check</h4>
+                                <ul class="space-y-1 text-sm">
+                                    <li>✓ Week 5: MIPS Architecture basics completed</li>
+                                    <li>✓ Binary and hexadecimal number systems</li>
+                                    <li>✓ Register file understanding</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Instruction Decoder Panel -->
+            <div id="instruction-decoder-panel" class="tab-panel hidden" role="tabpanel" aria-labelledby="instruction-decoder-tab">
+                <h2 class="text-2xl font-bold mb-6">Interactive Instruction Decoder</h2>
+                
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <!-- Input Section -->
+                    <div>
+                        <h3 class="text-xl font-semibold mb-4">Enter MIPS Instruction</h3>
+                        <div class="space-y-4">
+                            <div>
+                                <label for="instruction-input" class="block font-medium mb-2">Assembly Instruction:</label>
+                                <input type="text" id="instruction-input" 
+                                       class="w-full p-3 border-2 border-gray-300 rounded code-font focus:ring-2 focus:ring-blue-500"
+                                       placeholder="e.g., add $t0, $t1, $t2"
+                                       aria-describedby="instruction-help">
+                                <p id="instruction-help" class="text-sm text-gray-600 mt-1">Enter a MIPS assembly instruction to decode</p>
+                            </div>
+                            
+                            <button id="decode-btn" class="w-full bg-blue-600 text-white py-3 px-6 rounded font-medium hover:bg-blue-700 focus:ring-2 focus:ring-blue-500">
+                                Decode Instruction
+                            </button>
+                            
+                            <div class="space-y-2">
+                                <h4 class="font-medium">Quick Examples:</h4>
+                                <div class="flex flex-wrap gap-2">
+                                    <button class="example-btn px-3 py-1 text-sm border border-gray-300 rounded code-font hover-accent" data-instruction="add $t0, $t1, $t2">add $t0, $t1, $t2</button>
+                                    <button class="example-btn px-3 py-1 text-sm border border-gray-300 rounded code-font hover-accent" data-instruction="addi $t0, $t1, 100">addi $t0, $t1, 100</button>
+                                    <button class="example-btn px-3 py-1 text-sm border border-gray-300 rounded code-font hover-accent" data-instruction="sll $t0, $t1, 4">sll $t0, $t1, 4</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Output Section -->
+                    <div>
+                        <h3 class="text-xl font-semibold mb-4">Instruction Analysis</h3>
+                        <div id="decode-output" class="instruction-box p-4 rounded-lg">
+                            <p class="text-gray-600">Enter an instruction to see its breakdown...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- MIPS Simulator Panel -->
+            <div id="simulator-panel" class="tab-panel hidden" role="tabpanel" aria-labelledby="simulator-tab">
+                <h2 class="text-2xl font-bold mb-6">Interactive MIPS Simulator</h2>
+                
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <!-- Code Input -->
+                    <div class="lg:col-span-2">
+                        <h3 class="text-xl font-semibold mb-4">MIPS Assembly Code</h3>
+                        <textarea id="code-input" 
+                                  class="w-full h-64 p-4 border-2 border-gray-300 rounded code-font text-sm focus:ring-2 focus:ring-blue-500"
+                                  placeholder="# Enter your MIPS code here
+li $t0, 10
+li $t1, 20
+add $t2, $t0, $t1"
+                                  aria-label="MIPS assembly code input"></textarea>
+                        
+                        <div class="flex gap-4 mt-4">
+                            <button id="run-btn" class="bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700 focus:ring-2 focus:ring-green-500">
+                                Run Code
+                            </button>
+                            <button id="step-btn" class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 focus:ring-2 focus:ring-blue-500">
+                                Step Through
+                            </button>
+                            <button id="reset-btn" class="bg-gray-600 text-white px-6 py-2 rounded hover:bg-gray-700 focus:ring-2 focus:ring-gray-500">
+                                Reset
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Register Display -->
+                    <div>
+                        <h3 class="text-xl font-semibold mb-4">Registers</h3>
+                        <div id="register-display" class="register-display p-4 rounded-lg text-sm code-font">
+                            <div class="space-y-1">
+                                <div>$t0: 0x00000000</div>
+                                <div>$t1: 0x00000000</div>
+                                <div>$t2: 0x00000000</div>
+                                <div>$t3: 0x00000000</div>
+                                <div>$t4: 0x00000000</div>
+                                <div>$t5: 0x00000000</div>
+                                <div>$t6: 0x00000000</div>
+                                <div>$t7: 0x00000000</div>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-4">
+                            <h4 class="font-semibold mb-2">Execution Status</h4>
+                            <div id="execution-status" class="p-2 rounded text-sm">
+                                Ready to execute
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Practice Exercises Panel -->
+            <div id="exercises-panel" class="tab-panel hidden" role="tabpanel" aria-labelledby="exercises-tab">
+                <h2 class="text-2xl font-bold mb-6">Practice Exercises</h2>
+                
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <!-- Exercise Selection -->
+                    <div>
+                        <h3 class="text-xl font-semibold mb-4">Choose an Exercise</h3>
+                        <div class="space-y-4">
+                            <div class="exercise-card p-4 border-2 border-gray-300 rounded-lg cursor-pointer hover-accent" data-exercise="arithmetic">
+                                <h4 class="font-semibold">Basic Arithmetic Operations</h4>
+                                <p class="text-sm text-gray-600">Practice add, sub, and register operations</p>
+                                <span class="inline-block mt-2 px-2 py-1 bg-green-100 text-green-800 text-xs rounded">Beginner</span>
+                            </div>
+                            
+                            <div class="exercise-card p-4 border-2 border-gray-300 rounded-lg cursor-pointer hover-accent" data-exercise="immediate">
+                                <h4 class="font-semibold">Immediate Operations</h4>
+                                <p class="text-sm text-gray-600">Work with addi, constants, and I-type instructions</p>
+                                <span class="inline-block mt-2 px-2 py-1 bg-yellow-100 text-yellow-800 text-xs rounded">Intermediate</span>
+                            </div>
+                            
+                            <div class="exercise-card p-4 border-2 border-gray-300 rounded-lg cursor-pointer hover-accent" data-exercise="bitwise">
+                                <h4 class="font-semibold">Bitwise Operations</h4>
+                                <p class="text-sm text-gray-600">Master and, or, xor, and bit manipulation</p>
+                                <span class="inline-block mt-2 px-2 py-1 bg-yellow-100 text-yellow-800 text-xs rounded">Intermediate</span>
+                            </div>
+                            
+                            <div class="exercise-card p-4 border-2 border-gray-300 rounded-lg cursor-pointer hover-accent" data-exercise="shifts">
+                                <h4 class="font-semibold">Shift Operations</h4>
+                                <p class="text-sm text-gray-600">Practice sll, srl, sra for multiplication and division</p>
+                                <span class="inline-block mt-2 px-2 py-1 bg-red-100 text-red-800 text-xs rounded">Advanced</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Exercise Content -->
+                    <div>
+                        <div id="exercise-content" class="border-2 border-gray-300 rounded-lg p-6">
+                            <h3 class="text-xl font-semibold mb-4">Select an Exercise</h3>
+                            <p class="text-gray-600">Choose an exercise from the left to begin practicing.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Reference Panel -->
+            <div id="reference-panel" class="tab-panel hidden" role="tabpanel" aria-labelledby="reference-tab">
+                <h2 class="text-2xl font-bold mb-6">Quick Reference</h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- R-Type Instructions -->
+                    <div class="border-2 border-gray-300 rounded-lg p-4">
+                        <h3 class="text-lg font-semibold mb-3">R-Type Instructions</h3>
+                        <div class="text-sm code-font space-y-1">
+                            <div><strong>add</strong> rd, rs, rt</div>
+                            <div><strong>sub</strong> rd, rs, rt</div>
+                            <div><strong>and</strong> rd, rs, rt</div>
+                            <div><strong>or</strong> rd, rs, rt</div>
+                            <div><strong>xor</strong> rd, rs, rt</div>
+                            <div><strong>nor</strong> rd, rs, rt</div>
+                            <div><strong>sll</strong> rd, rt, shamt</div>
+                            <div><strong>srl</strong> rd, rt, shamt</div>
+                            <div><strong>sra</strong> rd, rt, shamt</div>
+                        </div>
+                    </div>
+
+                    <!-- I-Type Instructions -->
+                    <div class="border-2 border-gray-300 rounded-lg p-4">
+                        <h3 class="text-lg font-semibold mb-3">I-Type Instructions</h3>
+                        <div class="text-sm code-font space-y-1">
+                            <div><strong>addi</strong> rt, rs, imm</div>
+                            <div><strong>andi</strong> rt, rs, imm</div>
+                            <div><strong>ori</strong> rt, rs, imm</div>
+                            <div><strong>xori</strong> rt, rs, imm</div>
+                            <div><strong>slti</strong> rt, rs, imm</div>
+                            <div><strong>lui</strong> rt, imm</div>
+                        </div>
+                    </div>
+
+                    <!-- Common Registers -->
+                    <div class="border-2 border-gray-300 rounded-lg p-4">
+                        <h3 class="text-lg font-semibold mb-3">Common Registers</h3>
+                        <div class="text-sm code-font space-y-1">
+                            <div><strong>$t0-$t7:</strong> Temporary</div>
+                            <div><strong>$s0-$s7:</strong> Saved</div>
+                            <div><strong>$a0-$a3:</strong> Arguments</div>
+                            <div><strong>$v0-$v1:</strong> Return values</div>
+                            <div><strong>$zero:</strong> Always 0</div>
+                            <div><strong>$ra:</strong> Return address</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Instruction Format Reference -->
+                <div class="mt-8">
+                    <h3 class="text-xl font-semibold mb-4">Instruction Formats</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="border-2 border-gray-300 rounded-lg p-4">
+                            <h4 class="font-semibold mb-2">R-Type Format</h4>
+                            <div class="code-font text-sm p-2 bg-gray-100 rounded">
+                                op(6) | rs(5) | rt(5) | rd(5) | shamt(5) | funct(6)
+                            </div>
+                            <p class="text-sm text-gray-600 mt-2">Used for register-to-register operations</p>
+                        </div>
+                        
+                        <div class="border-2 border-gray-300 rounded-lg p-4">
+                            <h4 class="font-semibold mb-2">I-Type Format</h4>
+                            <div class="code-font text-sm p-2 bg-gray-100 rounded">
+                                op(6) | rs(5) | rt(5) | immediate(16)
+                            </div>
+                            <p class="text-sm text-gray-600 mt-2">Used for immediate operations and loads/stores</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Embedded JavaScript -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Application state
+            let currentTab = 'overview';
+            let currentModule = null;
+            let registers = {
+                t0: 0, t1: 0, t2: 0, t3: 0, t4: 0, t5: 0, t6: 0, t7: 0
+            };
+            let progressData = { 1: 0, 2: 0, 3: 0, 4: 0 };
+
+            // Tab functionality
+            const tabButtons = document.querySelectorAll('.tab-button');
+            const tabPanels = document.querySelectorAll('.tab-panel');
+
+            function showTab(tabName) {
+                // Update buttons
+                tabButtons.forEach(btn => {
+                    btn.classList.remove('tab-active');
+                    btn.setAttribute('aria-selected', 'false');
+                });
+                
+                const activeButton = document.querySelector(`[data-tab="${tabName}"]`);
+                if (activeButton) {
+                    activeButton.classList.add('tab-active');
+                    activeButton.setAttribute('aria-selected', 'true');
+                }
+
+                // Update panels
+                tabPanels.forEach(panel => {
+                    panel.classList.add('hidden');
+                });
+                
+                const activePanel = document.getElementById(`${tabName}-panel`);
+                if (activePanel) {
+                    activePanel.classList.remove('hidden');
+                    activePanel.classList.add('fade-in');
+                }
+
+                currentTab = tabName;
+            }
+
+            tabButtons.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const tabName = btn.getAttribute('data-tab');
+                    showTab(tabName);
+                });
+            });
+
+            // Module content data
+            const moduleContent = {
+                1: {
+                    title: "Module 1: R-Type Arithmetic Instructions",
+                    content: `
+                        <h3 class="text-xl font-semibold mb-4">R-Type Instruction Format</h3>
+                        <div class="code-highlight p-4 rounded mb-4">
+                            <div class="code-font text-sm">
+                                op(6) | rs(5) | rt(5) | rd(5) | shamt(5) | funct(6)
+                            </div>
+                        </div>
+                        
+                        <h4 class="font-semibold mb-2">Key Characteristics:</h4>
+                        <ul class="list-disc pl-6 mb-4 space-y-1">
+                            <li>Opcode always <code>000000</code> for R-type</li>
+                            <li>Function code (funct) specifies the operation</li>
+                            <li>Three register operands: rs, rt, rd</li>
+                            <li>All operations between registers only</li>
+                        </ul>
+                        
+                        <h4 class="font-semibold mb-2">Practice Example:</h4>
+                        <div class="code-highlight p-4 rounded mb-4">
+                            <div class="code-font text-sm">
+                                add $t0, $t1, $t2  # $t0 = $t1 + $t2<br>
+                                sub $t3, $t0, $t1  # $t3 = $t0 - $t1
+                            </div>
+                        </div>
+                        
+                        <button class="complete-activity bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700" data-module="1">
+                            Mark Module 1 Complete
+                        </button>
+                    `
+                },
+                2: {
+                    title: "Module 2: I-Type Instructions & Immediate Operands",
+                    content: `
+                        <h3 class="text-xl font-semibold mb-4">I-Type Instruction Format</h3>
+                        <div class="code-highlight p-4 rounded mb-4">
+                            <div class="code-font text-sm">
+                                op(6) | rs(5) | rt(5) | immediate(16)
+                            </div>
+                        </div>
+                        
+                        <h4 class="font-semibold mb-2">Key Characteristics:</h4>
+                        <ul class="list-disc pl-6 mb-4 space-y-1">
+                            <li>Unique opcode for each instruction type</li>
+                            <li>16-bit immediate value (constant)</li>
+                            <li>Sign-extended to 32 bits for arithmetic operations</li>
+                            <li>Zero-extended for logical operations</li>
+                        </ul>
+                        
+                        <h4 class="font-semibold mb-2">Practice Example:</h4>
+                        <div class="code-highlight p-4 rounded mb-4">
+                            <div class="code-font text-sm">
+                                addi $t0, $t1, 100  # $t0 = $t1 + 100<br>
+                                andi $t2, $t0, 0xFF # $t2 = $t0 & 0xFF<br>
+                                lui $t3, 0x1234     # Load upper immediate
+                            </div>
+                        </div>
+                        
+                        <button class="complete-activity bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700" data-module="2">
+                            Mark Module 2 Complete
+                        </button>
+                    `
+                },
+                3: {
+                    title: "Module 3: Shift Operations & Bit Manipulation",
+                    content: `
+                        <h3 class="text-xl font-semibold mb-4">Shift Instructions</h3>
+                        
+                        <h4 class="font-semibold mb-2">Three Types of Shifts:</h4>
+                        <ul class="list-disc pl-6 mb-4 space-y-1">
+                            <li><strong>sll:</strong> Shift Left Logical (multiply by 2^n)</li>
+                            <li><strong>srl:</strong> Shift Right Logical (unsigned divide by 2^n)</li>
+                            <li><strong>sra:</strong> Shift Right Arithmetic (signed divide by 2^n)</li>
+                        </ul>
+                        
+                        <h4 class="font-semibold mb-2">Practice Example:</h4>
+                        <div class="code-highlight p-4 rounded mb-4">
+                            <div class="code-font text-sm">
+                                li $t0, 8           # Load 8<br>
+                                sll $t1, $t0, 2     # $t1 = 8 << 2 = 32<br>
+                                srl $t2, $t1, 1     # $t2 = 32 >> 1 = 16<br>
+                                sra $t3, $t1, 3     # $t3 = 32 >> 3 = 4
+                            </div>
+                        </div>
+                        
+                        <button class="complete-activity bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700" data-module="3">
+                            Mark Module 3 Complete
+                        </button>
+                    `
+                },
+                4: {
+                    title: "Module 4: Programming & Debugging",
+                    content: `
+                        <h3 class="text-xl font-semibold mb-4">C to MIPS Translation</h3>
+                        
+                        <h4 class="font-semibold mb-2">Translation Example:</h4>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                            <div>
+                                <h5 class="font-medium mb-2">C Code:</h5>
+                                <div class="code-highlight p-3 rounded">
+                                    <div class="code-font text-sm">
+                                        int result = (a + b) * 4;<br>
+                                        result = result - c;
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                                <h5 class="font-medium mb-2">MIPS Translation:</h5>
+                                <div class="code-highlight p-3 rounded">
+                                    <div class="code-font text-sm">
+                                        add $t0, $s0, $s1   # a + b<br>
+                                        sll $t0, $t0, 2     # * 4<br>
+                                        sub $t0, $t0, $s2   # - c
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <h4 class="font-semibold mb-2">Debugging Tips:</h4>
+                        <ul class="list-disc pl-6 mb-4 space-y-1">
+                            <li>Use single-step execution</li>
+                            <li>Monitor register values</li>
+                            <li>Add comments to track operations</li>
+                            <li>Test with known input values</li>
+                        </ul>
+                        
+                        <button class="complete-activity bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700" data-module="4">
+                            Mark Module 4 Complete
+                        </button>
+                    `
+                }
+            };
+
+            // Module selection functionality
+            const moduleCards = document.querySelectorAll('.module-card');
+            const moduleContentDiv = document.getElementById('module-content');
+
+            moduleCards.forEach(card => {
+                card.addEventListener('click', () => {
+                    const moduleNum = parseInt(card.getAttribute('data-module'));
+                    showModuleContent(moduleNum);
+                });
+            });
+
+            function showModuleContent(moduleNum) {
+                const module = moduleContent[moduleNum];
+                if (module) {
+                    moduleContentDiv.innerHTML = `
+                        <h3 class="text-xl font-semibold mb-4">${module.title}</h3>
+                        ${module.content}
+                    `;
+                    currentModule = moduleNum;
+                    
+                    // Add event listener for completion button
+                    const completeBtn = moduleContentDiv.querySelector('.complete-activity');
+                    if (completeBtn) {
+                        completeBtn.addEventListener('click', () => {
+                            markModuleComplete(moduleNum);
+                        });
+                    }
+                }
+            }
+
+            // Progress tracking
+            function markModuleComplete(moduleNum) {
+                progressData[moduleNum] = 100;
+                updateProgressDisplay();
+                
+                // Show completion message
+                const btn = document.querySelector(`[data-module="${moduleNum}"] .complete-activity`);
+                if (btn) {
+                    btn.textContent = 'Module Complete!';
+                    btn.classList.remove('bg-green-600', 'hover:bg-green-700');
+                    btn.classList.add('bg-green-800');
+                    btn.disabled = true;
+                }
+            }
+
+            function updateProgressDisplay() {
+                Object.keys(progressData).forEach(moduleNum => {
+                    const progressBar = document.querySelector(`[data-module="${moduleNum}"] .progress-bar`);
+                    if (progressBar) {
+                        progressBar.style.width = `${progressData[moduleNum]}%`;
+                    }
+                });
+            }
+
+            // Instruction decoder functionality
+            const instructionInput = document.getElementById('instruction-input');
+            const decodeBtn = document.getElementById('decode-btn');
+            const decodeOutput = document.getElementById('decode-output');
+            const exampleBtns = document.querySelectorAll('.example-btn');
+
+            // Instruction patterns and decoder
+            const instructionPatterns = {
+                'add': { type: 'R', opcode: '000000', funct: '100000', format: 'add rd, rs, rt' },
+                'sub': { type: 'R', opcode: '000000', funct: '100010', format: 'sub rd, rs, rt' },
+                'and': { type: 'R', opcode: '000000', funct: '100100', format: 'and rd, rs, rt' },
+                'or': { type: 'R', opcode: '000000', funct: '100101', format: 'or rd, rs, rt' },
+                'xor': { type: 'R', opcode: '000000', funct: '100110', format: 'xor rd, rs, rt' },
+                'nor': { type: 'R', opcode: '000000', funct: '100111', format: 'nor rd, rs, rt' },
+                'sll': { type: 'R', opcode: '000000', funct: '000000', format: 'sll rd, rt, shamt' },
+                'srl': { type: 'R', opcode: '000000', funct: '000010', format: 'srl rd, rt, shamt' },
+                'sra': { type: 'R', opcode: '000000', funct: '000011', format: 'sra rd, rt, shamt' },
+                'addi': { type: 'I', opcode: '001000', format: 'addi rt, rs, immediate' },
+                'andi': { type: 'I', opcode: '001100', format: 'andi rt, rs, immediate' },
+                'ori': { type: 'I', opcode: '001101', format: 'ori rt, rs, immediate' },
+                'xori': { type: 'I', opcode: '001110', format: 'xori rt, rs, immediate' },
+                'lui': { type: 'I', opcode: '001111', format: 'lui rt, immediate' },
+                'slti': { type: 'I', opcode: '001010', format: 'slti rt, rs, immediate' }
+            };
+
+            const registerMap = {
+                '$zero': 0, '$at': 1, '$v0': 2, '$v1': 3,
+                '$a0': 4, '$a1': 5, '$a2': 6, '$a3': 7,
+                '$t0': 8, '$t1': 9, '$t2': 10, '$t3': 11,
+                '$t4': 12, '$t5': 13, '$t6': 14, '$t7': 15,
+                '$s0': 16, '$s1': 17, '$s2': 18, '$s3': 19,
+                '$s4': 20, '$s5': 21, '$s6': 22, '$s7': 23,
+                '$t8': 24, '$t9': 25, '$k0': 26, '$k1': 27,
+                '$gp': 28, '$sp': 29, '$fp': 30, '$ra': 31
+            };
+
+            function decodeInstruction(instruction) {
+                const parts = instruction.trim().toLowerCase().split(/[\s,]+/);
+                const opcode = parts[0];
+                
+                if (!instructionPatterns[opcode]) {
+                    return '<p class="text-red-600">Unknown instruction!</p>';
+                }
+
+                const pattern = instructionPatterns[opcode];
+                let output = `<h4 class="font-semibold mb-2">Instruction Analysis: ${instruction}</h4>`;
+                
+                output += `<div class="mb-4">`;
+                output += `<p><strong>Type:</strong> ${pattern.type}-Type</p>`;
+                output += `<p><strong>Format:</strong> <code>${pattern.format}</code></p>`;
+                output += `<p><strong>Opcode:</strong> ${pattern.opcode}</p>`;
+                
+                if (pattern.type === 'R' && pattern.funct) {
+                    output += `<p><strong>Function:</strong> ${pattern.funct}</p>`;
+                }
+                output += `</div>`;
+
+                // Field breakdown
+                output += `<div class="mb-4">`;
+                output += `<h5 class="font-medium mb-2">Field Breakdown:</h5>`;
+                
+                if (pattern.type === 'R') {
+                    if (opcode === 'sll' || opcode === 'srl' || opcode === 'sra') {
+                        // Shift instructions have different format
+                        output += `<div class="code-font text-sm bg-gray-100 p-2 rounded">`;
+                        output += `<div>rd: ${parts[1] || 'N/A'}</div>`;
+                        output += `<div>rt: ${parts[2] || 'N/A'}</div>`;
+                        output += `<div>shamt: ${parts[3] || 'N/A'}</div>`;
+                        output += `</div>`;
+                    } else {
+                        output += `<div class="code-font text-sm bg-gray-100 p-2 rounded">`;
+                        output += `<div>rd: ${parts[1] || 'N/A'}</div>`;
+                        output += `<div>rs: ${parts[2] || 'N/A'}</div>`;
+                        output += `<div>rt: ${parts[3] || 'N/A'}</div>`;
+                        output += `</div>`;
+                    }
+                } else {
+                    output += `<div class="code-font text-sm bg-gray-100 p-2 rounded">`;
+                    output += `<div>rt: ${parts[1] || 'N/A'}</div>`;
+                    output += `<div>rs: ${parts[2] || 'N/A'}</div>`;
+                    output += `<div>immediate: ${parts[3] || 'N/A'}</div>`;
+                    output += `</div>`;
+                }
+                output += `</div>`;
+
+                return output;
+            }
+
+            decodeBtn.addEventListener('click', () => {
+                const instruction = instructionInput.value.trim();
+                if (instruction) {
+                    decodeOutput.innerHTML = decodeInstruction(instruction);
+                } else {
+                    decodeOutput.innerHTML = '<p class="text-red-600">Please enter an instruction!</p>';
+                }
+            });
+
+            exampleBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const instruction = btn.getAttribute('data-instruction');
+                    instructionInput.value = instruction;
+                    decodeOutput.innerHTML = decodeInstruction(instruction);
+                });
+            });
+
+            // MIPS Simulator functionality
+            const codeInput = document.getElementById('code-input');
+            const runBtn = document.getElementById('run-btn');
+            const stepBtn = document.getElementById('step-btn');
+            const resetBtn = document.getElementById('reset-btn');
+            const registerDisplay = document.getElementById('register-display');
+            const executionStatus = document.getElementById('execution-status');
+
+            let currentInstructionIndex = 0;
+            let instructions = [];
+            let isRunning = false;
+
+            function updateRegisterDisplay() {
+                const regNames = ['t0', 't1', 't2', 't3', 't4', 't5', 't6', 't7'];
+                let html = '<div class="space-y-1">';
+                regNames.forEach(reg => {
+                    const value = registers[reg] || 0;
+                    html += `<div>${reg}: 0x${value.toString(16).padStart(8, '0').toUpperCase()}</div>`;
+                });
+                html += '</div>';
+                registerDisplay.innerHTML = html;
+            }
+
+            function parseInstructions(code) {
+                const lines = code.split('\n');
+                const parsed = [];
+                
+                lines.forEach((line, index) => {
+                    const trimmed = line.trim();
+                    if (trimmed && !trimmed.startsWith('#')) {
+                        parsed.push({
+                            line: index + 1,
+                            instruction: trimmed,
+                            executed: false
+                        });
+                    }
+                });
+                
+                return parsed;
+            }
+
+            function executeInstruction(instruction) {
+                const parts = instruction.toLowerCase().split(/[\s,]+/);
+                const opcode = parts[0];
+                
+                try {
+                    switch (opcode) {
+                        case 'li':
+                            // Pseudo-instruction: load immediate
+                            const reg = parts[1].replace(', '');
+                            const value = parseInt(parts[2]);
+                            if (registers.hasOwnProperty(reg)) {
+                                registers[reg] = value;
+                                return `Loaded ${value} into ${reg}`;
+                            }
+                            break;
+                            
+                        case 'add':
+                            const rd = parts[1].replace(', '');
+                            const rs = parts[2].replace(', '');
+                            const rt = parts[3].replace(', '');
+                            if (registers.hasOwnProperty(rd) && registers.hasOwnProperty(rs) && registers.hasOwnProperty(rt)) {
+                                registers[rd] = registers[rs] + registers[rt];
+                                return `${rd} = ${rs} + ${rt} = ${registers[rd]}`;
+                            }
+                            break;
+                            
+                        case 'sub':
+                            const rd_sub = parts[1].replace(', '');
+                            const rs_sub = parts[2].replace(', '');
+                            const rt_sub = parts[3].replace(', '');
+                            if (registers.hasOwnProperty(rd_sub) && registers.hasOwnProperty(rs_sub) && registers.hasOwnProperty(rt_sub)) {
+                                registers[rd_sub] = registers[rs_sub] - registers[rt_sub];
+                                return `${rd_sub} = ${rs_sub} - ${rt_sub} = ${registers[rd_sub]}`;
+                            }
+                            break;
+                            
+                        case 'addi':
+                            const rt_addi = parts[1].replace(', '');
+                            const rs_addi = parts[2].replace(', '');
+                            const imm = parseInt(parts[3]);
+                            if (registers.hasOwnProperty(rt_addi) && registers.hasOwnProperty(rs_addi)) {
+                                registers[rt_addi] = registers[rs_addi] + imm;
+                                return `${rt_addi} = ${rs_addi} + ${imm} = ${registers[rt_addi]}`;
+                            }
+                            break;
+                            
+                        case 'and':
+                            const rd_and = parts[1].replace(', '');
+                            const rs_and = parts[2].replace(', '');
+                            const rt_and = parts[3].replace(', '');
+                            if (registers.hasOwnProperty(rd_and) && registers.hasOwnProperty(rs_and) && registers.hasOwnProperty(rt_and)) {
+                                registers[rd_and] = registers[rs_and] & registers[rt_and];
+                                return `${rd_and} = ${rs_and} & ${rt_and} = ${registers[rd_and]}`;
+                            }
+                            break;
+                            
+                        case 'or':
+                            const rd_or = parts[1].replace(', '');
+                            const rs_or = parts[2].replace(', '');
+                            const rt_or = parts[3].replace(', '');
+                            if (registers.hasOwnProperty(rd_or) && registers.hasOwnProperty(rs_or) && registers.hasOwnProperty(rt_or)) {
+                                registers[rd_or] = registers[rs_or] | registers[rt_or];
+                                return `${rd_or} = ${rs_or} | ${rt_or} = ${registers[rd_or]}`;
+                            }
+                            break;
+                            
+                        case 'sll':
+                            const rd_sll = parts[1].replace(', '');
+                            const rt_sll = parts[2].replace(', '');
+                            const shamt = parseInt(parts[3]);
+                            if (registers.hasOwnProperty(rd_sll) && registers.hasOwnProperty(rt_sll)) {
+                                registers[rd_sll] = registers[rt_sll] << shamt;
+                                return `${rd_sll} = ${rt_sll} << ${shamt} = ${registers[rd_sll]}`;
+                            }
+                            break;
+                            
+                        default:
+                            return `Unknown instruction: ${opcode}`;
+                    }
+                } catch (error) {
+                    return `Error executing instruction: ${error.message}`;
+                }
+                
+                return `Executed: ${instruction}`;
+            }
+
+            function resetSimulator() {
+                registers = { t0: 0, t1: 0, t2: 0, t3: 0, t4: 0, t5: 0, t6: 0, t7: 0 };
+                currentInstructionIndex = 0;
+                instructions = [];
+                isRunning = false;
+                updateRegisterDisplay();
+                executionStatus.textContent = 'Ready to execute';
+                executionStatus.className = 'p-2 rounded text-sm bg-gray-100';
+            }
+
+            runBtn.addEventListener('click', () => {
+                const code = codeInput.value.trim();
+                if (!code) {
+                    executionStatus.textContent = 'No code to execute';
+                    executionStatus.className = 'p-2 rounded text-sm bg-red-100 text-red-800';
+                    return;
+                }
+
+                resetSimulator();
+                instructions = parseInstructions(code);
+                
+                // Execute all instructions
+                instructions.forEach((inst, index) => {
+                    const result = executeInstruction(inst.instruction);
+                    inst.executed = true;
+                    currentInstructionIndex = index + 1;
+                });
+                
+                updateRegisterDisplay();
+                executionStatus.textContent = `Executed ${instructions.length} instructions`;
+                executionStatus.className = 'p-2 rounded text-sm bg-green-100 text-green-800';
+            });
+
+            stepBtn.addEventListener('click', () => {
+                const code = codeInput.value.trim();
+                if (!code) {
+                    executionStatus.textContent = 'No code to execute';
+                    executionStatus.className = 'p-2 rounded text-sm bg-red-100 text-red-800';
+                    return;
+                }
+
+                if (instructions.length === 0) {
+                    instructions = parseInstructions(code);
+                    currentInstructionIndex = 0;
+                }
+
+                if (currentInstructionIndex < instructions.length) {
+                    const inst = instructions[currentInstructionIndex];
+                    const result = executeInstruction(inst.instruction);
+                    inst.executed = true;
+                    
+                    updateRegisterDisplay();
+                    executionStatus.textContent = `Step ${currentInstructionIndex + 1}: ${result}`;
+                    executionStatus.className = 'p-2 rounded text-sm bg-blue-100 text-blue-800';
+                    
+                    currentInstructionIndex++;
+                } else {
+                    executionStatus.textContent = 'All instructions executed';
+                    executionStatus.className = 'p-2 rounded text-sm bg-green-100 text-green-800';
+                }
+            });
+
+            resetBtn.addEventListener('click', resetSimulator);
+
+            // Exercise functionality
+            const exerciseCards = document.querySelectorAll('.exercise-card');
+            const exerciseContentDiv = document.getElementById('exercise-content');
+
+            const exerciseData = {
+                arithmetic: {
+                    title: "Basic Arithmetic Operations",
+                    problem: "Calculate the result of (a + b) - (c + d) where a=10, b=20, c=5, d=15.",
+                    solution: `add $t0, $s0, $s1    # $t0 = a + b
+add $t1, $s2, $s3    # $t1 = c + d
+sub $t2, $t0, $t1    # $t2 = (a+b) - (c+d)`,
+                    hint: "Use temporary registers $t0 and $t1 for intermediate results."
+                },
+                immediate: {
+                    title: "Immediate Operations",
+                    problem: "Add 100 to register $t0, then multiply by 4 using shift operations.",
+                    solution: `addi $t0, $t0, 100   # Add 100
+sll $t0, $t0, 2      # Multiply by 4 (shift left 2)`,
+                    hint: "Remember that shifting left by n positions multiplies by 2^n."
+                },
+                bitwise: {
+                    title: "Bitwise Operations",
+                    problem: "Extract the lower 8 bits of $t0 and store in $t1, then set bit 7 of $t1.",
+                    solution: `andi $t1, $t0, 0xFF  # Extract lower 8 bits
+ori $t1, $t1, 0x80   # Set bit 7`,
+                    hint: "Use AND to mask bits, OR to set bits."
+                },
+                shifts: {
+                    title: "Shift Operations",
+                    problem: "Divide $t0 by 16 (both signed and unsigned) and compare results.",
+                    solution: `srl $t1, $t0, 4      # Unsigned divide by 16
+sra $t2, $t0, 4      # Signed divide by 16`,
+                    hint: "SRL fills with zeros, SRA preserves the sign bit."
+                }
+            };
+
+            exerciseCards.forEach(card => {
+                card.addEventListener('click', () => {
+                    const exerciseType = card.getAttribute('data-exercise');
+                    showExerciseContent(exerciseType);
+                });
+            });
+
+            function showExerciseContent(exerciseType) {
+                const exercise = exerciseData[exerciseType];
+                if (exercise) {
+                    exerciseContentDiv.innerHTML = `
+                        <h3 class="text-xl font-semibold mb-4">${exercise.title}</h3>
+                        
+                        <div class="mb-4">
+                            <h4 class="font-semibold mb-2">Problem:</h4>
+                            <p class="text-gray-700">${exercise.problem}</p>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <h4 class="font-semibold mb-2">Your Solution:</h4>
+                            <textarea class="w-full h-32 p-3 border-2 border-gray-300 rounded code-font text-sm" 
+                                      placeholder="Enter your MIPS code here..."></textarea>
+                        </div>
+                        
+                        <div class="flex gap-4 mb-4">
+                            <button class="show-hint bg-yellow-600 text-white px-4 py-2 rounded hover:bg-yellow-700">
+                                Show Hint
+                            </button>
+                            <button class="show-solution bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+                                Show Solution
+                            </button>
+                        </div>
+                        
+                        <div class="hint-box hidden mb-4 p-4 bg-yellow-100 border border-yellow-300 rounded">
+                            <h5 class="font-semibold mb-2">Hint:</h5>
+                            <p>${exercise.hint}</p>
+                        </div>
+                        
+                        <div class="solution-box hidden p-4 bg-green-100 border border-green-300 rounded">
+                            <h5 class="font-semibold mb-2">Solution:</h5>
+                            <pre class="code-font text-sm">${exercise.solution}</pre>
+                        </div>
+                    `;
+
+                    // Add event listeners for hint and solution buttons
+                    const showHintBtn = exerciseContentDiv.querySelector('.show-hint');
+                    const showSolutionBtn = exerciseContentDiv.querySelector('.show-solution');
+                    const hintBox = exerciseContentDiv.querySelector('.hint-box');
+                    const solutionBox = exerciseContentDiv.querySelector('.solution-box');
+
+                    showHintBtn.addEventListener('click', () => {
+                        hintBox.classList.toggle('hidden');
+                    });
+
+                    showSolutionBtn.addEventListener('click', () => {
+                        solutionBox.classList.toggle('hidden');
+                    });
+                }
+            }
+
+            // Initialize the application
+            updateRegisterDisplay();
+            updateProgressDisplay();
+            
+            // Show first tab
+            showTab('overview');
+        });
+    </script>
+</body>
+</html>
