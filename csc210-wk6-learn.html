@@ -447,7 +447,26 @@ add $t2, $t0, $t1"
             let registers = {
                 t0: 0, t1: 0, t2: 0, t3: 0, t4: 0, t5: 0, t6: 0, t7: 0
             };
+            
+            // Session-based progress tracking using in-memory storage
             let progressData = { 1: 0, 2: 0, 3: 0, 4: 0 };
+            
+            // Load progress from memory if available
+            function loadProgress() {
+                // Since we can't use localStorage in artifacts, we'll use session-only tracking
+                // Progress will reset when page is refreshed
+                console.log('Progress tracking: Session-only (resets on page refresh)');
+                return progressData;
+            }
+            
+            // Save progress to memory
+            function saveProgress() {
+                // In a real implementation, this would save to a backend or localStorage
+                console.log('Progress saved:', progressData);
+            }
+            
+            // Initialize progress
+            progressData = loadProgress();
 
             // Tab functionality
             const tabButtons = document.querySelectorAll('.tab-button');
@@ -623,68 +642,223 @@ add $t2, $t0, $t1"
             };
 
             // Module selection functionality
-            const moduleCards = document.querySelectorAll('.module-card');
-            const moduleContentDiv = document.getElementById('module-content');
+            function initializeModuleCards() {
+                const moduleCards = document.querySelectorAll('.module-card');
+                const moduleContentDiv = document.getElementById('module-content');
 
-            moduleCards.forEach(card => {
-                card.addEventListener('click', () => {
-                    const moduleNum = parseInt(card.getAttribute('data-module'));
-                    showModuleContent(moduleNum);
+                moduleCards.forEach(card => {
+                    card.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        const moduleNum = parseInt(card.getAttribute('data-module'));
+                        console.log('Module clicked:', moduleNum);
+                        showModuleContent(moduleNum);
+                        
+                        // Visual feedback
+                        moduleCards.forEach(c => c.classList.remove('ring-2', 'ring-blue-500'));
+                        card.classList.add('ring-2', 'ring-blue-500');
+                    });
                 });
-            });
 
-            function showModuleContent(moduleNum) {
-                const module = moduleContent[moduleNum];
-                if (module) {
-                    moduleContentDiv.innerHTML = `
-                        <h3 class="text-xl font-semibold mb-4">${module.title}</h3>
-                        ${module.content}
-                    `;
-                    currentModule = moduleNum;
-                    
-                    // Add event listener for completion button
-                    const completeBtn = moduleContentDiv.querySelector('.complete-activity');
-                    if (completeBtn) {
-                        completeBtn.addEventListener('click', () => {
-                            markModuleComplete(moduleNum);
-                        });
+                function showModuleContent(moduleNum) {
+                    const module = moduleContent[moduleNum];
+                    if (module && moduleContentDiv) {
+                        console.log('Showing module content for:', moduleNum);
+                        moduleContentDiv.innerHTML = `
+                            <h3 class="text-xl font-semibold mb-4">${module.title}</h3>
+                            ${module.content}
+                        `;
+                        currentModule = moduleNum;
+                        
+                        // Add event listener for completion button
+                        setTimeout(() => {
+                            const completeBtn = moduleContentDiv.querySelector('.complete-activity');
+                            if (completeBtn) {
+                                completeBtn.addEventListener('click', (e) => {
+                                    e.preventDefault();
+                                    markModuleComplete(moduleNum);
+                                });
+                            }
+                        }, 100);
                     }
                 }
             }
 
             // Progress tracking
             function markModuleComplete(moduleNum) {
+                console.log('Marking module complete:', moduleNum);
                 progressData[moduleNum] = 100;
+                saveProgress();
                 updateProgressDisplay();
                 
                 // Show completion message
-                const btn = document.querySelector(`[data-module="${moduleNum}"] .complete-activity`);
+                const btn = document.querySelector('.complete-activity');
                 if (btn) {
-                    btn.textContent = 'Module Complete!';
+                    btn.textContent = 'Module Complete! ✓';
                     btn.classList.remove('bg-green-600', 'hover:bg-green-700');
-                    btn.classList.add('bg-green-800');
+                    btn.classList.add('bg-green-800', 'cursor-not-allowed');
                     btn.disabled = true;
+                    
+                    // Add celebration effect
+                    btn.classList.add('pulse-highlight');
+                    setTimeout(() => {
+                        btn.classList.remove('pulse-highlight');
+                    }, 2000);
                 }
             }
 
             function updateProgressDisplay() {
+                console.log('Updating progress display:', progressData);
                 Object.keys(progressData).forEach(moduleNum => {
                     const progressBar = document.querySelector(`[data-module="${moduleNum}"] .progress-bar`);
                     if (progressBar) {
                         progressBar.style.width = `${progressData[moduleNum]}%`;
+                        console.log(`Module ${moduleNum} progress: ${progressData[moduleNum]}%`);
                     }
                 });
             }
 
             // Instruction decoder functionality
-            const instructionInput = document.getElementById('instruction-input');
-            const decodeBtn = document.getElementById('decode-btn');
-            const decodeOutput = document.getElementById('decode-output');
-            const exampleBtns = document.querySelectorAll('.example-btn');
+            function initializeInstructionDecoder() {
+                const instructionInput = document.getElementById('instruction-input');
+                const decodeBtn = document.getElementById('decode-btn');
+                const decodeOutput = document.getElementById('decode-output');
+                const exampleBtns = document.querySelectorAll('.example-btn');
 
-            // Instruction patterns and decoder
+                if (decodeBtn) {
+                    decodeBtn.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        const instruction = instructionInput.value.trim();
+                        console.log('Decoding instruction:', instruction);
+                        if (instruction) {
+                            decodeOutput.innerHTML = decodeInstruction(instruction);
+                        } else {
+                            decodeOutput.innerHTML = '<p class="text-red-600">Please enter an instruction!</p>';
+                        }
+                    });
+                }
+
+                // Add Enter key support
+                if (instructionInput) {
+                    instructionInput.addEventListener('keypress', (e) => {
+                        if (e.key === 'Enter') {
+                            e.preventDefault();
+                            decodeBtn.click();
+                        }
+                    });
+                }
+
+                exampleBtns.forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        const instruction = btn.getAttribute('data-instruction');
+                        console.log('Example clicked:', instruction);
+                        if (instructionInput) {
+                            instructionInput.value = instruction;
+                            if (decodeOutput) {
+                                decodeOutput.innerHTML = decodeInstruction(instruction);
+                            }
+                        }
+                    });
+                });
+            }
+                // Instruction patterns and decoder
             const instructionPatterns = {
                 'add': { type: 'R', opcode: '000000', funct: '100000', format: 'add rd, rs, rt' },
+                'sub': { type: 'R', opcode: '000000', funct: '100010', format: 'sub rd, rs, rt' },
+                'and': { type: 'R', opcode: '000000', funct: '100100', format: 'and rd, rs, rt' },
+                'or': { type: 'R', opcode: '000000', funct: '100101', format: 'or rd, rs, rt' },
+                'xor': { type: 'R', opcode: '000000', funct: '100110', format: 'xor rd, rs, rt' },
+                'nor': { type: 'R', opcode: '000000', funct: '100111', format: 'nor rd, rs, rt' },
+                'sll': { type: 'R', opcode: '000000', funct: '000000', format: 'sll rd, rt, shamt' },
+                'srl': { type: 'R', opcode: '000000', funct: '000010', format: 'srl rd, rt, shamt' },
+                'sra': { type: 'R', opcode: '000000', funct: '000011', format: 'sra rd, rt, shamt' },
+                'addi': { type: 'I', opcode: '001000', format: 'addi rt, rs, immediate' },
+                'andi': { type: 'I', opcode: '001100', format: 'andi rt, rs, immediate' },
+                'ori': { type: 'I', opcode: '001101', format: 'ori rt, rs, immediate' },
+                'xori': { type: 'I', opcode: '001110', format: 'xori rt, rs, immediate' },
+                'lui': { type: 'I', opcode: '001111', format: 'lui rt, immediate' },
+                'slti': { type: 'I', opcode: '001010', format: 'slti rt, rs, immediate' }
+            };
+
+            const registerMap = {
+                '$zero': 0, '$at': 1, '$v0': 2, '$v1': 3,
+                '$a0': 4, '$a1': 5, '$a2': 6, '$a3': 7,
+                '$t0': 8, '$t1': 9, '$t2': 10, '$t3': 11,
+                '$t4': 12, '$t5': 13, '$t6': 14, '$t7': 15,
+                '$s0': 16, '$s1': 17, '$s2': 18, '$s3': 19,
+                '$s4': 20, '$s5': 21, '$s6': 22, '$s7': 23,
+                '$t8': 24, '$t9': 25, '$k0': 26, '$k1': 27,
+                '$gp': 28, '$sp': 29, '$fp': 30, '$ra': 31
+            };
+
+            function decodeInstruction(instruction) {
+                const parts = instruction.trim().toLowerCase().split(/[\s,]+/);
+                const opcode = parts[0];
+                
+                if (!instructionPatterns[opcode]) {
+                    return '<p class="text-red-600">Unknown instruction: ' + opcode + '</p>';
+                }
+
+                const pattern = instructionPatterns[opcode];
+                let output = `<h4 class="font-semibold mb-2">Instruction Analysis: ${instruction}</h4>`;
+                
+                output += `<div class="mb-4">`;
+                output += `<p><strong>Type:</strong> ${pattern.type}-Type</p>`;
+                output += `<p><strong>Format:</strong> <code class="bg-gray-200 px-1 rounded">${pattern.format}</code></p>`;
+                output += `<p><strong>Opcode:</strong> <code class="bg-gray-200 px-1 rounded">${pattern.opcode}</code></p>`;
+                
+                if (pattern.type === 'R' && pattern.funct) {
+                    output += `<p><strong>Function:</strong> <code class="bg-gray-200 px-1 rounded">${pattern.funct}</code></p>`;
+                }
+                output += `</div>`;
+
+                // Field breakdown
+                output += `<div class="mb-4">`;
+                output += `<h5 class="font-medium mb-2">Field Breakdown:</h5>`;
+                
+                if (pattern.type === 'R') {
+                    if (opcode === 'sll' || opcode === 'srl' || opcode === 'sra') {
+                        // Shift instructions have different format
+                        output += `<div class="code-font text-sm bg-gray-100 p-2 rounded">`;
+                        output += `<div><strong>rd:</strong> ${parts[1] || 'N/A'}</div>`;
+                        output += `<div><strong>rt:</strong> ${parts[2] || 'N/A'}</div>`;
+                        output += `<div><strong>shamt:</strong> ${parts[3] || 'N/A'}</div>`;
+                        output += `</div>`;
+                    } else {
+                        output += `<div class="code-font text-sm bg-gray-100 p-2 rounded">`;
+                        output += `<div><strong>rd:</strong> ${parts[1] || 'N/A'}</div>`;
+                        output += `<div><strong>rs:</strong> ${parts[2] || 'N/A'}</div>`;
+                        output += `<div><strong>rt:</strong> ${parts[3] || 'N/A'}</div>`;
+                        output += `</div>`;
+                    }
+                } else {
+                    output += `<div class="code-font text-sm bg-gray-100 p-2 rounded">`;
+                    output += `<div><strong>rt:</strong> ${parts[1] || 'N/A'}</div>`;
+                    output += `<div><strong>rs:</strong> ${parts[2] || 'N/A'}</div>`;
+                    output += `<div><strong>immediate:</strong> ${parts[3] || 'N/A'}</div>`;
+                    output += `</div>`;
+                }
+                output += `</div>`;
+
+                return output;
+            }
+
+            decodeBtn.addEventListener('click', () => {
+                const instruction = instructionInput.value.trim();
+                if (instruction) {
+                    decodeOutput.innerHTML = decodeInstruction(instruction);
+                } else {
+                    decodeOutput.innerHTML = '<p class="text-red-600">Please enter an instruction!</p>';
+                }
+            });
+
+            exampleBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const instruction = btn.getAttribute('data-instruction');
+                    instructionInput.value = instruction;
+                    decodeOutput.innerHTML = decodeInstruction(instruction);
+                });
+            });
                 'sub': { type: 'R', opcode: '000000', funct: '100010', format: 'sub rd, rs, rt' },
                 'and': { type: 'R', opcode: '000000', funct: '100100', format: 'and rd, rs, rt' },
                 'or': { type: 'R', opcode: '000000', funct: '100101', format: 'or rd, rs, rt' },
@@ -972,108 +1146,29 @@ add $t2, $t0, $t1"
 
             resetBtn.addEventListener('click', resetSimulator);
 
-            // Exercise functionality
-            const exerciseCards = document.querySelectorAll('.exercise-card');
-            const exerciseContentDiv = document.getElementById('exercise-content');
-
-            const exerciseData = {
-                arithmetic: {
-                    title: "Basic Arithmetic Operations",
-                    problem: "Calculate the result of (a + b) - (c + d) where a=10, b=20, c=5, d=15.",
-                    solution: `add $t0, $s0, $s1    # $t0 = a + b
-add $t1, $s2, $s3    # $t1 = c + d
-sub $t2, $t0, $t1    # $t2 = (a+b) - (c+d)`,
-                    hint: "Use temporary registers $t0 and $t1 for intermediate results."
-                },
-                immediate: {
-                    title: "Immediate Operations",
-                    problem: "Add 100 to register $t0, then multiply by 4 using shift operations.",
-                    solution: `addi $t0, $t0, 100   # Add 100
-sll $t0, $t0, 2      # Multiply by 4 (shift left 2)`,
-                    hint: "Remember that shifting left by n positions multiplies by 2^n."
-                },
-                bitwise: {
-                    title: "Bitwise Operations",
-                    problem: "Extract the lower 8 bits of $t0 and store in $t1, then set bit 7 of $t1.",
-                    solution: `andi $t1, $t0, 0xFF  # Extract lower 8 bits
-ori $t1, $t1, 0x80   # Set bit 7`,
-                    hint: "Use AND to mask bits, OR to set bits."
-                },
-                shifts: {
-                    title: "Shift Operations",
-                    problem: "Divide $t0 by 16 (both signed and unsigned) and compare results.",
-                    solution: `srl $t1, $t0, 4      # Unsigned divide by 16
-sra $t2, $t0, 4      # Signed divide by 16`,
-                    hint: "SRL fills with zeros, SRA preserves the sign bit."
-                }
-            };
-
-            exerciseCards.forEach(card => {
-                card.addEventListener('click', () => {
-                    const exerciseType = card.getAttribute('data-exercise');
-                    showExerciseContent(exerciseType);
-                });
-            });
-
-            function showExerciseContent(exerciseType) {
-                const exercise = exerciseData[exerciseType];
-                if (exercise) {
-                    exerciseContentDiv.innerHTML = `
-                        <h3 class="text-xl font-semibold mb-4">${exercise.title}</h3>
-                        
-                        <div class="mb-4">
-                            <h4 class="font-semibold mb-2">Problem:</h4>
-                            <p class="text-gray-700">${exercise.problem}</p>
-                        </div>
-                        
-                        <div class="mb-4">
-                            <h4 class="font-semibold mb-2">Your Solution:</h4>
-                            <textarea class="w-full h-32 p-3 border-2 border-gray-300 rounded code-font text-sm" 
-                                      placeholder="Enter your MIPS code here..."></textarea>
-                        </div>
-                        
-                        <div class="flex gap-4 mb-4">
-                            <button class="show-hint bg-yellow-600 text-white px-4 py-2 rounded hover:bg-yellow-700">
-                                Show Hint
-                            </button>
-                            <button class="show-solution bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
-                                Show Solution
-                            </button>
-                        </div>
-                        
-                        <div class="hint-box hidden mb-4 p-4 bg-yellow-100 border border-yellow-300 rounded">
-                            <h5 class="font-semibold mb-2">Hint:</h5>
-                            <p>${exercise.hint}</p>
-                        </div>
-                        
-                        <div class="solution-box hidden p-4 bg-green-100 border border-green-300 rounded">
-                            <h5 class="font-semibold mb-2">Solution:</h5>
-                            <pre class="code-font text-sm">${exercise.solution}</pre>
-                        </div>
-                    `;
-
-                    // Add event listeners for hint and solution buttons
-                    const showHintBtn = exerciseContentDiv.querySelector('.show-hint');
-                    const showSolutionBtn = exerciseContentDiv.querySelector('.show-solution');
-                    const hintBox = exerciseContentDiv.querySelector('.hint-box');
-                    const solutionBox = exerciseContentDiv.querySelector('.solution-box');
-
-                    showHintBtn.addEventListener('click', () => {
-                        hintBox.classList.toggle('hidden');
-                    });
-
-                    showSolutionBtn.addEventListener('click', () => {
-                        solutionBox.classList.toggle('hidden');
-                    });
-                }
+            // Initialize all components
+            function initializeApplication() {
+                console.log('Initializing MIPS Learning Guide...');
+                
+                // Initialize progress tracking
+                updateProgressDisplay();
+                
+                // Initialize all interactive components
+                initializeModuleCards();
+                initializeInstructionDecoder();
+                initializeSimulator();
+                initializeExercises();
+                
+                // Show first tab
+                showTab('overview');
+                
+                console.log('Application initialized successfully');
             }
 
-            // Initialize the application
-            updateRegisterDisplay();
-            updateProgressDisplay();
-            
-            // Show first tab
-            showTab('overview');
+            // Run initialization
+            initializeApplication();
+        });
+    </script>
         });
     </script>
 </body>
