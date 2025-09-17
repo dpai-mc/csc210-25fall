@@ -156,7 +156,7 @@
                 <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200 mb-6">
                     <p class="mb-4 mono"><strong>Problem 2.1:</strong> <code>000000 10001 10010 01000 00000 100010</code></p>
                      <div id="q3" class="space-y-4">
-                        <input type="text" data-field="assembly" placeholder="e.g., sub $t0, $s1, $s2" class="worksheet-input w-full text-left">
+                        <input type="text" data-field="assembly" placeholder="e.g., sub $t0, $s1, $s2" class="worksheet-input w-full text-left px-3">
                         <div class="flex items-center justify-end space-x-4">
                             <p id="q3-feedback" class="text-sm font-semibold"></p>
                             <button class="check-btn font-semibold py-2 px-4 rounded-md" data-question="q3">Check Answer</button>
@@ -192,7 +192,7 @@
                     immediate: '0000000100000000' // 256
                 },
                 q3: {
-                    assembly: 'sub $t0, $s1, $s2'
+                    assembly: 'sub$t0,$s1,$s2'
                 }
             };
 
@@ -206,10 +206,11 @@
 
                     questionContainer.querySelectorAll('input').forEach(input => {
                         const field = input.dataset.field;
-                        const userAnswer = input.value.trim().replace(/\s+/g, ''); // Normalize assembly answer
+                        // Normalize user answer by trimming, removing all whitespace, and making it lowercase
+                        const userAnswer = input.value.trim().replace(/\s+/g, '').toLowerCase();
                         const correctAnswer = correctAnswers[field];
 
-                        if (userAnswer.toLowerCase() === correctAnswer) {
+                        if (userAnswer === correctAnswer) {
                             input.classList.remove('incorrect');
                             input.classList.add('correct');
                         } else {
