@@ -154,6 +154,49 @@ value: .word 12</code></pre>
                 <section role="tabpanel" id="structure-panel" aria-labelledby="structure-tab" class="tab-panel hidden">
                     <h2 class="text-2xl font-bold mb-4">MIPS Program Structure</h2>
                     
+                    <div class="grid lg:grid-cols-2 gap-6 mb-6">
+                        <div>
+                            <h3 class="text-xl font-semibold mb-3">Sample Program</h3>
+                            <div class="bg-white p-4 rounded border">
+                                <pre class="code-font text-sm"><code><span class="bg-yellow-200 px-1 rounded">.globl main</span>
+<span class="bg-blue-200 px-1 rounded">.text</span>
+<span class="bg-blue-200 px-1 rounded">main:</span>
+    li $t2, 25        # Load immediate
+    lw $t3, value     # Load word
+    add $t4, $t2, $t3 # Addition
+    sub $t5, $t2, $t3 # Subtraction
+    li $v0, 10        # Exit syscall
+    syscall
+<span class="bg-green-200 px-1 rounded">.data</span>
+<span class="bg-green-200 px-1 rounded">value: .word 12</span></code></pre>
+                            </div>
+                            <div class="mt-2 text-sm">
+                                <div class="flex items-center gap-2 mb-1">
+                                    <span class="bg-yellow-200 px-2 py-1 rounded text-xs">Global Declaration</span>
+                                    <span class="bg-blue-200 px-2 py-1 rounded text-xs">Text Section</span>
+                                    <span class="bg-green-200 px-2 py-1 rounded text-xs">Data Section</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-semibold mb-3">Structure Overview</h3>
+                            <div class="space-y-3">
+                                <div class="bg-yellow-100 p-3 rounded border-l-4 border-yellow-500">
+                                    <h4 class="font-semibold">Global Declaration</h4>
+                                    <p class="text-sm">Makes symbols visible to linker</p>
+                                </div>
+                                <div class="bg-blue-100 p-3 rounded border-l-4 border-blue-500">
+                                    <h4 class="font-semibold">Text Section</h4>
+                                    <p class="text-sm">Contains executable instructions</p>
+                                </div>
+                                <div class="bg-green-100 p-3 rounded border-l-4 border-green-500">
+                                    <h4 class="font-semibold">Data Section</h4>
+                                    <p class="text-sm">Contains variables and constants</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
                     <div class="space-y-6">
                         <div>
                             <h3 class="text-xl font-semibold mb-3">Essential Directives</h3>
@@ -215,6 +258,51 @@ value: .word 12</code></pre>
                 <!-- Instructions Panel -->
                 <section role="tabpanel" id="instructions-panel" aria-labelledby="instructions-tab" class="tab-panel hidden">
                     <h2 class="text-2xl font-bold mb-4">MIPS Instructions Explained</h2>
+                    
+                    <div class="grid lg:grid-cols-2 gap-6 mb-6">
+                        <div>
+                            <h3 class="text-xl font-semibold mb-3">Sample Program</h3>
+                            <div class="bg-white p-4 rounded border">
+                                <pre class="code-font text-sm"><code>.globl main
+.text
+main:
+    <span class="bg-yellow-200 px-1 rounded">li $t2, 25</span>        # Load immediate
+    <span class="bg-blue-200 px-1 rounded">lw $t3, value</span>     # Load word
+    <span class="bg-green-200 px-1 rounded">add $t4, $t2, $t3</span> # Addition
+    <span class="bg-purple-200 px-1 rounded">sub $t5, $t2, $t3</span> # Subtraction
+    <span class="bg-red-200 px-1 rounded">li $v0, 10</span>        # Exit syscall
+    <span class="bg-red-200 px-1 rounded">syscall</span>
+.data
+value: .word 12</code></pre>
+                            </div>
+                            <div class="mt-2 text-sm">
+                                <div class="flex flex-wrap items-center gap-1 mb-1">
+                                    <span class="bg-yellow-200 px-2 py-1 rounded text-xs">Load Immediate</span>
+                                    <span class="bg-blue-200 px-2 py-1 rounded text-xs">Load Word</span>
+                                    <span class="bg-green-200 px-2 py-1 rounded text-xs">Addition</span>
+                                    <span class="bg-purple-200 px-2 py-1 rounded text-xs">Subtraction</span>
+                                    <span class="bg-red-200 px-2 py-1 rounded text-xs">System Call</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-semibold mb-3">Instruction Categories</h3>
+                            <div class="space-y-3">
+                                <div class="bg-yellow-100 p-3 rounded border-l-4 border-yellow-500">
+                                    <h4 class="font-semibold">Load Instructions</h4>
+                                    <p class="text-sm">Move data into registers</p>
+                                </div>
+                                <div class="bg-green-100 p-3 rounded border-l-4 border-green-500">
+                                    <h4 class="font-semibold">Arithmetic Instructions</h4>
+                                    <p class="text-sm">Perform mathematical operations</p>
+                                </div>
+                                <div class="bg-red-100 p-3 rounded border-l-4 border-red-500">
+                                    <h4 class="font-semibold">System Instructions</h4>
+                                    <p class="text-sm">Interact with operating system</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     
                     <div class="space-y-6">
                         <div class="bg-white p-4 rounded border">
@@ -284,6 +372,49 @@ value: .word 12</code></pre>
                 <!-- Data Section Panel -->
                 <section role="tabpanel" id="data-panel" aria-labelledby="data-tab" class="tab-panel hidden">
                     <h2 class="text-2xl font-bold mb-4">Data Section and Variables</h2>
+                    
+                    <div class="grid lg:grid-cols-2 gap-6 mb-6">
+                        <div>
+                            <h3 class="text-xl font-semibold mb-3">Sample Program</h3>
+                            <div class="bg-white p-4 rounded border">
+                                <pre class="code-font text-sm"><code>.globl main
+.text
+main:
+    li $t2, 25        # Load immediate
+    <span class="bg-blue-200 px-1 rounded">lw $t3, value</span>     # Load word from data
+    add $t4, $t2, $t3 # Addition
+    sub $t5, $t2, $t3 # Subtraction
+    li $v0, 10        # Exit syscall
+    syscall
+<span class="bg-green-200 px-1 rounded">.data</span>
+<span class="bg-yellow-200 px-1 rounded">value: .word 12</span></code></pre>
+                            </div>
+                            <div class="mt-2 text-sm">
+                                <div class="flex flex-wrap items-center gap-1 mb-1">
+                                    <span class="bg-green-200 px-2 py-1 rounded text-xs">Data Directive</span>
+                                    <span class="bg-yellow-200 px-2 py-1 rounded text-xs">Variable Declaration</span>
+                                    <span class="bg-blue-200 px-2 py-1 rounded text-xs">Data Access</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-semibold mb-3">Data Flow</h3>
+                            <div class="space-y-3">
+                                <div class="bg-green-100 p-3 rounded border-l-4 border-green-500">
+                                    <h4 class="font-semibold">1. Declare Section</h4>
+                                    <p class="text-sm code-font">.data</p>
+                                </div>
+                                <div class="bg-yellow-100 p-3 rounded border-l-4 border-yellow-500">
+                                    <h4 class="font-semibold">2. Define Variable</h4>
+                                    <p class="text-sm code-font">value: .word 12</p>
+                                </div>
+                                <div class="bg-blue-100 p-3 rounded border-l-4 border-blue-500">
+                                    <h4 class="font-semibold">3. Access Variable</h4>
+                                    <p class="text-sm code-font">lw $t3, value</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     
                     <div class="space-y-6">
                         <div class="bg-white p-4 rounded border">
