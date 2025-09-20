@@ -747,19 +747,46 @@ sra $s0, $t1, 2  # $s0 = -4 (...11111100)</code></pre>
 
                 // Exercises
                 const exerciseContent = {
-                    add: { title: 'Simple Addition', problem: 'Load the value 15 into register $t0 and the value 27 into register $t1. Add them together and store the result in $s0.' },
-                    sub: { title: 'Subtract Immediate', problem: 'Load the value 100 into register $t0. Then, subtract the constant value 42 from it, storing the result back into $t0.'}
+                    add: { 
+                        title: 'Simple Addition', 
+                        problem: 'Load the value 15 into register $t0 and the value 27 into register $t1. Add them together and store the result in $s0.',
+                        solution: `li $t0, 15          # Load 15 into $t0
+li $t1, 27          # Load 27 into $t1
+add $s0, $t0, $t1   # $s0 = $t0 + $t1 = 42`
+                    },
+                    sub: { 
+                        title: 'Subtract Immediate', 
+                        problem: 'Load the value 100 into register $t0. Then, subtract the constant value 42 from it, storing the result back into $t0.',
+                        solution: `li $t0, 100         # Load 100 into $t0
+# To subtract an immediate, we use addi with a negative value.
+# The 'subi' pseudoinstruction often assembles to this.
+addi $t0, $t0, -42  # $t0 = $t0 - 42 = 58`
+                    }
                 };
+
                 document.querySelectorAll('.exercise-card').forEach(card => {
                     card.addEventListener('click', () => {
                         const exerciseKey = card.getAttribute('data-exercise');
                         const exercise = exerciseContent[exerciseKey];
                         if (exercise) {
-                            exerciseContentDiv.innerHTML = `
+                             exerciseContentDiv.innerHTML = `
                                 <h3 class="text-xl font-semibold mb-2">${exercise.title}</h3>
                                 <p class="text-gray-700 mb-4">${exercise.problem}</p>
                                 <textarea class="w-full h-32 p-2 border-2 border-gray-300 rounded code-font text-sm" placeholder="# Enter your solution here..."></textarea>
-                                <button class="mt-3 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Check Answer (Not Implemented)</button>`;
+                                <button id="toggle-solution-btn" class="mt-3 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Show Solution</button>
+                                <div id="solution-container" class="mt-4 hidden">
+                                    <h4 class="font-semibold mb-2">Sample Solution:</h4>
+                                    <pre class="bg-gray-800 text-white p-3 rounded-md text-sm code-font"><code>${exercise.solution}</code></pre>
+                                </div>`;
+                            
+                            const toggleBtn = document.getElementById('toggle-solution-btn');
+                            const solutionContainer = document.getElementById('solution-container');
+                            if(toggleBtn && solutionContainer){
+                                toggleBtn.addEventListener('click', () => {
+                                    const isHidden = solutionContainer.classList.toggle('hidden');
+                                    toggleBtn.textContent = isHidden ? 'Show Solution' : 'Hide Solution';
+                                });
+                            }
                         }
                          document.querySelectorAll('.exercise-card').forEach(c => c.classList.remove('ring-2', 'ring-blue-500'));
                         card.classList.add('ring-2', 'ring-blue-500');
