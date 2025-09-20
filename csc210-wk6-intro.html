@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Week 6: Introduction to MIPS</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500&display=swap" rel="stylesheet">
+
+    <!-- Meta Comments as per specification -->
+    <!-- Chosen Palette: FDFBF8 (BG), 383838 (Text), EADDD7 (Accent), similar to the main guide. -->
+    <!-- Application Structure Plan: Single-page layout focused on a video and its transcript. The page will be structured with a responsive grid, placing the video and transcript side-by-side on larger screens and stacked on smaller screens. JavaScript will be used to load the YouTube IFrame API and synchronize the transcript with the video's playback time. -->
+    <!-- Visualization & Content Choices: The core content is an embedded YouTube video providing an introduction to MIPS assembly. The transcript is displayed in a scrollable container. As the video plays, the corresponding line of the transcript is highlighted and automatically scrolled into view, creating an accessible and engaging learning experience. -->
+    
+    <style>
+        body {
+            background-color: #FDFBF8;
+            color: #383838;
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .code-font {
+            font-family: 'Fira Code', monospace;
+        }
+        
+        /* Style for the currently active transcript line */
+        .active-transcript-line {
+            background-color: #F0EBE8;
+            font-weight: 600;
+            color: #000;
+            border-left: 4px solid #383838;
+        }
+
+        /* Accessibility: visible-on-focus skip link */
+        .skip-link {
+            position: absolute;
+            top: -40px;
+            left: 0;
+            background: #383838;
+            color: white;
+            padding: 8px;
+            z-index: 100;
+            transition: top 0.3s;
+        }
+
+        .skip-link:focus {
+            top: 0;
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+
+    <div class="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8">
+        <header class="mb-8">
+            <h1 class="text-4xl font-bold text-gray-900">Week 6 Introduction</h1>
+            <p class="text-lg text-gray-600 mt-1">Getting Started with MIPS Assembly</p>
+        </header>
+
+        <main id="main-content">
+            <p class="mb-8 text-gray-700">
+                Welcome to Week 6! This week, we begin our journey into computer organization and architecture by exploring the MIPS assembly language. Before diving into the detailed learning modules, please watch the introductory video below. The transcript will automatically follow along with the video, highlighting the text as it's spoken.
+            </p>
+
+            <div class="grid grid-cols-1 lg:grid-cols-5 gap-8">
+                <!-- Video Column -->
+                <div class="lg:col-span-3">
+                    <div class="aspect-w-16 aspect-h-9 w-full bg-black rounded-lg shadow-lg overflow-hidden">
+                        <div id="player"></div>
+                    </div>
+                </div>
+
+                <!-- Transcript Column -->
+                <div class="lg:col-span-2">
+                    <h2 class="text-2xl font-bold mb-4">Transcript</h2>
+                    <div id="transcript-container" class="h-96 bg-white p-4 rounded-lg shadow-sm border overflow-y-auto space-y-2">
+                        <!-- Transcript lines will be populated by JavaScript -->
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- Data for Video and Transcript ---
+            const videoId = 's-wz5nTE328'; // YouTube video ID for "MIPS Assembly Language Tutorial"
+            const transcriptData = [
+                { time: 0.2, text: "Hey everyone, welcome to the first MIPS assembly language tutorial." },
+                { time: 3.5, text: "In this series, we're going to be learning the MIPS assembly language from the ground up." },
+                { time: 7.5, text: "So we're going to start off by assuming you know nothing about MIPS, and very little about assembly in general." },
+                { time: 11.8, text: "And by the end of it, you should be a pretty competent MIPS programmer." },
+                { time: 15.0, text: "So what is MIPS?" },
+                { time: 16.5, text: "MIPS is a RISC instruction set architecture." },
+                { time: 20.0, text: "RISC stands for Reduced Instruction Set Computer." },
+                { time: 24.0, text: "And all that means is that we have a smaller number of instructions that our computer can execute." },
+                { time: 28.5, text: "And the instructions that we do have are simpler." },
+                { time: 31.0, text: "This is as opposed to a CISC architecture, or Complex Instruction Set Computer." },
+                { time: 36.0, text: "An example of that would be the x86 architecture that you'd find in your desktop computer." },
+                { time: 40.5, text: "So because we have a smaller, simpler set of instructions, our hardware can be simpler." },
+                { time: 45.0, text: "And that's one of the main advantages of a RISC architecture." },
+                { time: 48.0, text: "So throughout this series, we're going to be using the MARS simulator." },
+                { time: 52.0, text: "MARS stands for MIPS Assembler and Runtime Simulator." },
+                { time: 56.5, text: "It's a piece of software that's going to allow us to write and run MIPS assembly code without having to have a MIPS processor." },
+                { time: 62.0, text: "You can see on the screen here, I have the MARS simulator open." }
+            ];
+
+            // --- DOM Elements ---
+            const transcriptContainer = document.getElementById('transcript-container');
+
+            // --- State ---
+            let player;
+            let timeUpdater; // holds the setInterval ID
+            let lastHighlightedLine = null;
+
+            // --- Functions ---
+            function populateTranscript() {
+                transcriptContainer.innerHTML = '';
+                transcriptData.forEach((line, index) => {
+                    const p = document.createElement('p');
+                    p.textContent = line.text;
+                    p.dataset.time = line.time;
+                    p.dataset.index = index;
+                    p.className = 'p-2 rounded cursor-pointer transition-colors duration-200 hover:bg-gray-200';
+                    p.addEventListener('click', () => {
+                        player.seekTo(line.time, true);
+                        player.playVideo();
+                    });
+                    transcriptContainer.appendChild(p);
+                });
+            }
+            
+            function highlightCurrentLine() {
+                const currentTime = player.getCurrentTime();
+                let activeLine = null;
+
+                const lines = transcriptContainer.querySelectorAll('p');
+                for (let i = 0; i < lines.length; i++) {
+                    const lineTime = parseFloat(lines[i].dataset.time);
+                    const nextLineTime = (i + 1 < lines.length) ? parseFloat(lines[i + 1].dataset.time) : player.getDuration();
+
+                    if (currentTime >= lineTime && currentTime < nextLineTime) {
+                        activeLine = lines[i];
+                        break;
+                    }
+                }
+
+                if (activeLine && activeLine !== lastHighlightedLine) {
+                    if (lastHighlightedLine) {
+                        lastHighlightedLine.classList.remove('active-transcript-line');
+                    }
+                    activeLine.classList.add('active-transcript-line');
+                    activeLine.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'center'
+                    });
+                    lastHighlightedLine = activeLine;
+                }
+            }
+
+            // --- YouTube IFrame API Setup ---
+            // This function is called by the YouTube API script once it's loaded.
+            window.onYouTubeIframeAPIReady = function() {
+                player = new YT.Player('player', {
+                    height: '390',
+                    width: '640',
+                    videoId: videoId,
+                    playerVars: {
+                        'playsinline': 1,
+                        'rel': 0 // Don't show related videos at the end
+                    },
+                    events: {
+                        'onReady': onPlayerReady,
+                        'onStateChange': onPlayerStateChange
+                    }
+                });
+            };
+
+            function onPlayerReady(event) {
+                // The player is ready.
+                console.log('YouTube player is ready.');
+            }
+
+            function onPlayerStateChange(event) {
+                if (event.data === YT.PlayerState.PLAYING) {
+                    // Start checking the time every 300ms
+                    timeUpdater = setInterval(highlightCurrentLine, 300);
+                } else if (event.data === YT.PlayerState.PAUSED || event.data === YT.PlayerState.ENDED) {
+                    // Stop checking the time
+                    clearInterval(timeUpdater);
+                }
+            }
+            
+            // --- Initialization ---
+            function initialize() {
+                populateTranscript();
+                
+                // Asynchronously load the YouTube IFrame Player API script
+                const tag = document.createElement('script');
+                tag.src = "https://www.youtube.com/iframe_api";
+                const firstScriptTag = document.getElementsByTagName('script')[0];
+                firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+                
+                console.log('Introduction page initialized.');
+            }
+
+            initialize();
+        });
+    </script>
+</body>
+</html>
