@@ -503,536 +503,734 @@ sll $t3, $t2, 1      # $t3 = 16 (multiply by 2)"
 
             // --- COMPREHENSIVE MODULE CONTENT ---
             const moduleContent = {
-                1: {
-                    title: "Module 1: R-Type Arithmetic Instructions",
-                    content: `
-                        <div class="space-y-6">
-                            <section>
-                                <h3 class="text-xl font-semibold mb-4">R-Type Instruction Format Deep Dive</h3>
-                                <div class="binary-display mb-4">
-                                    op(6) | rs(5) | rt(5) | rd(5) | shamt(5) | funct(6)<br>
-                                    000000 | source | target | dest | shift | function
-                                </div>
-                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                                    <div class="code-highlight p-4 rounded">
-                                        <h4 class="font-semibold mb-2">Field Descriptions:</h4>
-                                        <ul class="text-sm space-y-1">
-                                            <li><strong>op:</strong> Always 000000 for R-type</li>
-                                            <li><strong>rs:</strong> First source register</li>
-                                            <li><strong>rt:</strong> Second source register</li>
-                                            <li><strong>rd:</strong> Destination register</li>
-                                            <li><strong>shamt:</strong> Shift amount (0-31)</li>
-                                            <li><strong>funct:</strong> Function code (operation)</li>
-                                        </ul>
-                                    </div>
-                                    <div class="code-highlight p-4 rounded">
-                                        <h4 class="font-semibold mb-2">Key Characteristics:</h4>
-                                        <ul class="text-sm space-y-1">
-                                            <li>All operands are registers</li>
-                                            <li>Result stored in rd register</li>
-                                            <li>32-bit arithmetic operations</li>
-                                            <li>Two's complement representation</li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </section>
-
-                            <section>
-                                <h3 class="text-xl font-semibold mb-4">Arithmetic Operations</h3>
-                                <table class="instruction-table w-full mb-4">
-                                    <thead>
-                                        <tr>
-                                            <th>Instruction</th>
-                                            <th>Function Code</th>
-                                            <th>Operation</th>
-                                            <th>Example</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td class="code-font">add</td>
-                                            <td class="code-font">100000</td>
-                                            <td>Addition with overflow</td>
-                                            <td class="code-font">add $t0, $t1, $t2</td>
-                                        </tr>
-                                        <tr>
-                                            <td class="code-font">addu</td>
-                                            <td class="code-font">100001</td>
-                                            <td>Addition without overflow</td>
-                                            <td class="code-font">addu $t0, $t1, $t2</td>
-                                        </tr>
-                                        <tr>
-                                            <td class="code-font">sub</td>
-                                            <td class="code-font">100010</td>
-                                            <td>Subtraction with overflow</td>
-                                            <td class="code-font">sub $t0, $t1, $t2</td>
-                                        </tr>
-                                        <tr>
-                                            <td class="code-font">subu</td>
-                                            <td class="code-font">100011</td>
-                                            <td>Subtraction without overflow</td>
-                                            <td class="code-font">subu $t0, $t1, $t2</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </section>
-
-                            <section>
-                                <h3 class="text-xl font-semibold mb-4">Logical Operations</h3>
-                                <table class="instruction-table w-full mb-4">
-                                    <thead>
-                                        <tr>
-                                            <th>Instruction</th>
-                                            <th>Function Code</th>
-                                            <th>Operation</th>
-                                            <th>Truth Table</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td class="code-font">and</td>
-                                            <td class="code-font">100100</td>
-                                            <td>Bitwise AND</td>
-                                            <td>1 & 1 = 1, else 0</td>
-                                        </tr>
-                                        <tr>
-                                            <td class="code-font">or</td>
-                                            <td class="code-font">100101</td>
-                                            <td>Bitwise OR</td>
-                                            <td>0 | 0 = 0, else 1</td>
-                                        </tr>
-                                        <tr>
-                                            <td class="code-font">xor</td>
-                                            <td class="code-font">100110</td>
-                                            <td>Bitwise XOR</td>
-                                            <td>a ⊕ b = a != b</td>
-                                        </tr>
-                                        <tr>
-                                            <td class="code-font">nor</td>
-                                            <td class="code-font">100111</td>
-                                            <td>Bitwise NOR</td>
-                                            <td>~(a | b)</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </section>
-
-                            <section>
-                                <h3 class="text-xl font-semibold mb-4">Comparison Operations</h3>
-                                <div class="code-highlight p-4 rounded mb-4">
-                                    <h4 class="font-semibold mb-2">Set Less Than (slt)</h4>
-                                    <div class="code-font text-sm mb-2">slt $rd, $rs, $rt</div>
-                                    <p class="text-sm">Sets $rd = 1 if $rs < $rt (signed), else $rd = 0</p>
-                                    <div class="mt-2 text-sm">
-                                        <strong>Example:</strong><br>
-                                        <code>li $t1, -5</code><br>
-                                        <code>li $t2, 3</code><br>
-                                        <code>slt $t0, $t1, $t2  # $t0 = 1 (since -5 < 3)</code>
-                                    </div>
-                                </div>
-                            </section>
-
-                            <section>
-                                <h3 class="text-xl font-semibold mb-4">Practical Example: Calculator Operations</h3>
-                                <div class="step-highlight">
-                                    <h4 class="font-semibold mb-2">Problem: Calculate (a + b) - (c & d)</h4>
-                                    <div class="code-font text-sm space-y-1">
-                                        <div># Assume: a=$s0, b=$s1, c=$s2, d=$s3</div>
-                                        <div>add  $t0, $s0, $s1    # $t0 = a + b</div>
-                                        <div>and  $t1, $s2, $s3    # $t1 = c & d</div>
-                                        <div>sub  $t2, $t0, $t1    # $t2 = (a+b) - (c&d)</div>
-                                    </div>
-                                </div>
-                            </section>
-
-                            <section>
-                                <h3 class="text-xl font-semibold mb-4">Common Pitfalls and Best Practices</h3>
-                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                    <div class="border border-red-300 bg-red-50 p-4 rounded">
-                                        <h4 class="font-semibold text-red-800 mb-2">Common Mistakes:</h4>
-                                        <ul class="text-sm space-y-1">
-                                            <li>Confusing source and destination order</li>
-                                            <li>Using add when addu is needed</li>
-                                            <li>Forgetting overflow can occur</li>
-                                            <li>Mixing signed/unsigned operations</li>
-                                        </ul>
-                                    </div>
-                                    <div class="border border-green-300 bg-green-50 p-4 rounded">
-                                        <h4 class="font-semibold text-green-800 mb-2">Best Practices:</h4>
-                                        <ul class="text-sm space-y-1">
-                                            <li>Use descriptive register names</li>
-                                            <li>Comment complex operations</li>
-                                            <li>Test with edge cases (0, -1, max values)</li>
-                                            <li>Use simulator to verify results</li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </section>
-
-                            <div class="mt-6">
-                                <button class="complete-activity bg-green-600 text-white px-6 py-3 rounded hover:bg-green-700" data-module="1">Complete Module 1</button>
+                1: `
+                    <div class="space-y-6">
+                        <section>
+                            <h3 class="text-xl font-semibold mb-4">R-Type Instruction Format Deep Dive</h3>
+                            <div class="binary-display mb-4">
+                                op(6) | rs(5) | rt(5) | rd(5) | shamt(5) | funct(6)<br>
+                                000000 | source | target | dest | shift | function
                             </div>
-                        </div>`
-                },
-                2: {
-                    title: "Module 2: I-Type Instructions & Immediate Operands",
-                    content: `
-                        <div class="space-y-6">
-                            <section>
-                                <h3 class="text-xl font-semibold mb-4">I-Type Instruction Format</h3>
-                                <div class="binary-display mb-4">
-                                    op(6) | rs(5) | rt(5) | immediate(16)<br>
-                                    opcode | source | target | constant value
-                                </div>
-                                <div class="code-highlight p-4 rounded mb-4">
-                                    <h4 class="font-semibold mb-2">Key Differences from R-Type:</h4>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                                <div class="code-highlight p-4 rounded">
+                                    <h4 class="font-semibold mb-2">Field Descriptions:</h4>
                                     <ul class="text-sm space-y-1">
-                                        <li>Unique opcode for each instruction (not 000000)</li>
-                                        <li>16-bit immediate value instead of second source register</li>
-                                        <li>rt is the destination (not rd)</li>
-                                        <li>No function field needed</li>
+                                        <li><strong>op:</strong> Always 000000 for R-type</li>
+                                        <li><strong>rs:</strong> First source register</li>
+                                        <li><strong>rt:</strong> Second source register</li>
+                                        <li><strong>rd:</strong> Destination register</li>
+                                        <li><strong>shamt:</strong> Shift amount (0-31)</li>
+                                        <li><strong>funct:</strong> Function code (operation)</li>
                                     </ul>
                                 </div>
-                            </section>
-
-                            <section>
-                                <h3 class="text-xl font-semibold mb-4">Sign Extension Explained</h3>
-                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                                    <div class="code-highlight p-4 rounded">
-                                        <h4 class="font-semibold mb-2">Positive Immediate (100)</h4>
-                                        <div class="code-font text-xs space-y-1">
-                                            <div>16-bit: 0000 0000 0110 0100</div>
-                                            <div>32-bit: 0000 0000 0000 0000 0000 0000 0110 0100</div>
-                                            <div class="text-green-600">Value remains: +100</div>
-                                        </div>
-                                    </div>
-                                    <div class="code-highlight p-4 rounded">
-                                        <h4 class="font-semibold mb-2">Negative Immediate (-100)</h4>
-                                        <div class="code-font text-xs space-y-1">
-                                            <div>16-bit: 1111 1111 1001 1100</div>
-                                            <div>32-bit: 1111 1111 1111 1111 1111 1111 1001 1100</div>
-                                            <div class="text-green-600">Value remains: -100</div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </section>
-
-                            <section>
-                                <h3 class="text-xl font-semibold mb-4">Arithmetic Immediate Instructions</h3>
-                                <table class="instruction-table w-full mb-4">
-                                    <thead>
-                                        <tr>
-                                            <th>Instruction</th>
-                                            <th>Opcode</th>
-                                            <th>Operation</th>
-                                            <th>Range</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td class="code-font">addi</td>
-                                            <td class="code-font">001000</td>
-                                            <td>Add immediate</td>
-                                            <td>-32,768 to +32,767</td>
-                                        </tr>
-                                        <tr>
-                                            <td class="code-font">addiu</td>
-                                            <td class="code-font">001001</td>
-                                            <td>Add immediate unsigned</td>
-                                            <td>0 to 65,535</td>
-                                        </tr>
-                                        <tr>
-                                            <td class="code-font">slti</td>
-                                            <td class="code-font">001010</td>
-                                            <td>Set less than immediate</td>
-                                            <td>-32,768 to +32,767</td>
-                                        </tr>
-                                        <tr>
-                                            <td class="code-font">sltiu</td>
-                                            <td class="code-font">001011</td>
-                                            <td>Set less than immediate unsigned</td>
-                                            <td>0 to 65,535</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </section>
-
-                            <section>
-                                <h3 class="text-xl font-semibold mb-4">Logical Immediate Instructions</h3>
-                                <div class="code-highlight p-4 rounded mb-4">
-                                    <h4 class="font-semibold mb-2">Zero Extension vs Sign Extension</h4>
-                                    <p class="text-sm mb-2">Logical operations use ZERO extension, not sign extension!</p>
-                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                        <div>
-                                            <h5 class="font-medium">andi $t0, $t1, 0xFF</h5>
-                                            <div class="code-font text-xs">
-                                                16-bit: 0000 0000 1111 1111<br>
-                                                32-bit: 0000 0000 0000 0000 0000 0000 1111 1111
-                                            </div>
-                                        </div>
-                                        <div>
-                                            <h5 class="font-medium">ori $t0, $t1, 0x8000</h5>
-                                            <div class="code-font text-xs">
-                                                16-bit: 1000 0000 0000 0000<br>
-                                                32-bit: 0000 0000 0000 0000 1000 0000 0000 0000
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <table class="instruction-table w-full mb-4">
-                                    <thead>
-                                        <tr>
-                                            <th>Instruction</th>
-                                            <th>Opcode</th>
-                                            <th>Extension Type</th>
-                                            <th>Common Use</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td class="code-font">andi</td>
-                                            <td class="code-font">001100</td>
-                                            <td>Zero</td>
-                                            <td>Masking bits</td>
-                                        </tr>
-                                        <tr>
-                                            <td class="code-font">ori</td>
-                                            <td class="code-font">001101</td>
-                                            <td>Zero</td>
-                                            <td>Setting bits</td>
-                                        </tr>
-                                        <tr>
-                                            <td class="code-font">xori</td>
-                                            <td class="code-font">001110</td>
-                                            <td>Zero</td>
-                                            <td>Toggling bits</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </section>
-
-                            <section>
-                                <h3 class="text-xl font-semibold mb-4">Load Upper Immediate (LUI)</h3>
-                                <div class="step-highlight">
-                                    <h4 class="font-semibold mb-2">lui $rt, immediate</h4>
-                                    <p class="text-sm mb-2">Loads 16-bit immediate into upper 16 bits, zeros lower 16 bits</p>
-                                    <div class="code-font text-sm space-y-1">
-                                        <div>lui $t0, 0x1234      # $t0 = 0x12340000</div>
-                                        <div>ori $t0, $t0, 0x5678 # $t0 = 0x12345678</div>
-                                    </div>
-                                    <p class="text-sm mt-2">This is how to load any 32-bit constant!</p>
-                                </div>
-                            </section>
-
-                            <section>
-                                <h3 class="text-xl font-semibold mb-4">Practical Examples</h3>
-                                <div class="space-y-4">
-                                    <div class="step-highlight">
-                                        <h4 class="font-semibold mb-2">Example 1: Increment by 10</h4>
-                                        <div class="code-font text-sm">
-                                            addi $t0, $t0, 10    # $t0 = $t0 + 10
-                                        </div>
-                                    </div>
-                                    <div class="step-highlight">
-                                        <h4 class="font-semibold mb-2">Example 2: Extract Lower Byte</h4>
-                                        <div class="code-font text-sm">
-                                            andi $t1, $t0, 0xFF  # Keep only bits 0-7
-                                        </div>
-                                    </div>
-                                    <div class="step-highlight">
-                                        <h4 class="font-semibold mb-2">Example 3: Set Bit 15</h4>
-                                        <div class="code-font text-sm">
-                                            ori $t1, $t0, 0x8000 # Set bit 15 to 1
-                                        </div>
-                                    </div>
-                                    <div class="step-highlight">
-                                        <h4 class="font-semibold mb-2">Example 4: Load Large Constant</h4>
-                                        <div class="code-font text-sm space-y-1">
-                                            <div>lui $t0, 0xDEAD   # Upper: 0xDEAD0000</div>
-                                            <div>ori $t0, $t0, 0xBEEF # Result: 0xDEADBEEF</div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </section>
-
-                            <section>
-                                <h3 class="text-xl font-semibold mb-4">Optimization Techniques</h3>
-                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                    <div class="border border-blue-300 bg-blue-50 p-4 rounded">
-                                        <h4 class="font-semibold text-blue-800 mb-2">Efficient Patterns:</h4>
-                                        <ul class="text-sm space-y-1">
-                                            <li>Use addi instead of li + add</li>
-                                            <li>Combine lui + ori for constants</li>
-                                            <li>Use andi for fast modulo powers of 2</li>
-                                            <li>Use xori to toggle specific bits</li>
-                                        </ul>
-                                    </div>
-                                    <div class="border border-yellow-300 bg-yellow-50 p-4 rounded">
-                                        <h4 class="font-semibold text-yellow-800 mb-2">Performance Tips:</h4>
-                                        <ul class="text-sm space-y-1">
-                                            <li>Immediate operations are faster than memory</li>
-                                            <li>Use small immediates when possible</li>
-                                            <li>Consider sign extension effects</li>
-                                            <li>Minimize register pressure</li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </section>
-
-                            <div class="mt-6">
-                                <button class="complete-activity bg-green-600 text-white px-6 py-3 rounded hover:bg-green-700" data-module="2">Complete Module 2</button>
-                            </div>
-                        </div>`
-                },
-                3: {
-                    title: "Module 3: Shift Operations & Bit Manipulation",
-                    content: `
-                        <div class="space-y-6">
-                            <section>
-                                <h3 class="text-xl font-semibold mb-4">Understanding Shift Operations</h3>
-                                <div class="code-highlight p-4 rounded mb-4">
-                                    <h4 class="font-semibold mb-2">Why Shifts Matter:</h4>
+                                <div class="code-highlight p-4 rounded">
+                                    <h4 class="font-semibold mb-2">Key Characteristics:</h4>
                                     <ul class="text-sm space-y-1">
-                                        <li>Fastest way to multiply/divide by powers of 2</li>
-                                        <li>Essential for bit manipulation and data packing</li>
-                                        <li>Used in address calculations and data alignment</li>
-                                        <li>Critical for implementing efficient algorithms</li>
+                                        <li>All operands are registers</li>
+                                        <li>Result stored in rd register</li>
+                                        <li>32-bit arithmetic operations</li>
+                                        <li>Two's complement representation</li>
                                     </ul>
                                 </div>
-                            </section>
+                            </div>
+                        </section>
 
-                            <section>
-                                <h3 class="text-xl font-semibold mb-4">Shift Left Logical (SLL)</h3>
-                                <div class="step-highlight">
-                                    <h4 class="font-semibold mb-2">sll $rd, $rt, shamt</h4>
-                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                        <div>
-                                            <h5 class="font-medium mb-2">Operation:</h5>
-                                            <ul class="text-sm space-y-1">
-                                                <li>Shifts bits left by shamt positions</li>
-                                                <li>Fills with zeros from the right</li>
-                                                <li>Multiplies by 2^shamt</li>
-                                                <li>Can cause overflow</li>
-                                            </ul>
-                                        </div>
-                                        <div>
-                                            <h5 class="font-medium mb-2">Example: sll $t0, $t1, 2</h5>
-                                            <div class="code-font text-xs space-y-1">
-                                                <div>Before: 0000 0000 0000 0101 (5)</div>
-                                                <div>After:  0000 0000 0001 0100 (20)</div>
-                                                <div class="text-green-600">Result: 5 * 4 = 20</div>
-                                            </div>
-                                        </div>
+                        <section>
+                            <h3 class="text-xl font-semibold mb-4">Arithmetic Operations</h3>
+                            <table class="instruction-table w-full mb-4">
+                                <thead>
+                                    <tr>
+                                        <th>Instruction</th>
+                                        <th>Function Code</th>
+                                        <th>Operation</th>
+                                        <th>Example</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="code-font">add</td>
+                                        <td class="code-font">100000</td>
+                                        <td>Addition with overflow</td>
+                                        <td class="code-font">add $t0, $t1, $t2</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="code-font">addu</td>
+                                        <td class="code-font">100001</td>
+                                        <td>Addition without overflow</td>
+                                        <td class="code-font">addu $t0, $t1, $t2</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="code-font">sub</td>
+                                        <td class="code-font">100010</td>
+                                        <td>Subtraction with overflow</td>
+                                        <td class="code-font">sub $t0, $t1, $t2</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="code-font">subu</td>
+                                        <td class="code-font">100011</td>
+                                        <td>Subtraction without overflow</td>
+                                        <td class="code-font">subu $t0, $t1, $t2</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </section>
+
+                        <div class="mt-6">
+                            <button class="complete-activity bg-green-600 text-white px-6 py-3 rounded hover:bg-green-700" data-module="1">Complete Module 1</button>
+                        </div>
+                    </div>`,
+                2: `
+                    <div class="space-y-6">
+                        <section>
+                            <h3 class="text-xl font-semibold mb-4">I-Type Instruction Format</h3>
+                            <div class="binary-display mb-4">
+                                op(6) | rs(5) | rt(5) | immediate(16)<br>
+                                opcode | source | target | constant value
+                            </div>
+                            <div class="code-highlight p-4 rounded mb-4">
+                                <h4 class="font-semibold mb-2">Key Differences from R-Type:</h4>
+                                <ul class="text-sm space-y-1">
+                                    <li>Unique opcode for each instruction (not 000000)</li>
+                                    <li>16-bit immediate value instead of second source register</li>
+                                    <li>rt is the destination (not rd)</li>
+                                    <li>No function field needed</li>
+                                </ul>
+                            </div>
+                        </section>
+
+                        <section>
+                            <h3 class="text-xl font-semibold mb-4">Arithmetic Immediate Instructions</h3>
+                            <table class="instruction-table w-full mb-4">
+                                <thead>
+                                    <tr>
+                                        <th>Instruction</th>
+                                        <th>Opcode</th>
+                                        <th>Operation</th>
+                                        <th>Range</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="code-font">addi</td>
+                                        <td class="code-font">001000</td>
+                                        <td>Add immediate</td>
+                                        <td>-32,768 to +32,767</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="code-font">andi</td>
+                                        <td class="code-font">001100</td>
+                                        <td>AND immediate (zero extend)</td>
+                                        <td>0 to 65,535</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="code-font">ori</td>
+                                        <td class="code-font">001101</td>
+                                        <td>OR immediate (zero extend)</td>
+                                        <td>0 to 65,535</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </section>
+
+                        <div class="mt-6">
+                            <button class="complete-activity bg-green-600 text-white px-6 py-3 rounded hover:bg-green-700" data-module="2">Complete Module 2</button>
+                        </div>
+                    </div>`,
+                3: `
+                    <div class="space-y-6">
+                        <section>
+                            <h3 class="text-xl font-semibold mb-4">Understanding Shift Operations</h3>
+                            <div class="code-highlight p-4 rounded mb-4">
+                                <h4 class="font-semibold mb-2">Why Shifts Matter:</h4>
+                                <ul class="text-sm space-y-1">
+                                    <li>Fastest way to multiply/divide by powers of 2</li>
+                                    <li>Essential for bit manipulation and data packing</li>
+                                    <li>Used in address calculations and data alignment</li>
+                                    <li>Critical for implementing efficient algorithms</li>
+                                </ul>
+                            </div>
+                        </section>
+
+                        <section>
+                            <h3 class="text-xl font-semibold mb-4">Shift Instructions</h3>
+                            <table class="instruction-table w-full mb-4">
+                                <thead>
+                                    <tr>
+                                        <th>Instruction</th>
+                                        <th>Operation</th>
+                                        <th>Fill Bits</th>
+                                        <th>Use Case</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="code-font">sll</td>
+                                        <td>Shift Left Logical</td>
+                                        <td>Zero from right</td>
+                                        <td>Multiply by 2^n</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="code-font">srl</td>
+                                        <td>Shift Right Logical</td>
+                                        <td>Zero from left</td>
+                                        <td>Unsigned divide by 2^n</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="code-font">sra</td>
+                                        <td>Shift Right Arithmetic</td>
+                                        <td>Sign bit from left</td>
+                                        <td>Signed divide by 2^n</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </section>
+
+                        <div class="mt-6">
+                            <button class="complete-activity bg-green-600 text-white px-6 py-3 rounded hover:bg-green-700" data-module="3">Complete Module 3</button>
+                        </div>
+                    </div>`,
+                4: `
+                    <div class="space-y-6">
+                        <section>
+                            <h3 class="text-xl font-semibold mb-4">C to MIPS Translation Strategies</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                                <div class="code-highlight p-4 rounded">
+                                    <h4 class="font-semibold mb-2">C Code Example:</h4>
+                                    <div class="code-font text-sm space-y-1">
+                                        <div>int a = 10;</div>
+                                        <div>int b = 20;</div>
+                                        <div>int result;</div>
+                                        <div>result = (a + b) * 2;</div>
                                     </div>
                                 </div>
-                            </section>
-
-                            <section>
-                                <h3 class="text-xl font-semibold mb-4">Shift Right Logical (SRL)</h3>
-                                <div class="step-highlight">
-                                    <h4 class="font-semibold mb-2">srl $rd, $rt, shamt</h4>
-                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                        <div>
-                                            <h5 class="font-medium mb-2">Operation:</h5>
-                                            <ul class="text-sm space-y-1">
-                                                <li>Shifts bits right by shamt positions</li>
-                                                <li>Fills with zeros from the left</li>
-                                                <li>Unsigned divide by 2^shamt</li>
-                                                <li>Always positive result</li>
-                                            </ul>
-                                        </div>
-                                        <div>
-                                            <h5 class="font-medium mb-2">Example: srl $t0, $t1, 2</h5>
-                                            <div class="code-font text-xs space-y-1">
-                                                <div>Before: 0000 0000 0001 0100 (20)</div>
-                                                <div>After:  0000 0000 0000 0101 (5)</div>
-                                                <div class="text-green-600">Result: 20 / 4 = 5</div>
-                                            </div>
-                                        </div>
+                                <div class="code-highlight p-4 rounded">
+                                    <h4 class="font-semibold mb-2">MIPS Translation:</h4>
+                                    <div class="code-font text-sm space-y-1">
+                                        <div>li $s0, 10        # a = 10</div>
+                                        <div>li $s1, 20        # b = 20</div>
+                                        <div>add $t0, $s0, $s1 # temp = a + b</div>
+                                        <div>sll $s2, $t0, 1   # result = temp * 2</div>
                                     </div>
                                 </div>
-                            </section>
+                            </div>
+                        </section>
 
-                            <section>
-                                <h3 class="text-xl font-semibold mb-4">Shift Right Arithmetic (SRA)</h3>
-                                <div class="step-highlight">
-                                    <h4 class="font-semibold mb-2">sra $rd, $rt, shamt</h4>
-                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                        <div>
-                                            <h5 class="font-medium mb-2">Operation:</h5>
-                                            <ul class="text-sm space-y-1">
-                                                <li>Shifts bits right by shamt positions</li>
-                                                <li>Fills with sign bit from the left</li>
-                                                <li>Signed divide by 2^shamt</li>
-                                                <li>Preserves sign for negative numbers</li>
-                                            </ul>
-                                        </div>
-                                        <div>
-                                            <h5 class="font-medium mb-2">Example: sra $t0, $t1, 2</h5>
-                                            <div class="code-font text-xs space-y-1">
-                                                <div>Before: 1111 1111 1110 1100 (-20)</div>
-                                                <div>After:  1111 1111 1111 1011 (-5)</div>
-                                                <div class="text-green-600">Result: -20 / 4 = -5</div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </section>
+                        <section>
+                            <h3 class="text-xl font-semibold mb-4">Debugging Techniques</h3>
+                            <div class="code-highlight p-4 rounded">
+                                <h4 class="font-semibold mb-2">Best Practices:</h4>
+                                <ul class="text-sm space-y-1">
+                                    <li>Use meaningful register names in comments</li>
+                                    <li>Test with simple, known inputs first</li>
+                                    <li>Use single-step execution to watch register changes</li>
+                                    <li>Verify branch conditions carefully</li>
+                                </ul>
+                            </div>
+                        </section>
 
-                            <section>
-                                <h3 class="text-xl font-semibold mb-4">Variable Shifts</h3>
-                                <table class="instruction-table w-full mb-4">
-                                    <thead>
-                                        <tr>
-                                            <th>Instruction</th>
-                                            <th>Format</th>
-                                            <th>Shift Amount Source</th>
-                                            <th>Use Case</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td class="code-font">sllv</td>
-                                            <td class="code-font">sllv $rd, $rt, $rs</td>
-                                            <td>Register $rs (bits 0-4)</td>
-                                            <td>Dynamic left shifts</td>
-                                        </tr>
-                                        <tr>
-                                            <td class="code-font">srlv</td>
-                                            <td class="code-font">srlv $rd, $rt, $rs</td>
-                                            <td>Register $rs (bits 0-4)</td>
-                                            <td>Dynamic right shifts (unsigned)</td>
-                                        </tr>
-                                        <tr>
-                                            <td class="code-font">srav</td>
-                                            <td class="code-font">srav $rd, $rt, $rs</td>
-                                            <td>Register $rs (bits 0-4)</td>
-                                            <td>Dynamic right shifts (signed)</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </section>
+                        <div class="mt-6">
+                            <button class="complete-activity bg-green-600 text-white px-6 py-3 rounded hover:bg-green-700" data-module="4">Complete Module 4</button>
+                        </div>
+                    </div>`
+            };
+            
+            const exerciseContent = {
+                'arithmetic': {
+                    title: 'Basic Arithmetic Operations',
+                    problem: 'Write MIPS code to perform: result = (15 + 7) - (10 - 3)',
+                    solution: `# Load values into registers
+li $t0, 15          # First operand
+li $t1, 7           # Second operand  
+li $t2, 10          # Third operand
+li $t3, 3           # Fourth operand
 
-                            <section>
-                                <h3 class="text-xl font-semibold mb-4">Bit Manipulation Techniques</h3>
-                                <div class="space-y-4">
-                                    <div class="step-highlight">
-                                        <h4 class="font-semibold mb-2">Extract Specific Bits</h4>
-                                        <div class="code-font text-sm space-y-1">
-                                            <div># Extract bits 8-15 from $t0</div>
-                                            <div>srl $t1, $t0, 8      # Shift right 8 positions</div>
-                                            <div>andi $t1, $t1, 0xFF # Mask to keep only 8 bits</div>
-                                        </div>
-                                    </div>
-                                    <div class="step-highlight">
-                                        <h4 class="font-semibold mb-2">Set Specific Bits</h4>
-                                        <div class="code-font text-sm space-y-1">
-                                            <div># Set bit 10 in $t0</div>
-                                            <div>ori $t0, $t0, 0x400  # 0x400 = 2^10</div>
-                                        </div>
-                                    </div>
-                                    <div class="step-highlight">
-                                        <h4 class="font-semibold mb-2">Clear Specific Bits</h4>
-                                        <div class="code-font text-sm space-y-1">
-                                            <div># Clear bits 4-7 in $t0</div>
-                                            <div>andi $t0, $t0, 0xFF0F # Mask with 0s in positions 4-7
+# Perform calculations
+add $t4, $t0, $t1   # $t4 = 15 + 7 = 22
+sub $t5, $t2, $t3   # $t5 = 10 - 3 = 7
+sub $t6, $t4, $t5   # $t6 = 22 - 7 = 15`,
+                    explanation: 'This demonstrates basic arithmetic operations. The result should be 15.'
+                },
+                'immediate': {
+                    title: 'Immediate Operations',
+                    problem: 'Load 500 into $t0, add 250, then subtract 100 using immediate instructions.',
+                    solution: `# Load initial value
+li $t0, 500         # $t0 = 500
+# Add immediate value
+addi $t0, $t0, 250  # $t0 = 750
+# Subtract immediate value  
+addi $t0, $t0, -100 # $t0 = 650`,
+                    explanation: 'This shows immediate arithmetic and negative immediates for subtraction.'
+                },
+                'bitwise': {
+                    title: 'Bitwise Operations',
+                    problem: 'Given A = 0xAAAA and B = 0x5555, compute A AND B, A OR B, and A XOR B.',
+                    solution: `# Load the values
+li $t0, 0xAAAA      # A = 0xAAAA
+li $t1, 0x5555      # B = 0x5555
+# Perform bitwise operations
+and $t2, $t0, $t1   # $t2 = A AND B = 0x0000
+or  $t3, $t0, $t1   # $t3 = A OR B  = 0xFFFF  
+xor $t4, $t0, $t1   # $t4 = A XOR B = 0xFFFF`,
+                    explanation: 'This demonstrates bitwise operations with complementary patterns.'
+                },
+                'shifts': {
+                    title: 'Shift Operations',
+                    problem: 'Start with 12, multiply by 8 using shifts, then divide by 4 using shifts.',
+                    solution: `# Load initial value
+li $t0, 12          # Start with 12
+# Multiply by 8 using left shift (8 = 2^3)
+sll $t1, $t0, 3     # $t1 = 12 * 8 = 96
+# Divide by 4 using right shift (4 = 2^2)  
+srl $t2, $t1, 2     # $t2 = 96 / 4 = 24`,
+                    explanation: 'Shows how shifts replace multiplication/division by powers of 2.'
+                },
+                'mixed': {
+                    title: 'Mixed Operations Challenge',
+                    problem: 'Implement: result = ((x << 2) + y) & 0xFF where x = 10, y = 25',
+                    solution: `# Load initial values
+li $s0, 10          # x = 10
+li $s1, 25          # y = 25
+# Implement: result = ((x << 2) + y) & 0xFF
+sll $t0, $s0, 2     # $t0 = x << 2 = 40
+add $t1, $t0, $s1   # $t1 = 40 + 25 = 65
+andi $t2, $t1, 0xFF # $t2 = 65 & 0xFF = 65`,
+                    explanation: 'Combines shifting, addition, and bitwise operations.'
+                }
+            };
+            
+            const instructionPatterns = {
+                'add': { type: 'R', opcode: '000000', funct: '100000', format: 'add rd, rs, rt' },
+                'addu': { type: 'R', opcode: '000000', funct: '100001', format: 'addu rd, rs, rt' },
+                'sub': { type: 'R', opcode: '000000', funct: '100010', format: 'sub rd, rs, rt' },
+                'subu': { type: 'R', opcode: '000000', funct: '100011', format: 'subu rd, rs, rt' },
+                'and': { type: 'R', opcode: '000000', funct: '100100', format: 'and rd, rs, rt' },
+                'or': { type: 'R', opcode: '000000', funct: '100101', format: 'or rd, rs, rt' },
+                'xor': { type: 'R', opcode: '000000', funct: '100110', format: 'xor rd, rs, rt' },
+                'nor': { type: 'R', opcode: '000000', funct: '100111', format: 'nor rd, rs, rt' },
+                'slt': { type: 'R', opcode: '000000', funct: '101010', format: 'slt rd, rs, rt' },
+                'sll': { type: 'R', opcode: '000000', funct: '000000', format: 'sll rd, rt, shamt' },
+                'srl': { type: 'R', opcode: '000000', funct: '000010', format: 'srl rd, rt, shamt' },
+                'sra': { type: 'R', opcode: '000000', funct: '000011', format: 'sra rd, rt, shamt' },
+                'addi': { type: 'I', opcode: '001000', format: 'addi rt, rs, immediate' },
+                'andi': { type: 'I', opcode: '001100', format: 'andi rt, rs, immediate' },
+                'ori': { type: 'I', opcode: '001101', format: 'ori rt, rs, immediate' },
+                'xori': { type: 'I', opcode: '001110', format: 'xori rt, rs, immediate' },
+                'lui': { type: 'I', opcode: '001111', format: 'lui rt, immediate' },
+                'slti': { type: 'I', opcode: '001010', format: 'slti rt, rs, immediate' }
+            };
+
+            // Register name mappings
+            const registerMap = {
+                '$zero': 0, '$at': 1, '$v0': 2, '$v1': 3,
+                '$a0': 4, '$a1': 5, '$a2': 6, '$a3': 7,
+                '$t0': 8, '$t1': 9, '$t2': 10, '$t3': 11,
+                '$t4': 12, '$t5': 13, '$t6': 14, '$t7': 15,
+                '$s0': 16, '$s1': 17, '$s2': 18, '$s3': 19,
+                '$s4': 20, '$s5': 21, '$s6': 22, '$s7': 23,
+                '$t8': 24, '$t9': 25, '$k0': 26, '$k1': 27,
+                '$gp': 28, '$sp': 29, '$fp': 30, '$ra': 31
+            };
+
+            // --- UTILITY FUNCTIONS ---
+            function handleModuleComplete(moduleNum) {
+                progressData[moduleNum] = 100;
+                updateProgressDisplay();
+                const btn = document.querySelector(`.complete-activity[data-module="${moduleNum}"]`);
+                if (btn) {
+                    btn.textContent = 'Module Complete! ✓';
+                    btn.classList.remove('bg-green-600', 'hover:bg-green-700');
+                    btn.classList.add('bg-green-800', 'cursor-not-allowed');
+                    btn.disabled = true;
+                }
+            }
+
+            function updateProgressDisplay() {
+                Object.keys(progressData).forEach(moduleNum => {
+                    const progressBar = document.querySelector(`.progress-item[data-module="${moduleNum}"] .progress-bar`);
+                    if (progressBar) progressBar.style.width = `${progressData[moduleNum]}%`;
+                });
+            }
+
+            function showModule(moduleNum) {
+                const moduleContentDiv = document.getElementById('module-content');
+                const module = moduleContent[moduleNum];
+                if (module) {
+                    moduleContentDiv.innerHTML = `<h3 class="text-xl font-semibold mb-4">Module ${moduleNum}</h3>${module}`;
+                    
+                    // Re-attach event listener to the new complete button
+                    const completeBtn = moduleContentDiv.querySelector('.complete-activity');
+                    if (completeBtn) {
+                        completeBtn.addEventListener('click', () => {
+                            handleModuleComplete(parseInt(moduleNum));
+                        });
+                    }
+                }
+                
+                // Update visual selection
+                document.querySelectorAll('.module-card').forEach(c => c.classList.remove('ring-2', 'ring-blue-500'));
+                const selectedCard = document.querySelector(`.module-card[data-module="${moduleNum}"]`);
+                if (selectedCard) selectedCard.classList.add('ring-2', 'ring-blue-500');
+            }
+
+            // --- TAB NAVIGATION ---
+            function showTab(tabName) {
+                // Update tab buttons
+                document.querySelectorAll('.tab-button').forEach(btn => {
+                    const isSelected = btn.getAttribute('data-tab') === tabName;
+                    btn.classList.toggle('tab-active', isSelected);
+                    btn.setAttribute('aria-selected', isSelected);
+                });
+                
+                // Update tab panels
+                document.querySelectorAll('.tab-panel').forEach(panel => {
+                    panel.classList.toggle('hidden', panel.id !== `${tabName}-panel`);
+                });
+                
+                currentTab = tabName;
+            }
+
+            // --- INSTRUCTION DECODER ---
+            function decodeInstruction(instruction) {
+                const parts = instruction.trim().toLowerCase().replace(/,/g, '').split(/\s+/);
+                const op = parts[0];
+                
+                if (!instructionPatterns[op]) {
+                    return '<p class="text-red-600">Unknown instruction: ' + op + '</p>';
+                }
+                
+                const pattern = instructionPatterns[op];
+                let output = `<h4 class="font-semibold mb-3">Instruction: <code class="code-font bg-gray-200 px-2 py-1 rounded">${instruction}</code></h4>
+                              <div class="mb-4 space-y-2">
+                                <p><strong>Type:</strong> ${pattern.type}-Type</p>
+                                <p><strong>Format:</strong> <code class="bg-gray-200 px-1 rounded">${pattern.format}</code></p>
+                                <p><strong>Opcode:</strong> <code class="bg-gray-200 px-1 rounded">${pattern.opcode}</code></p>
+                                ${pattern.type === 'R' ? `<p><strong>Function:</strong> <code class="bg-gray-200 px-1 rounded">${pattern.funct}</code></p>` : ''}
+                              </div>`;
+
+                // Parse fields
+                let fields = {};
+                if (pattern.type === 'R') {
+                    if (['sll', 'srl', 'sra'].includes(op)) {
+                        fields = { rd: parts[1], rt: parts[2], shamt: parts[3] };
+                    } else {
+                        fields = { rd: parts[1], rs: parts[2], rt: parts[3] };
+                    }
+                } else { // I-Type
+                    if (op === 'lui') {
+                        fields = { rt: parts[1], immediate: parts[2] };
+                    } else {
+                        fields = { rt: parts[1], rs: parts[2], immediate: parts[3] };
+                    }
+                }
+                
+                output += '<h5 class="font-medium mb-2">Fields:</h5>';
+                output += '<div class="binary-display space-y-1">';
+                for(const [key, value] of Object.entries(fields)) {
+                    output += `<div><strong>${key}:</strong> ${value || 'N/A'}</div>`;
+                }
+                output += '</div>';
+                
+                return output;
+            }
+
+            // --- SIMULATOR FUNCTIONS ---
+            function getRegisterValue(reg) {
+                const cleanReg = reg.replace(', '');
+                return registers[cleanReg] || 0;
+            }
+            
+            function setRegisterValue(reg, value) {
+                const cleanReg = reg.replace(', '');
+                if (cleanReg !== 'zero') {
+                    registers[cleanReg] = value & 0xFFFFFFFF;
+                }
+            }
+
+            function updateRegisterDisplay() {
+                const regNames = ['t0', 't1', 't2', 't3', 't4', 't5', 's0', 's1'];
+                let html = '<div class="space-y-1">';
+                regNames.forEach(reg => {
+                    const value = registers[reg] || 0;
+                    html += `<div class="flex justify-between">
+                               <span>${reg}:</span> 
+                               <span>0x${value.toString(16).padStart(8, '0').toUpperCase()}</span>
+                             </div>`;
+                });
+                html += '</div>';
+                document.getElementById('register-display').innerHTML = html;
+            }
+
+            function executeInstruction(instruction) {
+                const parts = instruction.toLowerCase().replace(/,/g, '').split(/\s+/);
+                const op = parts[0];
+                
+                try {
+                    switch (op) {
+                        case 'li':
+                            setRegisterValue(parts[1], parseInt(parts[2]));
+                            return `Loaded ${parseInt(parts[2])} into ${parts[1]}`;
+                        case 'add':
+                            setRegisterValue(parts[1], getRegisterValue(parts[2]) + getRegisterValue(parts[3]));
+                            return `${parts[1]} = ${parts[2]} + ${parts[3]} = ${getRegisterValue(parts[1])}`;
+                        case 'sub':
+                            setRegisterValue(parts[1], getRegisterValue(parts[2]) - getRegisterValue(parts[3]));
+                            return `${parts[1]} = ${parts[2]} - ${parts[3]} = ${getRegisterValue(parts[1])}`;
+                        case 'addi':
+                            setRegisterValue(parts[1], getRegisterValue(parts[2]) + parseInt(parts[3]));
+                            return `${parts[1]} = ${parts[2]} + ${parseInt(parts[3])} = ${getRegisterValue(parts[1])}`;
+                        case 'and':
+                            setRegisterValue(parts[1], getRegisterValue(parts[2]) & getRegisterValue(parts[3]));
+                            return `${parts[1]} = ${parts[2]} & ${parts[3]} = 0x${getRegisterValue(parts[1]).toString(16)}`;
+                        case 'andi':
+                            setRegisterValue(parts[1], getRegisterValue(parts[2]) & parseInt(parts[3]));
+                            return `${parts[1]} = ${parts[2]} & ${parseInt(parts[3])} = 0x${getRegisterValue(parts[1]).toString(16)}`;
+                        case 'or':
+                            setRegisterValue(parts[1], getRegisterValue(parts[2]) | getRegisterValue(parts[3]));
+                            return `${parts[1]} = ${parts[2]} | ${parts[3]} = 0x${getRegisterValue(parts[1]).toString(16)}`;
+                        case 'ori':
+                            setRegisterValue(parts[1], getRegisterValue(parts[2]) | parseInt(parts[3]));
+                            return `${parts[1]} = ${parts[2]} | ${parseInt(parts[3])} = 0x${getRegisterValue(parts[1]).toString(16)}`;
+                        case 'xor':
+                            setRegisterValue(parts[1], getRegisterValue(parts[2]) ^ getRegisterValue(parts[3]));
+                            return `${parts[1]} = ${parts[2]} ^ ${parts[3]} = 0x${getRegisterValue(parts[1]).toString(16)}`;
+                        case 'sll':
+                            setRegisterValue(parts[1], getRegisterValue(parts[2]) << parseInt(parts[3]));
+                            return `${parts[1]} = ${parts[2]} << ${parseInt(parts[3])} = ${getRegisterValue(parts[1])}`;
+                        case 'srl':
+                            setRegisterValue(parts[1], getRegisterValue(parts[2]) >>> parseInt(parts[3]));
+                            return `${parts[1]} = ${parts[2]} >>> ${parseInt(parts[3])} = ${getRegisterValue(parts[1])}`;
+                        case 'sra':
+                            setRegisterValue(parts[1], getRegisterValue(parts[2]) >> parseInt(parts[3]));
+                            return `${parts[1]} = ${parts[2]} >> ${parseInt(parts[3])} = ${getRegisterValue(parts[1])}`;
+                        default:
+                            return `Unsupported instruction: ${op}`;
+                    }
+                } catch (error) {
+                    return `Error executing: ${instruction}`;
+                }
+            }
+            
+            function parseInstructions(code) {
+                return code.split('\n')
+                    .map(line => line.trim())
+                    .filter(line => line && !line.startsWith('#'));
+            }
+
+            function resetSimulator() {
+                registers = {};
+                ['t0','t1','t2','t3','t4','t5','t6','t7','s0','s1','s2','s3'].forEach(reg => {
+                    registers[reg] = 0;
+                });
+                currentInstructionIndex = 0;
+                instructions = [];
+                updateRegisterDisplay();
+                
+                const status = document.getElementById('execution-status');
+                const currentInst = document.getElementById('current-instruction');
+                status.textContent = 'Ready to execute';
+                status.className = 'p-2 rounded text-sm bg-gray-100';
+                currentInst.textContent = 'None';
+                currentInst.className = 'p-2 rounded text-sm bg-gray-100 code-font';
+            }
+
+            // --- EVENT HANDLERS ---
+            function handleTabClick(e) {
+                const tabName = e.target.getAttribute('data-tab');
+                if (tabName) showTab(tabName);
+            }
+
+            function handleModuleClick(e) {
+                const moduleCard = e.target.closest('.module-card');
+                if (moduleCard) {
+                    const moduleNum = moduleCard.getAttribute('data-module');
+                    showModule(moduleNum);
+                }
+            }
+
+            function handleProgressClick(e) {
+                const progressItem = e.target.closest('.progress-item');
+                if (progressItem) {
+                    const moduleNum = progressItem.getAttribute('data-module');
+                    showModule(moduleNum);
+                }
+            }
+
+            function handleExerciseClick(e) {
+                const exerciseCard = e.target.closest('.exercise-card');
+                if (exerciseCard) {
+                    const exerciseKey = exerciseCard.getAttribute('data-exercise');
+                    const exercise = exerciseContent[exerciseKey];
+                    const exerciseContentDiv = document.getElementById('exercise-content');
+                    
+                    if (exercise) {
+                        exerciseContentDiv.innerHTML = `
+                            <h3 class="text-xl font-semibold mb-2">${exercise.title}</h3>
+                            <div class="mb-4 p-4 bg-blue-50 rounded">
+                                <h4 class="font-semibold mb-2">Problem:</h4>
+                                <p class="text-gray-700">${exercise.problem}</p>
+                            </div>
+                            <textarea id="exercise-input" class="w-full h-32 p-2 border-2 border-gray-300 rounded code-font text-sm" placeholder="# Enter your solution here..."></textarea>
+                            <div class="flex gap-2 mt-3">
+                                <button id="check-solution" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Check Solution</button>
+                                <button id="show-solution" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">Show Solution</button>
+                                <button id="test-solution" class="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700">Test in Simulator</button>
+                            </div>
+                            <div id="exercise-feedback" class="exercise-output hidden"></div>`;
+                            
+                        // Add event listeners for exercise buttons using event delegation
+                        exerciseContentDiv.querySelector('#show-solution').addEventListener('click', () => {
+                            exerciseContentDiv.querySelector('#exercise-input').value = exercise.solution;
+                            const feedback = exerciseContentDiv.querySelector('#exercise-feedback');
+                            feedback.innerHTML = `<h5 class="font-semibold mb-2">Explanation:</h5><p>${exercise.explanation}</p>`;
+                            feedback.classList.remove('hidden');
+                        });
+                        
+                        exerciseContentDiv.querySelector('#test-solution').addEventListener('click', () => {
+                            const code = exerciseContentDiv.querySelector('#exercise-input').value;
+                            document.getElementById('code-input').value = code;
+                            showTab('simulator');
+                        });
+                        
+                        exerciseContentDiv.querySelector('#check-solution').addEventListener('click', () => {
+                            const userCode = exerciseContentDiv.querySelector('#exercise-input').value.trim();
+                            const feedback = exerciseContentDiv.querySelector('#exercise-feedback');
+                            if (userCode) {
+                                feedback.innerHTML = `<h5 class="font-semibold mb-2">Feedback:</h5><p>Code entered! Use 'Test in Simulator' to verify your solution, or 'Show Solution' to compare with the expected answer.</p>`;
+                                feedback.classList.remove('hidden');
+                            } else {
+                                feedback.innerHTML = `<h5 class="font-semibold mb-2">Feedback:</h5><p class="text-red-600">Please enter some code first.</p>`;
+                                feedback.classList.remove('hidden');
+                            }
+                        });
+                    }
+                    
+                    // Update visual selection
+                    document.querySelectorAll('.exercise-card').forEach(c => c.classList.remove('ring-2', 'ring-blue-500'));
+                    exerciseCard.classList.add('ring-2', 'ring-blue-500');
+                }
+            }
+
+            // --- INITIALIZATION ---
+            function initializeApp() {
+                console.log('Initializing MIPS Learning Guide...');
+                
+                // Initialize state
+                resetSimulator();
+                updateProgressDisplay();
+                
+                // Set up tab navigation
+                document.querySelectorAll('.tab-button').forEach(btn => {
+                    btn.addEventListener('click', handleTabClick);
+                });
+
+                // Set up module navigation
+                document.querySelectorAll('.module-card').forEach(card => {
+                    card.addEventListener('click', handleModuleClick);
+                });
+
+                // Set up progress bar navigation
+                document.querySelectorAll('.progress-item').forEach(item => {
+                    item.addEventListener('click', handleProgressClick);
+                });
+
+                // Set up exercise navigation
+                document.querySelectorAll('.exercise-card').forEach(card => {
+                    card.addEventListener('click', handleExerciseClick);
+                });
+
+                // Set up instruction decoder
+                const instructionInput = document.getElementById('instruction-input');
+                const decodeBtn = document.getElementById('decode-btn');
+                const decodeOutput = document.getElementById('decode-output');
+                
+                decodeBtn.addEventListener('click', () => {
+                    const instruction = instructionInput.value.trim();
+                    if (instruction) {
+                        decodeOutput.innerHTML = decodeInstruction(instruction);
+                    } else {
+                        decodeOutput.innerHTML = '<p class="text-red-600">Please enter an instruction.</p>';
+                    }
+                });
+                
+                instructionInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') decodeBtn.click();
+                });
+
+                // Set up example buttons for decoder
+                document.querySelectorAll('.example-btn').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        const instruction = btn.getAttribute('data-instruction');
+                        instructionInput.value = instruction;
+                        decodeOutput.innerHTML = decodeInstruction(instruction);
+                    });
+                });
+
+                // Set up simulator controls
+                const codeInput = document.getElementById('code-input');
+                const status = document.getElementById('execution-status');
+                const currentInst = document.getElementById('current-instruction');
+                
+                document.getElementById('run-btn').addEventListener('click', () => {
+                    resetSimulator();
+                    instructions = parseInstructions(codeInput.value);
+                    if (instructions.length === 0) {
+                        status.textContent = 'No code to execute';
+                        status.className = 'p-2 rounded text-sm bg-yellow-100 text-yellow-800';
+                        return;
+                    }
+                    instructions.forEach(inst => executeInstruction(inst));
+                    updateRegisterDisplay();
+                    status.textContent = `Executed ${instructions.length} instructions.`;
+                    status.className = 'p-2 rounded text-sm bg-green-100 text-green-800';
+                    currentInst.textContent = 'All executed';
+                });
+                
+                document.getElementById('step-btn').addEventListener('click', () => {
+                    if (instructions.length === 0 || currentInstructionIndex === 0) {
+                        resetSimulator();
+                        instructions = parseInstructions(codeInput.value);
+                    }
+                    if (currentInstructionIndex < instructions.length) {
+                        const instruction = instructions[currentInstructionIndex];
+                        const result = executeInstruction(instruction);
+                        updateRegisterDisplay();
+                        status.textContent = `Step ${currentInstructionIndex + 1}: ${result}`;
+                        status.className = 'p-2 rounded text-sm bg-blue-100 text-blue-800';
+                        currentInst.textContent = instruction;
+                        currentInst.className = 'p-2 rounded text-sm bg-yellow-100 code-font';
+                        currentInstructionIndex++;
+                    } else {
+                        status.textContent = 'All instructions executed.';
+                        status.className = 'p-2 rounded text-sm bg-green-100 text-green-800';
+                        currentInst.textContent = 'Complete';
+                        currentInst.className = 'p-2 rounded text-sm bg-green-100 code-font';
+                    }
+                });
+                
+                document.getElementById('reset-btn').addEventListener('click', resetSimulator);
+                
+                document.getElementById('load-example-btn').addEventListener('click', () => {
+                    const exampleCode = `# Example: Calculate (5 + 3) * 2 using shifts
+li $t0, 5
+li $t1, 3
+add $t2, $t0, $t1    # $t2 = 8
+sll $t3, $t2, 1      # $t3 = 16 (multiply by 2)
+
+# Demonstrate bitwise operations  
+li $t4, 0xF0        # Load 240
+andi $t5, $t4, 0x0F # Extract lower 4 bits`;
+                    codeInput.value = exampleCode;
+                });
+
+                // Initialize with overview tab
+                showTab('overview');
+                
+                console.log('MIPS Learning Guide initialized successfully!');
+            }
+
+            // Start the application
+            initializeApp();
+        });
+    </script>
+</body>
+</html>
