@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Week 6 MIPS Arithmetic & Logic Assignment</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Inter and Fira Code -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    
+    <!-- Chosen Palette: Scholarly Neutrals -->
+    <!-- Application Structure Plan: Three-part assignment: skills check exercises, practical programming problems, and final submission-ready MIPS program with complete .asm file template. -->
+    <!-- Visualization & Content Choices: Interactive feedback for skill-building, complete code templates for submission, and structured rubric for assessment. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #FDFBF8;
+            color: #383838;
+        }
+        
+        .worksheet-input {
+            font-family: 'Fira Code', monospace;
+            border: 1px solid #D1C7BF;
+            background-color: #FFFFFF;
+            padding: 0.5rem;
+            border-radius: 0.375rem;
+        }
+        
+        .worksheet-input:focus {
+            outline: none;
+            border-color: #4A90E2;
+            box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.5);
+        }
+        
+        .submit-btn {
+            background-color: #4A90E2;
+            color: white;
+            font-weight: 600;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+        }
+        
+        .submit-btn:hover {
+            background-color: #357ABD;
+        }
+        
+        .check-btn {
+            background-color: #EADDD7;
+            font-weight: 600;
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+        }
+        
+        .check-btn:hover {
+            background-color: #D1C7BF;
+        }
+        
+        .code-block {
+            background-color: #f4f4f4;
+            border: 1px solid #ddd;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            white-space: pre-wrap;
+            font-family: 'Fira Code', monospace;
+        }
+        
+        .correct {
+            background-color: #d4edda;
+            border-color: #28a745;
+        }
+        
+        .incorrect {
+            background-color: #f8d7da;
+            border-color: #dc3545;
+        }
+        
+        .register-display {
+            background-color: #EADDD7;
+            border: 2px solid #D1C7BF;
+            border-radius: 0.5rem;
+            padding: 0.75rem;
+            margin: 0.5rem 0;
+        }
+        
+        .submission-box {
+            background-color: #FFFFFF;
+            border: 2px solid #4A90E2;
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+        }
+        
+        @media print {
+            .no-print {
+                display: none;
+            }
+            
+            body {
+                background-color: white;
+            }
+            
+            .worksheet-input, .code-textarea {
+                border-bottom: 1px solid #000;
+                background: transparent;
+            }
+        }
+        
+        .skip-link {
+            position: absolute;
+            top: -40px;
+            left: 0;
+            background: #4A90E2;
+            color: white;
+            padding: 8px;
+            z-index: 100;
+            text-decoration: none;
+        }
+        
+        .skip-link:focus {
+            top: 0;
+        }
+    </style>
+</head>
+<body class="antialiased">
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+    
+    <main id="main-content" class="max-w-4xl mx-auto p-4 md:p-8">
+        <header class="mb-8">
+            <h1 class="text-3xl md:text-4xl font-bold mb-4">Week 6 MIPS Assignment: Arithmetic & Logic Operations</h1>
+            <div class="bg-blue-50 p-4 rounded-lg border-l-4 border-blue-500 mb-6">
+                <h2 class="text-lg font-semibold mb-2">Assignment Overview</h2>
+                <p class="mb-3">This assignment has three parts designed to assess your understanding of MIPS arithmetic and logic instructions:</p>
+                <ol class="list-decimal pl-6 space-y-1">
+                    <li><strong>Part A:</strong> Skills Check - Interactive exercises to practice individual instructions</li>
+                    <li><strong>Part B:</strong> Programming Problems - Write instruction sequences for specific tasks</li>
+                    <li><strong>Part C:</strong> Complete Program - Write a full MIPS program for submission (.asm file)</li>
+                </ol>
+            </div>
+            
+            <div class="bg-yellow-50 p-4 rounded-lg border-l-4 border-yellow-500 mb-6">
+                <h2 class="text-lg font-semibold mb-2">Submission Requirements</h2>
+                <ul class="list-disc pl-6 space-y-1">
+                    <li>Complete Parts A and B in this webpage, then save as PDF</li>
+                    <li>Submit the PDF showing your work for Parts A and B</li>
+                    <li>Create a separate .asm file for Part C and test it in MARS</li>
+                    <li>Submit both the PDF and .asm file for full credit</li>
+                </ul>
+            </div>
+        </header>
+
+        <!-- Part A: Skills Check -->
+        <section class="mb-12">
+            <h2 class="text-2xl font-bold mb-6">Part A: Skills Check (25 points)</h2>
+            <p class="mb-6">Complete these exercises to practice individual MIPS instructions. Use the "Check Answer" buttons to verify your work.</p>
+            
+            <div class="bg-white p-6 rounded-lg border border-gray-200 mb-6">
+                <h3 class="text-xl font-semibold mb-4">A1. Basic Arithmetic (10 points)</h3>
+                
+                <div class="space-y-4">
+                    <div>
+                        <label for="a1_1" class="block font-medium mb-2">1. Add registers $t0 and $t1, store result in $t2:</label>
+                        <input type="text" id="a1_1" class="worksheet-input w-full" placeholder="instruction $dest, $src1, $src2    # comment">
+                        <button class="check-btn mt-2 no-print" onclick="checkAnswer('a1_1', 'add $t2, $t0, $t1')">Check Answer</button>
+                        <div id="feedback_a1_1" class="mt-2 text-sm font-medium"></div>
+                    </div>
+                    
+                    <div>
+                        <label for="a1_2" class="block font-medium mb-2">2. Subtract $t3 from $t2, store result in $t4:</label>
+                        <input type="text" id="a1_2" class="worksheet-input w-full" placeholder="instruction $dest, $src1, $src2    # comment">
+                        <button class="check-btn mt-2 no-print" onclick="checkAnswer('a1_2', 'sub $t4, $t2, $t3')">Check Answer</button>
+                        <div id="feedback_a1_2" class="mt-2 text-sm font-medium"></div>
+                    </div>
+                    
+                    <div>
+                        <label for="a1_3" class="block font-medium mb-2">3. Add immediate value 42 to $s0, store in $s1:</label>
+                        <input type="text" id="a1_3" class="worksheet-input w-full" placeholder="instruction $dest, $src, immediate    # comment">
+                        <button class="check-btn mt-2 no-print" onclick="checkAnswer('a1_3', 'addi $s1, $s0, 42')">Check Answer</button>
+                        <div id="feedback_a1_3" class="mt-2 text-sm font-medium"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-white p-6 rounded-lg border border-gray-200 mb-6">
+                <h3 class="text-xl font-semibold mb-4">A2. Logical Operations (10 points)</h3>
+                
+                <div class="space-y-4">
+                    <div>
+                        <label for="a2_1" class="block font-medium mb-2">1. Perform bitwise AND of $t0 and $t1, store in $t2:</label>
+                        <input type="text" id="a2_1" class="worksheet-input w-full" placeholder="instruction $dest, $src1, $src2    # comment">
+                        <button class="check-btn mt-2 no-print" onclick="checkAnswer('a2_1', 'and $t2, $t0, $t1')">Check Answer</button>
+                        <div id="feedback_a2_1" class="mt-2 text-sm font-medium"></div>
+                    </div>
+                    
+                    <div>
+                        <label for="a2_2" class="block font-medium mb-2">2. Extract lower 8 bits of $s0 using immediate AND, store in $t0:</label>
+                        <input type="text" id="a2_2" class="worksheet-input w-full" placeholder="instruction $dest, $src, immediate    # comment">
+                        <button class="check-btn mt-2 no-print" onclick="checkAnswer('a2_2', 'andi $t0, $s0, 0x00FF')">Check Answer</button>
+                        <div id="feedback_a2_2" class="mt-2 text-sm font-medium"></div>
+                    </div>
+                    
+                    <div>
+                        <label for="a2_3" class="block font-medium mb-2">3. Toggle bits 0-7 of $t1 using XOR with 0xFF, store in $t2:</label>
+                        <input type="text" id="a2_3" class="worksheet-input w-full" placeholder="instruction $dest, $src, immediate    # comment">
+                        <button class="check-btn mt-2 no-print" onclick="checkAnswer('a2_3', 'xori $t2, $t1, 0x00FF')">Check Answer</button>
+                        <div id="feedback_a2_3" class="mt-2 text-sm font-medium"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-white p-6 rounded-lg border border-gray-200 mb-6">
+                <h3 class="text-xl font-semibold mb-4">A3. Shift Operations (5 points)</h3>
+                
+                <div class="space-y-4">
+                    <div>
+                        <label for="a3_1" class="block font-medium mb-2">1. Multiply $t0 by 8 using left shift, store in $t1:</label>
+                        <input type="text" id="a3_1" class="worksheet-input w-full" placeholder="instruction $dest, $src, amount    # comment">
+                        <button class="check-btn mt-2 no-print" onclick="checkAnswer('a3_1', 'sll $t1, $t0, 3')">Check Answer</button>
+                        <div id="feedback_a3_1" class="mt-2 text-sm font-medium"></div>
+                    </div>
+                    
+                    <div>
+                        <label for="a3_2" class="block font-medium mb-2">2. Divide $t2 by 4 using arithmetic right shift, store in $t3:</label>
+                        <input type="text" id="a3_2" class="worksheet-input w-full" placeholder="instruction $dest, $src, amount    # comment">
+                        <button class="check-btn mt-2 no-print" onclick="checkAnswer('a3_2', 'sra $t3, $t2, 2')">Check Answer</button>
+                        <div id="feedback_a3_2" class="mt-2 text-sm font-medium"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Part B: Programming Problems -->
+        <section class="mb-12">
+            <h2 class="text-2xl font-bold mb-6">Part B: Programming Problems (35 points)</h2>
+            <p class="mb-6">Write sequences of MIPS instructions to solve these problems. Include comments for each instruction.</p>
+            
+            <div class="bg-white p-6 rounded-lg border border-gray-200 mb-6">
+                <h3 class="text-xl font-semibold mb-4">B1. Expression Evaluation (15 points)</h3>
+                <p class="mb-4">Write MIPS instructions to evaluate: <code class="bg-gray-100 px-2 py-1 rounded">result = (a * 16) + (b / 4) - c</code></p>
+                <p class="mb-4">Given: a in $s0, b in $s1, c in $s2. Store final result in $s3. Use shifts for multiplication and division.</p>
+                
+                <label for="b1_code" class="block font-medium mb-2">Your MIPS code:</label>
+                <textarea id="b1_code" class="worksheet-input w-full h-32 code-block" placeholder="# Calculate result = (a * 16) + (b / 4) - c
+# Step 1: Multiply a by 16 (shift left by 4)
+sll $t0, $s0, 4      # t0 = a * 16
+
+# Step 2: Divide b by 4 (shift right by 2)
+sra $t1, $s1, 2      # t1 = b / 4
+
+# Continue with remaining steps..."></textarea>
+                
+                <div class="register-display mt-4">
+                    <h4 class="font-semibold mb-2">Test Values:</h4>
+                    <div class="text-sm font-mono">
+                        If a=5, b=20, c=3, then result = (5*16) + (20/4) - 3 = 80 + 5 - 3 = 82
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-white p-6 rounded-lg border border-gray-200 mb-6">
+                <h3 class="text-xl font-semibold mb-4">B2. Bit Field Manipulation (20 points)</h3>
+                <p class="mb-4">Given a 32-bit value in $s0, extract and pack specific bit fields:</p>
+                <ul class="list-disc pl-6 mb-4 space-y-1">
+                    <li>Extract bits 23-16 (upper byte of lower half) → store in $t0</li>
+                    <li>Extract bits 7-0 (lowest byte) → store in $t1</li>
+                    <li>Combine them as: $t0 in upper 16 bits, $t1 in lower 16 bits → store in $s1</li>
+                </ul>
+                
+                <label for="b2_code" class="block font-medium mb-2">Your MIPS code:</label>
+                <textarea id="b2_code" class="worksheet-input w-full h-40 code-block" placeholder="# Extract and pack bit fields from $s0
+# Input: $s0 contains 32-bit value (e.g., 0x12345678)
+
+# Step 1: Extract bits 23-16
+srl $t0, $s0, 16     # Shift right by 16 to move bits 23-16 to bits 7-0
+andi $t0, $t0, 0x00FF # Mask to keep only lower 8 bits
+
+# Continue with remaining steps..."></textarea>
+                
+                <div class="register-display mt-4">
+                    <h4 class="font-semibold mb-2">Test Case:</h4>
+                    <div class="text-sm font-mono space-y-1">
+                        <div>Input $s0: 0x12345678</div>
+                        <div>Extract bits 23-16: 0x34</div>
+                        <div>Extract bits 7-0: 0x78</div>
+                        <div>Final result in $s1: 0x00340078</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Part C: Complete Program -->
+        <section class="mb-12">
+            <h2 class="text-2xl font-bold mb-6">Part C: Complete MIPS Program (40 points)</h2>
+            
+            <div class="bg-red-50 p-4 rounded-lg border-l-4 border-red-500 mb-6">
+                <h3 class="text-lg font-semibold mb-2">SUBMISSION REQUIREMENT</h3>
+                <p>Copy the code below into a new file called <code class="bg-gray-100 px-2 py-1 rounded">lastname_firstname_week6.asm</code> and complete the missing sections. Test your program in MARS simulator and submit the .asm file along with this PDF.</p>
+            </div>
+            
+            <div class="submission-box mb-6">
+                <h3 class="text-xl font-semibold mb-4">Program Specification</h3>
+                <p class="mb-4">Write a MIPS program that implements a simple image processing algorithm. Your program should:</p>
+                <ol class="list-decimal pl-6 space-y-2 mb-4">
+                    <li>Load pixel color values from the data section</li>
+                    <li>Extract RGB components from each pixel</li>
+                    <li>Calculate brightness for each pixel using: brightness = (R + G + B) / 4</li>
+                    <li>Apply a simple filter: if brightness > 64, set all color components to 255 (white), otherwise set to 0 (black)</li>
+                    <li>Pack the filtered components back into final pixel values</li>
+                </ol>
+                
+                <div class="bg-gray-100 p-4 rounded-lg mt-4">
+                    <h4 class="font-semibold mb-2">Provided Starting Template:</h4>
+                    <pre class="code-block text-sm overflow-x-auto"># File: lastname_firstname_week6.asm
+# Assignment: Week 6 MIPS Arithmetic & Logic
+# Description: Image Processing - RGB Color Filter
+
+.globl main
+.data
+    # Original pixel values in ARGB format (Alpha, Red, Green, Blue)
+    pixel1: .word 0xFF804020    # Red=128, Green=64, Blue=32
+    pixel2: .word 0xFF404080    # Red=64, Green=64, Blue=128  
+    pixel3: .word 0xFFC0C0C0    # Red=192, Green=192, Blue=192
+    
+    # Storage for filtered pixel values
+    filtered1: .word 0
+    filtered2: .word 0
+    filtered3: .word 0
+
+.text
+main:
+    # Load addresses of data
+    la $s0, pixel1
+    la $s1, filtered1
+    
+    # Process Pixel 1
+    lw $t0, 0($s0)          # Load pixel1 value
+    # YOUR CODE HERE: Extract RGB components and process
+    # Store result in filtered1
+    
+    # Process Pixel 2
+    lw $t0, 4($s0)          # Load pixel2 value
+    # YOUR CODE HERE: Extract RGB components and process
+    # Store result in filtered2
+    
+    # Process Pixel 3
+    lw $t0, 8($s0)          # Load pixel3 value
+    # YOUR CODE HERE: Extract RGB components and process
+    # Store result in filtered3
+    
+    # Exit program
+    li $v0, 10
+    syscall
+
+# ===== YOUR IMPLEMENTATION SECTION =====
+# Complete the following procedures:
+
+extract_rgb:
+    # Input: $t0 contains pixel value in ARGB format
+    # Output: $t1=Red, $t2=Green, $t3=Blue
+    # YOUR CODE HERE
+    jr $ra
+
+calculate_brightness:
+    # Input: $t1=Red, $t2=Green, $t3=Blue  
+    # Output: $t4=brightness value
+    # Formula: brightness = (R + G + B) / 4
+    # YOUR CODE HERE
+    jr $ra
+
+apply_filter:
+    # Input: $t4=brightness value
+    # Output: $t5=filtered color (0x00000000 or 0xFFFFFFFF)
+    # Rule: if brightness > 64, output white (0xFFFFFFFF), else black (0x00000000)
+    # YOUR CODE HERE
+    jr $ra</pre>
+                </div>
+            </div>
+            
+            <div class="bg-white p-6 rounded-lg border border-gray-200 mb-6">
+                <h3 class="text-xl font-semibold mb-4">Implementation Requirements</h3>
+                
+                <div class="space-y-4">
+                    <div class="bg-yellow-50 p-4 rounded">
+                        <h4 class="font-semibold mb-2">Required Instructions to Use:</h4>
+                        <ul class="list-disc pl-6 space-y-1 text-sm">
+                            <li><code>srl</code> and <code>andi</code> for extracting RGB components</li>
+                            <li><code>add</code> for summing RGB values</li>
+                            <li><code>srl</code> for division by 4</li>
+                            <li><code>slti</code> or comparison logic for threshold testing</li>
+                            <li><code>lui</code> and <code>ori</code> for loading 32-bit constants</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="bg-blue-50 p-4 rounded">
+                        <h4 class="font-semibold mb-2">Testing Your Program:</h4>
+                        <ol class="list-decimal pl-6 space-y-1 text-sm">
+                            <li>Load your .asm file in MARS</li>
+                            <li>Step through execution and verify register values</li>
+                            <li>Check that filtered pixel values are stored correctly</li>
+                            <li>Expected results: pixel1→black, pixel2→black, pixel3→white</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-white p-6 rounded-lg border border-gray-200 mb-6">
+                <h3 class="text-xl font-semibold mb-4">Grading Rubric</h3>
+                
+                <div class="grid md:grid-cols-2 gap-4">
+                    <div>
+                        <h4 class="font-semibold mb-2">Code Quality (20 points)</h4>
+                        <ul class="list-disc pl-6 space-y-1 text-sm">
+                            <li>Proper instruction usage (8 pts)</li>
+                            <li>Clear comments explaining logic (6 pts)</li>
+                            <li>Correct register usage (6 pts)</li>
+                        </ul>
+                    </div>
+                    
+                    <div>
+                        <h4 class="font-semibold mb-2">Functionality (20 points)</h4>
+                        <ul class="list-disc pl-6 space-y-1 text-sm">
+                            <li>RGB extraction works correctly (7 pts)</li>
+                            <li>Brightness calculation accurate (7 pts)</li>
+                            <li>Filter logic produces correct results (6 pts)</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Student Information -->
+        <section class="mb-12">
+            <h2 class="text-2xl font-bold mb-6">Student Information & Submission</h2>
+            
+            <div class="bg-white p-6 rounded-lg border border-gray-200 mb-6">
+                <div class="grid md:grid-cols-2 gap-4 mb-6">
+                    <div>
+                        <label for="student_name" class="block font-medium mb-2">Name:</label>
+                        <input type="text" id="student_name" class="worksheet-input w-full" placeholder="First Last">
+                    </div>
+                    <div>
+                        <label for="student_id" class="block font-medium mb-2">Student ID:</label>
+                        <input type="text" id="student_id" class="worksheet-input w-full" placeholder="123456789">
+                    </div>
+                </div>
+                
+                <div class="mb-4">
+                    <label for="hours_spent" class="block font-medium mb-2">Estimated time spent on this assignment:</label>
+                    <input type="text" id="hours_spent" class="worksheet-input w-full" placeholder="X hours">
+                </div>
+                
+                <div>
+                    <label for="reflection" class="block font-medium mb-2">Reflection: What was the most challenging part of this assignment?</label>
+                    <textarea id="reflection" class="worksheet-input w-full h-24" placeholder="Describe the most difficult concept or problem you encountered and how you worked through it..."></textarea>
+                </div>
+            </div>
+            
+            <div class="text-center">
+                <button class="submit-btn no-print" onclick="window.print()">Save Parts A & B as PDF</button>
+                <p class="text-sm text-gray-600 mt-2">Save this as PDF and submit along with your .asm file for Part C</p>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        // Answer checking functionality
+        function checkAnswer(inputId, correctAnswer) {
+            const input = document.getElementById(inputId);
+            const feedback = document.getElementById('feedback_' + inputId);
+            const userAnswer = input.value.trim().toLowerCase().replace(/\s+/g, ' ');
+            const correct = correctAnswer.toLowerCase().replace(/\s+/g, ' ');
+            
+            if (userAnswer === correct) {
+                input.classList.remove('incorrect');
+                input.classList.add('correct');
+                feedback.textContent = '✓ Correct!';
+                feedback.style.color = '#28a745';
+            } else {
+                input.classList.remove('correct');
+                input.classList.add('incorrect');
+                feedback.textContent = '✗ Incorrect. Expected: ' + correctAnswer;
+                feedback.style.color = '#dc3545';
+            }
+        }
+        
+        // Auto-resize textareas
+        document.addEventListener('DOMContentLoaded', function() {
+            const textareas = document.querySelectorAll('textarea');
+            textareas.forEach(textarea => {
+                textarea.addEventListener('input', function() {
+                    this.style.height = 'auto';
+                    this.style.height = this.scrollHeight + 'px';
+                });
+            });
+            
+            // Add keyboard navigation for check buttons
+            const checkButtons = document.querySelectorAll('.check-btn');
+            checkButtons.forEach(button => {
+                button.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        button.click();
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
