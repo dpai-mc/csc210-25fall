@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Week 6: MIPS Arithmetic & Logic Instructions</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500&display=swap" rel="stylesheet">
+
+    <!-- Meta Comments as per specification -->
+    <!-- Chosen Palette: Existing palette of FDFBF8 (BG), 383838 (Text), EADDD7 (Accent). -->
+    <!-- Application Structure Plan: Single-page application with a primary tabbed interface (Overview, Modules, Simulator, Exercises). The Modules tab contains a grid of module cards. Clicking a card hides the grid and displays a detailed content view for that module, creating a "plug-in page" feel. A "Back" button returns the user to the module grid. All content is contained within one HTML file, with JavaScript managing view state by toggling Tailwind's 'hidden' class. -->
+    <!-- Visualization & Content Choices: Content for modules 1-4 is significantly expanded with detailed explanations for each MIPS instruction, including its format, purpose, and operands. Interactive mini-simulators are provided for key instructions to allow students to input values and see the results, reinforcing their understanding in a hands-on manner. The content is sourced from the provided Wikibooks URL and standard MIPS documentation. -->
+    
+    <style>
+        body {
+            background-color: #FDFBF8;
+            color: #383838;
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .code-font {
+            font-family: 'Fira Code', monospace;
+        }
+        
+        .primary-accent {
+            background-color: #EADDD7;
+        }
+        
+        .hover-accent:hover {
+            background-color: #F0EBE8;
+        }
+        
+        .tab-active {
+            background-color: #EADDD7;
+            border-bottom: 2px solid #383838;
+        }
+        
+        .code-highlight {
+            background-color: #F0EBE8;
+            border-left: 4px solid #EADDD7;
+        }
+
+        /* Accessibility: visible-on-focus skip link */
+        .skip-link {
+            position: absolute;
+            top: -40px;
+            left: 0;
+            background: #383838;
+            color: white;
+            padding: 8px;
+            z-index: 100;
+            transition: top 0.3s;
+        }
+
+        .skip-link:focus {
+            top: 0;
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+
+    <div class="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8">
+        <header class="mb-8">
+            <h1 class="text-4xl font-bold text-gray-900">MIPS Assembly Language</h1>
+            <p class="text-lg text-gray-600 mt-1">Arithmetic & Logic Instructions</p>
+        </header>
+
+        <main id="main-content">
+            <div class="border-b border-gray-300">
+                <nav class="-mb-px flex space-x-6" aria-label="Tabs">
+                    <button data-tab="overview" class="tab-button tab-active whitespace-nowrap py-3 px-1 border-b-2 font-medium text-sm">Overview</button>
+                    <button data-tab="modules" class="tab-button whitespace-nowrap py-3 px-1 border-b-2 font-medium text-sm">Modules</button>
+                    <button data-tab="simulator" class="tab-button whitespace-nowrap py-3 px-1 border-b-2 font-medium text-sm">Live Simulator</button>
+                    <button data-tab="exercises" class="tab-button whitespace-nowrap py-3 px-1 border-b-2 font-medium text-sm">Exercises</button>
+                </nav>
+            </div>
+
+            <div class="mt-8">
+                <!-- Overview Content -->
+                <div id="overview-content" class="p-2">
+                    <h2 class="text-3xl font-bold mb-4">Welcome!</h2>
+                    <p class="mb-4 text-gray-700">This interactive guide is designed to introduce you to the fundamental arithmetic and logical instructions in the MIPS assembly language. MIPS is a classic example of a RISC (Reduced Instruction Set Computer) architecture, known for its simple and efficient instruction set.</p>
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div class="bg-white p-6 rounded-lg shadow-sm">
+                            <h3 class="text-xl font-semibold mb-2">What you'll learn:</h3>
+                            <ul class="list-disc list-inside space-y-2 text-gray-600">
+                                <li>The basic syntax of MIPS instructions.</li>
+                                <li>How to perform addition, subtraction, multiplication, and division.</li>
+                                <li>The difference between signed and unsigned operations and how overflow is handled.</li>
+                                <li>How to use bitwise logical operations like AND, OR, XOR, and shifts.</li>
+                                <li>How to use the live simulator to test your own code snippets.</li>
+                            </ul>
+                        </div>
+                        <div class="bg-white p-6 rounded-lg shadow-sm">
+                             <h3 class="text-xl font-semibold mb-2">How to use this guide:</h3>
+                            <ul class="list-decimal list-inside space-y-2 text-gray-600">
+                                <li><strong>Overview:</strong> Start here for a general introduction.</li>
+                                <li><strong>Modules:</strong> Dive deep into specific instruction types with detailed explanations and interactive examples.</li>
+                                <li><strong>Live Simulator:</strong> Write and run your own MIPS code to see how registers and memory change.</li>
+                                <li><strong>Exercises:</strong> Test your knowledge with practical coding challenges.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Modules Content -->
+                <div id="modules-content" class="p-2 hidden">
+                    <!-- Module Grid -->
+                    <div id="module-grid">
+                        <h2 class="text-3xl font-bold mb-6" tabindex="-1">Learning Modules</h2>
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            <div data-module-id="module-1-detail" class="module-card bg-white p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <h3 class="font-semibold text-lg mb-2 text-gray-800">1. Addition & Subtraction</h3>
+                                <p class="text-gray-600 text-sm">Integer addition and subtraction, handling of immediate values, and overflow detection.</p>
+                            </div>
+                            <div data-module-id="module-2-detail" class="module-card bg-white p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <h3 class="font-semibold text-lg mb-2 text-gray-800">2. Multiplication</h3>
+                                <p class="text-gray-600 text-sm">Multiplying 32-bit integers and handling the 64-bit result using the HI and LO registers.</p>
+                            </div>
+                            <div data-module-id="module-3-detail" class="module-card bg-white p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <h3 class="font-semibold text-lg mb-2 text-gray-800">3. Division</h3>
+                                <p class="text-gray-600 text-sm">Performing integer division and accessing the quotient and remainder.</p>
+                            </div>
+                            <div data-module-id="module-4-detail" class="module-card bg-white p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <h3 class="font-semibold text-lg mb-2 text-gray-800">4. Logical Operations</h3>
+                                <p class="text-gray-600 text-sm">Bitwise operations including AND, OR, XOR, NOR, and bit shifting.</p>
+                            </div>
+                             <div class="bg-gray-100 p-6 rounded-lg shadow-sm">
+                                <h3 class="font-semibold text-lg mb-2 text-gray-500">5. Control Flow</h3>
+                                <p class="text-gray-500 text-sm">Branch and jump instructions. (Coming Soon)</p>
+                            </div>
+                            <div class="bg-gray-100 p-6 rounded-lg shadow-sm">
+                                <h3 class="font-semibold text-lg mb-2 text-gray-500">6. Procedures</h3>
+                                <p class="text-gray-500 text-sm">Function calls and stack management. (Coming Soon)</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Module Detail Container -->
+                    <div id="module-detail-container" class="hidden">
+                        <button id="back-to-modules" class="mb-6 bg-gray-200 text-gray-800 px-4 py-2 rounded hover:bg-gray-300 transition-colors">&larr; Back to All Modules</button>
+                        
+                        <!-- Module 1: Addition & Subtraction -->
+                        <div id="module-1-detail" class="module-content hidden">
+                            <h2 class="text-3xl font-bold mb-2" tabindex="-1">Module 1: Addition & Subtraction</h2>
+                            <p class="text-lg text-gray-600 mb-8">These instructions form the backbone of MIPS arithmetic, operating on 32-bit integers stored in registers.</p>
+                            
+                            <div class="space-y-8">
+                                <!-- add -->
+                                <div class="instruction-card bg-white p-6 rounded-lg border">
+                                    <h4 class="text-xl font-bold code-font text-blue-800">add rd, rs, rt</h4>
+                                    <p class="mt-2 text-gray-700">Adds the integers in registers <code class="code-font bg-gray-200 px-1 rounded">rs</code> and <code class="code-font bg-gray-200 px-1 rounded">rt</code> and stores the result in register <code class="code-font bg-gray-200 px-1 rounded">rd</code>. This version (<code class="code-font">add</code>) will cause a system trap (error) if the result overflows the 32-bit signed integer range.</p>
+                                    <div class="mt-4 p-4 border-t">
+                                        <h5 class="font-semibold mb-2">Example:</h5>
+                                        <pre class="bg-gray-800 text-white p-3 rounded-md text-sm code-font"><code># Assume $t0 = 5, $t1 = 10
+add $s0, $t0, $t1  # $s0 is now 15</code></pre>
+                                    </div>
+                                </div>
+                                
+                                <!-- addu -->
+                                <div class="instruction-card bg-white p-6 rounded-lg border">
+                                    <h4 class="text-xl font-bold code-font text-blue-800">addu rd, rs, rt</h4>
+                                    <p class="mt-2 text-gray-700">Adds two registers just like <code class="code-font">add</code>, but does <span class="font-semibold">not</span> trap on overflow. The 'u' stands for unsigned, but it's commonly used for all signed addition where overflow exceptions are not desired.</p>
+                                </div>
+                                
+                                <!-- addi -->
+                                <div class="instruction-card bg-white p-6 rounded-lg border">
+                                    <h4 class="text-xl font-bold code-font text-blue-800">addi rt, rs, immediate</h4>
+                                    <p class="mt-2 text-gray-700">Adds the integer in register <code class="code-font bg-gray-200 px-1 rounded">rs</code> to a 16-bit immediate (constant) value and stores the result in register <code class="code-font bg-gray-200 px-1 rounded">rt</code>. Traps on overflow.</p>
+                                    <div class="interactive-sim mt-4 p-4 border-t">
+                                        <h5 class="font-semibold mb-2">Try it out:</h5>
+                                        <div class="flex items-center flex-wrap gap-2 code-font">
+                                            <span>addi $t0, $t1,</span>
+                                            <input type="number" id="addi-imm-val" class="w-24 p-1 border rounded" value="100" aria-label="Immediate value">
+                                            <button id="addi-exec" class="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 text-sm">Execute</button>
+                                        </div>
+                                        <p class="mt-2 text-sm">Assuming $t1 = <input type="number" id="addi-rs-val" class="w-20 p-1 border rounded code-font" value="50" aria-label="Register value">, result in $t0: <span id="addi-result" class="font-bold code-font">?</span></p>
+                                    </div>
+                                </div>
+                                
+                                <!-- sub -->
+                                <div class="instruction-card bg-white p-6 rounded-lg border">
+                                    <h4 class="text-xl font-bold code-font text-blue-800">sub rd, rs, rt</h4>
+                                    <p class="mt-2 text-gray-700">Subtracts the integer in register <code class="code-font bg-gray-200 px-1 rounded">rt</code> from <code class="code-font bg-gray-200 px-1 rounded">rs</code> and stores the result in <code class="code-font bg-gray-200 px-1 rounded">rd</code>. Traps on overflow.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Module 2: Multiplication -->
+                        <div id="module-2-detail" class="module-content hidden">
+                           <h2 class="text-3xl font-bold mb-2" tabindex="-1">Module 2: Multiplication</h2>
+                           <p class="text-lg text-gray-600 mb-8">Multiplying two 32-bit numbers can result in a 64-bit product. MIPS handles this using two special 32-bit registers: <code class="code-font">HI</code> and <code class="code-font">LO</code>.</p>
+                            <div class="space-y-8">
+                                <!-- mult -->
+                                <div class="instruction-card bg-white p-6 rounded-lg border">
+                                    <h4 class="text-xl font-bold code-font text-blue-800">mult rs, rt</h4>
+                                    <p class="mt-2 text-gray-700">Multiplies the signed integers in <code class="code-font">rs</code> and <code class="code-font">rt</code>. The 64-bit result is stored across two registers: the upper 32 bits go into <code class="code-font">HI</code> and the lower 32 bits go into <code class="code-font">LO</code>. This instruction does not trap on overflow.</p>
+                                    <div class="interactive-sim mt-4 p-4 border-t">
+                                        <h5 class="font-semibold mb-2">Try it out:</h5>
+                                        <div class="flex items-center flex-wrap gap-2 code-font">
+                                            <span>mult</span>
+                                            <input type="number" id="mult-rs-val" class="w-28 p-1 border rounded" value="100000" aria-label="First operand">
+                                            <span>,</span>
+                                            <input type="number" id="mult-rt-val" class="w-28 p-1 border rounded" value="50000" aria-label="Second operand">
+                                            <button id="mult-exec" class="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 text-sm">Execute</button>
+                                        </div>
+                                        <p class="mt-2 text-sm">Result in HI: <span id="mult-hi-result" class="font-bold code-font">?</span></p>
+                                        <p class="mt-2 text-sm">Result in LO: <span id="mult-lo-result" class="font-bold code-font">?</span></p>
+                                    </div>
+                                </div>
+                                <!-- multu -->
+                                <div class="instruction-card bg-white p-6 rounded-lg border">
+                                    <h4 class="text-xl font-bold code-font text-blue-800">multu rs, rt</h4>
+                                    <p class="mt-2 text-gray-700">Performs multiplication on unsigned integers. The result is also stored in <code class="code-font">HI</code> and <code class="code-font">LO</code>.</p>
+                                </div>
+                                <!-- mfhi / mflo -->
+                                <div class="instruction-card bg-white p-6 rounded-lg border">
+                                    <h4 class="text-xl font-bold code-font text-blue-800">mfhi rd / mflo rd</h4>
+                                    <p class="mt-2 text-gray-700"><span class="font-semibold">Move From HI/LO.</span> After a multiplication, you use these instructions to copy the values from the special <code class="code-font">HI</code> or <code class="code-font">LO</code> registers into a general-purpose register (<code class="code-font">rd</code>) for further use.</p>
+                                    <div class="mt-4 p-4 border-t">
+                                        <h5 class="font-semibold mb-2">Example:</h5>
+                                        <pre class="bg-gray-800 text-white p-3 rounded-md text-sm code-font"><code># Assume $t0 = 20, $t1 = 50
+mult $t0, $t1      # HI = 0, LO = 1000
+
+mflo $s0           # $s0 is now 1000
+mfhi $s1           # $s1 is now 0</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Module 3: Division -->
+                        <div id="module-3-detail" class="module-content hidden">
+                           <h2 class="text-3xl font-bold mb-2" tabindex="-1">Module 3: Division</h2>
+                           <p class="text-lg text-gray-600 mb-8">Integer division produces two results: a quotient and a remainder. MIPS uses the same <code class="code-font">HI</code> and <code class="code-font">LO</code> registers for this purpose.</p>
+                           <div class="space-y-8">
+                                <!-- div -->
+                                <div class="instruction-card bg-white p-6 rounded-lg border">
+                                    <h4 class="text-xl font-bold code-font text-blue-800">div rs, rt</h4>
+                                    <p class="mt-2 text-gray-700">Divides the signed integer in <code class="code-font">rs</code> by <code class="code-font">rt</code>. The integer quotient is stored in <code class="code-font">LO</code>, and the remainder is stored in <code class="code-font">HI</code>. Note: behavior is undefined if you try to divide by zero.</p>
+                                    <div class="interactive-sim mt-4 p-4 border-t">
+                                        <h5 class="font-semibold mb-2">Try it out:</h5>
+                                        <div class="flex items-center flex-wrap gap-2 code-font">
+                                            <span>div</span>
+                                            <input type="number" id="div-rs-val" class="w-24 p-1 border rounded" value="101" aria-label="Dividend">
+                                            <span>,</span>
+                                            <input type="number" id="div-rt-val" class="w-24 p-1 border rounded" value="10" aria-label="Divisor">
+                                            <button id="div-exec" class="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 text-sm">Execute</button>
+                                        </div>
+                                        <p class="mt-2 text-sm">Quotient (LO): <span id="div-lo-result" class="font-bold code-font">?</span></p>
+                                        <p class="mt-2 text-sm">Remainder (HI): <span id="div-hi-result" class="font-bold code-font">?</span></p>
+                                    </div>
+                                </div>
+                                <!-- divu -->
+                                <div class="instruction-card bg-white p-6 rounded-lg border">
+                                    <h4 class="text-xl font-bold code-font text-blue-800">divu rs, rt</h4>
+                                    <p class="mt-2 text-gray-700">Performs division on unsigned integers. The quotient is stored in <code class="code-font">LO</code> and the remainder in <code class="code-font">HI</code>.</p>
+                                </div>
+                                <div class="instruction-card bg-gray-50 p-6 rounded-lg border">
+                                    <p class="text-gray-700">Just like with multiplication, you must use <code class="code-font">mflo</code> to get the quotient and <code class="code-font">mfhi</code> to get the remainder into general-purpose registers.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Module 4: Logical Operations -->
+                        <div id="module-4-detail" class="module-content hidden">
+                            <h2 class="text-3xl font-bold mb-2" tabindex="-1">Module 4: Logical Operations</h2>
+                            <p class="text-lg text-gray-600 mb-8">Logical operations work on the individual bits of a register. They are essential for tasks like masking, setting, or clearing specific bits.</p>
+                            <div class="space-y-8">
+                                <!-- and -->
+                                <div class="instruction-card bg-white p-6 rounded-lg border">
+                                    <h4 class="text-xl font-bold code-font text-blue-800">and rd, rs, rt</h4>
+                                    <p class="mt-2 text-gray-700">Performs a bitwise AND operation between <code class="code-font">rs</code> and <code class="code-font">rt</code>, storing the result in <code class="code-font">rd</code>. A bit in the result is 1 only if the corresponding bits in both sources are 1.</p>
+                                    <div class="interactive-sim mt-4 p-4 border-t">
+                                        <h5 class="font-semibold mb-2">Try it out (values as decimal):</h5>
+                                        <div class="flex items-center flex-wrap gap-2 code-font">
+                                            <input type="number" id="logic-rs-val" class="w-24 p-1 border rounded" value="12" aria-label="First operand">
+                                            <select id="logic-op" class="p-1 border rounded" aria-label="Logical operation">
+                                                <option value="and">AND</option>
+                                                <option value="or">OR</option>
+                                                <option value="xor">XOR</option>
+                                            </select>
+                                            <input type="number" id="logic-rt-val" class="w-24 p-1 border rounded" value="10" aria-label="Second operand">
+                                            <button id="logic-exec" class="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 text-sm">Execute</button>
+                                        </div>
+                                        <p class="mt-2 text-sm">Result (Decimal): <span id="logic-dec-result" class="font-bold code-font">?</span></p>
+                                        <p class="mt-2 text-sm">Result (Binary): <span id="logic-bin-result" class="font-bold code-font">?</span></p>
+                                    </div>
+                                </div>
+                                <!-- or, xor, nor -->
+                                <div class="instruction-card bg-white p-6 rounded-lg border">
+                                    <h4 class="text-xl font-bold code-font text-blue-800">or / xor / nor</h4>
+                                    <p class="mt-2 text-gray-700">These instructions perform bitwise OR, XOR (exclusive OR), and NOR (NOT OR) operations, respectively. They follow the same format as <code class="code-font">and</code>.</p>
+                                </div>
+                                <!-- sll -->
+                                <div class="instruction-card bg-white p-6 rounded-lg border">
+                                    <h4 class="text-xl font-bold code-font text-blue-800">sll rd, rt, sa</h4>
+                                    <p class="mt-2 text-gray-700"><span class="font-semibold">Shift Left Logical.</span> Shifts the bits in register <code class="code-font">rt</code> to the left by the number of positions specified by the shift amount (<code class="code-font">sa</code>), which is a 5-bit constant (0-31). Zeros are shifted into the rightmost bits. This is equivalent to multiplying by a power of 2.</p>
+                                    <div class="interactive-sim mt-4 p-4 border-t">
+                                        <h5 class="font-semibold mb-2">Try it out:</h5>
+                                        <div class="flex items-center flex-wrap gap-2 code-font">
+                                            <span>sll $s0,</span>
+                                            <input type="number" id="sll-rt-val" class="w-24 p-1 border rounded" value="5" aria-label="Value to shift">
+                                            <span>,</span>
+                                            <input type="number" id="sll-sa-val" class="w-16 p-1 border rounded" value="2" min="0" max="31" aria-label="Shift amount">
+                                            <button id="sll-exec" class="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 text-sm">Execute</button>
+                                        </div>
+                                        <p class="mt-2 text-sm">Result: <span id="sll-result" class="font-bold code-font">?</span></p>
+                                    </div>
+                                </div>
+                                <!-- srl, sra -->
+                                <div class="instruction-card bg-white p-6 rounded-lg border">
+                                    <h4 class="text-xl font-bold code-font text-blue-800">srl / sra</h4>
+                                    <p class="mt-2 text-gray-700"><span class="font-semibold">Shift Right Logical (srl)</span> shifts bits to the right, filling the leftmost bits with zeros. <span class="font-semibold">Shift Right Arithmetic (sra)</span> also shifts right, but it fills the leftmost bits with copies of the original sign bit, preserving the number's sign.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- Simulator Content -->
+                <div id="simulator-content" class="p-6 md:p-8 hidden">
+                     <!-- Simulator content remains the same as original file -->
+                     <h2 class="text-3xl font-bold mb-6">Live MIPS Simulator</h2>
+                    <div class="grid lg:grid-cols-3 gap-8">
+                        <div class="lg:col-span-2">
+                            <label for="code-editor" class="block text-sm font-medium text-gray-700 mb-2">Code Editor</label>
+                            <textarea id="code-editor" class="w-full h-96 p-4 border-2 border-gray-300 rounded-lg shadow-sm code-font text-sm focus:ring-blue-500 focus:border-blue-500" placeholder="# Enter MIPS code here..."></textarea>
+                            <div class="mt-4 flex space-x-4">
+                                <button id="run-button" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 font-semibold">Run</button>
+                                <button id="reset-button" class="bg-gray-500 text-white px-6 py-2 rounded-lg hover:bg-gray-600 font-semibold">Reset</button>
+                            </div>
+                            <div id="message-box" class="mt-4 p-4 rounded-lg hidden"></div>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-semibold mb-4">Registers</h3>
+                            <div id="register-view" class="h-[28.5rem] overflow-y-auto bg-white p-4 rounded-lg shadow-sm border code-font text-sm space-y-2">
+                                <!-- Registers will be populated by JS -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Exercises Content -->
+                <div id="exercises-content" class="p-6 md:p-8 hidden">
+                    <!-- Exercises content remains the same as original file -->
+                    <h2 class="text-3xl font-bold mb-6">Practice Exercises</h2>
+                    <div class="grid lg:grid-cols-3 gap-8">
+                        <div class="lg:col-span-1">
+                            <h3 class="text-xl font-semibold mb-4">Choose a problem:</h3>
+                             <div class="space-y-3">
+                                <div data-exercise="add" class="exercise-card bg-white p-4 rounded-lg shadow-sm hover-accent cursor-pointer border-2 border-transparent">
+                                    <h4 class="font-semibold text-gray-800">1. Simple Addition</h4>
+                                    <p class="text-sm text-gray-600">Add two numbers from registers.</p>
+                                </div>
+                                <div data-exercise="sub" class="exercise-card bg-white p-4 rounded-lg shadow-sm hover-accent cursor-pointer border-2 border-transparent">
+                                    <h4 class="font-semibold text-gray-800">2. Subtract Immediate</h4>
+                                    <p class="text-sm text-gray-600">Subtract a constant value.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="exercise-detail" class="lg:col-span-2 bg-white p-6 rounded-lg shadow-sm">
+                           <div id="exercise-content-div">
+                                <p class="text-gray-500">Select an exercise to begin.</p>
+                           </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- State and Constants ---
+            const TABS = ['overview', 'modules', 'simulator', 'exercises'];
+            const REGISTER_NAMES = [
+                '$zero', '$at', '$v0', '$v1', '$a0', '$a1', '$a2', '$a3',
+                '$t0', '$t1', '$t2', '$t3', '$t4', '$t5', '$t6', '$t7',
+                '$s0', '$s1', '$s2', '$s3', '$s4', '$s5', '$s6', '$s7',
+                '$t8', '$t9', '$k0', '$k1', '$gp', '$sp', '$fp', '$ra'
+            ];
+            let registers = {};
+
+            // --- DOM Elements ---
+            const tabButtons = document.querySelectorAll('.tab-button');
+            const contentDivs = TABS.map(tab => document.getElementById(`${tab}-content`));
+            const registerView = document.getElementById('register-view');
+            const runButton = document.getElementById('run-button');
+            const resetButton = document.getElementById('reset-button');
+            const codeEditor = document.getElementById('code-editor');
+            const messageBox = document.getElementById('message-box');
+            const exerciseContentDiv = document.getElementById('exercise-content-div');
+
+            // --- Module Navigation Elements ---
+            const moduleGrid = document.getElementById('module-grid');
+            const moduleDetailContainer = document.getElementById('module-detail-container');
+            const moduleCards = document.querySelectorAll('.module-card[data-module-id]');
+            const backToModulesBtn = document.getElementById('back-to-modules');
+            const moduleContents = document.querySelectorAll('.module-content');
+
+            // --- Core Functions ---
+            function resetSimulator() {
+                REGISTER_NAMES.forEach(reg => registers[reg] = 0);
+                updateRegisterDisplay();
+                codeEditor.value = '# Example: Load immediate values and add\nli $t0, 5\nli $t1, 10\nadd $s0, $t0, $t1';
+                hideMessage();
+            }
+
+            function updateRegisterDisplay() {
+                registerView.innerHTML = '';
+                for (const reg of REGISTER_NAMES) {
+                    const value = registers[reg];
+                    const regDiv = document.createElement('div');
+                    regDiv.className = `flex justify-between items-center p-1 rounded ${value !== 0 ? 'bg-blue-50' : ''}`;
+                    regDiv.innerHTML = `<span>${reg}:</span><span class="font-semibold">${value}</span>`;
+                    registerView.appendChild(regDiv);
+                }
+            }
+
+            function showTab(tabId) {
+                tabButtons.forEach(button => {
+                    const isSelected = button.dataset.tab === tabId;
+                    button.classList.toggle('tab-active', isSelected);
+                    button.classList.toggle('text-gray-500', !isSelected);
+                    button.classList.toggle('hover:text-gray-700', !isSelected);
+                    button.setAttribute('aria-selected', isSelected);
+                });
+                contentDivs.forEach(div => {
+                    div.classList.toggle('hidden', div.id !== `${tabId}-content`);
+                });
+            }
+            
+            function showMessage(text, type = 'error') {
+                messageBox.textContent = text;
+                messageBox.className = 'mt-4 p-4 rounded-lg';
+                if (type === 'error') {
+                    messageBox.classList.add('bg-red-100', 'text-red-800');
+                } else {
+                    messageBox.classList.add('bg-green-100', 'text-green-800');
+                }
+            }
+
+            function hideMessage() {
+                 messageBox.classList.add('hidden');
+            }
+
+            function runCode() {
+                // This is a simplified pseudo-parser for demonstration.
+                // It doesn't handle labels, complex instructions, or proper syntax checking.
+                hideMessage();
+                const lines = codeEditor.value.split('\n').filter(line => line.trim() !== '' && !line.trim().startsWith('#'));
+                try {
+                    lines.forEach(line => {
+                        const parts = line.replace(/,/g, ' ').split(/\s+/).filter(p => p);
+                        const instr = parts[0];
+                        const args = parts.slice(1);
+
+                        if (instr === 'li' && args.length === 2) { // Load Immediate
+                            registers[args[0]] = parseInt(args[1]);
+                        } else if (instr === 'add' && args.length === 3) {
+                            registers[args[0]] = (registers[args[1]] || 0) + (registers[args[2]] || 0);
+                        } else if (instr === 'sub' && args.length === 3) {
+                            registers[args[0]] = (registers[args[1]] || 0) - (registers[args[2]] || 0);
+                        } else if (instr === 'addi' && args.length === 3) {
+                            registers[args[0]] = (registers[args[1]] || 0) + parseInt(args[2]);
+                        } else {
+                           throw new Error(`Unsupported instruction: ${line}`);
+                        }
+                    });
+                    updateRegisterDisplay();
+                    showMessage('Execution complete.', 'success');
+                } catch (e) {
+                    showMessage(`Error: ${e.message}`);
+                }
+            }
+
+            // --- Module Navigation Functions ---
+            function showModuleDetail(moduleId) {
+                moduleGrid.classList.add('hidden');
+                moduleDetailContainer.classList.remove('hidden');
+                moduleContents.forEach(content => content.classList.add('hidden'));
+
+                const targetModule = document.getElementById(moduleId);
+                if (targetModule) {
+                    targetModule.classList.remove('hidden');
+                    // Set focus for accessibility
+                    const heading = targetModule.querySelector('h2');
+                    if(heading) heading.focus();
+                }
+            }
+
+            function showModuleGrid() {
+                moduleDetailContainer.classList.add('hidden');
+                moduleGrid.classList.remove('hidden');
+                const heading = moduleGrid.querySelector('h2');
+                if(heading) heading.focus();
+            }
+
+            // --- Interactive Mini-Simulator Logic ---
+            function setupInteractiveSims() {
+                // Module 1: addi
+                document.getElementById('addi-exec').addEventListener('click', () => {
+                    const rsVal = parseInt(document.getElementById('addi-rs-val').value) || 0;
+                    const immVal = parseInt(document.getElementById('addi-imm-val').value) || 0;
+                    document.getElementById('addi-result').textContent = (rsVal + immVal) | 0; // Simulate 32-bit integer
+                });
+
+                // Module 2: mult
+                document.getElementById('mult-exec').addEventListener('click', () => {
+                    const rsVal = BigInt(document.getElementById('mult-rs-val').value) || 0n;
+                    const rtVal = BigInt(document.getElementById('mult-rt-val').value) || 0n;
+                    const result = rsVal * rtVal;
+                    const hi = result >> 32n;
+                    const lo = result & 0xFFFFFFFFn;
+                    document.getElementById('mult-hi-result').textContent = hi.toString();
+                    document.getElementById('mult-lo-result').textContent = lo.toString();
+                });
+
+                // Module 3: div
+                document.getElementById('div-exec').addEventListener('click', () => {
+                    const rsVal = parseInt(document.getElementById('div-rs-val').value) || 0;
+                    const rtVal = parseInt(document.getElementById('div-rt-val').value) || 1;
+                    if (rtVal === 0) {
+                        document.getElementById('div-lo-result').textContent = 'Error';
+                        document.getElementById('div-hi-result').textContent = 'Div by 0';
+                        return;
+                    }
+                    const quotient = Math.trunc(rsVal / rtVal);
+                    const remainder = rsVal % rtVal;
+                    document.getElementById('div-lo-result').textContent = quotient;
+                    document.getElementById('div-hi-result').textContent = remainder;
+                });
+
+                // Module 4: Logic
+                document.getElementById('logic-exec').addEventListener('click', () => {
+                    const rsVal = parseInt(document.getElementById('logic-rs-val').value) || 0;
+                    const rtVal = parseInt(document.getElementById('logic-rt-val').value) || 0;
+                    const op = document.getElementById('logic-op').value;
+                    let result = 0;
+                    if (op === 'and') result = rsVal & rtVal;
+                    if (op === 'or') result = rsVal | rtVal;
+                    if (op === 'xor') result = rsVal ^ rtVal;
+                    document.getElementById('logic-dec-result').textContent = result;
+                    document.getElementById('logic-bin-result').textContent = result.toString(2).padStart(8, '0');
+                });
+                
+                // Module 4: sll
+                document.getElementById('sll-exec').addEventListener('click', () => {
+                    const rtVal = parseInt(document.getElementById('sll-rt-val').value) || 0;
+                    const saVal = parseInt(document.getElementById('sll-sa-val').value) || 0;
+                    const result = rtVal << saVal;
+                    document.getElementById('sll-result').textContent = result;
+                });
+            }
+
+            // --- Event Listeners & Initialization ---
+            function initializeApplication() {
+                // Tab navigation
+                tabButtons.forEach(button => {
+                    button.addEventListener('click', () => showTab(button.dataset.tab));
+                });
+                
+                // Simulator controls
+                runButton.addEventListener('click', runCode);
+                resetButton.addEventListener('click', resetSimulator);
+
+                // Module navigation
+                moduleCards.forEach(card => {
+                    card.setAttribute('role', 'button');
+                    card.setAttribute('tabindex', '0');
+                    const moduleId = card.dataset.moduleId;
+                    if (moduleId) {
+                        card.addEventListener('click', () => showModuleDetail(moduleId));
+                        card.addEventListener('keydown', (e) => {
+                            if (e.key === 'Enter' || e.key === ' ') {
+                                e.preventDefault();
+                                showModuleDetail(moduleId);
+                            }
+                        });
+                    }
+                });
+                backToModulesBtn.addEventListener('click', showModuleGrid);
+                
+                // Mini-simulators
+                setupInteractiveSims();
+
+                // Exercises
+                const exerciseContent = {
+                    add: { title: 'Simple Addition', problem: 'Load the value 15 into register $t0 and the value 27 into register $t1. Add them together and store the result in $s0.' },
+                    sub: { title: 'Subtract Immediate', problem: 'Load the value 100 into register $t0. Then, subtract the constant value 42 from it, storing the result back into $t0.'}
+                };
+                document.querySelectorAll('.exercise-card').forEach(card => {
+                    card.addEventListener('click', () => {
+                        const exerciseKey = card.getAttribute('data-exercise');
+                        const exercise = exerciseContent[exerciseKey];
+                        if (exercise) {
+                            exerciseContentDiv.innerHTML = `
+                                <h3 class="text-xl font-semibold mb-2">${exercise.title}</h3>
+                                <p class="text-gray-700 mb-4">${exercise.problem}</p>
+                                <textarea class="w-full h-32 p-2 border-2 border-gray-300 rounded code-font text-sm" placeholder="# Enter your solution here..."></textarea>
+                                <button class="mt-3 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Check Answer (Not Implemented)</button>`;
+                        }
+                         document.querySelectorAll('.exercise-card').forEach(c => c.classList.remove('ring-2', 'ring-blue-500'));
+                        card.classList.add('ring-2', 'ring-blue-500');
+                    });
+                });
+                
+                // Final setup
+                resetSimulator();
+                showTab('overview');
+                console.log('MIPS Learning Guide Initialized.');
+            }
+
+            // Run the application
+            initializeApplication();
+        });
+    </script>
+</body>
+</html>
