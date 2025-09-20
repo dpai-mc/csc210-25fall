@@ -105,6 +105,10 @@
                             </ul>
                         </div>
                     </div>
+                    <div class="mt-6 bg-blue-50 p-6 rounded-lg border border-blue-200">
+                        <h3 class="text-xl font-semibold mb-2 text-blue-800">A Note on Assembly vs. Machine Code</h3>
+                        <p class="text-gray-700">As you work through these examples, it's important to remember that MIPS assembly is a human-readable representation of machine code. When the assembler translates your code, the order of operands can change. For example, an R-type instruction like <code class="code-font">add $s0, $t0, $t1</code> is written with the destination register first. However, in the 32-bit machine code instruction, the fields for the source registers (<code class="code-font">$t0</code> and <code class="code-font">$t1</code>) appear before the field for the destination register (<code class="code-font">$s0</code>). This is a fundamental concept in how the CPU hardware is designed to decode instructions.</p>
+                    </div>
                 </div>
 
                 <!-- Modules Content -->
@@ -164,7 +168,13 @@ add $s0, $t0, $t1  # $s0 is now 15</code></pre>
                                 <!-- addu -->
                                 <div class="instruction-card bg-white p-6 rounded-lg border">
                                     <h4 class="text-xl font-bold code-font text-blue-800">addu rd, rs, rt</h4>
-                                    <p class="mt-2 text-gray-700">Adds two registers just like <code class="code-font">add</code>, but does <span class="font-semibold">not</span> trap on overflow. The 'u' stands for unsigned, but it's commonly used for all signed addition where overflow exceptions are not desired.</p>
+                                    <p class="mt-2 text-gray-700">Adds the integers in registers <code class="code-font bg-gray-200 px-1 rounded">rs</code> and <code class="code-font bg-gray-200 px-1 rounded">rt</code> and stores the result in <code class="code-font bg-gray-200 px-1 rounded">rd</code>. This version (<code class="code-font">addu</code>) does <span class="font-semibold">not</span> cause a trap on overflow. The 'u' stands for unsigned, but it's commonly used for all signed addition where overflow exceptions are not desired, as the underlying binary arithmetic is the same.</p>
+                                    <div class="mt-4 p-4 border-t">
+                                        <h5 class="font-semibold mb-2">Example:</h5>
+                                        <pre class="bg-gray-800 text-white p-3 rounded-md text-sm code-font"><code># Assume $t0 contains the max signed int (2,147,483,647)
+# Assume $t1 = 1
+addu $s0, $t0, $t1  # $s0 will wrap around to -2,147,483,648 without error</code></pre>
+                                    </div>
                                 </div>
                                 
                                 <!-- addi -->
@@ -182,10 +192,38 @@ add $s0, $t0, $t1  # $s0 is now 15</code></pre>
                                     </div>
                                 </div>
                                 
+                                <!-- addiu -->
+                                <div class="instruction-card bg-white p-6 rounded-lg border">
+                                    <h4 class="text-xl font-bold code-font text-blue-800">addiu rt, rs, immediate</h4>
+                                    <p class="mt-2 text-gray-700">Adds the integer in register <code class="code-font bg-gray-200 px-1 rounded">rs</code> to a 16-bit immediate value and stores the result in <code class="code-font bg-gray-200 px-1 rounded">rt</code>. Like <code class="code-font">addu</code>, it does <span class="font-semibold">not</span> trap on overflow. This is frequently used for pointer arithmetic or simple constant addition where overflow is not an expected error condition.</p>
+                                    <div class="mt-4 p-4 border-t">
+                                        <h5 class="font-semibold mb-2">Example:</h5>
+                                        <pre class="bg-gray-800 text-white p-3 rounded-md text-sm code-font"><code># Increment a counter in $t0 by 4
+addiu $t0, $t0, 4</code></pre>
+                                    </div>
+                                </div>
+
                                 <!-- sub -->
                                 <div class="instruction-card bg-white p-6 rounded-lg border">
                                     <h4 class="text-xl font-bold code-font text-blue-800">sub rd, rs, rt</h4>
-                                    <p class="mt-2 text-gray-700">Subtracts the integer in register <code class="code-font bg-gray-200 px-1 rounded">rt</code> from <code class="code-font bg-gray-200 px-1 rounded">rs</code> and stores the result in <code class="code-font bg-gray-200 px-1 rounded">rd</code>. Traps on overflow.</p>
+                                    <p class="mt-2 text-gray-700">Subtracts the integer in register <code class="code-font bg-gray-200 px-1 rounded">rt</code> from <code class="code-font bg-gray-200 px-1 rounded">rs</code> and stores the result in <code class="code-font bg-gray-200 px-1 rounded">rd</code>. This version (<code class="code-font">sub</code>) will cause a system trap (error) on overflow.</p>
+                                     <div class="mt-4 p-4 border-t">
+                                        <h5 class="font-semibold mb-2">Example:</h5>
+                                        <pre class="bg-gray-800 text-white p-3 rounded-md text-sm code-font"><code># Assume $t0 = 20, $t1 = 15
+sub $s0, $t0, $t1  # $s0 is now 5</code></pre>
+                                    </div>
+                                </div>
+
+                                <!-- subu -->
+                                <div class="instruction-card bg-white p-6 rounded-lg border">
+                                    <h4 class="text-xl font-bold code-font text-blue-800">subu rd, rs, rt</h4>
+                                    <p class="mt-2 text-gray-700">Subtracts the integer in register <code class="code-font bg-gray-200 px-1 rounded">rt</code> from <code class="code-font bg-gray-200 px-1 rounded">rs</code> and stores the result in <code class="code-font bg-gray-200 px-1 rounded">rd</code>. This version does <span class="font-semibold">not</span> trap on overflow.</p>
+                                    <div class="mt-4 p-4 border-t">
+                                        <h5 class="font-semibold mb-2">Example:</h5>
+                                        <pre class="bg-gray-800 text-white p-3 rounded-md text-sm code-font"><code># Assume $t0 = -2,147,483,648 (min signed int)
+# Assume $t1 = 1
+subu $s0, $t0, $t1  # $s0 wraps to 2,147,483,647 without error</code></pre>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -215,19 +253,31 @@ add $s0, $t0, $t1  # $s0 is now 15</code></pre>
                                 <!-- multu -->
                                 <div class="instruction-card bg-white p-6 rounded-lg border">
                                     <h4 class="text-xl font-bold code-font text-blue-800">multu rs, rt</h4>
-                                    <p class="mt-2 text-gray-700">Performs multiplication on unsigned integers. The result is also stored in <code class="code-font">HI</code> and <code class="code-font">LO</code>.</p>
-                                </div>
-                                <!-- mfhi / mflo -->
-                                <div class="instruction-card bg-white p-6 rounded-lg border">
-                                    <h4 class="text-xl font-bold code-font text-blue-800">mfhi rd / mflo rd</h4>
-                                    <p class="mt-2 text-gray-700"><span class="font-semibold">Move From HI/LO.</span> After a multiplication, you use these instructions to copy the values from the special <code class="code-font">HI</code> or <code class="code-font">LO</code> registers into a general-purpose register (<code class="code-font">rd</code>) for further use.</p>
+                                    <p class="mt-2 text-gray-700">Performs multiplication on the unsigned integers in registers <code class="code-font">rs</code> and <code class="code-font">rt</code>. Like <code class="code-font">mult</code>, the 64-bit result is stored across the <code class="code-font">HI</code> and <code class="code-font">LO</code> registers. This is used when treating the register contents as 0 to 2<sup>32</sup>-1 rather than signed values.</p>
                                     <div class="mt-4 p-4 border-t">
                                         <h5 class="font-semibold mb-2">Example:</h5>
+                                        <pre class="bg-gray-800 text-white p-3 rounded-md text-sm code-font"><code># Assume $t0 = 4000000000 (a large unsigned number)
+# Assume $t1 = 2
+multu $t0, $t1      # Result is 8000000000.
+                     # HI will contain 1, LO will contain 3705032704</code></pre>
+                                    </div>
+                                </div>
+                                <!-- mfhi -->
+                                <div class="instruction-card bg-white p-6 rounded-lg border">
+                                    <h4 class="text-xl font-bold code-font text-blue-800">mfhi rd</h4>
+                                    <p class="mt-2 text-gray-700"><span class="font-semibold">Move From HI.</span> After a multiplication or division, this instruction copies the 32-bit value from the special <code class="code-font">HI</code> register into the general-purpose destination register <code class="code-font">rd</code>.</p>
+                                </div>
+                                <!-- mflo -->
+                                <div class="instruction-card bg-white p-6 rounded-lg border">
+                                    <h4 class="text-xl font-bold code-font text-blue-800">mflo rd</h4>
+                                    <p class="mt-2 text-gray-700"><span class="font-semibold">Move From LO.</span> After a multiplication or division, this instruction copies the 32-bit value from the special <code class="code-font">LO</code> register into the general-purpose destination register <code class="code-font">rd</code>.</p>
+                                    <div class="mt-4 p-4 border-t">
+                                        <h5 class="font-semibold mb-2">Combined Example:</h5>
                                         <pre class="bg-gray-800 text-white p-3 rounded-md text-sm code-font"><code># Assume $t0 = 20, $t1 = 50
 mult $t0, $t1      # HI = 0, LO = 1000
 
-mflo $s0           # $s0 is now 1000
-mfhi $s1           # $s1 is now 0</code></pre>
+mflo $s0           # $s0 is now 1000 (the lower 32 bits of the product)
+mfhi $s1           # $s1 is now 0 (the upper 32 bits of the product)</code></pre>
                                     </div>
                                 </div>
                             </div>
@@ -258,7 +308,15 @@ mfhi $s1           # $s1 is now 0</code></pre>
                                 <!-- divu -->
                                 <div class="instruction-card bg-white p-6 rounded-lg border">
                                     <h4 class="text-xl font-bold code-font text-blue-800">divu rs, rt</h4>
-                                    <p class="mt-2 text-gray-700">Performs division on unsigned integers. The quotient is stored in <code class="code-font">LO</code> and the remainder in <code class="code-font">HI</code>.</p>
+                                    <p class="mt-2 text-gray-700">Performs division on unsigned integers. The unsigned integer in <code class="code-font">rs</code> is divided by the unsigned integer in <code class="code-font">rt</code>. The quotient is stored in <code class="code-font">LO</code> and the remainder in <code class="code-font">HI</code>.</p>
+                                    <div class="mt-4 p-4 border-t">
+                                        <h5 class="font-semibold mb-2">Example:</h5>
+                                        <pre class="bg-gray-800 text-white p-3 rounded-md text-sm code-font"><code># Assume $t0 = 200, $t1 = 25
+divu $t0, $t1      # Perform 200 / 25
+
+mflo $s0           # $s0 = 8 (Quotient)
+mfhi $s1           # $s1 = 0 (Remainder)</code></pre>
+                                    </div>
                                 </div>
                                 <div class="instruction-card bg-gray-50 p-6 rounded-lg border">
                                     <p class="text-gray-700">Just like with multiplication, you must use <code class="code-font">mflo</code> to get the quotient and <code class="code-font">mfhi</code> to get the remainder into general-purpose registers.</p>
@@ -291,10 +349,70 @@ mfhi $s1           # $s1 is now 0</code></pre>
                                         <p class="mt-2 text-sm">Result (Binary): <span id="logic-bin-result" class="font-bold code-font">?</span></p>
                                     </div>
                                 </div>
-                                <!-- or, xor, nor -->
+                                <!-- andi -->
                                 <div class="instruction-card bg-white p-6 rounded-lg border">
-                                    <h4 class="text-xl font-bold code-font text-blue-800">or / xor / nor</h4>
-                                    <p class="mt-2 text-gray-700">These instructions perform bitwise OR, XOR (exclusive OR), and NOR (NOT OR) operations, respectively. They follow the same format as <code class="code-font">and</code>.</p>
+                                    <h4 class="text-xl font-bold code-font text-blue-800">andi rt, rs, immediate</h4>
+                                    <p class="mt-2 text-gray-700">Performs a bitwise AND between register <code class="code-font">rs</code> and a 16-bit immediate value, storing the result in <code class="code-font">rt</code>. This is often used to "mask" bits, for example, to isolate the lower byte of a register.</p>
+                                    <div class="mt-4 p-4 border-t">
+                                        <h5 class="font-semibold mb-2">Example:</h5>
+                                        <pre class="bg-gray-800 text-white p-3 rounded-md text-sm code-font"><code># Assume $t0 = 300 (binary ...100101100)
+# Immediate 0xFF is 255 (binary ...011111111)
+andi $s0, $t0, 0xFF # $s0 = 44 (binary ...00101100)</code></pre>
+                                    </div>
+                                </div>
+                                <!-- or -->
+                                <div class="instruction-card bg-white p-6 rounded-lg border">
+                                    <h4 class="text-xl font-bold code-font text-blue-800">or rd, rs, rt</h4>
+                                    <p class="mt-2 text-gray-700">Performs a bitwise OR between registers <code class="code-font">rs</code> and <code class="code-font">rt</code>, storing the result in <code class="code-font">rd</code>. A bit in the result is 1 if the corresponding bit in either source is 1.</p>
+                                    <div class="mt-4 p-4 border-t">
+                                        <h5 class="font-semibold mb-2">Example:</h5>
+                                        <pre class="bg-gray-800 text-white p-3 rounded-md text-sm code-font"><code># $t0 = 12 (..1100)
+# $t1 = 10 (..1010)
+or $s0, $t0, $t1  # $s0 = 14 (..1110)</code></pre>
+                                    </div>
+                                </div>
+                                <!-- ori -->
+                                <div class="instruction-card bg-white p-6 rounded-lg border">
+                                    <h4 class="text-xl font-bold code-font text-blue-800">ori rt, rs, immediate</h4>
+                                    <p class="mt-2 text-gray-700">Performs a bitwise OR between register <code class="code-font">rs</code> and a 16-bit immediate value, storing the result in <code class="code-font">rt</code>. Useful for setting specific bits in a register.</p>
+                                    <div class="mt-4 p-4 border-t">
+                                        <h5 class="font-semibold mb-2">Example:</h5>
+                                        <pre class="bg-gray-800 text-white p-3 rounded-md text-sm code-font"><code># $t0 = 12 (..1100)
+# immediate = 3 (..0011)
+ori $s0, $t0, 3  # $s0 = 15 (..1111)</code></pre>
+                                    </div>
+                                </div>
+                                <!-- xor -->
+                                <div class="instruction-card bg-white p-6 rounded-lg border">
+                                    <h4 class="text-xl font-bold code-font text-blue-800">xor rd, rs, rt</h4>
+                                    <p class="mt-2 text-gray-700">Performs a bitwise XOR (exclusive OR) between <code class="code-font">rs</code> and <code class="code-font">rt</code>, storing the result in <code class="code-font">rd</code>. A bit in the result is 1 if the corresponding bits in the sources are different.</p>
+                                    <div class="mt-4 p-4 border-t">
+                                        <h5 class="font-semibold mb-2">Example:</h5>
+                                        <pre class="bg-gray-800 text-white p-3 rounded-md text-sm code-font"><code># $t0 = 12 (..1100)
+# $t1 = 10 (..1010)
+xor $s0, $t0, $t1  # $s0 = 6 (..0110)</code></pre>
+                                    </div>
+                                </div>
+                                <!-- xori -->
+                                <div class="instruction-card bg-white p-6 rounded-lg border">
+                                    <h4 class="text-xl font-bold code-font text-blue-800">xori rt, rs, immediate</h4>
+                                    <p class="mt-2 text-gray-700">Performs a bitwise XOR between register <code class="code-font">rs</code> and a 16-bit immediate value, storing the result in <code class="code-font">rt</code>. Can be used to flip specific bits.</p>
+                                    <div class="mt-4 p-4 border-t">
+                                        <h5 class="font-semibold mb-2">Example:</h5>
+                                        <pre class="bg-gray-800 text-white p-3 rounded-md text-sm code-font"><code># Flip the lower 8 bits of $t0
+xori $t0, $t0, 0xFF</code></pre>
+                                    </div>
+                                </div>
+                                <!-- nor -->
+                                <div class="instruction-card bg-white p-6 rounded-lg border">
+                                    <h4 class="text-xl font-bold code-font text-blue-800">nor rd, rs, rt</h4>
+                                    <p class="mt-2 text-gray-700">Performs a bitwise NOR (NOT OR) between <code class="code-font">rs</code> and <code class="code-font">rt</code>, storing the result in <code class="code-font">rd</code>. The result is the bitwise inverse of an OR operation. MIPS does not have a NOT instruction; <code class="code-font">nor rd, rs, $zero</code> is used to achieve it.</p>
+                                    <div class="mt-4 p-4 border-t">
+                                        <h5 class="font-semibold mb-2">Example:</h5>
+                                        <pre class="bg-gray-800 text-white p-3 rounded-md text-sm code-font"><code># $t0 = 12 (..00001100)
+# Emulate NOT $t0
+nor $s0, $t0, $zero  # $s0 = -13 (...11110011)</code></pre>
+                                    </div>
                                 </div>
                                 <!-- sll -->
                                 <div class="instruction-card bg-white p-6 rounded-lg border">
@@ -312,10 +430,46 @@ mfhi $s1           # $s1 is now 0</code></pre>
                                         <p class="mt-2 text-sm">Result: <span id="sll-result" class="font-bold code-font">?</span></p>
                                     </div>
                                 </div>
-                                <!-- srl, sra -->
+                                <!-- sllv -->
                                 <div class="instruction-card bg-white p-6 rounded-lg border">
-                                    <h4 class="text-xl font-bold code-font text-blue-800">srl / sra</h4>
-                                    <p class="mt-2 text-gray-700"><span class="font-semibold">Shift Right Logical (srl)</span> shifts bits to the right, filling the leftmost bits with zeros. <span class="font-semibold">Shift Right Arithmetic (sra)</span> also shifts right, but it fills the leftmost bits with copies of the original sign bit, preserving the number's sign.</p>
+                                    <h4 class="text-xl font-bold code-font text-blue-800">sllv rd, rt, rs</h4>
+                                    <p class="mt-2 text-gray-700"><span class="font-semibold">Shift Left Logical Variable.</span> Shifts the bits in register <code class="code-font">rt</code> to the left. The number of positions to shift is specified by the value in register <code class="code-font">rs</code> (only the lower 5 bits of <code class="code-font">rs</code> are used).</p>
+                                    <div class="mt-4 p-4 border-t">
+                                        <h5 class="font-semibold mb-2">Example:</h5>
+                                        <pre class="bg-gray-800 text-white p-3 rounded-md text-sm code-font"><code># Assume $t1 = 5
+# Assume $t2 = 3 (shift amount)
+sllv $s0, $t1, $t2  # $s0 = 5 &lt;&lt; 3 = 40</code></pre>
+                                    </div>
+                                </div>
+                                <!-- srl -->
+                                <div class="instruction-card bg-white p-6 rounded-lg border">
+                                    <h4 class="text-xl font-bold code-font text-blue-800">srl rd, rt, sa</h4>
+                                    <p class="mt-2 text-gray-700"><span class="font-semibold">Shift Right Logical.</span> Shifts the bits in register <code class="code-font">rt</code> to the right by the shift amount (<code class="code-font">sa</code>), which is a 5-bit constant. Zeros are always shifted into the leftmost bits. This is used for unsigned division by a power of 2.</p>
+                                    <div class="mt-4 p-4 border-t">
+                                        <h5 class="font-semibold mb-2">Example:</h5>
+                                        <pre class="bg-gray-800 text-white p-3 rounded-md text-sm code-font"><code># Assume $t1 = 40 (..00101000)
+srl $s0, $t1, 2  # $s0 = 10 (..00001010)</code></pre>
+                                    </div>
+                                </div>
+                                <!-- sra -->
+                                <div class="instruction-card bg-white p-6 rounded-lg border">
+                                    <h4 class="text-xl font-bold code-font text-blue-800">sra rd, rt, sa</h4>
+                                    <p class="mt-2 text-gray-700"><span class="font-semibold">Shift Right Arithmetic.</span> Shifts the bits in register <code class="code-font">rt</code> to the right by the shift amount (<code class="code-font">sa</code>). The leftmost bits are filled with copies of the original sign bit (bit 31). This preserves the number's sign and is used for signed division by a power of 2.</p>
+                                    <div class="mt-4 p-4 border-t">
+                                        <h5 class="font-semibold mb-2">Example:</h5>
+                                        <pre class="bg-gray-800 text-white p-3 rounded-md text-sm code-font"><code># Assume $t1 = -16 (...11110000)
+sra $s0, $t1, 2  # $s0 = -4 (...11111100)</code></pre>
+                                    </div>
+                                </div>
+                                <!-- srlv -->
+                                <div class="instruction-card bg-white p-6 rounded-lg border">
+                                    <h4 class="text-xl font-bold code-font text-blue-800">srlv rd, rt, rs</h4>
+                                    <p class="mt-2 text-gray-700"><span class="font-semibold">Shift Right Logical Variable.</span> Shifts the bits in register <code class="code-font">rt</code> to the right, filling with zeros. The number of positions to shift is specified by the value in register <code class="code-font">rs</code>.</p>
+                                </div>
+                                <!-- srav -->
+                                <div class="instruction-card bg-white p-6 rounded-lg border">
+                                    <h4 class="text-xl font-bold code-font text-blue-800">srav rd, rt, rs</h4>
+                                    <p class="mt-2 text-gray-700"><span class="font-semibold">Shift Right Arithmetic Variable.</span> Shifts the bits in register <code class="code-font">rt</code> to the right, preserving the sign bit. The number of positions to shift is specified by the value in register <code class="code-font">rs</code>.</p>
                                 </div>
                             </div>
                         </div>
@@ -624,3 +778,4 @@ mfhi $s1           # $s1 is now 0</code></pre>
     </script>
 </body>
 </html>
+
