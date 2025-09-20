@@ -302,80 +302,100 @@ andi $t0, $t0, 0x00FF # Mask to keep only lower 8 bits
             
             <div class="submission-box mb-6">
                 <h3 class="text-xl font-semibold mb-4">Program Specification</h3>
-                <p class="mb-4">Write a MIPS program that implements a simple image processing algorithm. Your program should:</p>
+                <p class="mb-4">Write a MIPS program that processes mathematical expressions and bit patterns. Your program should:</p>
                 <ol class="list-decimal pl-6 space-y-2 mb-4">
-                    <li>Load pixel color values from the data section</li>
-                    <li>Extract RGB components from each pixel</li>
-                    <li>Calculate brightness for each pixel using: brightness = (R + G + B) / 4</li>
-                    <li>Apply a simple filter: if brightness > 64, set all color components to 255 (white), otherwise set to 0 (black)</li>
-                    <li>Pack the filtered components back into final pixel values</li>
+                    <li>Load three input values from the data section</li>
+                    <li>Calculate the expression: result1 = (a * 8) + (b / 4) - c</li>
+                    <li>Extract bit fields from a hexadecimal pattern</li>
+                    <li>Perform logical operations to create bit masks</li>
+                    <li>Store all calculated results back to memory</li>
                 </ol>
                 
                 <div class="bg-gray-100 p-4 rounded-lg mt-4">
                     <h4 class="font-semibold mb-2">Provided Starting Template:</h4>
                     <pre class="code-block text-sm overflow-x-auto"># File: lastname_firstname_week6.asm
 # Assignment: Week 6 MIPS Arithmetic & Logic
-# Description: Image Processing - RGB Color Filter
+# Description: Mathematical Expression and Bit Pattern Processing
 
 .globl main
 .data
-    # Original pixel values in ARGB format (Alpha, Red, Green, Blue)
-    pixel1: .word 0xFF804020    # Red=128, Green=64, Blue=32
-    pixel2: .word 0xFF404080    # Red=64, Green=64, Blue=128  
-    pixel3: .word 0xFFC0C0C0    # Red=192, Green=192, Blue=192
+    # Input values for calculations
+    valueA: .word 12        # First operand
+    valueB: .word 80        # Second operand  
+    valueC: .word 15        # Third operand
+    pattern: .word 0x12345678   # Bit pattern for extraction
     
-    # Storage for filtered pixel values
-    filtered1: .word 0
-    filtered2: .word 0
-    filtered3: .word 0
+    # Storage for results
+    result1: .word 0        # Expression result
+    result2: .word 0        # Upper 16 bits of pattern
+    result3: .word 0        # Lower 16 bits of pattern
+    result4: .word 0        # Bit mask result
 
 .text
 main:
-    # Load addresses of data
-    la $s0, pixel1
-    la $s1, filtered1
+    # ===== PART 1: Mathematical Expression =====
+    # Calculate: result1 = (valueA * 8) + (valueB / 4) - valueC
+    # Use shifts for multiplication and division
     
-    # Process Pixel 1
-    lw $t0, 0($s0)          # Load pixel1 value
-    # YOUR CODE HERE: Extract RGB components and process
-    # Store result in filtered1
+    lw $s0, valueA          # Load valueA into $s0
+    lw $s1, valueB          # Load valueB into $s1
+    lw $s2, valueC          # Load valueC into $s2
     
-    # Process Pixel 2
-    lw $t0, 4($s0)          # Load pixel2 value
-    # YOUR CODE HERE: Extract RGB components and process
-    # Store result in filtered2
+    # YOUR CODE HERE: Complete the expression calculation
+    # Step 1: Multiply valueA by 8 (hint: use left shift)
     
-    # Process Pixel 3
-    lw $t0, 8($s0)          # Load pixel3 value
-    # YOUR CODE HERE: Extract RGB components and process
-    # Store result in filtered3
+    # Step 2: Divide valueB by 4 (hint: use right shift)
+    
+    # Step 3: Add the multiplication result to division result
+    
+    # Step 4: Subtract valueC from the sum
+    
+    # Step 5: Store final result in result1
+    sw $t0, result1         # Store the final result
+    
+    
+    # ===== PART 2: Bit Field Extraction =====
+    # Extract upper and lower 16-bit fields from pattern
+    
+    lw $t0, pattern         # Load bit pattern 0x12345678
+    
+    # YOUR CODE HERE: Extract upper 16 bits (0x1234)
+    # Hint: Use shift right by 16 positions
+    
+    sw $t1, result2         # Store upper 16 bits
+    
+    # YOUR CODE HERE: Extract lower 16 bits (0x5678)
+    # Hint: Use AND with appropriate mask
+    
+    sw $t2, result3         # Store lower 16 bits
+    
+    
+    # ===== PART 3: Bit Mask Creation =====
+    # Create a bit mask with specific pattern
+    # Set bits 0-7 to 1, bits 8-15 to 0, bits 16-23 to 1, bits 24-31 to 0
+    # Final mask should be: 0x00FF00FF
+    
+    # YOUR CODE HERE: Build the mask using lui and ori
+    # Step 1: Load upper 16 bits (0x00FF)
+    
+    # Step 2: OR with lower 16 bits (0x00FF)
+    
+    sw $t3, result4         # Store the created mask
+    
+    
+    # ===== PART 4: Apply Mask to Original Pattern =====
+    # Apply the mask to the original pattern using AND operation
+    lw $t0, pattern         # Reload original pattern
+    lw $t1, result4         # Load the mask we created
+    
+    # YOUR CODE HERE: Apply mask using AND operation
+    
+    # The result should show only bits where mask has 1s
+    # Expected: 0x12345678 AND 0x00FF00FF = 0x00340078
     
     # Exit program
     li $v0, 10
-    syscall
-
-# ===== YOUR IMPLEMENTATION SECTION =====
-# Complete the following procedures:
-
-extract_rgb:
-    # Input: $t0 contains pixel value in ARGB format
-    # Output: $t1=Red, $t2=Green, $t3=Blue
-    # YOUR CODE HERE
-    jr $ra
-
-calculate_brightness:
-    # Input: $t1=Red, $t2=Green, $t3=Blue  
-    # Output: $t4=brightness value
-    # Formula: brightness = (R + G + B) / 4
-    # YOUR CODE HERE
-    jr $ra
-
-apply_filter:
-    # Input: $t4=brightness value
-    # Output: $t5=filtered color (0x00000000 or 0xFFFFFFFF)
-    # Rule: if brightness > 64, output white (0xFFFFFFFF), else black (0x00000000)
-    # YOUR CODE HERE
-    jr $ra</pre>
+    syscall</pre>
                 </div>
             </div>
             
@@ -384,23 +404,36 @@ apply_filter:
                 
                 <div class="space-y-4">
                     <div class="bg-yellow-50 p-4 rounded">
-                        <h4 class="font-semibold mb-2">Required Instructions to Use:</h4>
+                        <h4 class="font-semibold mb-2">Required Instructions (Must Use Each At Least Once):</h4>
                         <ul class="list-disc pl-6 space-y-1 text-sm">
-                            <li><code>srl</code> and <code>andi</code> for extracting RGB components</li>
-                            <li><code>add</code> for summing RGB values</li>
-                            <li><code>srl</code> for division by 4</li>
-                            <li><code>slti</code> or comparison logic for threshold testing</li>
-                            <li><code>lui</code> and <code>ori</code> for loading 32-bit constants</li>
+                            <li><code>lw</code> and <code>sw</code> for loading/storing data</li>
+                            <li><code>add</code> and <code>sub</code> for arithmetic operations</li>
+                            <li><code>sll</code> for multiplication by powers of 2</li>
+                            <li><code>srl</code> for division by powers of 2 and bit extraction</li>
+                            <li><code>andi</code> for bit masking</li>
+                            <li><code>and</code> for applying bit masks</li>
+                            <li><code>lui</code> and <code>ori</code> for building 32-bit constants</li>
                         </ul>
                     </div>
                     
                     <div class="bg-blue-50 p-4 rounded">
+                        <h4 class="font-semibold mb-2">Expected Results (for testing):</h4>
+                        <ul class="list-disc pl-6 space-y-1 text-sm">
+                            <li>result1: (12 × 8) + (80 ÷ 4) - 15 = 96 + 20 - 15 = 101</li>
+                            <li>result2: Upper 16 bits of 0x12345678 = 0x00001234</li>
+                            <li>result3: Lower 16 bits of 0x12345678 = 0x00005678</li>
+                            <li>result4: Bit mask = 0x00FF00FF</li>
+                            <li>Final masked result: 0x00340078</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="bg-green-50 p-4 rounded">
                         <h4 class="font-semibold mb-2">Testing Your Program:</h4>
                         <ol class="list-decimal pl-6 space-y-1 text-sm">
-                            <li>Load your .asm file in MARS</li>
-                            <li>Step through execution and verify register values</li>
-                            <li>Check that filtered pixel values are stored correctly</li>
-                            <li>Expected results: pixel1→black, pixel2→black, pixel3→white</li>
+                            <li>Load your .asm file in MARS simulator</li>
+                            <li>Run the program and check the Data Segment</li>
+                            <li>Verify that result1, result2, result3, result4 contain expected values</li>
+                            <li>Use single-step execution to verify intermediate calculations</li>
                         </ol>
                     </div>
                 </div>
@@ -413,18 +446,19 @@ apply_filter:
                     <div>
                         <h4 class="font-semibold mb-2">Code Quality (20 points)</h4>
                         <ul class="list-disc pl-6 space-y-1 text-sm">
-                            <li>Proper instruction usage (8 pts)</li>
-                            <li>Clear comments explaining logic (6 pts)</li>
-                            <li>Correct register usage (6 pts)</li>
+                            <li>Correct instruction usage (8 pts)</li>
+                            <li>Clear comments for each section (6 pts)</li>
+                            <li>Proper register management (6 pts)</li>
                         </ul>
                     </div>
                     
                     <div>
                         <h4 class="font-semibold mb-2">Functionality (20 points)</h4>
                         <ul class="list-disc pl-6 space-y-1 text-sm">
-                            <li>RGB extraction works correctly (7 pts)</li>
-                            <li>Brightness calculation accurate (7 pts)</li>
-                            <li>Filter logic produces correct results (6 pts)</li>
+                            <li>Mathematical expression correct (6 pts)</li>
+                            <li>Bit field extraction works (6 pts)</li>
+                            <li>Bit mask creation accurate (4 pts)</li>
+                            <li>Final results stored correctly (4 pts)</li>
                         </ul>
                     </div>
                 </div>
