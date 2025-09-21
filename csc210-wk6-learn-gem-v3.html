@@ -352,6 +352,60 @@ mfhi $s1           # $s1 = 0 (Remainder)</code></pre>
                                 <div class="instruction-card bg-gray-50 p-6 rounded-lg border">
                                     <p class="text-gray-700">Just like with multiplication, you must use <code class="code-font">mflo</code> to get the quotient and <code class="code-font">mfhi</code> to get the remainder into general-purpose registers.</p>
                                 </div>
+                                <div class="instruction-card bg-blue-50 p-6 rounded-lg border border-blue-200">
+                                    <h3 class="text-2xl font-bold mb-4 text-blue-800">Hardware Division vs. Bitwise Shifting</h3>
+                                    <p class="mb-4 text-gray-700">Similar to multiplication, the <code class="code-font">div</code> instruction can be slow. When dividing by a power of two, using **bit shifting** is dramatically faster.</p>
+                                    
+                                    <div class="mb-4">
+                                        <h4 class="font-semibold text-lg mb-2">Shifting as Division</h4>
+                                        <p class="text-gray-700">A <span class="font-semibold">Shift Right</span> operation moves every bit in a register to the right. Each shift to the right is equivalent to dividing by 2 (discarding any remainder). However, we must distinguish between signed and unsigned numbers.</p>
+                                        <pre class="bg-gray-800 text-white p-3 rounded-md text-sm code-font mt-2"><code># To calculate $t0 / 8 (unsigned)
+# 8 is 2^3, so we shift right by 3 bits
+srl $s0, $t0, 3  # $s0 = $t0 / 8</code></pre>
+                                    </div>
+
+                                    <div class="mb-4">
+                                        <h4 class="font-semibold text-lg mb-2">Compare & Contrast: srl vs. sra</h4>
+                                        <div class="overflow-x-auto">
+                                            <table class="w-full text-sm text-left text-gray-600">
+                                                <thead class="text-xs text-gray-700 uppercase bg-gray-200">
+                                                    <tr>
+                                                        <th scope="col" class="px-4 py-2">Instruction</th>
+                                                        <th scope="col" class="px-4 py-2">Full Name</th>
+                                                        <th scope="col" class="px-4 py-2">Use Case</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr class="bg-white border-b">
+                                                        <td class="px-4 py-2 font-medium"><code class="code-font">srl</code></td>
+                                                        <td class="px-4 py-2">Shift Right <strong>Logical</strong></td>
+                                                        <td class="px-4 py-2">For <strong>unsigned</strong> numbers. It always fills the new bits on the left with zeros.</td>
+                                                    </tr>
+                                                    <tr class="bg-white">
+                                                        <td class="px-4 py-2 font-medium"><code class="code-font">sra</code></td>
+                                                        <td class="px-4 py-2">Shift Right <strong>Arithmetic</strong></td>
+                                                        <td class="px-4 py-2">For <strong>signed</strong> numbers. It fills the new bits by copying the original sign bit (bit 31), preserving the number's positivity or negativity.</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    
+                                    <div>
+                                        <h4 class="font-semibold text-lg mb-2">Examples in Action</h4>
+                                        <p class="text-gray-700 mb-2">Notice the difference when shifting a negative number:</p>
+                                        <pre class="bg-gray-800 text-white p-3 rounded-md text-sm code-font"><code># Assume $t0 = -16 (...1111 1111 1111 0000)
+# Divide by 4 (shift by 2)
+
+# Using Arithmetic shift (correct for signed numbers)
+sra $s0, $t0, 2  # $s0 becomes -4 (...1111 1111 1111 1100)
+
+# Using Logical shift (incorrect for signed numbers)
+srl $s1, $t0, 2  # $s1 becomes a large positive number
+                 # (...0011 1111 1111 1111 1100)</code></pre>
+                                        <p class="text-gray-700 mt-2">Just like with multiplication, an intelligent assembler will automatically convert a division pseudo-instruction (e.g., <code class="code-font">div $s0, $t0, 8</code>) into a faster <code class="code-font">sra</code> or <code class="code-font">srl</code> when possible, optimizing for the underlying hardware.</p>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
