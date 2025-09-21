@@ -244,13 +244,9 @@
                 
                 <label for="b1_code" class="block font-medium mb-2">Your MIPS code:</label>
                 <textarea id="b1_code" class="worksheet-input w-full h-32 code-block" placeholder="# Calculate result = (a * 16) + (b / 4) - c
-# Step 1: Multiply a by 16 (shift left by 4)
-sll $t0, $s0, 4      # t0 = a * 16
-
-# Step 2: Divide b by 4 (shift right by 2)
-sra $t1, $s1, 2      # t1 = b / 4
-
-# Continue with remaining steps..."></textarea>
+# Write your MIPS instructions here
+# Remember to use shifts for multiplication and division
+# Use appropriate registers and include comments"></textarea>
                 
                 <div class="register-display mt-4">
                     <h4 class="font-semibold mb-2">Test Values:</h4>
@@ -272,12 +268,9 @@ sra $t1, $s1, 2      # t1 = b / 4
                 <label for="b2_code" class="block font-medium mb-2">Your MIPS code:</label>
                 <textarea id="b2_code" class="worksheet-input w-full h-40 code-block" placeholder="# Extract and pack bit fields from $s0
 # Input: $s0 contains 32-bit value (e.g., 0x12345678)
-
-# Step 1: Extract bits 23-16
-srl $t0, $s0, 16     # Shift right by 16 to move bits 23-16 to bits 7-0
-andi $t0, $t0, 0x00FF # Mask to keep only lower 8 bits
-
-# Continue with remaining steps..."></textarea>
+# Write your MIPS instructions here
+# Use shifts and masks to extract the required bit fields
+# Remember to comment each instruction"></textarea>
                 
                 <div class="register-display mt-4">
                     <h4 class="font-semibold mb-2">Test Case:</h4>
@@ -297,170 +290,155 @@ andi $t0, $t0, 0x00FF # Mask to keep only lower 8 bits
             
             <div class="bg-red-50 p-4 rounded-lg border-l-4 border-red-500 mb-6">
                 <h3 class="text-lg font-semibold mb-2">SUBMISSION REQUIREMENT</h3>
-                <p>Copy the code below into a new file called <code class="bg-gray-100 px-2 py-1 rounded">lastname_firstname_week6.asm</code> and complete the missing sections. Test your program in MARS simulator and submit the .asm file along with this PDF.</p>
+                <p>Create a new file called <code class="bg-gray-100 px-2 py-1 rounded">lastname_firstname_week6.asm</code> and write a complete MIPS program from scratch. Test your program in MARS simulator and submit the .asm file along with this PDF.</p>
             </div>
             
             <div class="submission-box mb-6">
                 <h3 class="text-xl font-semibold mb-4">Program Specification</h3>
-                <p class="mb-4">Write a MIPS program that processes mathematical expressions and bit patterns. Your program should:</p>
-                <ol class="list-decimal pl-6 space-y-2 mb-4">
-                    <li>Load three input values from the data section</li>
-                    <li>Calculate the expression: result1 = (a * 8) + (b / 4) - c</li>
-                    <li>Extract bit fields from a hexadecimal pattern</li>
-                    <li>Perform logical operations to create bit masks</li>
-                    <li>Store all calculated results back to memory</li>
-                </ol>
+                <p class="mb-4">Write a complete MIPS program that performs mathematical calculations and bit manipulations. Your program must compute the following and store results in the specified registers:</p>
                 
-                <div class="bg-gray-100 p-4 rounded-lg mt-4">
-                    <h4 class="font-semibold mb-2">Provided Starting Template:</h4>
-                    <pre class="code-block text-sm overflow-x-auto"># File: lastname_firstname_week6.asm
-# Assignment: Week 6 MIPS Arithmetic & Logic
-# Description: Mathematical Expression and Bit Pattern Processing
-
-.globl main
-.data
-    # Input values for calculations
-    valueA: .word 12        # First operand
-    valueB: .word 80        # Second operand  
-    valueC: .word 15        # Third operand
-    pattern: .word 0x12345678   # Bit pattern for extraction
-    
-    # Storage for results
-    result1: .word 0        # Expression result
-    result2: .word 0        # Upper 16 bits of pattern
-    result3: .word 0        # Lower 16 bits of pattern
-    result4: .word 0        # Bit mask result
-
-.text
-main:
-    # ===== PART 1: Mathematical Expression =====
-    # Calculate: result1 = (valueA * 8) + (valueB / 4) - valueC
-    # Use shifts for multiplication and division
-    
-    lw $s0, valueA          # Load valueA into $s0
-    lw $s1, valueB          # Load valueB into $s1
-    lw $s2, valueC          # Load valueC into $s2
-    
-    # YOUR CODE HERE: Complete the expression calculation
-    # Step 1: Multiply valueA by 8 (hint: use left shift)
-    
-    # Step 2: Divide valueB by 4 (hint: use right shift)
-    
-    # Step 3: Add the multiplication result to division result
-    
-    # Step 4: Subtract valueC from the sum
-    
-    # Step 5: Store final result in result1
-    sw $t0, result1         # Store the final result
-    
-    
-    # ===== PART 2: Bit Field Extraction =====
-    # Extract upper and lower 16-bit fields from pattern
-    
-    lw $t0, pattern         # Load bit pattern 0x12345678
-    
-    # YOUR CODE HERE: Extract upper 16 bits (0x1234)
-    # Hint: Use shift right by 16 positions
-    
-    sw $t1, result2         # Store upper 16 bits
-    
-    # YOUR CODE HERE: Extract lower 16 bits (0x5678)
-    # Hint: Use AND with appropriate mask
-    
-    sw $t2, result3         # Store lower 16 bits
-    
-    
-    # ===== PART 3: Bit Mask Creation =====
-    # Create a bit mask with specific pattern
-    # Set bits 0-7 to 1, bits 8-15 to 0, bits 16-23 to 1, bits 24-31 to 0
-    # Final mask should be: 0x00FF00FF
-    
-    # YOUR CODE HERE: Build the mask using lui and ori
-    # Step 1: Load upper 16 bits (0x00FF)
-    
-    # Step 2: OR with lower 16 bits (0x00FF)
-    
-    sw $t3, result4         # Store the created mask
-    
-    
-    # ===== PART 4: Apply Mask to Original Pattern =====
-    # Apply the mask to the original pattern using AND operation
-    lw $t0, pattern         # Reload original pattern
-    lw $t1, result4         # Load the mask we created
-    
-    # YOUR CODE HERE: Apply mask using AND operation
-    
-    # The result should show only bits where mask has 1s
-    # Expected: 0x12345678 AND 0x00FF00FF = 0x00340078
-    
-    # Exit program
-    li $v0, 10
-    syscall</pre>
+                <div class="bg-white p-4 rounded-lg border mb-4">
+                    <h4 class="font-semibold mb-3">Required Computations:</h4>
+                    
+                    <div class="space-y-4">
+                        <div class="bg-blue-50 p-3 rounded">
+                            <h5 class="font-semibold">Computation 1: Complex Expression</h5>
+                            <p class="text-sm mb-2">Calculate: <code class="bg-gray-100 px-1 rounded">result = (A × 16) + (B ÷ 8) - (C × 4)</code></p>
+                            <ul class="text-sm list-disc pl-6">
+                                <li>Use A = 25, B = 128, C = 10</li>
+                                <li>Use only shift operations for multiplication and division</li>
+                                <li>Store final result in register <strong>$s0</strong></li>
+                            </ul>
+                        </div>
+                        
+                        <div class="bg-green-50 p-3 rounded">
+                            <h5 class="font-semibold">Computation 2: Bit Field Processing</h5>
+                            <p class="text-sm mb-2">Given hexadecimal pattern: <code class="bg-gray-100 px-1 rounded">0xABCD5678</code></p>
+                            <ul class="text-sm list-disc pl-6">
+                                <li>Extract bits 31-24 (upper byte) → store in <strong>$s1</strong></li>
+                                <li>Extract bits 15-8 (third byte) → store in <strong>$s2</strong></li>
+                                <li>Extract bits 7-0 (lowest byte) → store in <strong>$s3</strong></li>
+                            </ul>
+                        </div>
+                        
+                        <div class="bg-yellow-50 p-3 rounded">
+                            <h5 class="font-semibold">Computation 3: Bit Mask Operations</h5>
+                            <p class="text-sm mb-2">Create and apply bit masks:</p>
+                            <ul class="text-sm list-disc pl-6">
+                                <li>Build mask pattern <code class="bg-gray-100 px-1 rounded">0xFF0000FF</code> → store in <strong>$s4</strong></li>
+                                <li>Apply this mask to pattern from Computation 2 using AND → store in <strong>$s5</strong></li>
+                                <li>Create inverted mask using NOR operation → store in <strong>$s6</strong></li>
+                            </ul>
+                        </div>
+                        
+                        <div class="bg-purple-50 p-3 rounded">
+                            <h5 class="font-semibold">Computation 4: Logical Combinations</h5>
+                            <p class="text-sm mb-2">Perform logical operations on your results:</p>
+                            <ul class="text-sm list-disc pl-6">
+                                <li>XOR the results from $s0 and $s1 → store in <strong>$s7</strong></li>
+                                <li>OR all three extracted bytes ($s1, $s2, $s3) → store in <strong>$t0</strong></li>
+                            </ul>
+                        </div>
+                    </div>
                 </div>
             </div>
             
             <div class="bg-white p-6 rounded-lg border border-gray-200 mb-6">
-                <h3 class="text-xl font-semibold mb-4">Implementation Requirements</h3>
+                <h3 class="text-xl font-semibold mb-4">Program Requirements</h3>
                 
                 <div class="space-y-4">
-                    <div class="bg-yellow-50 p-4 rounded">
-                        <h4 class="font-semibold mb-2">Required Instructions (Must Use Each At Least Once):</h4>
+                    <div class="bg-blue-50 p-4 rounded">
+                        <h4 class="font-semibold mb-2">Structure Requirements:</h4>
                         <ul class="list-disc pl-6 space-y-1 text-sm">
-                            <li><code>lw</code> and <code>sw</code> for loading/storing data</li>
-                            <li><code>add</code> and <code>sub</code> for arithmetic operations</li>
-                            <li><code>sll</code> for multiplication by powers of 2</li>
-                            <li><code>srl</code> for division by powers of 2 and bit extraction</li>
-                            <li><code>andi</code> for bit masking</li>
-                            <li><code>and</code> for applying bit masks</li>
-                            <li><code>lui</code> and <code>ori</code> for building 32-bit constants</li>
+                            <li>Include <code>.globl main</code> and <code>.text</code> directives</li>
+                            <li>Start with <code>main:</code> label</li>
+                            <li>End with proper program termination: <code>li $v0, 10</code> and <code>syscall</code></li>
+                            <li>Use only arithmetic and logic instructions from Week 6</li>
                         </ul>
                     </div>
                     
-                    <div class="bg-blue-50 p-4 rounded">
-                        <h4 class="font-semibold mb-2">Expected Results (for testing):</h4>
+                    <div class="bg-yellow-50 p-4 rounded">
+                        <h4 class="font-semibold mb-2">Instruction Requirements (Must Use Each):</h4>
                         <ul class="list-disc pl-6 space-y-1 text-sm">
-                            <li>result1: (12 × 8) + (80 ÷ 4) - 15 = 96 + 20 - 15 = 101</li>
-                            <li>result2: Upper 16 bits of 0x12345678 = 0x00001234</li>
-                            <li>result3: Lower 16 bits of 0x12345678 = 0x00005678</li>
-                            <li>result4: Bit mask = 0x00FF00FF</li>
-                            <li>Final masked result: 0x00340078</li>
+                            <li><code>li</code> - Load immediate values</li>
+                            <li><code>add</code> and <code>sub</code> - Arithmetic operations</li>
+                            <li><code>sll</code> and <code>srl</code> - Shift operations</li>
+                            <li><code>and</code>, <code>or</code>, <code>xor</code>, <code>nor</code> - Logical operations</li>
+                            <li><code>andi</code>, <code>ori</code> - Immediate logical operations</li>
+                            <li><code>lui</code> - Load upper immediate for 32-bit constants</li>
                         </ul>
                     </div>
                     
                     <div class="bg-green-50 p-4 rounded">
-                        <h4 class="font-semibold mb-2">Testing Your Program:</h4>
-                        <ol class="list-decimal pl-6 space-y-1 text-sm">
-                            <li>Load your .asm file in MARS simulator</li>
-                            <li>Run the program and check the Data Segment</li>
-                            <li>Verify that result1, result2, result3, result4 contain expected values</li>
-                            <li>Use single-step execution to verify intermediate calculations</li>
-                        </ol>
+                        <h4 class="font-semibold mb-2">Code Quality Requirements:</h4>
+                        <ul class="list-disc pl-6 space-y-1 text-sm">
+                            <li>Include a comment header with your name and assignment description</li>
+                            <li>Comment every instruction explaining what it does</li>
+                            <li>Use meaningful intermediate calculations with temporary registers</li>
+                            <li>Organize code into logical sections matching the four computations</li>
+                        </ul>
                     </div>
                 </div>
             </div>
             
             <div class="bg-white p-6 rounded-lg border border-gray-200 mb-6">
-                <h3 class="text-xl font-semibold mb-4">Grading Rubric</h3>
+                <h3 class="text-xl font-semibold mb-4">Expected Final Register Values</h3>
+                <p class="mb-3">After your program completes, these registers should contain:</p>
+                
+                <div class="grid md:grid-cols-2 gap-4 text-sm font-mono">
+                    <div class="bg-gray-50 p-3 rounded">
+                        <h5 class="font-semibold mb-2">Results Registers:</h5>
+                        <ul class="space-y-1">
+                            <li>$s0: 376 (complex expression result)</li>
+                            <li>$s1: 0x000000AB (bits 31-24)</li>
+                            <li>$s2: 0x00000056 (bits 15-8)</li>
+                            <li>$s3: 0x00000078 (bits 7-0)</li>
+                        </ul>
+                    </div>
+                    <div class="bg-gray-50 p-3 rounded">
+                        <h5 class="font-semibold mb-2">Mask & Logic Registers:</h5>
+                        <ul class="space-y-1">
+                            <li>$s4: 0xFF0000FF (created mask)</li>
+                            <li>$s5: 0xAB000078 (masked result)</li>
+                            <li>$s6: 0x00FFFF00 (inverted mask)</li>
+                            <li>$s7: result of ($s0 XOR $s1)</li>
+                            <li>$t0: result of ($s1 OR $s2 OR $s3)</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="mt-4 text-sm text-gray-600">
+                    <p><strong>Verification:</strong> Use MARS register window to check these values after execution.</p>
+                </div>
+            </div>
+            
+            <div class="bg-white p-6 rounded-lg border border-gray-200 mb-6">
+                <h3 class="text-xl font-semibold mb-4">Grading Rubric (40 points total)</h3>
                 
                 <div class="grid md:grid-cols-2 gap-4">
                     <div>
-                        <h4 class="font-semibold mb-2">Code Quality (20 points)</h4>
+                        <h4 class="font-semibold mb-2">Functionality (24 points)</h4>
                         <ul class="list-disc pl-6 space-y-1 text-sm">
-                            <li>Correct instruction usage (8 pts)</li>
-                            <li>Clear comments for each section (6 pts)</li>
-                            <li>Proper register management (6 pts)</li>
+                            <li>Computation 1 correct (6 pts)</li>
+                            <li>Computation 2 correct (6 pts)</li>
+                            <li>Computation 3 correct (6 pts)</li>
+                            <li>Computation 4 correct (6 pts)</li>
                         </ul>
                     </div>
                     
                     <div>
-                        <h4 class="font-semibold mb-2">Functionality (20 points)</h4>
+                        <h4 class="font-semibold mb-2">Code Quality (16 points)</h4>
                         <ul class="list-disc pl-6 space-y-1 text-sm">
-                            <li>Mathematical expression correct (6 pts)</li>
-                            <li>Bit field extraction works (6 pts)</li>
-                            <li>Bit mask creation accurate (4 pts)</li>
-                            <li>Final results stored correctly (4 pts)</li>
+                            <li>Proper program structure (4 pts)</li>
+                            <li>Required instructions used (4 pts)</li>
+                            <li>Clear, helpful comments (4 pts)</li>
+                            <li>Efficient register usage (4 pts)</li>
                         </ul>
                     </div>
+                </div>
+                
+                <div class="mt-4 bg-red-50 p-3 rounded border-l-4 border-red-500">
+                    <p class="text-sm"><strong>Deductions:</strong> -5 points if program doesn't run in MARS, -3 points for missing program structure elements, -2 points per missing required instruction type.</p>
                 </div>
             </div>
         </section>
