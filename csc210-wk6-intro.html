@@ -71,106 +71,762 @@
                         <div id="player"></div>
                     </div>
                 </div>
-
                 <!-- Transcript Column -->
                 <div class="lg:col-span-2">
                     <h2 class="text-2xl font-bold mb-4">Transcript</h2>
-                    <div id="transcript-container" class="h-96 bg-white p-4 rounded-lg shadow-sm border overflow-y-auto space-y-2">
+                    <div id="transcript-container" class="h-96 bg-white p-4 rounded-lg shadow-sm border overflow-y-auto space-y-2" tabindex="0" aria-label="Video Transcript">
                         <!-- Transcript lines will be populated by JavaScript -->
                     </div>
                 </div>
             </div>
-
         </main>
     </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // --- Data for Video and Transcript ---
-            const videoId = 's-wz5nTE328'; // YouTube video ID for "MIPS Assembly Language Tutorial"
-            const transcriptData = [
-                { time: 0.2, text: "Hey everyone, welcome to the first MIPS assembly language tutorial." },
-                { time: 3.5, text: "In this series, we're going to be learning the MIPS assembly language from the ground up." },
-                { time: 7.5, text: "So we're going to start off by assuming you know nothing about MIPS, and very little about assembly in general." },
-                { time: 11.8, text: "And by the end of it, you should be a pretty competent MIPS programmer." },
-                { time: 15.0, text: "So what is MIPS?" },
-                { time: 16.5, text: "MIPS is a RISC instruction set architecture." },
-                { time: 20.0, text: "RISC stands for Reduced Instruction Set Computer." },
-                { time: 24.0, text: "And all that means is that we have a smaller number of instructions that our computer can execute." },
-                { time: 28.5, text: "And the instructions that we do have are simpler." },
-                { time: 31.0, text: "This is as opposed to a CISC architecture, or Complex Instruction Set Computer." },
-                { time: 36.0, text: "An example of that would be the x86 architecture that you'd find in your desktop computer." },
-                { time: 40.5, text: "So because we have a smaller, simpler set of instructions, our hardware can be simpler." },
-                { time: 45.0, text: "And that's one of the main advantages of a RISC architecture." },
-                { time: 48.0, text: "So throughout this series, we're going to be using the MARS simulator." },
-                { time: 52.0, text: "MARS stands for MIPS Assembler and Runtime Simulator." },
-                { time: 56.5, text: "It's a piece of software that's going to allow us to write and run MIPS assembly code without having to have a MIPS processor." },
-                { time: 62.0, text: "You can see on the screen here, I have the MARS simulator open." }
-            ];
+            const transcriptData = `1
+00:00:00,720 --> 00:00:07,040
+Aloha and welcome to week six of computer organization and architecture.
 
-            // --- DOM Elements ---
-            const transcriptContainer = document.getElementById('transcript-container');
+2
+00:00:08,160 --> 00:00:14,400
+So this week we're in our second week of looking at assembly language and trying to understand
 
-            // --- State ---
+3
+00:00:15,040 --> 00:00:19,520
+the different instructions and how they work. So this week we're going to talk about arithmetic
+
+4
+00:00:19,520 --> 00:00:24,480
+and logic instructions which are tend to be the R-type and I-type instructions.
+
+5
+00:00:24,480 --> 00:00:31,440
+Okay, so the first part of this is there's a lot of
+
+6
+00:00:35,760 --> 00:00:38,640
+instructions. Okay, there's a lot of instructions
+
+7
+00:00:40,400 --> 00:00:48,720
+in the arithmetic and logic section of MIPS. Okay, so there's addition and subtraction,
+
+8
+00:00:49,360 --> 00:00:52,480
+multiplication, division, and logical operations.
+
+9
+00:00:54,080 --> 00:00:54,480
+Control.
+
+10
+00:00:54,480 --> 00:00:57,200
+Flow, which is branching and jumping, and procedures.
+
+11
+00:00:57,840 --> 00:01:01,280
+Those will be coming in the next week or two.
+
+12
+00:01:02,720 --> 00:01:09,360
+All right, so this week there's a lot in here, so take your time, please take your time,
+
+13
+00:01:09,360 --> 00:01:14,800
+read through this. I know it seems like it's a lot, but it'll help you understand
+
+14
+00:01:16,000 --> 00:01:24,080
+each instruction and how it works. All right, so now here's the add, how to add integers,
+
+15
+00:01:25,440 --> 00:01:30,640
+add unsigned integers. So the U stands for unsigned, which means there's no negatives,
+
+16
+00:01:30,640 --> 00:01:41,680
+basically everything's a positive number. And so when we say an 8-bit integer there's 256
+
+17
+00:01:42,480 --> 00:01:52,960
+values it can represent, which I think is negative 127 to positive– negative 128 to positive 127.
+
+18
+00:01:52,960 --> 00:01:53,840
+Okay
+
+19
+00:01:53,840 --> 00:02:02,320
+an unsigned 8-bit integer is 0 to 255 because there's no negatives okay so that's what the
+
+20
+00:02:02,320 --> 00:02:07,840
+u means unsigned meaning you're only dealing with positive integers okay and they talk about
+
+21
+00:02:08,720 --> 00:02:15,440
+larger numbers which are 32-bit numbers not 8-bit numbers as my example gave you
+
+22
+00:02:16,000 --> 00:02:22,480
+because this is the 32-bit system you could use 32-bit numbers okay
+
+23
+00:02:24,480 --> 00:02:29,680
+add immediate is where this immediate is you actually put the value in
+
+24
+00:02:31,760 --> 00:02:42,400
+okay so assuming t1 is 50 if i execute this number add add i into t0 put the t1 plus 100
+
+25
+00:02:43,600 --> 00:02:49,360
+right and so if you thought i would get 150 because 100 plus 50 t0 would have 150 in it
+
+26
+00:02:50,000 --> 00:02:52,240
+that's that immediate so some of these will have these
+
+27
+00:02:54,560 --> 00:03:00,400
+execute examples and others will just have this is the command okay subtraction
+
+28
+00:03:04,240 --> 00:03:10,800
+all right so um you know for subtraction notice there's no immediate subtraction
+
+29
+00:03:12,880 --> 00:03:17,760
+because and elsewhere we'll go through it in immediate subtraction we actually do
+
+30
+00:03:17,760 --> 00:03:22,080
+negative addition we don't use the sub command
+
+31
+00:03:24,320 --> 00:03:27,280
+okay you're gonna you want to subtract something
+
+32
+00:03:29,920 --> 00:03:32,800
+admits what you do is you add the negative of the value not
+
+33
+00:03:35,120 --> 00:03:37,920
+add the value but anyway so addition multiplication
+
+34
+00:03:38,720 --> 00:03:46,400
+make sure again you go through this multiplication um it will give you talk about what's in mf high
+
+35
+00:03:46,400 --> 00:03:53,820
+mf low okay why are those there it has to do with multiplication and division okay so you're going to
+
+36
+00:03:53,820 --> 00:04:01,440
+can read through that. And then there is this thing called bitwise shifting. Okay
+
+37
+00:04:01,440 --> 00:04:07,700
+so bitwise shifting is when you multiply by powers of 2. If I shift it left every
+
+38
+00:04:07,700 --> 00:04:12,600
+time I move it one left that's like multiplying by 2. Okay so if I move it 2
+
+39
+00:04:12,600 --> 00:04:18,660
+left that's 2 squared or 4. 3 left is 2 cubed or 8. 4 left is 2 to the 4th or 16.
+
+40
+00:04:18,660 --> 00:04:25,960
+Right so I multiply by 2, 4, 8, or 16 kind of thing. Just by moving the bits left.
+
+41
+00:04:25,960 --> 00:04:30,380
+Okay so this talks about that. Talks about when to use it. Why you would use
+
+42
+00:04:30,380 --> 00:04:35,600
+shift rather than malt. Malt is general purpose. When it's not a multiple of 2
+
+43
+00:04:35,600 --> 00:04:44,020
+you have to use malt. But when it's a multiple of 2 you can use malt or shift
+
+44
+00:04:44,020 --> 00:04:48,420
+left. Okay.
+
+45
+00:04:48,660 --> 00:04:54,880
+And a lot of times I don't know if ours does it but a lot of true MIPS
+
+46
+00:04:54,880 --> 00:04:57,900
+processors what they're gonna do is they're gonna look at your multiple
+
+47
+00:04:57,900 --> 00:05:01,860
+instruction if you use malt. And if it's a power of 2 they're gonna convert it to
+
+48
+00:05:01,860 --> 00:05:07,020
+a shift left instruction rather than a malt instruction. You know when it
+
+49
+00:05:07,020 --> 00:05:13,660
+converts it to actual code to run. It'll do that automatically. Okay so anyway
+
+50
+00:05:13,660 --> 00:05:18,420
+read through about bitwise shifting as well as multiplication.
+
+51
+00:05:18,660 --> 00:05:28,860
+Same with division. Division works similarly in that you do division. Okay.
+
+52
+00:05:28,860 --> 00:05:35,660
+And the results go into MF high and MF low. And which one has what in it. You
+
+53
+00:05:35,660 --> 00:05:40,160
+want to understand that. It's going to tell you MF low is the quotient. MF high
+
+54
+00:05:40,160 --> 00:05:44,240
+is the remainder. Because it's all integer division is what we're doing
+
+55
+00:05:44,240 --> 00:05:48,640
+right now. And again you could use bitwise
+
+56
+00:05:48,640 --> 00:05:53,380
+shifting when you divide by 2. Except instead of shifting left now you
+
+57
+00:05:53,380 --> 00:05:59,020
+shift right. Okay. Every time every time a bit moves one right it's like dividing
+
+58
+00:05:59,020 --> 00:06:07,000
+by 2. All right. So that's a shift left shift right. Multiplication.
+
+59
+00:06:07,000 --> 00:06:13,600
+You always have to go back to this main page. Okay. To get here. And the
+
+60
+00:06:13,600 --> 00:06:18,540
+last part is logical operations. Load up or immediate. You definitely
+
+61
+00:06:18,540 --> 00:06:23,540
+want to read through these. You're gonna have to use these in the homework. Okay.
+
+62
+00:06:23,540 --> 00:06:31,540
+So load up or immediate. You know generate code. Try it. You know and and
+
+63
+00:06:31,540 --> 00:06:39,300
+bitwise and what does that do? 12 and 10. Okay. So what you do is you take 12
+
+64
+00:06:39,300 --> 00:06:46,080
+binary and end it with 10 binary. So basically you basically like to line
+
+65
+00:06:46,080 --> 00:06:48,520
+them up. So take the 12 bit number. Like that. And then you're gonna add the
+
+66
+00:06:48,540 --> 00:06:57,020
+what is 12 in binary? And you line that up with what is 8 in, 10 in binary. 12 is an 8 and a 4.
+
+67
+00:06:58,860 --> 00:07:08,540
+So 0 is 1, 2, 4, 8. So that's, if I look at just four bits, 12 would be 1, 1, 0, 0. 10 would be
+
+68
+00:07:09,260 --> 00:07:17,500
+1, 0, 1, 0. I line them up in the result is wherever the columns are both 1,
+
+69
+00:07:17,500 --> 00:07:23,820
+that goes into the result of an AND. Right, 1 and 1 is 1. Anything that, where they're different,
+
+70
+00:07:23,820 --> 00:07:35,180
+is a 0 or there is at least one 0, it's a 0. So 1, 1, 0, 0 ANDed with 1, 0, 1, 1 results in 1, 0, 0, 0.
+
+71
+00:07:37,500 --> 00:07:45,340
+Okay, which is 8. Okay, so I just looked at the last four because all the first four are all 0s.
+
+72
+00:07:47,100 --> 00:07:47,340
+Okay,
+
+73
+00:07:47,500 --> 00:07:53,020
+so try to try out different numbers, play with that a little bit. Same AND immediate
+
+74
+00:07:53,020 --> 00:07:57,660
+works the same way except for now you're checking it to a value you give it.
+
+75
+00:08:00,300 --> 00:08:07,820
+Same with ORs. How do ORs work? OR immediate. How does ORs work or exclusive ORs work?
+
+76
+00:08:08,460 --> 00:08:17,420
+Okay, these just weren't exactly like the logic gates you did earlier in our logic sim, except for
+
+77
+00:08:17,500 --> 00:08:24,940
+now we're doing it through assembly commands. Okay, exclusive OR with an immediate,
+
+78
+00:08:26,460 --> 00:08:31,340
+a NOR. Okay, this is a NOT OR or bitwise NOR.
+
+79
+00:08:33,740 --> 00:08:40,460
+So that's an OR inverted. So shift left logical, shift left logical variable,
+
+80
+00:08:43,340 --> 00:08:46,940
+shift right logical, shift right arithmetic,
+
+81
+00:08:47,500 --> 00:08:56,140
+all right, shift right logical variable, shift right arithmetic variable.
+
+82
+00:08:56,140 --> 00:09:03,340
+So these are all different commands that you can use within MARS and MIPS.
+
+83
+00:09:03,980 --> 00:09:10,380
+So please try to understand them and read through them. You won't memorize them, but that's okay.
+
+84
+00:09:11,180 --> 00:09:15,180
+But read through them to know what is there and hopefully you remember what is there when it comes
+
+85
+00:09:15,180 --> 00:09:16,860
+time to actually do some programs.
+
+86
+00:09:17,820 --> 00:09:21,020
+And you might have to look some stuff up. There's a live MIPS simulator,
+
+87
+00:09:23,740 --> 00:09:29,660
+you can type in some code and you can run it, and it'll tell you what's in the registers, based on
+
+88
+00:09:29,660 --> 00:09:37,420
+your code. All right, and you can reset it, write a different program, and then exercises,
+
+89
+00:09:39,020 --> 00:09:43,020
+there are two exercises. There's a simple addition aushed number first,
+
+90
+00:09:43,740 --> 00:09:45,340
+okay.
+
+91
+00:09:45,340 --> 00:09:50,320
+the value of 15 and register t0 and 27 and t1 add them together and store the
+
+92
+00:09:50,320 --> 00:09:54,880
+result in s0 so it's just looking for that code it's not going to check your
+
+93
+00:09:54,880 --> 00:10:00,460
+solution when you're done you can go show solution it'll show you what the
+
+94
+00:10:00,460 --> 00:10:07,460
+basic solution looks like for that problem same with subtract immediate
+
+95
+00:10:07,460 --> 00:10:18,000
+yeah all right so that's kind of the basics and then there is a second page
+
+96
+00:10:18,000 --> 00:10:27,000
+on about how to program in myths in Mars but it's program hound to walks through
+
+97
+00:10:27,000 --> 00:10:35,860
+a sample program which is right here it's written right here dot Google main
+
+98
+00:10:35,860 --> 00:10:37,200
+dot text main
+
+99
+00:10:37,200 --> 00:10:37,440
+dot text main
+
+100
+00:10:37,440 --> 00:10:45,600
+load immediate Li load word add sub load immediate this call dot data value
+
+101
+00:10:45,600 --> 00:10:52,500
+dot word 12 you can read the comments okay see the pound sign everything after
+
+102
+00:10:52,500 --> 00:10:55,620
+the hashtag I guess I should call the hashtag everything else to the hashtag
+
+103
+00:10:55,620 --> 00:11:01,920
+is a comment on that line so the compiler that compiles us or the
+
+104
+00:11:01,920 --> 00:11:05,400
+assembler I just call it assembler it takes the assembly and converts it the
+
+105
+00:11:05,400 --> 00:11:07,180
+machine code
+
+106
+00:11:07,180 --> 00:11:08,220
+it's there to read this so as you can see right here it's différentes problems
+
+107
+00:11:08,220 --> 00:11:12,280
+different in code is our H apply a background and print and this is just
+
+108
+00:11:12,280 --> 00:11:13,480
+referring to how the file actually runs in this class you can come up with more
+
+109
+00:11:13,480 --> 00:11:15,160
+you run this it's kind of broken down a little bit in that actually this one is
+
+110
+00:11:15,160 --> 00:11:18,080
+sort of are these the any of the two well this is an arbitrary label if we
+
+111
+00:11:18,080 --> 00:11:20,940
+face go to the other side title and write every single line of your program
+
+112
+00:11:20,940 --> 00:11:30,580
+comment of what does this line do all right and so on I'll go to the program
+
+113
+00:11:30,580 --> 00:11:35,600
+structure and so what it's called well me me what is like text mean what does
+
+114
+00:11:35,600 --> 00:11:37,020
+main mean when does that data mean I do a bunch of logicide website and ET tag to
+
+115
+00:11:37,020 --> 00:11:43,580
+mean okay what is value dot word and it talks about each of these global main
+
+116
+00:11:43,580 --> 00:11:49,580
+means this why do you we use it what happens if you don't use it now I'm
+
+117
+00:11:49,580 --> 00:11:54,720
+gonna tell you you could leave it out it doesn't affect your program so much if
+
+118
+00:11:54,720 --> 00:12:02,340
+you have it or not I tend to use it it's kind of like in Java future program in
+
+119
+00:12:02,340 --> 00:12:08,160
+Java is you have that console program public static void main and if you just
+
+120
+00:12:08,160 --> 00:12:15,740
+had in there a function called to you know start here or whatever my program
+
+121
+00:12:15,740 --> 00:12:22,340
+method where in that my program is where your all your program is then that's
+
+122
+00:12:22,340 --> 00:12:27,840
+kind of this is this is global main says start at main globally and it's
+
+123
+00:12:27,840 --> 00:12:31,780
+basically creating a function called main okay
+
+124
+00:12:31,780 --> 00:12:32,320
+and the reason we
+
+125
+00:12:32,320 --> 00:12:38,080
+do that it's easier to integrate with other code when we do it that way in the
+
+126
+00:12:38,080 --> 00:12:47,560
+modules for this section okay I'm saying in this myths assembly you could also
+
+127
+00:12:47,560 --> 00:12:55,200
+look at these tutorials 1 8 through 12 and 35 might help you with the homework
+
+128
+00:12:55,440 --> 00:13:01,760
+the guy that did these does not use dot global main just code right through them
+
+129
+00:13:01,760 --> 00:13:11,740
+all right and that's fine it works it's just not the standard way that most
+
+130
+00:13:11,740 --> 00:13:19,780
+people this code okay using but that going mean don't put that go remain your
+
+131
+00:13:19,780 --> 00:13:24,500
+code will run at least as far as I've seen your code will run I prefer using
+
+132
+00:13:24,500 --> 00:13:29,420
+that global main myself okay then it ties out text what does that do what is that very data for verIFX and so I'll talk more about that in a second
+
+133
+00:13:31,760 --> 00:13:38,540
+to do gives you a couple little things here this word like value colon that
+
+134
+00:13:38,540 --> 00:13:44,660
+clearly creates a variable named value it's a size word which means is 32 bits
+
+135
+00:13:44,660 --> 00:13:53,720
+and it's holding the value 12 okay here there's an array called array each
+
+136
+00:13:53,720 --> 00:13:58,920
+element in the array is a word and it's hope the first element is one the second
+
+137
+00:13:58,920 --> 00:14:03,840
+element is two and the third element is three and the third one is a variable
+
+138
+00:14:03,840 --> 00:14:12,960
+called message and it's a ASCII Z meaning a null terminated string of ASCII
+
+139
+00:14:12,960 --> 00:14:19,600
+characters and that string is the word hello okay that's what that data means
+
+140
+00:14:19,600 --> 00:14:24,840
+so that data is where how we create variables and store values and in our
+
+141
+00:14:24,840 --> 00:14:28,360
+program if we load a word we can reference the
+
+142
+00:14:28,360 --> 00:14:28,900
+variable
+
+143
+00:14:28,920 --> 00:14:37,460
+by name instead of by register because it's not in a register it's in memory
+
+144
+00:14:37,460 --> 00:14:41,520
+all right so and then the instructions talks about all the instructions what
+
+145
+00:14:41,520 --> 00:14:48,120
+do they mean and then the data section I said the data section how that works
+
+146
+00:14:48,120 --> 00:14:53,160
+what they mean and then there's a simulation for this program which is a
+
+147
+00:14:53,160 --> 00:14:58,900
+step-by-step through so you could go you start the execution and it
+
+148
+00:14:58,900 --> 00:15:05,620
+does line four first it says load immediate dollar sign t2 25 well then t2
+
+149
+00:15:05,620 --> 00:15:10,180
+will have 25 and loading immediate value 25 in the registry to you that's
+
+150
+00:15:10,180 --> 00:15:14,820
+what we did notice memory value 12 is already there because it's part of our
+
+151
+00:15:14,820 --> 00:15:20,800
+main code in our dot data section value is starting the word 12 and then you do
+
+152
+00:15:20,800 --> 00:15:27,220
+next step which says I'm gonna do load line 5 which says okay so you can go
+
+153
+00:15:27,220 --> 00:15:28,100
+through each of these and
+
+154
+00:15:28,900 --> 00:15:33,880
+and it'll go through each step what does this step do what does this step do what
+
+155
+00:15:33,880 --> 00:15:37,960
+is this step do is this step do and that's all there's done because the rest
+
+156
+00:15:37,960 --> 00:15:46,600
+is just data the other thing I will say is I do use this format actually this is
+
+157
+00:15:46,600 --> 00:15:54,580
+a small program that I wrote just for this guide this is the structure I use I
+
+158
+00:15:54,580 --> 00:15:58,340
+have the dot text first I do when I start with my program and I have the dot
+
+159
+00:15:58,340 --> 00:16:05,060
+at the bottom after my program is where I put all my data some people put that
+
+160
+00:16:05,060 --> 00:16:09,920
+data at the front you put it at the front if you want you don't want to put
+
+161
+00:16:09,920 --> 00:16:11,540
+it at the end you can put it at the end it doesn't matter it seems to work both ways for me`;
+            let parsedTranscript = [];
             let player;
-            let timeUpdater; // holds the setInterval ID
-            let lastHighlightedLine = null;
-
-            // --- Functions ---
-            function populateTranscript() {
-                transcriptContainer.innerHTML = '';
-                transcriptData.forEach((line, index) => {
-                    const p = document.createElement('p');
-                    p.textContent = line.text;
-                    p.dataset.time = line.time;
-                    p.dataset.index = index;
-                    p.className = 'p-2 rounded cursor-pointer transition-colors duration-200 hover:bg-gray-200';
-                    p.addEventListener('click', () => {
-                        player.seekTo(line.time, true);
-                        player.playVideo();
-                    });
-                    transcriptContainer.appendChild(p);
-                });
-            }
+            let timeUpdater;
             
-            function highlightCurrentLine() {
-                const currentTime = player.getCurrentTime();
-                let activeLine = null;
+            // --- Helper Functions ---
+            const timeToSeconds = (timeStr) => {
+                const [hms, ms] = timeStr.split(',');
+                const [h, m, s] = hms.split(':').map(Number);
+                return h * 3600 + m * 60 + s + Number(ms) / 1000;
+            };
 
-                const lines = transcriptContainer.querySelectorAll('p');
-                for (let i = 0; i < lines.length; i++) {
-                    const lineTime = parseFloat(lines[i].dataset.time);
-                    const nextLineTime = (i + 1 < lines.length) ? parseFloat(lines[i + 1].dataset.time) : player.getDuration();
+            const parseSrt = (srt) => {
+                const lines = srt.trim().split(/\r?\n\r?\n/);
+                return lines.map(line => {
+                    const parts = line.split('\n');
+                    if (parts.length < 3) return null; // Basic error check for malformed entries
+                    const time = parts[1].split(' --> ');
+                    if (time.length < 2) return null;
+                    return {
+                        start: timeToSeconds(time[0]),
+                        end: timeToSeconds(time[1]),
+                        text: parts.slice(2).join(' ')
+                    };
+                }).filter(Boolean); // Filter out any null entries
+            };
 
-                    if (currentTime >= lineTime && currentTime < nextLineTime) {
-                        activeLine = lines[i];
-                        break;
-                    }
-                }
-
-                if (activeLine && activeLine !== lastHighlightedLine) {
-                    if (lastHighlightedLine) {
-                        lastHighlightedLine.classList.remove('active-transcript-line');
-                    }
-                    activeLine.classList.add('active-transcript-line');
-                    activeLine.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'center'
+            const populateTranscript = () => {
+                const container = document.getElementById('transcript-container');
+                if (!container) return;
+                container.innerHTML = ''; // Clear previous content
+                parsedTranscript.forEach((line, index) => {
+                    const p = document.createElement('p');
+                    p.id = `transcript-line-${index}`;
+                    p.dataset.start = line.start;
+                    p.dataset.end = line.end;
+                    p.textContent = line.text;
+                    p.className = 'p-2 rounded-md transition-colors duration-200 cursor-pointer';
+                    p.setAttribute('role', 'button');
+                    p.setAttribute('tabindex', '0');
+                    
+                    const seekAndPlay = () => {
+                        if(player && typeof player.seekTo === 'function') {
+                            player.seekTo(line.start);
+                            player.playVideo();
+                        }
+                    };
+                    
+                    p.addEventListener('click', seekAndPlay);
+                    p.addEventListener('keydown', (e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                           e.preventDefault();
+                           seekAndPlay();
+                        }
                     });
-                    lastHighlightedLine = activeLine;
-                }
-            }
 
-            // --- YouTube IFrame API Setup ---
-            // This function is called by the YouTube API script once it's loaded.
+                    container.appendChild(p);
+                });
+            };
+
+            const highlightCurrentLine = () => {
+                if (!player || typeof player.getCurrentTime !== 'function') return;
+                const currentTime = player.getCurrentTime();
+                const allLines = document.querySelectorAll('#transcript-container p');
+                
+                let foundActive = false;
+                allLines.forEach(line => {
+                    const start = parseFloat(line.dataset.start);
+                    const end = parseFloat(line.dataset.end);
+
+                    if (currentTime >= start && currentTime <= end) {
+                        if (!line.classList.contains('active-transcript-line')) {
+                           const currentlyActive = document.querySelector('.active-transcript-line');
+                           if(currentlyActive) {
+                               currentlyActive.classList.remove('active-transcript-line');
+                           }
+                           line.classList.add('active-transcript-line');
+                           line.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'nearest' });
+                        }
+                        foundActive = true;
+                    }
+                });
+                
+                if(!foundActive) {
+                    const currentlyActive = document.querySelector('.active-transcript-line');
+                    if(currentlyActive) {
+                        currentlyActive.classList.remove('active-transcript-line');
+                    }
+                }
+            };
+
+            // --- YouTube IFrame API ---
             window.onYouTubeIframeAPIReady = function() {
                 player = new YT.Player('player', {
-                    height: '390',
-                    width: '640',
-                    videoId: videoId,
+                    height: '100%',
+                    width: '100%',
+                    videoId: 'pe_7Ek_uC3I',
                     playerVars: {
                         'playsinline': 1,
-                        'rel': 0 // Don't show related videos at the end
+                        'rel': 0, // Disable related videos
+                        'modestbranding': 1 // Use a more subtle YouTube logo
                     },
                     events: {
                         'onReady': onPlayerReady,
@@ -180,29 +836,30 @@
             };
 
             function onPlayerReady(event) {
-                // The player is ready.
                 console.log('YouTube player is ready.');
             }
 
             function onPlayerStateChange(event) {
+                clearInterval(timeUpdater); // Clear any existing interval
                 if (event.data === YT.PlayerState.PLAYING) {
-                    // Start checking the time every 300ms
                     timeUpdater = setInterval(highlightCurrentLine, 300);
-                } else if (event.data === YT.PlayerState.PAUSED || event.data === YT.PlayerState.ENDED) {
-                    // Stop checking the time
-                    clearInterval(timeUpdater);
                 }
             }
             
             // --- Initialization ---
             function initialize() {
+                parsedTranscript = parseSrt(transcriptData);
                 populateTranscript();
                 
-                // Asynchronously load the YouTube IFrame Player API script
-                const tag = document.createElement('script');
-                tag.src = "https://www.youtube.com/iframe_api";
-                const firstScriptTag = document.getElementsByTagName('script')[0];
-                firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+                // Load the YouTube IFrame Player API script if it's not already loaded
+                if (typeof(YT) == 'undefined' || typeof(YT.Player) == 'undefined') {
+                    const tag = document.createElement('script');
+                    tag.src = "https://www.youtube.com/iframe_api";
+                    const firstScriptTag = document.getElementsByTagName('script')[0];
+                    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+                } else {
+                    onYouTubeIframeAPIReady();
+                }
                 
                 console.log('Introduction page initialized.');
             }
