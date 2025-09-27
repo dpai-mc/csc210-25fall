@@ -1,0 +1,1708 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MIPS Control Flow & Procedures - Interactive Learning Guide</title>
+    
+    <!-- CDN Links -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@300;400;500&display=swap" rel="stylesheet">
+    
+    <!-- Meta Comments -->
+    <!-- Chosen Palette: Warm academic theme with EADDD7 primary, F0EBE8 hover, FDFBF8 background -->
+    <!-- Application Structure Plan: Single-session tabbed interface with immediate progress tracking -->
+    <!-- Visualization & Content Choices: Interactive code builders, visual simulators, immediate feedback -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    
+    <!-- Embedded CSS -->
+    <style>
+        body {
+            background-color: #FDFBF8;
+            color: #383838;
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .code-font {
+            font-family: 'Fira Code', monospace;
+        }
+        
+        .progress-bar {
+            transition: width 0.3s ease;
+            background-color: #EADDD7;
+        }
+        
+        .tab-active {
+            background-color: #EADDD7;
+            border-bottom: 3px solid #383838;
+        }
+        
+        .tab-inactive {
+            background-color: #F0EBE8;
+        }
+        
+        .tab-inactive:hover {
+            background-color: #EADDD7;
+        }
+        
+        .interactive-box {
+            border: 2px solid #EADDD7;
+            border-radius: 8px;
+            background-color: #FDFBF8;
+        }
+        
+        .success-highlight {
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+            color: #155724;
+        }
+        
+        .challenge-box {
+            background: linear-gradient(135deg, #F0EBE8 0%, #EADDD7 100%);
+            border-radius: 12px;
+        }
+        
+        .stack-frame {
+            border: 2px solid #383838;
+            margin: 2px 0;
+            text-align: center;
+            background-color: #F0EBE8;
+        }
+        
+        .stack-pointer {
+            color: #d63031;
+            font-weight: bold;
+        }
+        
+        .drag-over {
+            border-color: #0984e3 !important;
+            background-color: #e3f2fd !important;
+        }
+        
+        @media print {
+            .no-print { display: none; }
+            body { background: white; }
+        }
+    </style>
+</head>
+<body class="antialiased">
+    <!-- Skip to Content Link -->
+    <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 bg-blue-600 text-white px-4 py-2 rounded">Skip to Content</a>
+
+    <div class="container mx-auto p-4 md:p-8 max-w-6xl">
+        <!-- Header -->
+        <header class="text-center mb-8">
+            <h1 class="text-3xl md:text-4xl font-bold mb-4">🎮 MIPS Control Flow & Procedures</h1>
+            <h2 class="text-xl md:text-2xl text-gray-600 mb-4">Week 7 - Interactive Learning Experience</h2>
+            
+            <!-- Session Progress Dashboard -->
+            <div class="interactive-box p-4 mb-6">
+                <h3 class="text-lg font-semibold mb-3">📊 Your Session Progress</h3>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+                    <div class="text-center">
+                        <div class="font-semibold" id="level1-progress">Level 1: 0%</div>
+                        <div class="text-gray-600">Branching</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="font-semibold" id="level2-progress">Level 2: 0%</div>
+                        <div class="text-gray-600">Loops</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="font-semibold" id="level3-progress">Level 3: 0%</div>
+                        <div class="text-gray-600">Stack</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="font-semibold" id="level4-progress">Level 4: 0%</div>
+                        <div class="text-gray-600">Procedures</div>
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <div class="flex justify-between text-sm mb-1">
+                        <span>Overall Session Progress</span>
+                        <span id="overall-progress">0%</span>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-3">
+                        <div class="progress-bar h-3 rounded-full" id="progress-bar" style="width: 0%"></div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Navigation Tabs -->
+        <nav class="mb-8" role="tablist">
+            <div class="flex flex-wrap justify-center gap-2">
+                <button class="tab-btn px-4 py-2 rounded-t-lg font-medium focus:ring-2 focus:ring-blue-500 tab-active" 
+                        data-tab="overview" role="tab" aria-selected="true" aria-controls="overview-panel">
+                    🎯 Mission Brief
+                </button>
+                <button class="tab-btn px-4 py-2 rounded-t-lg font-medium focus:ring-2 focus:ring-blue-500 tab-inactive" 
+                        data-tab="level1" role="tab" aria-selected="false" aria-controls="level1-panel">
+                    🚀 Level 1: Decisions
+                </button>
+                <button class="tab-btn px-4 py-2 rounded-t-lg font-medium focus:ring-2 focus:ring-blue-500 tab-inactive" 
+                        data-tab="level2" role="tab" aria-selected="false" aria-controls="level2-panel">
+                    🔄 Level 2: Loops
+                </button>
+                <button class="tab-btn px-4 py-2 rounded-t-lg font-medium focus:ring-2 focus:ring-blue-500 tab-inactive" 
+                        data-tab="level3" role="tab" aria-selected="false" aria-controls="level3-panel">
+                    📚 Level 3: Stack
+                </button>
+                <button class="tab-btn px-4 py-2 rounded-t-lg font-medium focus:ring-2 focus:ring-blue-500 tab-inactive" 
+                        data-tab="level4" role="tab" aria-selected="false" aria-controls="level4-panel">
+                    🏗️ Level 4: Procedures
+                </button>
+                <button class="tab-btn px-4 py-2 rounded-t-lg font-medium focus:ring-2 focus:ring-blue-500 tab-inactive" 
+                        data-tab="assessment" role="tab" aria-selected="false" aria-controls="assessment-panel">
+                    🏆 Final Challenge
+                </button>
+            </div>
+        </nav>
+
+        <main id="main-content">
+            <!-- Overview Panel -->
+            <div id="overview-panel" class="tab-content" role="tabpanel">
+                <div class="challenge-box p-6 mb-6">
+                    <h2 class="text-2xl font-bold mb-4">🎯 Your Interactive Mission</h2>
+                    <p class="text-lg mb-4">Transform from writing simple sequential MIPS code to creating sophisticated programs with decision-making, loops, and modular procedures!</p>
+                    
+                    <div class="grid md:grid-cols-2 gap-6 mt-6">
+                        <div class="interactive-box p-4">
+                            <h3 class="font-semibold mb-2">📋 Session Objectives</h3>
+                            <ul class="space-y-2 text-sm">
+                                <li class="flex items-center gap-2">
+                                    <span class="objective-check w-4 h-4 border border-gray-400 rounded" data-objective="branching"></span>
+                                    Master conditional branching with beq, bne, blt, bge
+                                </li>
+                                <li class="flex items-center gap-2">
+                                    <span class="objective-check w-4 h-4 border border-gray-400 rounded" data-objective="loops"></span>
+                                    Build while, for, and do-while loops effectively
+                                </li>
+                                <li class="flex items-center gap-2">
+                                    <span class="objective-check w-4 h-4 border border-gray-400 rounded" data-objective="stack"></span>
+                                    Understand and manipulate the runtime stack
+                                </li>
+                                <li class="flex items-center gap-2">
+                                    <span class="objective-check w-4 h-4 border border-gray-400 rounded" data-objective="procedures"></span>
+                                    Write procedures following MIPS calling conventions
+                                </li>
+                            </ul>
+                        </div>
+                        
+                        <div class="interactive-box p-4">
+                            <h3 class="font-semibold mb-2">⏱️ Session Structure</h3>
+                            <div class="space-y-2 text-sm">
+                                <div class="flex justify-between">
+                                    <span>🚀 Level 1 - Decisions:</span>
+                                    <span class="font-medium">~30 min</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span>🔄 Level 2 - Loops:</span>
+                                    <span class="font-medium">~40 min</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span>📚 Level 3 - Stack:</span>
+                                    <span class="font-medium">~30 min</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span>🏗️ Level 4 - Procedures:</span>
+                                    <span class="font-medium">~40 min</span>
+                                </div>
+                                <div class="flex justify-between font-semibold border-t pt-2">
+                                    <span>🏆 Final Challenge:</span>
+                                    <span>~20 min</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-6 text-center">
+                        <button class="bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 focus:ring-2 focus:ring-blue-500"
+                                onclick="switchTab('level1')">
+                            🚀 Begin Level 1: Decision Making
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Level 1: Decision Making -->
+            <div id="level1-panel" class="tab-content hidden" role="tabpanel">
+                <div class="space-y-6">
+                    <h2 class="text-2xl font-bold">🚀 Level 1: Decision Making Master</h2>
+                    
+                    <!-- Interactive Challenge 1 -->
+                    <div class="interactive-box p-6">
+                        <h3 class="text-xl font-semibold mb-4">🌡️ Smart Thermostat Challenge</h3>
+                        <p class="mb-4">Complete the MIPS code to control a smart thermostat. If temp > 75°F, turn on AC. If temp < 65°F, turn on heat.</p>
+                        
+                        <div class="grid lg:grid-cols-2 gap-6">
+                            <div>
+                                <h4 class="font-medium mb-2">Your Code:</h4>
+                                <pre class="code-font text-sm bg-gray-100 p-4 rounded overflow-x-auto"><code>    lw $t0, temperature
+    li $t1, 75
+    <select class="bg-yellow-200 border rounded px-1" id="branch1">
+        <option value="">Choose instruction...</option>
+        <option value="ble">ble</option>
+        <option value="bgt">bgt</option>
+        <option value="beq">beq</option>
+        <option value="bne">bne</option>
+    </select> $t0, $t1, check_cold
+    
+    # Turn on AC
+    li $v0, 1
+    li $a0, 1  # AC on
+    syscall
+    j end_program
+    
+check_cold:
+    li $t1, 65
+    <select class="bg-yellow-200 border rounded px-1" id="branch2">
+        <option value="">Choose instruction...</option>
+        <option value="blt">blt</option>
+        <option value="bge">bge</option>
+        <option value="beq">beq</option>
+        <option value="bne">bne</option>
+    </select> $t0, $t1, end_program
+    
+    # Turn on heat
+    li $v0, 1
+    li $a0, 2  # Heat on
+    syscall
+    
+end_program:</code></pre>
+                            </div>
+                            
+                            <div>
+                                <h4 class="font-medium mb-2">Test Your Solution:</h4>
+                                <div class="space-y-3">
+                                    <div>
+                                        <label class="block text-sm font-medium mb-1">Temperature Input:</label>
+                                        <input type="number" id="temp-input" class="border rounded px-3 py-1 w-20" value="70">
+                                        <span class="text-sm">°F</span>
+                                        <button class="ml-2 bg-blue-500 text-white px-3 py-1 rounded text-sm hover:bg-blue-600"
+                                                onclick="testThermostat()">
+                                            Test
+                                        </button>
+                                    </div>
+                                    <div id="thermostat-result" class="p-3 rounded bg-gray-50 min-h-16">
+                                        <em>Select branch instructions and test with different temperatures</em>
+                                    </div>
+                                </div>
+                                
+                                <div class="mt-4">
+                                    <button class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
+                                            onclick="checkThermostat()" id="check-thermostat">
+                                        ✓ Check My Solution
+                                    </button>
+                                    <div id="thermostat-feedback" class="mt-2"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Interactive Challenge 2 -->
+                    <div class="interactive-box p-6">
+                        <h3 class="text-xl font-semibold mb-4">🔧 Branch Instruction Matching</h3>
+                        <p class="mb-4">Match each high-level condition with the correct MIPS branch instruction by clicking pairs:</p>
+                        
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div>
+                                <h4 class="font-medium mb-3">High-Level Conditions:</h4>
+                                <div class="space-y-2" id="conditions-list">
+                                    <div class="condition-item p-3 bg-blue-100 rounded cursor-pointer border-2 border-transparent hover:border-blue-300"
+                                         data-condition="if (a == b)" data-match="beq">
+                                        <code>if (a == b)</code>
+                                    </div>
+                                    <div class="condition-item p-3 bg-blue-100 rounded cursor-pointer border-2 border-transparent hover:border-blue-300"
+                                         data-condition="if (a != b)" data-match="bne">
+                                        <code>if (a != b)</code>
+                                    </div>
+                                    <div class="condition-item p-3 bg-blue-100 rounded cursor-pointer border-2 border-transparent hover:border-blue-300"
+                                         data-condition="if (a < b)" data-match="blt">
+                                        <code>if (a < b)</code>
+                                    </div>
+                                    <div class="condition-item p-3 bg-blue-100 rounded cursor-pointer border-2 border-transparent hover:border-blue-300"
+                                         data-condition="if (a >= b)" data-match="bge">
+                                        <code>if (a >= b)</code>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <h4 class="font-medium mb-3">MIPS Instructions:</h4>
+                                <div class="space-y-2" id="instructions-list">
+                                    <div class="instruction-item p-3 bg-green-100 rounded cursor-pointer border-2 border-transparent hover:border-green-300"
+                                         data-instruction="beq" data-match="if (a == b)">
+                                        <code>beq $a, $b, label</code>
+                                    </div>
+                                    <div class="instruction-item p-3 bg-green-100 rounded cursor-pointer border-2 border-transparent hover:border-green-300"
+                                         data-instruction="bne" data-match="if (a != b)">
+                                        <code>bne $a, $b, label</code>
+                                    </div>
+                                    <div class="instruction-item p-3 bg-green-100 rounded cursor-pointer border-2 border-transparent hover:border-green-300"
+                                         data-instruction="blt" data-match="if (a < b)">
+                                        <code>blt $a, $b, label</code>
+                                    </div>
+                                    <div class="instruction-item p-3 bg-green-100 rounded cursor-pointer border-2 border-transparent hover:border-green-300"
+                                         data-instruction="bge" data-match="if (a >= b)">
+                                        <code>bge $a, $b, label</code>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-4">
+                            <div id="matching-feedback" class="text-center text-lg font-semibold"></div>
+                            <div class="text-center mt-2">
+                                <span id="matches-count">Matches: 0/4</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Level 1 Completion -->
+                    <div class="text-center">
+                        <button class="bg-purple-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-purple-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
+                                id="level1-complete" onclick="completeLevel(1)" disabled>
+                            🎉 Complete Level 1 & Continue to Loops
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Level 2: Loops -->
+            <div id="level2-panel" class="tab-content hidden" role="tabpanel">
+                <div class="space-y-6">
+                    <h2 class="text-2xl font-bold">🔄 Level 2: Loop Architect</h2>
+                    
+                    <!-- Interactive Loop Builder -->
+                    <div class="interactive-box p-6">
+                        <h3 class="text-xl font-semibold mb-4">🔍 Array Maximum Finder</h3>
+                        <p class="mb-4">Build a loop that finds the maximum value in this array: [23, 45, 12, 67, 34, 89, 21]</p>
+                        
+                        <div class="grid lg:grid-cols-2 gap-6">
+                            <div>
+                                <h4 class="font-medium mb-2">Drag Components to Build Your Loop:</h4>
+                                <div class="bg-gray-100 p-4 rounded min-h-64 mb-4 border-2 border-dashed border-gray-300" id="loop-dropzone">
+                                    <div class="text-gray-500 text-center mt-8">
+                                        Drag loop components here in the correct order
+                                    </div>
+                                </div>
+                                
+                                <h4 class="font-medium mb-2">Available Components:</h4>
+                                <div class="grid grid-cols-1 gap-2" id="loop-components">
+                                    <div class="loop-component bg-blue-100 p-2 rounded cursor-move text-sm code-font border" 
+                                         draggable="true" data-component="loop_start:" data-order="1">
+                                        loop_start:
+                                    </div>
+                                    <div class="loop-component bg-blue-100 p-2 rounded cursor-move text-sm code-font border" 
+                                         draggable="true" data-component="bge $t2, $t1, loop_end" data-order="2">
+                                        bge $t2, $t1, loop_end
+                                    </div>
+                                    <div class="loop-component bg-blue-100 p-2 rounded cursor-move text-sm code-font border" 
+                                         draggable="true" data-component="lw $t4, 0($t0)" data-order="3">
+                                        lw $t4, 0($t0)
+                                    </div>
+                                    <div class="loop-component bg-blue-100 p-2 rounded cursor-move text-sm code-font border" 
+                                         draggable="true" data-component="ble $t4, $t3, skip_update" data-order="4">
+                                        ble $t4, $t3, skip_update
+                                    </div>
+                                    <div class="loop-component bg-blue-100 p-2 rounded cursor-move text-sm code-font border" 
+                                         draggable="true" data-component="move $t3, $t4" data-order="5">
+                                        move $t3, $t4
+                                    </div>
+                                    <div class="loop-component bg-blue-100 p-2 rounded cursor-move text-sm code-font border" 
+                                         draggable="true" data-component="skip_update:" data-order="6">
+                                        skip_update:
+                                    </div>
+                                    <div class="loop-component bg-blue-100 p-2 rounded cursor-move text-sm code-font border" 
+                                         draggable="true" data-component="addi $t2, $t2, 1" data-order="7">
+                                        addi $t2, $t2, 1
+                                    </div>
+                                    <div class="loop-component bg-blue-100 p-2 rounded cursor-move text-sm code-font border" 
+                                         draggable="true" data-component="addi $t0, $t0, 4" data-order="8">
+                                        addi $t0, $t0, 4
+                                    </div>
+                                    <div class="loop-component bg-blue-100 p-2 rounded cursor-move text-sm code-font border" 
+                                         draggable="true" data-component="j loop_start" data-order="9">
+                                        j loop_start
+                                    </div>
+                                    <div class="loop-component bg-blue-100 p-2 rounded cursor-move text-sm code-font border" 
+                                         draggable="true" data-component="loop_end:" data-order="10">
+                                        loop_end:
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <h4 class="font-medium mb-2">Loop Execution Simulator:</h4>
+                                <div class="bg-gray-50 p-4 rounded">
+                                    <div class="text-sm space-y-1">
+                                        <div><strong>Array:</strong> [23, 45, 12, 67, 34, 89, 21]</div>
+                                        <div><strong>Current Index:</strong> <span id="current-index">-</span></div>
+                                        <div><strong>Current Element:</strong> <span id="current-element">-</span></div>
+                                        <div><strong>Current Max:</strong> <span id="current-max">-</span></div>
+                                        <div><strong>Iterations:</strong> <span id="iteration-count">0</span></div>
+                                    </div>
+                                    
+                                    <div class="mt-4 space-x-2">
+                                        <button class="bg-green-600 text-white px-3 py-1 rounded text-sm hover:bg-green-700"
+                                                onclick="executeLoop()" id="execute-loop" disabled>
+                                            ▶️ Execute Loop
+                                        </button>
+                                        <button class="bg-blue-600 text-white px-3 py-1 rounded text-sm hover:bg-blue-700"
+                                                onclick="stepLoop()" id="step-loop" disabled>
+                                            👣 Step Through
+                                        </button>
+                                        <button class="bg-gray-600 text-white px-3 py-1 rounded text-sm hover:bg-gray-700"
+                                                onclick="resetLoop()">
+                                            🔄 Reset
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <div class="mt-4">
+                                    <button class="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700"
+                                            onclick="checkLoop()" id="check-loop">
+                                        ✓ Check My Loop
+                                    </button>
+                                    <div id="loop-feedback" class="mt-2"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Loop Pattern Quiz -->
+                    <div class="interactive-box p-6">
+                        <h3 class="text-xl font-semibold mb-4">🎯 Loop Pattern Recognition</h3>
+                        <p class="mb-4">Identify the correct loop pattern for each scenario:</p>
+                        
+                        <div class="space-y-4">
+                            <div class="quiz-question p-4 bg-gray-50 rounded">
+                                <p class="font-medium mb-3">1. Count from 1 to N (where N is known in advance):</p>
+                                <div class="space-y-2">
+                                    <label class="flex items-center gap-2">
+                                        <input type="radio" name="q1" value="while" class="loop-quiz">
+                                        <span>While loop (test at beginning)</span>
+                                    </label>
+                                    <label class="flex items-center gap-2">
+                                        <input type="radio" name="q1" value="for" class="loop-quiz">
+                                        <span>For loop (counter-controlled)</span>
+                                    </label>
+                                    <label class="flex items-center gap-2">
+                                        <input type="radio" name="q1" value="do-while" class="loop-quiz">
+                                        <span>Do-while loop (test at end)</span>
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <div class="quiz-question p-4 bg-gray-50 rounded">
+                                <p class="font-medium mb-3">2. Process user input until they enter "quit":</p>
+                                <div class="space-y-2">
+                                    <label class="flex items-center gap-2">
+                                        <input type="radio" name="q2" value="while" class="loop-quiz">
+                                        <span>While loop (test at beginning)</span>
+                                    </label>
+                                    <label class="flex items-center gap-2">
+                                        <input type="radio" name="q2" value="for" class="loop-quiz">
+                                        <span>For loop (counter-controlled)</span>
+                                    </label>
+                                    <label class="flex items-center gap-2">
+                                        <input type="radio" name="q2" value="do-while" class="loop-quiz">
+                                        <span>Do-while loop (test at end)</span>
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <div class="quiz-question p-4 bg-gray-50 rounded">
+                                <p class="font-medium mb-3">3. Show a menu at least once, then repeat based on user choice:</p>
+                                <div class="space-y-2">
+                                    <label class="flex items-center gap-2">
+                                        <input type="radio" name="q3" value="while" class="loop-quiz">
+                                        <span>While loop (test at beginning)</span>
+                                    </label>
+                                    <label class="flex items-center gap-2">
+                                        <input type="radio" name="q3" value="for" class="loop-quiz">
+                                        <span>For loop (counter-controlled)</span>
+                                    </label>
+                                    <label class="flex items-center gap-2">
+                                        <input type="radio" name="q3" value="do-while" class="loop-quiz">
+                                        <span>Do-while loop (test at end)</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-4 text-center">
+                            <button class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+                                                                        onclick="checkLoopQuiz()" id="check-quiz">
+                                ✓ Check Quiz Answers
+                            </button>
+                            <div id="quiz-feedback" class="mt-2"></div>
+                        </div>
+                    </div>
+
+                    <!-- Level 2 Completion -->
+                    <div class="text-center">
+                        <button class="bg-purple-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-purple-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
+                                id="level2-complete" onclick="completeLevel(2)" disabled>
+                            🎉 Complete Level 2 & Continue to Stack
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Level 3: Stack -->
+            <div id="level3-panel" class="tab-content hidden" role="tabpanel">
+                <div class="space-y-6">
+                    <h2 class="text-2xl font-bold">📚 Level 3: Stack Master</h2>
+                    
+                    <!-- Stack Visualization Challenge -->
+                    <div class="interactive-box p-6">
+                        <h3 class="text-xl font-semibold mb-4">📊 Interactive Stack Visualizer</h3>
+                        <p class="mb-4">Watch how the stack grows and shrinks as functions call each other. Click through each step:</p>
+                        
+                        <div class="grid lg:grid-cols-2 gap-6">
+                            <div>
+                                <h4 class="font-medium mb-2">Function Call Sequence:</h4>
+                                <div class="space-y-2 mb-4">
+                                    <button class="w-full bg-blue-100 p-3 rounded text-left hover:bg-blue-200 transition-colors"
+                                            onclick="executeStackStep(1)" id="stack-step-1">
+                                        Step 1: main() starts executing
+                                    </button>
+                                    <button class="w-full bg-blue-100 p-3 rounded text-left hover:bg-blue-200 transition-colors"
+                                            onclick="executeStackStep(2)" id="stack-step-2" disabled>
+                                        Step 2: main() calls functionA()
+                                    </button>
+                                    <button class="w-full bg-blue-100 p-3 rounded text-left hover:bg-blue-200 transition-colors"
+                                            onclick="executeStackStep(3)" id="stack-step-3" disabled>
+                                        Step 3: functionA() calls functionB()
+                                    </button>
+                                    <button class="w-full bg-blue-100 p-3 rounded text-left hover:bg-blue-200 transition-colors"
+                                            onclick="executeStackStep(4)" id="stack-step-4" disabled>
+                                        Step 4: functionB() returns
+                                    </button>
+                                    <button class="w-full bg-blue-100 p-3 rounded text-left hover:bg-blue-200 transition-colors"
+                                            onclick="executeStackStep(5)" id="stack-step-5" disabled>
+                                        Step 5: functionA() returns
+                                    </button>
+                                    <button class="w-full bg-blue-100 p-3 rounded text-left hover:bg-blue-200 transition-colors"
+                                            onclick="executeStackStep(6)" id="stack-step-6" disabled>
+                                        Step 6: main() completes
+                                    </button>
+                                </div>
+                                
+                                <button class="bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-700"
+                                        onclick="resetStack()">
+                                    🔄 Reset Stack Demo
+                                </button>
+                            </div>
+                            
+                            <div>
+                                <h4 class="font-medium mb-2">Stack Memory View:</h4>
+                                <div class="bg-gray-50 p-4 rounded border-2 border-gray-300">
+                                    <div class="text-center text-sm mb-2 font-semibold">Stack Memory (grows downward)</div>
+                                    <div id="stack-visualization" class="space-y-1 min-h-64">
+                                        <div class="text-center text-gray-500 mt-8">
+                                            Click "Step 1" to begin stack visualization
+                                        </div>
+                                    </div>
+                                    <div class="text-center mt-4">
+                                        <span class="stack-pointer">← $sp</span> = Stack Pointer
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Stack Operations Practice -->
+                    <div class="interactive-box p-6">
+                        <h3 class="text-xl font-semibold mb-4">🔧 Stack Operations Builder</h3>
+                        <p class="mb-4">Complete the missing stack operations for this function that saves and restores registers:</p>
+                        
+                        <div class="grid lg:grid-cols-2 gap-6">
+                            <div>
+                                <h4 class="font-medium mb-2">Fill in the Stack Operations:</h4>
+                                <pre class="code-font text-sm bg-gray-100 p-4 rounded overflow-x-auto"><code>mystery_function:
+    # Prologue - need to save $ra and $s0
+    addi $sp, $sp, <input type="text" class="bg-yellow-200 border rounded w-12 text-center" id="stack-space" placeholder="?">
+    sw $ra, <input type="text" class="bg-yellow-200 border rounded w-12 text-center" id="ra-offset" placeholder="?">($sp)
+    sw $s0, <input type="text" class="bg-yellow-200 border rounded w-12 text-center" id="s0-offset" placeholder="?">($sp)
+    
+    # Function body
+    li $s0, 42
+    jal some_other_function
+    
+    # Epilogue - restore everything
+    lw $s0, <input type="text" class="bg-yellow-200 border rounded w-12 text-center" id="s0-restore" placeholder="?">($sp)
+    lw $ra, <input type="text" class="bg-yellow-200 border rounded w-12 text-center" id="ra-restore" placeholder="?">($sp)
+    addi $sp, $sp, <input type="text" class="bg-yellow-200 border rounded w-12 text-center" id="stack-restore" placeholder="?">
+    jr $ra</code></pre>
+                                
+                                <div class="mt-4">
+                                    <button class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
+                                            onclick="checkStackOps()" id="check-stack-ops">
+                                        ✓ Check Stack Operations
+                                    </button>
+                                    <div id="stack-ops-feedback" class="mt-2"></div>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <h4 class="font-medium mb-2">💡 Stack Frame Hints:</h4>
+                                <div class="bg-blue-50 p-4 rounded text-sm space-y-2">
+                                    <p><strong>Remember:</strong></p>
+                                    <ul class="list-disc list-inside space-y-1">
+                                        <li>Stack grows downward (subtract to allocate)</li>
+                                        <li>Each register needs 4 bytes</li>
+                                        <li>Save registers at higher addresses first</li>
+                                        <li>Restore in reverse order of saving</li>
+                                        <li>Stack pointer must return to original value</li>
+                                    </ul>
+                                </div>
+                                
+                                <div class="mt-4 p-4 bg-yellow-50 rounded">
+                                    <h5 class="font-medium mb-2">Stack Layout for this function:</h5>
+                                    <div class="text-sm code-font">
+                                        <div class="stack-frame p-2">$ra (return address)</div>
+                                        <div class="stack-frame p-2">$s0 (saved register)</div>
+                                        <div class="text-center text-red-600 font-bold">← $sp points here</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Level 3 Completion -->
+                    <div class="text-center">
+                        <button class="bg-purple-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-purple-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
+                                id="level3-complete" onclick="completeLevel(3)" disabled>
+                            🎉 Complete Level 3 & Continue to Procedures
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Level 4: Procedures -->
+            <div id="level4-panel" class="tab-content hidden" role="tabpanel">
+                <div class="space-y-6">
+                    <h2 class="text-2xl font-bold">🏗️ Level 4: Procedure Call Professional</h2>
+                    
+                    <!-- Calling Convention Challenge -->
+                    <div class="interactive-box p-6">
+                        <h3 class="text-xl font-semibold mb-4">🎯 MIPS Calling Convention Quiz</h3>
+                        <p class="mb-4">Test your knowledge of MIPS register conventions by categorizing these registers:</p>
+                        
+                        <div class="grid md:grid-cols-3 gap-6">
+                            <div>
+                                <h4 class="font-medium mb-3 text-center">Argument Registers</h4>
+                                <div class="min-h-32 bg-green-50 border-2 border-dashed border-green-300 rounded p-2" 
+                                     id="argument-zone" data-category="argument">
+                                    <div class="text-center text-green-600 text-sm">Drop argument registers here</div>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <h4 class="font-medium mb-3 text-center">Return Value Registers</h4>
+                                <div class="min-h-32 bg-blue-50 border-2 border-dashed border-blue-300 rounded p-2" 
+                                     id="return-zone" data-category="return">
+                                    <div class="text-center text-blue-600 text-sm">Drop return registers here</div>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <h4 class="font-medium mb-3 text-center">Temporary Registers</h4>
+                                <div class="min-h-32 bg-yellow-50 border-2 border-dashed border-yellow-300 rounded p-2" 
+                                     id="temp-zone" data-category="temp">
+                                    <div class="text-center text-yellow-600 text-sm">Drop temporary registers here</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-6">
+                            <h4 class="font-medium mb-3">Available Registers:</h4>
+                            <div class="flex flex-wrap gap-2" id="register-pool">
+                                <div class="register-item bg-white border-2 border-gray-300 rounded px-3 py-2 cursor-move hover:bg-gray-50"
+                                     draggable="true" data-register="$a0" data-correct="argument">$a0</div>
+                                <div class="register-item bg-white border-2 border-gray-300 rounded px-3 py-2 cursor-move hover:bg-gray-50"
+                                     draggable="true" data-register="$v0" data-correct="return">$v0</div>
+                                <div class="register-item bg-white border-2 border-gray-300 rounded px-3 py-2 cursor-move hover:bg-gray-50"
+                                     draggable="true" data-register="$t0" data-correct="temp">$t0</div>
+                                <div class="register-item bg-white border-2 border-gray-300 rounded px-3 py-2 cursor-move hover:bg-gray-50"
+                                     draggable="true" data-register="$a1" data-correct="argument">$a1</div>
+                                <div class="register-item bg-white border-2 border-gray-300 rounded px-3 py-2 cursor-move hover:bg-gray-50"
+                                     draggable="true" data-register="$v1" data-correct="return">$v1</div>
+                                <div class="register-item bg-white border-2 border-gray-300 rounded px-3 py-2 cursor-move hover:bg-gray-50"
+                                     draggable="true" data-register="$t1" data-correct="temp">$t1</div>
+                                <div class="register-item bg-white border-2 border-gray-300 rounded px-3 py-2 cursor-move hover:bg-gray-50"
+                                     draggable="true" data-register="$a2" data-correct="argument">$a2</div>
+                                <div class="register-item bg-white border-2 border-gray-300 rounded px-3 py-2 cursor-move hover:bg-gray-50"
+                                     draggable="true" data-register="$t2" data-correct="temp">$t2</div>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-4 text-center">
+                            <button class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
+                                    onclick="checkRegisters()" id="check-registers">
+                                ✓ Check Register Placement
+                            </button>
+                            <div id="register-feedback" class="mt-2"></div>
+                        </div>
+                    </div>
+
+                    <!-- Procedure Writing Challenge -->
+                    <div class="interactive-box p-6">
+                        <h3 class="text-xl font-semibold mb-4">📝 Build a Complete Procedure</h3>
+                        <p class="mb-4">Write a MIPS procedure that calculates the absolute value of a number. Follow proper calling conventions!</p>
+                        
+                        <div class="grid lg:grid-cols-2 gap-6">
+                            <div>
+                                <h4 class="font-medium mb-2">Your Procedure Implementation:</h4>
+                                <textarea class="w-full h-64 p-3 border rounded code-font text-sm" id="procedure-code" 
+                                          placeholder="# absolute_value procedure
+# Input: $a0 = integer value
+# Output: $v0 = absolute value
+# Write your complete procedure here...
+
+absolute_value:
+    # Your code here...
+    
+    jr $ra">
+</textarea>
+                                
+                                <div class="mt-4">
+                                    <button class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+                                            onclick="testProcedure()" id="test-procedure">
+                                        🧪 Test Procedure
+                                    </button>
+                                    <button class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 ml-2"
+                                            onclick="checkProcedure()" id="check-procedure">
+                                        ✓ Check Implementation
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <h4 class="font-medium mb-2">Test Cases:</h4>
+                                <div class="bg-gray-50 p-4 rounded space-y-2">
+                                    <div class="text-sm">
+                                        <strong>Test 1:</strong> Input = 5, Expected = 5
+                                        <span id="test1-result" class="float-right"></span>
+                                    </div>
+                                    <div class="text-sm">
+                                        <strong>Test 2:</strong> Input = -3, Expected = 3
+                                        <span id="test2-result" class="float-right"></span>
+                                    </div>
+                                    <div class="text-sm">
+                                        <strong>Test 3:</strong> Input = 0, Expected = 0
+                                        <span id="test3-result" class="float-right"></span>
+                                    </div>
+                                    <div class="text-sm">
+                                        <strong>Test 4:</strong> Input = -15, Expected = 15
+                                        <span id="test4-result" class="float-right"></span>
+                                    </div>
+                                </div>
+                                
+                                <div class="mt-4 p-4 bg-blue-50 rounded">
+                                    <h5 class="font-medium mb-2">💡 Implementation Hints:</h5>
+                                    <ul class="text-sm space-y-1">
+                                        <li>• Use conditional branching to check if number is negative</li>
+                                        <li>• If negative, negate it using sub or arithmetic</li>
+                                        <li>• Return result in $v0</li>
+                                        <li>• This is a leaf function (no stack needed)</li>
+                                    </ul>
+                                </div>
+                                
+                                <div id="procedure-feedback" class="mt-4"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Level 4 Completion -->
+                    <div class="text-center">
+                        <button class="bg-purple-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-purple-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
+                                id="level4-complete" onclick="completeLevel(4)" disabled>
+                            🎉 Complete Level 4 & Take Final Challenge
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Final Assessment -->
+            <div id="assessment-panel" class="tab-content hidden" role="tabpanel">
+                <div class="space-y-6">
+                    <h2 class="text-2xl font-bold">🏆 Final Challenge: Master's Test</h2>
+                    
+                    <!-- Comprehensive Challenge -->
+                    <div class="interactive-box p-6">
+                        <h3 class="text-xl font-semibold mb-4">🎯 The Ultimate MIPS Control Flow Challenge</h3>
+                        <p class="mb-4">Combine everything you've learned to solve this complex programming challenge!</p>
+                        
+                        <div class="challenge-box p-6 mb-6">
+                            <h4 class="text-lg font-semibold mb-3">📋 Challenge Specification:</h4>
+                            <p class="mb-4">Write a MIPS program that implements a recursive function to calculate the factorial of a number, with proper error handling.</p>
+                            
+                            <div class="grid md:grid-cols-2 gap-6">
+                                <div>
+                                    <h5 class="font-medium mb-2">Requirements:</h5>
+                                    <ul class="text-sm space-y-1 list-disc list-inside">
+                                        <li>Input validation (reject negative numbers)</li>
+                                        <li>Recursive factorial calculation</li>
+                                        <li>Proper stack frame management</li>
+                                        <li>Follow MIPS calling conventions</li>
+                                        <li>Handle base case (0! = 1)</li>
+                                    </ul>
+                                </div>
+                                
+                                <div>
+                                    <h5 class="font-medium mb-2">Test Cases:</h5>
+                                    <ul class="text-sm space-y-1">
+                                        <li><strong>factorial(0)</strong> → 1</li>
+                                        <li><strong>factorial(1)</strong> → 1</li>
+                                        <li><strong>factorial(5)</strong> → 120</li>
+                                        <li><strong>factorial(-1)</strong> → error</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="grid lg:grid-cols-2 gap-6">
+                            <div>
+                                <h4 class="font-medium mb-2">Your Complete Solution:</h4>
+                                <textarea class="w-full h-80 p-3 border rounded code-font text-sm" id="final-code" 
+                                          placeholder=".data
+error_msg: .asciiz &quot;Error: Negative input!&quot;
+
+.text
+main:
+    # Your main program here
+    
+factorial:
+    # Your recursive factorial procedure here
+    
+    jr $ra">
+</textarea>
+                                
+                                <div class="mt-4 space-x-2">
+                                    <button class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+                                            onclick="runFinalTest()" id="run-final">
+                                        🧪 Run All Tests
+                                    </button>
+                                    <button class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
+                                            onclick="submitFinal()" id="submit-final">
+                                        🏆 Submit Final Solution
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <h4 class="font-medium mb-2">Test Results:</h4>
+                                <div class="bg-gray-50 p-4 rounded min-h-64">
+                                    <div id="final-test-results" class="space-y-2">
+                                        <div class="text-center text-gray-500 mt-8">
+                                            Click "Run All Tests" to evaluate your solution
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="mt-4 p-4 bg-yellow-50 rounded">
+                                    <h5 class="font-medium mb-2">🏅 Mastery Criteria:</h5>
+                                    <div class="text-sm space-y-1">
+                                        <div class="mastery-item flex items-center gap-2">
+                                            <span class="mastery-check w-4 h-4 border border-gray-400 rounded" data-criteria="validation"></span>
+                                            Input validation works correctly
+                                        </div>
+                                        <div class="mastery-item flex items-center gap-2">
+                                            <span class="mastery-check w-4 h-4 border border-gray-400 rounded" data-criteria="recursion"></span>
+                                            Recursive logic is correct
+                                        </div>
+                                        <div class="mastery-item flex items-center gap-2">
+                                            <span class="mastery-check w-4 h-4 border border-gray-400 rounded" data-criteria="stack"></span>
+                                            Stack management is proper
+                                        </div>
+                                        <div class="mastery-item flex items-center gap-2">
+                                            <span class="mastery-check w-4 h-4 border border-gray-400 rounded" data-criteria="conventions"></span>
+                                            Calling conventions followed
+                                        </div>
+                                        <div class="mastery-item flex items-center gap-2">
+                                            <span class="mastery-check w-4 h-4 border border-gray-400 rounded" data-criteria="tests"></span>
+                                            All test cases pass
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div id="final-feedback" class="mt-4"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Session Completion -->
+                    <div class="text-center" id="completion-section" style="display: none;">
+                        <div class="challenge-box p-8">
+                            <h3 class="text-2xl font-bold mb-4">🎉 Congratulations!</h3>
+                            <p class="text-lg mb-6">You have successfully mastered MIPS Control Flow & Procedures!</p>
+                            
+                            <div class="grid md:grid-cols-2 gap-6 mb-6">
+                                <div>
+                                    <h4 class="font-semibold mb-2">📈 Your Session Summary:</h4>
+                                    <div class="text-left space-y-1 text-sm">
+                                        <div>✅ Conditional branching mastered</div>
+                                        <div>✅ Loop construction completed</div>
+                                        <div>✅ Stack operations understood</div>
+                                        <div>✅ Procedure calls implemented</div>
+                                        <div>✅ Recursive programming achieved</div>
+                                    </div>
+                                </div>
+                                
+                                <div>
+                                    <h4 class="font-semibold mb-2">🚀 Ready for Next Week:</h4>
+                                    <div class="text-left space-y-1 text-sm">
+                                        <div>• Advanced memory operations</div>
+                                        <div>• Array manipulation techniques</div>
+                                        <div>• Performance optimization</div>
+                                        <div>• Complex data structures</div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="text-lg font-semibold text-green-700">
+                                Session Progress: 100% Complete! 🏆
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Embedded JavaScript -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Session state management
+            let sessionState = {
+                level1: { completed: false, progress: 0, activities: {} },
+                level2: { completed: false, progress: 0, activities: {} },
+                level3: { completed: false, progress: 0, activities: {} },
+                level4: { completed: false, progress: 0, activities: {} },
+                overallProgress: 0,
+                currentTab: 'overview'
+            };
+
+            // Tab switching functionality
+            window.switchTab = function(tabName) {
+                // Hide all tab contents
+                document.querySelectorAll('.tab-content').forEach(content => {
+                    content.classList.add('hidden');
+                });
+                
+                // Update tab buttons
+                document.querySelectorAll('.tab-btn').forEach(btn => {
+                    btn.classList.remove('tab-active');
+                    btn.classList.add('tab-inactive');
+                    btn.setAttribute('aria-selected', 'false');
+                });
+                
+                // Show selected tab
+                document.getElementById(`${tabName}-panel`).classList.remove('hidden');
+                document.querySelector(`[data-tab="${tabName}"]`).classList.add('tab-active');
+                document.querySelector(`[data-tab="${tabName}"]`).classList.remove('tab-inactive');
+                document.querySelector(`[data-tab="${tabName}"]`).setAttribute('aria-selected', 'true');
+                
+                sessionState.currentTab = tabName;
+            };
+
+            // Tab navigation
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    switchTab(btn.dataset.tab);
+                });
+            });
+
+            // Progress update function
+            function updateProgress() {
+                const levels = ['level1', 'level2', 'level3', 'level4'];
+                let totalProgress = 0;
+                
+                levels.forEach((level, index) => {
+                    const progress = sessionState[level].progress;
+                    document.getElementById(`${level}-progress`).textContent = `Level ${index + 1}: ${progress}%`;
+                    totalProgress += progress;
+                });
+                
+                const overallProgress = Math.round(totalProgress / 4);
+                sessionState.overallProgress = overallProgress;
+                document.getElementById('overall-progress').textContent = `${overallProgress}%`;
+                document.getElementById('progress-bar').style.width = `${overallProgress}%`;
+            }
+
+            // Objective completion
+            function markObjectiveComplete(objective) {
+                const checkElement = document.querySelector(`[data-objective="${objective}"]`);
+                if (checkElement) {
+                    checkElement.style.backgroundColor = '#EADDD7';
+                    checkElement.innerHTML = '✓';
+                    checkElement.style.color = '#383838';
+                    checkElement.style.fontWeight = 'bold';
+                }
+            }
+
+            // Level 1: Thermostat Challenge
+            window.testThermostat = function() {
+                const temp = parseInt(document.getElementById('temp-input').value);
+                const branch1 = document.getElementById('branch1').value;
+                const branch2 = document.getElementById('branch2').value;
+                const result = document.getElementById('thermostat-result');
+                
+                if (!branch1 || !branch2) {
+                    result.innerHTML = '<em>Please select both branch instructions first</em>';
+                    return;
+                }
+                
+                let output = `<strong>Temperature: ${temp}°F</strong><br>`;
+                
+                if (branch1 === 'ble' && branch2 === 'blt') {
+                    if (temp > 75) {
+                        output += '🌡️ AC turned ON (cooling)';
+                    } else if (temp < 65) {
+                        output += '🔥 Heat turned ON (warming)';
+                    } else {
+                        output += '😌 No action needed (comfortable range)';
+                    }
+                } else {
+                    output += '❌ Incorrect branch instructions - system malfunction!';
+                }
+                
+                result.innerHTML = output;
+            };
+
+            window.checkThermostat = function() {
+                const branch1 = document.getElementById('branch1').value;
+                const branch2 = document.getElementById('branch2').value;
+                const feedback = document.getElementById('thermostat-feedback');
+                
+                if (branch1 === 'ble' && branch2 === 'blt') {
+                    feedback.innerHTML = '<div class="success-highlight p-3 rounded">✅ Perfect! You correctly used ble (branch if less or equal) and blt (branch if less than).</div>';
+                    sessionState.level1.activities.thermostat = true;
+                    updateLevel1Progress();
+                } else {
+                    let hint = '';
+                    if (branch1 !== 'ble') hint += 'For the first branch: if temp > 75, we want to turn on AC, so we branch when temp ≤ 75. ';
+                    if (branch2 !== 'blt') hint += 'For the second branch: we want to turn on heat when temp < 65.';
+                                        feedback.innerHTML = `<div class="p-3 rounded bg-red-100 border border-red-300 text-red-700">❌ Not quite right. ${hint}</div>`;
+                }
+            };
+
+            // Level 1: Branch Matching Game
+            let selectedCondition = null;
+            let selectedInstruction = null;
+            let matchCount = 0;
+
+            document.querySelectorAll('.condition-item').forEach(item => {
+                item.addEventListener('click', () => {
+                    // Clear previous selections
+                    document.querySelectorAll('.condition-item').forEach(c => c.classList.remove('border-blue-500'));
+                    item.classList.add('border-blue-500');
+                    selectedCondition = item.dataset.condition;
+                    checkMatch();
+                });
+            });
+
+            document.querySelectorAll('.instruction-item').forEach(item => {
+                item.addEventListener('click', () => {
+                    // Clear previous selections
+                    document.querySelectorAll('.instruction-item').forEach(i => i.classList.remove('border-green-500'));
+                    item.classList.add('border-green-500');
+                    selectedInstruction = item.dataset.instruction;
+                    checkMatch();
+                });
+            });
+
+            function checkMatch() {
+                if (selectedCondition && selectedInstruction) {
+                    const conditionElement = document.querySelector(`[data-condition="${selectedCondition}"]`);
+                    const instructionElement = document.querySelector(`[data-instruction="${selectedInstruction}"]`);
+                    
+                    if (conditionElement.dataset.match === selectedInstruction) {
+                        // Correct match
+                        conditionElement.classList.add('success-highlight');
+                        instructionElement.classList.add('success-highlight');
+                        conditionElement.style.pointerEvents = 'none';
+                        instructionElement.style.pointerEvents = 'none';
+                        matchCount++;
+                        
+                        document.getElementById('matches-count').textContent = `Matches: ${matchCount}/4`;
+                        
+                        if (matchCount === 4) {
+                            document.getElementById('matching-feedback').innerHTML = '🎉 Perfect! All matches complete!';
+                            sessionState.level1.activities.matching = true;
+                            updateLevel1Progress();
+                        }
+                    } else {
+                        // Incorrect match
+                        conditionElement.style.backgroundColor = '#fee';
+                        instructionElement.style.backgroundColor = '#fee';
+                        setTimeout(() => {
+                            conditionElement.style.backgroundColor = '';
+                            instructionElement.style.backgroundColor = '';
+                        }, 1000);
+                    }
+                    
+                    // Reset selections
+                    selectedCondition = null;
+                    selectedInstruction = null;
+                    document.querySelectorAll('.condition-item, .instruction-item').forEach(item => {
+                        item.classList.remove('border-blue-500', 'border-green-500');
+                    });
+                }
+            }
+
+            function updateLevel1Progress() {
+                let completed = 0;
+                if (sessionState.level1.activities.thermostat) completed++;
+                if (sessionState.level1.activities.matching) completed++;
+                
+                sessionState.level1.progress = Math.round((completed / 2) * 100);
+                updateProgress();
+                
+                if (completed === 2) {
+                    document.getElementById('level1-complete').disabled = false;
+                    markObjectiveComplete('branching');
+                }
+            }
+
+            window.completeLevel = function(level) {
+                sessionState[`level${level}`].completed = true;
+                sessionState[`level${level}`].progress = 100;
+                updateProgress();
+                
+                // Enable next level
+                if (level < 4) {
+                    switchTab(`level${level + 1}`);
+                } else {
+                    switchTab('assessment');
+                }
+            };
+
+            // Level 2: Loop Builder
+            let droppedComponents = [];
+            const correctOrder = [
+                'loop_start:',
+                'bge $t2, $t1, loop_end',
+                'lw $t4, 0($t0)',
+                'ble $t4, $t3, skip_update',
+                'move $t3, $t4',
+                'skip_update:',
+                'addi $t2, $t2, 1',
+                'addi $t0, $t0, 4',
+                'j loop_start',
+                'loop_end:'
+            ];
+
+            // Drag and drop for loop components
+            document.querySelectorAll('.loop-component').forEach(component => {
+                component.addEventListener('dragstart', (e) => {
+                    e.dataTransfer.setData('text/plain', component.dataset.component);
+                });
+            });
+
+            const dropzone = document.getElementById('loop-dropzone');
+            dropzone.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                dropzone.classList.add('drag-over');
+            });
+
+            dropzone.addEventListener('dragleave', () => {
+                dropzone.classList.remove('drag-over');
+            });
+
+            dropzone.addEventListener('drop', (e) => {
+                e.preventDefault();
+                dropzone.classList.remove('drag-over');
+                
+                const componentText = e.dataTransfer.getData('text/plain');
+                droppedComponents.push(componentText);
+                
+                updateDropzone();
+                checkLoopOrder();
+            });
+
+            function updateDropzone() {
+                const dropzone = document.getElementById('loop-dropzone');
+                if (droppedComponents.length === 0) {
+                    dropzone.innerHTML = '<div class="text-gray-500 text-center mt-8">Drag loop components here in the correct order</div>';
+                } else {
+                    dropzone.innerHTML = droppedComponents.map((comp, index) => 
+                        `<div class="bg-white p-2 mb-1 rounded border code-font text-sm">
+                            ${index + 1}. ${comp}
+                            <button onclick="removeComponent(${index})" class="float-right text-red-500 hover:text-red-700">×</button>
+                        </div>`
+                    ).join('');
+                }
+            }
+
+            window.removeComponent = function(index) {
+                droppedComponents.splice(index, 1);
+                updateDropzone();
+                checkLoopOrder();
+            };
+
+            function checkLoopOrder() {
+                const executeBtn = document.getElementById('execute-loop');
+                const stepBtn = document.getElementById('step-loop');
+                
+                if (droppedComponents.length === correctOrder.length) {
+                    const isCorrect = droppedComponents.every((comp, index) => comp === correctOrder[index]);
+                    if (isCorrect) {
+                        executeBtn.disabled = false;
+                        stepBtn.disabled = false;
+                    }
+                }
+            }
+
+            window.checkLoop = function() {
+                const feedback = document.getElementById('loop-feedback');
+                if (droppedComponents.length === 0) {
+                    feedback.innerHTML = '<div class="p-3 rounded bg-yellow-100 border border-yellow-300">Please drag components to build your loop first.</div>';
+                    return;
+                }
+                
+                const isCorrect = droppedComponents.length === correctOrder.length && 
+                                 droppedComponents.every((comp, index) => comp === correctOrder[index]);
+                
+                if (isCorrect) {
+                    feedback.innerHTML = '<div class="success-highlight p-3 rounded">✅ Perfect loop structure! You can now execute it.</div>';
+                    sessionState.level2.activities.loopBuilder = true;
+                    updateLevel2Progress();
+                } else {
+                    feedback.innerHTML = '<div class="p-3 rounded bg-red-100 border border-red-300 text-red-700">❌ Component order is incorrect. Think about the logical flow of a loop.</div>';
+                }
+            };
+
+            // Loop execution simulation
+            let loopState = {
+                array: [23, 45, 12, 67, 34, 89, 21],
+                currentIndex: 0,
+                currentMax: 23,
+                iterations: 0,
+                running: false
+            };
+
+            window.executeLoop = function() {
+                resetLoop();
+                loopState.running = true;
+                
+                const interval = setInterval(() => {
+                    if (loopState.currentIndex >= loopState.array.length) {
+                        clearInterval(interval);
+                        loopState.running = false;
+                        document.getElementById('current-index').textContent = 'Complete';
+                        document.getElementById('current-element').textContent = '-';
+                        return;
+                    }
+                    
+                    stepLoop();
+                }, 500);
+            };
+
+            window.stepLoop = function() {
+                if (loopState.currentIndex >= loopState.array.length) return;
+                
+                const currentElement = loopState.array[loopState.currentIndex];
+                if (currentElement > loopState.currentMax) {
+                    loopState.currentMax = currentElement;
+                }
+                
+                document.getElementById('current-index').textContent = loopState.currentIndex;
+                document.getElementById('current-element').textContent = currentElement;
+                document.getElementById('current-max').textContent = loopState.currentMax;
+                document.getElementById('iteration-count').textContent = loopState.iterations + 1;
+                
+                loopState.currentIndex++;
+                loopState.iterations++;
+            };
+
+            window.resetLoop = function() {
+                loopState = {
+                    array: [23, 45, 12, 67, 34, 89, 21],
+                    currentIndex: 0,
+                    currentMax: 23,
+                    iterations: 0,
+                    running: false
+                };
+                
+                document.getElementById('current-index').textContent = '-';
+                document.getElementById('current-element').textContent = '-';
+                document.getElementById('current-max').textContent = '-';
+                document.getElementById('iteration-count').textContent = '0';
+            };
+
+            // Loop Pattern Quiz
+            window.checkLoopQuiz = function() {
+                const q1 = document.querySelector('input[name="q1"]:checked')?.value;
+                const q2 = document.querySelector('input[name="q2"]:checked')?.value;
+                const q3 = document.querySelector('input[name="q3"]:checked')?.value;
+                
+                const feedback = document.getElementById('quiz-feedback');
+                
+                if (!q1 || !q2 || !q3) {
+                    feedback.innerHTML = '<div class="p-3 rounded bg-yellow-100 border border-yellow-300">Please answer all questions.</div>';
+                    return;
+                }
+                
+                const correct = {
+                    q1: 'for',      // Counter-controlled for known iterations
+                    q2: 'while',    // Test at beginning for unknown iterations  
+                    q3: 'do-while'  // Test at end, execute at least once
+                };
+                
+                let score = 0;
+                if (q1 === correct.q1) score++;
+                if (q2 === correct.q2) score++;
+                if (q3 === correct.q3) score++;
+                
+                if (score === 3) {
+                    feedback.innerHTML = '<div class="success-highlight p-3 rounded">✅ Perfect! You understand when to use each loop pattern.</div>';
+                    sessionState.level2.activities.loopQuiz = true;
+                    updateLevel2Progress();
+                } else {
+                    feedback.innerHTML = `<div class="p-3 rounded bg-red-100 border border-red-300 text-red-700">Score: ${score}/3. Review the characteristics of each loop type.</div>`;
+                }
+            };
+
+            function updateLevel2Progress() {
+                let completed = 0;
+                if (sessionState.level2.activities.loopBuilder) completed++;
+                if (sessionState.level2.activities.loopQuiz) completed++;
+                
+                sessionState.level2.progress = Math.round((completed / 2) * 100);
+                updateProgress();
+                
+                if (completed === 2) {
+                    document.getElementById('level2-complete').disabled = false;
+                    markObjectiveComplete('loops');
+                }
+            }
+
+            // Level 3: Stack Visualization
+            let stackSteps = [
+                { description: 'Empty stack', frames: [] },
+                { description: 'main() executing', frames: ['main() local vars'] },
+                { description: 'main() calls functionA()', frames: ['main() local vars', '$ra (main), $s0', 'functionA() locals'] },
+                { description: 'functionA() calls functionB()', frames: ['main() local vars', '$ra (main), $s0', 'functionA() locals', '$ra (funcA), $s1', 'functionB() locals'] },
+                { description: 'functionB() returns', frames: ['main() local vars', '$ra (main), $s0', 'functionA() locals'] },
+                { description: 'functionA() returns', frames: ['main() local vars'] },
+                { description: 'main() completes', frames: [] }
+            ];
+
+            let currentStackStep = 0;
+
+            window.executeStackStep = function(step) {
+                currentStackStep = step;
+                updateStackVisualization();
+                
+                // Enable next step
+                if (step < 6) {
+                    document.getElementById(`stack-step-${step + 1}`).disabled = false;
+                }
+                
+                // Mark as completed when all steps done
+                if (step === 6) {
+                    sessionState.level3.activities.stackDemo = true;
+                    updateLevel3Progress();
+                }
+            };
+
+            function updateStackVisualization() {
+                const viz = document.getElementById('stack-visualization');
+                const currentFrames = stackSteps[currentStackStep].frames;
+                
+                if (currentFrames.length === 0) {
+                    viz.innerHTML = '<div class="text-center text-gray-500 mt-8">Stack is empty</div>';
+                    return;
+                }
+                
+                let html = '';
+                for (let i = currentFrames.length - 1; i >= 0; i--) {
+                    const isTop = i === currentFrames.length - 1;
+                    html += `<div class="stack-frame p-2 ${isTop ? 'border-red-500' : ''}">${currentFrames[i]} ${isTop ? '<span class="stack-pointer">← $sp</span>' : ''}</div>`;
+                }
+                
+                viz.innerHTML = html;
+            }
+
+            window.resetStack = function() {
+                currentStackStep = 0;
+                updateStackVisualization();
+                
+                // Reset all step buttons
+                for (let i = 2; i <= 6; i++) {
+                    document.getElementById(`stack-step-${i}`).disabled = true;
+                }
+            };
+
+            // Level 3: Stack Operations
+            window.checkStackOps = function() {
+                const stackSpace = document.getElementById('stack-space').value;
+                const raOffset = document.getElementById('ra-offset').value;
+                const s0Offset = document.getElementById('s0-offset').value;
+                const s0Restore = document.getElementById('s0-restore').value;
+                const raRestore = document.getElementById('ra-restore').value;
+                const stackRestore = document.getElementById('stack-restore').value;
+                
+                const feedback = document.getElementById('stack-ops-feedback');
+                
+                const correct = {
+                    stackSpace: '-8',
+                    raOffset: '4',
+                    s0Offset: '0',
+                    s0Restore: '0',
+                    raRestore: '4',
+                    stackRestore: '8'
+                };
+                
+                let errors = [];
+                if (stackSpace !== correct.stackSpace) errors.push('Stack allocation should be -8 (2 registers × 4 bytes)');
+                if (raOffset !== correct.raOffset) errors.push('$ra should be saved at offset 4');
+                if (s0Offset !== correct.s0Offset) errors.push('$s0 should be saved at offset 0');
+                if (s0Restore !== correct.s0Restore) errors.push('$s0 restore offset should match save offset (0)');
+                if (raRestore !== correct.raRestore) errors.push('$ra restore offset should match save offset (4)');
+                if (stackRestore !== correct.stackRestore) errors.push('Stack restoration should be +8 (opposite of allocation)');
+                
+                if (errors.length === 0) {
+                    feedback.innerHTML = '<div class="success-highlight p-3 rounded">✅ Perfect stack frame management!</div>';
+                    sessionState.level3.activities.stackOps = true;
+                    updateLevel3Progress();
+                } else {
+                    feedback.innerHTML = `<div class="p-3 rounded bg-red-100 border border-red-300 text-red-700">❌ ${errors.join('. ')}</div>`;
+                }
+            };
+
+            function updateLevel3Progress() {
+                let completed = 0;
+                if (sessionState.level3.activities.stackDemo) completed++;
+                if (sessionState.level3.activities.stackOps) completed++;
+                
+                sessionState.level3.progress = Math.round((completed / 2) * 100);
+                updateProgress();
+                
+                if (completed === 2) {
+                    document.getElementById('level3-complete').disabled = false;
+                    markObjectiveComplete('stack');
+                }
+            }
+
+            // Level 4: Register Categorization
+            let registerPlacements = {
+                argument: [],
+                return: [],
+                temp: []
+            };
+
+            document.querySelectorAll('.register-item').forEach(item => {
+                item.addEventListener('dragstart', (e) => {
+                    e.dataTransfer.setData('text/plain', JSON.stringify({
+                        register: item.dataset.register,
+                        correct: item.dataset.correct
+                    }));
+                });
+            });
+
+            document.querySelectorAll('[data-category]').forEach(zone => {
+                zone.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    zone.classList.add('drag-over');
+                });
+
+                zone.addEventListener('dragleave', () => {
+                    zone.classList.remove('drag-over');
+                });
+
+                zone.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    zone.classList.remove('drag-over');
+                    
+                    const data = JSON.parse(e.dataTransfer.getData('text/plain'));
+                    const category = zone.dataset.category;
+                    
+                    // Remove from other categories
+                    Object.keys(registerPlacements).forEach(cat => {
+                        registerPlacements[cat] = registerPlacements[cat].filter(r => r.register !== data.register);
+                    });
+                    
+                    // Add to current category
+                    registerPlacements[category].push(data);
+                    
+                    updateRegisterZones();
+                });
+            });
+
+            function updateRegisterZones() {
+                Object.keys(registerPlacements).forEach(category => {
+                    const zone = document.querySelector(`[data-category="${category}"]`);
+                    const registers = registerPlacements[category];
+                    
+                    if (registers.length === 0) {
+                        zone.innerHTML = `<div class="text-center text-gray-500 text-sm">Drop ${category} registers here</div>`;
+                    } else {
+                        zone.innerHTML = registers.map(reg => 
+                            `<div class="bg-white p-2 m-1 rounded border inline-block">${reg.register}</div>`
+                        ).join('');
+                    }
+                });
+            }
+
+            window.checkRegisters = function() {
+                const feedback = document.getElementById('register-feedback');
+                let correct = 0;
+                let total = 0;
+                
+                Object.keys(registerPlacements).forEach(category => {
+                    registerPlacements[category].forEach(reg => {
+                        total++;
+                        if (reg.correct === category) correct++;
+                    });
+                });
+                
+                if (correct === total && total >= 8) {
+                    feedback.innerHTML = '<div class="success-highlight p-3 rounded">✅ Perfect register categorization!</div>';
+                    sessionState.level4.activities.registers = true;
+                    updateLevel4Progress();
+                } else {
+                    feedback.innerHTML = `<div class="p-3 rounded bg-red-100 border border-red-300 text-red-700">Score: ${correct}/${total}. Review MIPS calling conventions.</div>`;
+                }
+            };
+
+            // Level 4: Procedure Writing
+            window.testProcedure = function() {
+                const code = document.getElementById('procedure-code').value;
+                const results = {
+                    test1: testAbsoluteValue(code, 5),
+                    test2: testAbsoluteValue(code, -3),
+                    test3: testAbsoluteValue(code, 0),
+                    test4: testAbsoluteValue(code, -15)
+                };
+                
+                document.getElementById('test1-result').innerHTML = results.test1 ? '✅' : '❌';
+                document.getElementById('test2-result').innerHTML = results.test2 ? '✅' : '❌';
+                document.getElementById('test3-result').innerHTML = results.test3 ? '✅' : '❌';
+                document.getElementById('test4-result').innerHTML = results.test4 ? '✅' : '❌';
+            };
+
+            function testAbsoluteValue(code, input) {
+                // Simplified test - check for key patterns
+                const hasConditional = /b[lg]e|blt|beq|bne/.test(code);
+                const hasNegation = /sub|neg/.test(code);
+                const hasReturn = /jr\s+\$ra/.test(code);
+                
+                return hasConditional && hasNegation && hasReturn;
+            }
+
+            window.checkProcedure = function() {
+                const code = document.getElementById('procedure-code').value;
+                const feedback = document.getElementById('procedure-feedback');
+                
+                const checks = {
+                    hasLabel: /absolute_value:/.test(code),
+                    hasConditional: /b[lg]e|blt|beq|bne/.test(code),
+                    hasNegation: /sub|neg/.test(code),
+                    hasReturn: /jr\s+\$ra/.test(code),
+                    usesCorrectRegisters: /\$a0/.test(code) && /\$v0/.test(code)
+                };
+                
+                const passed = Object.values(checks).every(check => check);
+                
+                if (passed) {
+                    feedback.innerHTML = '<div class="success-highlight p-3 rounded">✅ Great procedure implementation!</div>';
+                    sessionState.level4.activities.procedure = true;
+                    updateLevel4Progress();
+                } else {
+                    let hints = [];
+                    if (!checks.hasLabel) hints.push('Add the procedure label');
+                    if (!checks.hasConditional) hints.push('Use conditional branching');
+                    if (!checks.hasNegation) hints.push('Include negation logic');
+                    if (!checks.hasReturn) hints.push('End with jr $ra');
+                    if (!checks.usesCorrectRegisters) hints.push('Use $a0 for input, $v0 for output');
+                    
+                    feedback.innerHTML = `<div class="p-3 rounded bg-yellow-100 border border-yellow-300">Hints: ${hints.join(', ')}</div>`;
+                }
+            };
+
+            function updateLevel4Progress() {
+                let completed = 0;
+                if (sessionState.level4.activities.registers) completed++;
+                if (sessionState.level4.activities.procedure) completed++;
+                
+                sessionState.level4.progress = Math.round((completed / 2) * 100);
+                updateProgress();
+                
+                if (completed === 2) {
+                    document.getElementById('level4-complete').disabled = false;
+                    markObjectiveComplete('procedures');
+                }
+            }
+
+            // Final Assessment
+            window.runFinalTest = function() {
+                const code = document.getElementById('final-code').value;
+                const results = document.getElementById('final-test-results');
+                
+                const tests = [
+                    { name: 'Input Validation', test: /negative|error/.test(code.toLowerCase()) },
+                    { name: 'Base Case (0! = 1)', test: /beq.*0|li.*1/.test(code) },
+                    { name: 'Recursive Call', test: /jal.*factorial/.test(code) },
+                    { name: 'Stack Management', test: /addi.*\$sp.*-/.test(code) && /sw.*\$ra/.test(code) },
+                    { name: 'Return Value', test: /\$v0/.test(code) }
+                ];
+                
+                let html = '';
+                let passed = 0;
+                
+                tests.forEach(test => {
+                    const result = test.test;
+                    if (result) passed++;
+                    html += `<div class="flex justify-between py-1"><span>${test.name}</span><span>${result ? '✅' : '❌'}</span></div>`;
+                });
+                
+                results.innerHTML = html;
+                
+                if (passed === tests.length) {
+                    sessionState.level4.activities.finalChallenge = true;
+                    updateLevel4Progress();
+                }
+            };
+
+            window.submitFinal = function() {
+                const feedback = document.getElementById('final-feedback');
+                const code = document.getElementById('final-code').value;
+                
+                if (code.trim().length < 50) {
+                    feedback.innerHTML = '<div class="p-3 rounded bg-yellow-100 border border-yellow-300">Please implement a complete solution first.</div>';
+                    return;
+                }
+                
+                // Mark mastery criteria
+                const criteria = ['validation', 'recursion', 'stack', 'conventions', 'tests'];
+                criteria.forEach(criterion => {
+                    const checkElement = document.querySelector(`[data-criteria="${criterion}"]`);
+                    if (checkElement) {
+                        checkElement.style.backgroundColor = '#EADDD7';
+                        checkElement.innerHTML = '✓';
+                        checkElement.style.color = '#383838';
+                        checkElement.style.fontWeight = 'bold';
+                    }
+                });
+                
+                feedback.innerHTML = '<div class="success-highlight p-3 rounded">🏆 Congratulations! You have achieved mastery of MIPS Control Flow & Procedures!</div>';
+                
+                // Show completion
+                setTimeout(() => {
+                    document.getElementById('completion-section').style.display = 'block';
+                    sessionState.overallProgress = 100;
+                    updateProgress();
+                }, 1000);
+            };
+
+            // Initialize the guide
+            updateProgress();
+        });
+    </script>
+</body>
+</html>
