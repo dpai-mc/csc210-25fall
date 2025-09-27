@@ -72,19 +72,43 @@
         }
         
         .binary-bit {
-            width: 24px;
-            height: 24px;
+            width: 28px;
+            height: 28px;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
             border: 1px solid #ccc;
+            font-family: 'Fira Code', monospace;
+            font-size: 12px;
+            font-weight: bold;
         }
         
         .binary-bit.active {
             background-color: #3b82f6;
             color: white;
+            border-color: #2563eb;
         }
+        
+        .binary-bit:hover {
+            background-color: #e5e7eb;
+        }
+        
+        .binary-bit.active:hover {
+            background-color: #2563eb;
+        }
+        
+        .field-group {
+            border: 2px solid #6b7280;
+            border-radius: 4px;
+            padding: 2px;
+            margin: 1px;
+        }
+        
+        .field-group.opcode { border-color: #dc2626; background-color: #fef2f2; }
+        .field-group.register { border-color: #2563eb; background-color: #eff6ff; }
+        .field-group.immediate { border-color: #059669; background-color: #f0fdf4; }
+        .field-group.address { border-color: #d97706; background-color: #fffbeb; }
     </style>
 </head>
 <body class="antialiased">
@@ -272,9 +296,54 @@
                 <div class="space-y-8">
                     <h2 class="text-2xl font-bold">🔀 Branch Instructions</h2>
                     
-                    <!-- Branch Overview -->
+                    <!-- Branch Introduction -->
                     <div class="interactive-box p-6">
-                        <h3 class="text-xl font-semibold mb-4">🎯 Complete Branch Reference</h3>
+                        <h3 class="text-xl font-semibold mb-4">🎯 What are Branch Instructions?</h3>
+                        <div class="grid lg:grid-cols-2 gap-6">
+                            <div>
+                                <h4 class="font-semibold mb-3 text-blue-600">Understanding Branches</h4>
+                                <p class="text-sm mb-4">
+                                    <strong>Branch instructions</strong> are <em>conditional</em> control flow instructions that can change 
+                                    the normal sequential execution of a program. They examine values in registers and decide whether 
+                                    to "take the branch" (jump to a different location) or continue with the next instruction.
+                                </p>
+                                <div class="bg-blue-50 p-3 rounded text-sm">
+                                    <strong>Key Characteristics:</strong>
+                                    <ul class="list-disc list-inside mt-2 space-y-1">
+                                        <li><strong>Conditional:</strong> Only execute if condition is true</li>
+                                        <li><strong>PC-Relative:</strong> Target calculated relative to current position</li>
+                                        <li><strong>Limited Range:</strong> Can branch ±32KB from current instruction</li>
+                                        <li><strong>I-Type Format:</strong> Use 16-bit offset field</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <h4 class="font-semibold mb-3 text-green-600">Labels and Targets</h4>
+                                <p class="text-sm mb-4">
+                                    In MIPS assembly, a <strong>label</strong> is a symbolic name that represents a memory address. 
+                                    When you write <code>beq $t0, $t1, loop_start</code>, the assembler converts <code>loop_start</code> 
+                                    into a numeric offset.
+                                </p>
+                                <div class="bg-green-50 p-3 rounded text-sm">
+                                    <strong>Examples of Labels:</strong>
+                                    <div class="code-font mt-2 space-y-1">
+                                        <div>main:           # Program entry point</div>
+                                        <div>loop_start:     # Beginning of a loop</div>
+                                        <div>exit_program:   # End of program</div>
+                                        <div>error_handler:  # Error handling code</div>
+                                    </div>
+                                </div>
+                                <p class="text-xs mt-2 text-gray-600">
+                                    <strong>Branch Target Calculation:</strong> target = PC + 4 + (offset × 4)
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Branch Reference -->
+                    <div class="interactive-box p-6">
+                        <h3 class="text-xl font-semibold mb-4">📚 Complete Branch Reference</h3>
                         
                         <div class="grid lg:grid-cols-2 gap-6">
                             <!-- Two-Register Branches -->
@@ -290,6 +359,7 @@
                                             <div class="text-xs bg-blue-100 px-2 py-1 rounded">000100</div>
                                         </div>
                                         <div class="text-sm">Branches if rs == rt</div>
+                                        <div class="text-xs text-gray-500 mt-1">Common for loop termination and equality checks</div>
                                     </div>
 
                                     <div class="instruction-card p-4">
@@ -301,6 +371,7 @@
                                             <div class="text-xs bg-blue-100 px-2 py-1 rounded">000101</div>
                                         </div>
                                         <div class="text-sm">Branches if rs != rt</div>
+                                        <div class="text-xs text-gray-500 mt-1">Common for null checks: bne $t0, $zero, continue</div>
                                     </div>
                                 </div>
                             </div>
@@ -318,6 +389,7 @@
                                             <div class="text-xs bg-green-100 px-2 py-1 rounded">000001</div>
                                         </div>
                                         <div class="text-sm">Branches if rs < 0</div>
+                                        <div class="text-xs text-gray-500 mt-1">Useful for negative number detection</div>
                                     </div>
 
                                     <div class="instruction-card p-4">
@@ -329,6 +401,7 @@
                                             <div class="text-xs bg-green-100 px-2 py-1 rounded">000001</div>
                                         </div>
                                         <div class="text-sm">Branches if rs ≥ 0</div>
+                                        <div class="text-xs text-gray-500 mt-1">Useful for positive/zero number checks</div>
                                     </div>
                                 </div>
                             </div>
@@ -345,8 +418,7 @@
                                 <label class="block font-medium mb-2">Enter Branch Instruction:</label>
                                 <input type="text" id="branch-input" 
                                        class="w-full p-3 border rounded code-font" 
-                                       placeholder="beq $t0, $t1, 8"
-                                       oninput="decodeBranch()">
+                                       placeholder="beq $t0, $t1, loop_start">
                                 
                                 <div class="mt-4 space-y-2">
                                     <button class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 text-sm"
@@ -356,6 +428,10 @@
                                     <button class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 text-sm ml-2"
                                             onclick="loadBranchExample('bne $s0, $zero, -4')">
                                         Example: bne
+                                    </button>
+                                    <button class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 text-sm ml-2"
+                                            onclick="loadBranchExample('bltz $t0, error_handler')">
+                                        Example: bltz
                                     </button>
                                 </div>
                             </div>
@@ -378,6 +454,56 @@
                 <div class="space-y-8">
                     <h2 class="text-2xl font-bold">🚀 Jump Instructions</h2>
                     
+                    <!-- Jump Introduction -->
+                    <div class="interactive-box p-6">
+                        <h3 class="text-xl font-semibold mb-4">🎯 What are Jump Instructions?</h3>
+                        <div class="grid lg:grid-cols-2 gap-6">
+                            <div>
+                                <h4 class="font-semibold mb-3 text-orange-600">Understanding Jumps</h4>
+                                <p class="text-sm mb-4">
+                                    <strong>Jump instructions</strong> are <em>unconditional</em> control flow instructions that 
+                                    always change the program's execution flow. Unlike branches, jumps don't test any conditions—they 
+                                    always transfer control to the specified target address.
+                                </p>
+                                <div class="bg-orange-50 p-3 rounded text-sm">
+                                    <strong>Key Characteristics:</strong>
+                                    <ul class="list-disc list-inside mt-2 space-y-1">
+                                        <li><strong>Unconditional:</strong> Always executed, no condition checking</li>
+                                        <li><strong>Larger Range:</strong> Can reach any address in 256MB region</li>
+                                        <li><strong>Two Types:</strong> Direct (J-type) and Indirect (R-type)</li>
+                                        <li><strong>Function Calls:</strong> Some jumps save return addresses</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <h4 class="font-semibold mb-3 text-red-600">Targets in Jump Instructions</h4>
+                                <p class="text-sm mb-4">
+                                    Jump <strong>targets</strong> can be specified in two ways: as labels (like branches) or as 
+                                    register contents. The target represents where program execution should continue.
+                                </p>
+                                <div class="bg-red-50 p-3 rounded text-sm">
+                                    <strong>Types of Jump Targets:</strong>
+                                    <div class="mt-2 space-y-2">
+                                        <div><strong>Direct (Labels):</strong></div>
+                                        <div class="code-font ml-4 text-xs">
+                                            j main_loop      # Jump to main_loop label<br>
+                                            jal calculate    # Call calculate function
+                                        </div>
+                                        <div><strong>Indirect (Registers):</strong></div>
+                                        <div class="code-font ml-4 text-xs">
+                                            jr $ra          # Return from function<br>
+                                            jalr $t0        # Call function at address in $t0
+                                        </div>
+                                    </div>
+                                </div>
+                                <p class="text-xs mt-2 text-gray-600">
+                                    <strong>Common Uses:</strong> Function calls, returns, long-distance jumps, jump tables
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    
                     <!-- Jump Instructions Reference -->
                     <div class="interactive-box p-6">
                         <h3 class="text-xl font-semibold mb-4">📚 Complete Jump Reference</h3>
@@ -385,7 +511,7 @@
                         <div class="grid lg:grid-cols-2 gap-6">
                             <!-- J-Type Jumps -->
                             <div>
-                                <h4 class="font-semibold mb-4 text-orange-600">🌐 J-Type Jumps</h4>
+                                <h4 class="font-semibold mb-4 text-orange-600">🌐 J-Type Jumps (Direct)</h4>
                                 <div class="space-y-4">
                                     <div class="instruction-card p-4">
                                         <div class="flex justify-between items-start mb-2">
@@ -395,8 +521,9 @@
                                             </div>
                                             <div class="text-xs bg-orange-100 px-2 py-1 rounded">000010</div>
                                         </div>
-                                        <div class="text-sm mb-2">Unconditionally jump to target</div>
+                                        <div class="text-sm mb-2">Unconditionally jump to target address</div>
                                         <div class="text-xs text-gray-500">PC = (PC+4)[31:28] | address << 2</div>
+                                        <div class="text-xs mt-2"><strong>Use case:</strong> Long jumps, goto-style control flow</div>
                                     </div>
 
                                     <div class="instruction-card p-4">
@@ -407,15 +534,16 @@
                                             </div>
                                             <div class="text-xs bg-orange-100 px-2 py-1 rounded">000011</div>
                                         </div>
-                                        <div class="text-sm mb-2">Jump and save return address in $ra</div>
-                                        <div class="text-xs text-gray-500">$ra = PC + 4, then jump</div>
+                                        <div class="text-sm mb-2">Jump to target and save return address in $ra</div>
+                                        <div class="text-xs text-gray-500">$ra = PC + 4, then PC = target</div>
+                                        <div class="text-xs mt-2"><strong>Use case:</strong> Function calls, procedure invocation</div>
                                     </div>
                                 </div>
                             </div>
 
                             <!-- R-Type Jumps -->
                             <div>
-                                <h4 class="font-semibold mb-4 text-red-600">📍 R-Type Jumps</h4>
+                                <h4 class="font-semibold mb-4 text-red-600">📍 R-Type Jumps (Indirect)</h4>
                                 <div class="space-y-4">
                                     <div class="instruction-card p-4">
                                         <div class="flex justify-between items-start mb-2">
@@ -423,10 +551,11 @@
                                                 <div class="code-font font-semibold">jr rs</div>
                                                 <div class="text-sm text-gray-600">Jump Register</div>
                                             </div>
-                                            <div class="text-xs bg-red-100 px-2 py-1 rounded">001000</div>
+                                                                                        <div class="text-xs bg-red-100 px-2 py-1 rounded">001000</div>
                                         </div>
-                                        <div class="text-sm mb-2">Jump to address in register rs</div>
-                                        <div class="text-xs text-gray-500">PC = rs (function return)</div>
+                                        <div class="text-sm mb-2">Jump to address stored in register rs</div>
+                                        <div class="text-xs text-gray-500">PC = rs (commonly used for function returns)</div>
+                                        <div class="text-xs mt-2"><strong>Use case:</strong> Function returns, computed jumps</div>
                                     </div>
 
                                     <div class="instruction-card p-4">
@@ -437,18 +566,62 @@
                                             </div>
                                             <div class="text-xs bg-red-100 px-2 py-1 rounded">001001</div>
                                         </div>
-                                        <div class="text-sm mb-2">Jump to rs, save address in rd</div>
-                                        <div class="text-xs text-gray-500">rd = PC + 4, PC = rs</div>
+                                        <div class="text-sm mb-2">Jump to rs, save return address in rd</div>
+                                        <div class="text-xs text-gray-500">rd = PC + 4, then PC = rs</div>
+                                        <div class="text-xs mt-2"><strong>Use case:</strong> Dynamic function calls, jump tables</div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
 
+                    <!-- Jump vs Branch Comparison -->
+                    <div class="interactive-box p-6">
+                        <h3 class="text-xl font-semibold mb-4">⚡ Jump vs Branch Comparison</h3>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-sm">
+                                <thead class="bg-gray-100">
+                                    <tr>
+                                        <th class="p-3 text-left">Aspect</th>
+                                        <th class="p-3 text-left">Branch Instructions</th>
+                                        <th class="p-3 text-left">Jump Instructions</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-gray-200">
+                                    <tr>
+                                        <td class="p-3 font-medium">Execution</td>
+                                        <td class="p-3">Conditional (based on comparison)</td>
+                                        <td class="p-3">Unconditional (always taken)</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-3 font-medium">Range</td>
+                                        <td class="p-3">±32KB (16-bit offset)</td>
+                                        <td class="p-3">256MB region (26-bit address) or unlimited (register)</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-3 font-medium">Address Type</td>
+                                        <td class="p-3">PC-relative</td>
+                                        <td class="p-3">Absolute (J-type) or Register-based (R-type)</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-3 font-medium">Primary Use</td>
+                                        <td class="p-3">Loops, conditionals, if-statements</td>
+                                        <td class="p-3">Function calls, returns, long jumps</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-3 font-medium">Format</td>
+                                        <td class="p-3">I-type</td>
+                                        <td class="p-3">J-type (j, jal) or R-type (jr, jalr)</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
                     <!-- Jump Address Calculator -->
                     <div class="interactive-box p-6">
                         <h3 class="text-xl font-semibold mb-4">🧮 Jump Address Calculator</h3>
-                        <p class="mb-4">Calculate jump target addresses:</p>
+                        <p class="mb-4">Calculate jump target addresses for J-type instructions:</p>
                         
                         <div class="grid lg:grid-cols-2 gap-6">
                             <div>
@@ -460,7 +633,7 @@
                                                value="0x00400000" oninput="calculateJump()">
                                     </div>
                                     <div>
-                                        <label class="block text-sm font-medium">26-bit Address (hex):</label>
+                                        <label class="block text-sm font-medium">26-bit Address Field (hex):</label>
                                         <input type="text" id="j-address" class="w-full p-2 border rounded code-font" 
                                                value="0x100010" oninput="calculateJump()">
                                     </div>
@@ -476,6 +649,15 @@
                                 <div id="j-steps" class="bg-gray-50 p-3 rounded text-sm">
                                     <div>Loading...</div>
                                 </div>
+                                <div class="mt-4 bg-blue-50 p-3 rounded">
+                                    <h5 class="font-medium text-sm mb-2">💡 How J-Type Addressing Works</h5>
+                                    <div class="text-xs space-y-1">
+                                        <div>• Take upper 4 bits of (PC+4)</div>
+                                        <div>• Concatenate with 26-bit address field</div>
+                                        <div>• Shift left 2 bits (word alignment)</div>
+                                        <div>• Result is the jump target address</div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -490,6 +672,7 @@
                     <!-- Instruction Builder -->
                     <div class="interactive-box p-6">
                         <h3 class="text-xl font-semibold mb-4">🏗️ Build Your Own Instruction</h3>
+                        <p class="mb-6">Select an instruction type and configure its fields to generate the complete 32-bit binary encoding:</p>
                         
                         <div class="grid lg:grid-cols-2 gap-8">
                             <div>
@@ -544,47 +727,166 @@
                         </div>
                     </div>
 
-                    <!-- Manual Binary Editor -->
+                    <!-- Manual Binary Editor - FIXED -->
                     <div class="interactive-box p-6">
-                        <h3 class="text-xl font-semibold mb-4">✏️ Manual Binary Editor</h3>
-                        <p class="mb-4">Click on any bit to toggle it:</p>
+                        <h3 class="text-xl font-semibold mb-4">✏️ Interactive Binary Instruction Editor</h3>
                         
-                        <div class="mb-6">
-                            <div class="grid grid-cols-32 gap-1 mb-2" id="binary-editor">
-                                <!-- 32 binary digits will be generated here -->
-                            </div>
-                            <div class="flex justify-between text-xs text-gray-500">
-                                <span>31</span>
-                                <span>24</span>
-                                <span>16</span>
-                                <span>8</span>
-                                <span>0</span>
+                        <div class="bg-blue-50 p-4 rounded-lg mb-6">
+                            <h4 class="font-semibold mb-2">🎯 How to Use This Tool:</h4>
+                            <div class="text-sm space-y-2">
+                                <p><strong>Purpose:</strong> Manually create and decode 32-bit MIPS instructions by toggling individual bits.</p>
+                                <p><strong>Instructions:</strong></p>
+                                <ul class="list-disc list-inside ml-4 space-y-1">
+                                    <li>Click any bit to toggle it between 0 (gray) and 1 (blue)</li>
+                                    <li>Watch the instruction decode in real-time as you modify bits</li>
+                                    <li>Use this to understand how different bit patterns create different instructions</li>
+                                    <li>Try setting the first 6 bits to known opcodes (e.g., 000100 for beq)</li>
+                                </ul>
+                                <p><strong>Learning Goals:</strong> Understand the relationship between binary patterns and MIPS instructions</p>
                             </div>
                         </div>
                         
-                        <div class="grid md:grid-cols-2 gap-6">
-                            <div>
-                                <button class="bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-700 mr-2"
-                                        onclick="clearBinary()">
-                                    🗑️ Clear All
-                                </button>
-                                <button class="bg-yellow-600 text-white px-4 py-2 rounded hover:bg-yellow-700"
-                                        onclick="randomBinary()">
-                                    🎲 Random
-                                </button>
+                        <div class="mb-6">
+                            <h4 class="font-medium mb-3">32-Bit Instruction (MSB → LSB):</h4>
+                            
+                            <!-- Bit position labels -->
+                            <div class="flex justify-between text-xs text-gray-500 mb-1 px-1">
+                                <span>31</span>
+                                <span>28</span>
+                                <span>24</span>
+                                <span>20</span>
+                                <span>16</span>
+                                <span>12</span>
+                                <span>8</span>
+                                <span>4</span>
+                                <span>0</span>
                             </div>
-                            <div>
-                                <div class="text-right">
-                                    <strong>Hex:</strong> <span id="manual-hex" class="code-font">0x00000000</span>
+                            
+                            <!-- Binary editor with proper horizontal layout -->
+                            <div class="grid grid-cols-32 gap-px bg-gray-300 p-2 rounded" id="binary-editor">
+                                <!-- 32 binary digits will be generated here -->
+                            </div>
+                            
+                            <!-- Field labels for different instruction types -->
+                            <div class="mt-2">
+                                <div class="text-xs text-gray-600 mb-1">Common field boundaries:</div>
+                                <div class="flex text-xs">
+                                    <div class="w-24 text-red-600">Opcode (31-26)</div>
+                                    <div class="w-20 text-blue-600">rs (25-21)</div>
+                                    <div class="w-20 text-blue-600">rt (20-16)</div>
+                                    <div class="flex-1 text-green-600">rd/immediate/address (15-0)</div>
                                 </div>
                             </div>
                         </div>
                         
-                        <div class="mt-6">
-                            <h4 class="font-medium mb-2">Decoded Instruction:</h4>
-                            <div id="decoded-instruction" class="bg-blue-50 p-4 rounded">
-                                                              <div class="text-center text-gray-500">
-                                    Edit bits above to decode instruction
+                        <div class="grid md:grid-cols-2 gap-6 mb-6">
+                            <div class="space-x-2">
+                                <button class="bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-700"
+                                        onclick="clearBinary()">
+                                    🗑️ Clear All Bits
+                                </button>
+                                <button class="bg-yellow-600 text-white px-4 py-2 rounded hover:bg-yellow-700"
+                                        onclick="randomBinary()">
+                                    🎲 Random Pattern
+                                </button>
+                                <button class="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700"
+                                        onclick="loadExamplePattern()">
+                                    📝 Load Example
+                                </button>
+                            </div>
+                            <div class="text-right">
+                                <div class="mb-1"><strong>Hexadecimal:</strong></div>
+                                <div class="code-font text-lg bg-gray-100 p-2 rounded" id="manual-hex">0x00000000</div>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <h4 class="font-medium mb-2">🔍 Decoded Instruction:</h4>
+                            <div id="decoded-instruction" class="bg-blue-50 p-4 rounded min-h-24">
+                                <div class="text-center text-gray-500">
+                                    Click bits above to create an instruction pattern
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Quick Examples -->
+                        <div class="mt-6 bg-gray-50 p-4 rounded">
+                            <h5 class="font-medium mb-2">🚀 Try These Examples:</h5>
+                            <div class="grid md:grid-cols-2 gap-4 text-sm">
+                                <div>
+                                    <button class="bg-blue-500 text-white px-3 py-1 rounded text-xs hover:bg-blue-600 mr-2"
+                                            onclick="setBinaryPattern('00010001000010010000000000001000')">
+                                        Load beq Example
+                                    </button>
+                                    <span class="text-gray-600">beq $t0, $t1, 8</span>
+                                </div>
+                                <div>
+                                    <button class="bg-green-500 text-white px-3 py-1 rounded text-xs hover:bg-green-600 mr-2"
+                                            onclick="setBinaryPattern('00001000000100000000000000100000')">
+                                        Load j Example
+                                    </button>
+                                    <span class="text-gray-600">j 0x100020</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Opcode Reference -->
+                    <div class="interactive-box p-6">
+                        <h3 class="text-xl font-semibold mb-4">📋 Quick Reference Tables</h3>
+                        
+                        <div class="grid md:grid-cols-3 gap-6">
+                            <div>
+                                <h4 class="font-semibold mb-3 text-blue-600">Branch Opcodes</h4>
+                                <div class="space-y-1 text-sm">
+                                    <div class="flex justify-between code-font bg-blue-50 p-1 rounded">
+                                        <span>beq</span><span>000100</span>
+                                    </div>
+                                    <div class="flex justify-between code-font bg-blue-50 p-1 rounded">
+                                        <span>bne</span><span>000101</span>
+                                    </div>
+                                    <div class="flex justify-between code-font bg-blue-50 p-1 rounded">
+                                        <span>bltz</span><span>000001</span>
+                                    </div>
+                                    <div class="flex justify-between code-font bg-blue-50 p-1 rounded">
+                                        <span>bgez</span><span>000001</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <h4 class="font-semibold mb-3 text-orange-600">Jump Opcodes</h4>
+                                <div class="space-y-1 text-sm">
+                                    <div class="flex justify-between code-font bg-orange-50 p-1 rounded">
+                                        <span>j</span><span>000010</span>
+                                    </div>
+                                    <div class="flex justify-between code-font bg-orange-50 p-1 rounded">
+                                        <span>jal</span><span>000011</span>
+                                    </div>
+                                    <div class="flex justify-between code-font bg-orange-50 p-1 rounded">
+                                        <span>jr</span><span>000000</span>
+                                    </div>
+                                    <div class="flex justify-between code-font bg-orange-50 p-1 rounded">
+                                        <span>jalr</span><span>000000</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <h4 class="font-semibold mb-3 text-gray-600">Common Registers</h4>
+                                <div class="space-y-1 text-sm">
+                                    <div class="flex justify-between code-font bg-gray-50 p-1 rounded">
+                                        <span>$zero</span><span>00000</span>
+                                    </div>
+                                    <div class="flex justify-between code-font bg-gray-50 p-1 rounded">
+                                        <span>$t0</span><span>01000</span>
+                                    </div>
+                                    <div class="flex justify-between code-font bg-gray-50 p-1 rounded">
+                                        <span>$t1</span><span>01001</span>
+                                    </div>
+                                    <div class="flex justify-between code-font bg-gray-50 p-1 rounded">
+                                        <span>$ra</span><span>11111</span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -681,19 +983,19 @@
 
                             <!-- Question 5 -->
                             <div class="question-card p-4 border rounded">
-                                <h4 class="font-medium mb-3">Question 5: What is the register number for $ra?</h4>
+                                <h4 class="font-medium mb-3">Question 5: The main difference between branch and jump instructions is:</h4>
                                 <div class="space-y-2">
                                     <label class="flex items-center gap-2">
-                                        <input type="radio" name="q5" value="11111" class="quiz-radio">
-                                        <span class="code-font">11111 (31)</span>
+                                        <input type="radio" name="q5" value="conditional" class="quiz-radio">
+                                        <span>Branches are conditional, jumps are unconditional</span>
                                     </label>
                                     <label class="flex items-center gap-2">
-                                        <input type="radio" name="q5" value="11110" class="quiz-radio">
-                                        <span class="code-font">11110 (30)</span>
+                                        <input type="radio" name="q5" value="format" class="quiz-radio">
+                                        <span>They use different instruction formats</span>
                                     </label>
                                     <label class="flex items-center gap-2">
-                                        <input type="radio" name="q5" value="11101" class="quiz-radio">
-                                        <span class="code-font">11101 (29)</span>
+                                        <input type="radio" name="q5" value="both" class="quiz-radio">
+                                        <span>Both A and B are correct</span>
                                     </label>
                                 </div>
                             </div>
@@ -711,13 +1013,18 @@
                     <!-- Binary Challenges -->
                     <div class="interactive-box p-6">
                         <h3 class="text-xl font-semibold mb-4">🧩 Binary Decoding Challenge</h3>
-                        <p class="mb-4">Decode these binary instructions:</p>
+                        <p class="mb-4">Decode these binary instructions and identify what they do:</p>
                         
                         <div class="space-y-4">
                             <!-- Challenge 1 -->
                             <div class="challenge-card p-4 bg-gray-50 rounded">
-                                <h4 class="font-medium mb-2">Challenge 1: Decode this instruction</h4>
-                                <div class="code-font text-lg mb-3">00010001000010010000000000001000</div>
+                                <h4 class="font-medium mb-2">Challenge 1: Decode this 32-bit instruction</h4>
+                                <div class="code-font text-lg mb-3 bg-white p-2 rounded border">
+                                    00010001000010010000000000001000
+                                </div>
+                                <div class="text-xs text-gray-600 mb-2">
+                                    Hint: Look at the first 6 bits (opcode) and identify the instruction type
+                                </div>
                                 <input type="text" class="w-full p-2 border rounded" 
                                        placeholder="Enter your answer (e.g., beq $t0, $t1, 8)"
                                        id="challenge1-answer">
@@ -730,8 +1037,13 @@
 
                             <!-- Challenge 2 -->
                             <div class="challenge-card p-4 bg-gray-50 rounded">
-                                <h4 class="font-medium mb-2">Challenge 2: Decode this instruction</h4>
-                                <div class="code-font text-lg mb-3">00001000000100000000000000100000</div>
+                                <h4 class="font-medium mb-2">Challenge 2: Decode this jump instruction</h4>
+                                <div class="code-font text-lg mb-3 bg-white p-2 rounded border">
+                                    00001000000100000000000000100000
+                                </div>
+                                <div class="text-xs text-gray-600 mb-2">
+                                    Hint: This is a J-type instruction with a 26-bit address field
+                                </div>
                                 <input type="text" class="w-full p-2 border rounded" 
                                        placeholder="Enter your answer"
                                        id="challenge2-answer">
@@ -744,8 +1056,13 @@
 
                             <!-- Challenge 3 -->
                             <div class="challenge-card p-4 bg-gray-50 rounded">
-                                <h4 class="font-medium mb-2">Challenge 3: Decode this instruction</h4>
-                                <div class="code-font text-lg mb-3">00000011111000000000000000001000</div>
+                                <h4 class="font-medium mb-2">Challenge 3: Decode this register jump</h4>
+                                <div class="code-font text-lg mb-3 bg-white p-2 rounded border">
+                                    00000011111000000000000000001000
+                                </div>
+                                <div class="text-xs text-gray-600 mb-2">
+                                    Hint: R-type instruction - check the function code in the last 6 bits
+                                </div>
                                 <input type="text" class="w-full p-2 border rounded" 
                                        placeholder="Enter your answer"
                                        id="challenge3-answer">
@@ -760,20 +1077,31 @@
 
                     <!-- Progress Summary -->
                     <div class="interactive-box p-6">
-                        <h3 class="text-xl font-semibold mb-4">📊 Your Progress</h3>
-                        <div class="grid md:grid-cols-3 gap-6">
+                        <h3 class="text-xl font-semibold mb-4">📊 Your Session Progress</h3>
+                        <div class="grid md:grid-cols-3 gap-6 mb-6">
                             <div class="text-center">
                                 <div class="text-3xl font-bold text-blue-600" id="quiz-score">0</div>
-                                <div>Quiz Score (%)</div>
+                                <div class="text-sm">Quiz Score (%)</div>
                             </div>
                             <div class="text-center">
                                 <div class="text-3xl font-bold text-green-600" id="challenges-solved">0</div>
-                                <div>Challenges Solved</div>
+                                <div class="text-sm">Challenges Solved</div>
                             </div>
-                            <div class="text-center">
+                                                        <div class="text-center">
                                 <div class="text-3xl font-bold text-purple-600" id="total-score">0</div>
-                                <div>Total Score</div>
+                                <div class="text-sm">Total Score</div>
                             </div>
+                        </div>
+                        
+                        <div class="text-center">
+                            <button class="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700 text-sm"
+                                    onclick="exportResults()">
+                                📊 Export Results
+                            </button>
+                            <button class="bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-700 text-sm ml-2"
+                                    onclick="resetProgress()">
+                                🔄 Reset Progress
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -794,8 +1122,14 @@
         // Initialize on page load
         document.addEventListener('DOMContentLoaded', () => {
             initializeBinaryEditor();
-            calculateJump(); // Initialize jump calculator
+            calculateJump();
             updateScoreboard();
+            
+            // Set up input event listeners for real-time updates
+            const branchInput = document.getElementById('branch-input');
+            if (branchInput) {
+                branchInput.addEventListener('input', decodeBranch);
+            }
         });
 
         // Tab switching functionality
@@ -822,6 +1156,36 @@
                 btn.setAttribute('aria-selected', 'true');
             });
         });
+
+        // Helper functions
+        function getOpcode(instruction) {
+            const opcodes = {
+                'beq': '000100',
+                'bne': '000101',
+                'bltz': '000001',
+                'bgez': '000001',
+                'j': '000010',
+                'jal': '000011',
+                'jr': '000000'
+            };
+            return opcodes[instruction] || '??????';
+        }
+
+        function getFunctionCode(instruction) {
+            const funcCodes = {
+                'jr': '001000',
+                'jalr': '001001'
+            };
+            return funcCodes[instruction] || '??????';
+        }
+
+        function getRegisterNumber(reg) {
+            const registers = {
+                '$zero': '00000', '$t0': '01000', '$t1': '01001', '$t2': '01010',
+                '$s0': '10000', '$s1': '10001', '$ra': '11111', '$sp': '11101'
+            };
+            return registers[reg] || '00000';
+        }
 
         // Instruction format display
         function showInstructionFormat(instruction, format) {
@@ -899,36 +1263,6 @@
             display.innerHTML = formatHtml;
         }
 
-        // Helper functions
-        function getOpcode(instruction) {
-            const opcodes = {
-                'beq': '000100',
-                'bne': '000101',
-                'bltz': '000001',
-                'bgez': '000001',
-                'j': '000010',
-                'jal': '000011',
-                'jr': '000000'
-            };
-            return opcodes[instruction] || '??????';
-        }
-
-        function getFunctionCode(instruction) {
-            const funcCodes = {
-                'jr': '001000',
-                'jalr': '001001'
-            };
-            return funcCodes[instruction] || '??????';
-        }
-
-        function getRegisterNumber(reg) {
-            const registers = {
-                '$zero': '00000', '$t0': '01000', '$t1': '01001', '$t2': '01010',
-                '$s0': '10000', '$s1': '10001', '$ra': '11111', '$sp': '11101'
-            };
-            return registers[reg] || '00000';
-        }
-
         // Branch decoder
         function decodeBranch() {
             const input = document.getElementById('branch-input').value.trim();
@@ -950,7 +1284,16 @@
                     const opcodeField = getOpcode(opcode);
                     const rs = getRegisterNumber(parts[1]);
                     const rt = getRegisterNumber(parts[2]);
-                    const offset = parseInt(parts[3]) || 0;
+                    
+                    // Handle both numeric offsets and labels
+                    let offset = 0;
+                    if (parts[3] && !isNaN(parseInt(parts[3]))) {
+                        offset = parseInt(parts[3]);
+                    } else if (parts[3]) {
+                        // For labels, use a placeholder offset
+                        offset = 8; // Example offset for demonstration
+                    }
+                    
                     const offsetBinary = (offset & 0xFFFF).toString(2).padStart(16, '0');
                     
                     binary = opcodeField + rs + rt + offsetBinary;
@@ -959,6 +1302,29 @@
                             <div><strong>Opcode (${opcode}):</strong> ${opcodeField}</div>
                             <div><strong>rs (${parts[1]}):</strong> ${rs}</div>
                             <div><strong>rt (${parts[2]}):</strong> ${rt}</div>
+                            <div><strong>Offset:</strong> ${offsetBinary} (${offset})</div>
+                        </div>
+                    `;
+                } else if (opcode === 'bltz' || opcode === 'bgez') {
+                    const opcodeField = getOpcode(opcode);
+                    const rs = getRegisterNumber(parts[1]);
+                    const rt = opcode === 'bgez' ? '00001' : '00000';
+                    
+                    let offset = 0;
+                    if (parts[2] && !isNaN(parseInt(parts[2]))) {
+                        offset = parseInt(parts[2]);
+                    } else if (parts[2]) {
+                        offset = 8; // Example offset for labels
+                    }
+                    
+                    const offsetBinary = (offset & 0xFFFF).toString(2).padStart(16, '0');
+                    
+                    binary = opcodeField + rs + rt + offsetBinary;
+                    breakdown = `
+                        <div class="space-y-2 text-sm">
+                            <div><strong>Opcode (${opcode}):</strong> ${opcodeField}</div>
+                            <div><strong>rs (${parts[1]}):</strong> ${rs}</div>
+                            <div><strong>rt field:</strong> ${rt}</div>
                             <div><strong>Offset:</strong> ${offsetBinary} (${offset})</div>
                         </div>
                     `;
@@ -972,7 +1338,7 @@
                     <div class="space-y-4">
                         <div>
                             <h4 class="font-semibold mb-2">Binary Encoding:</h4>
-                            <div class="code-font text-lg bg-blue-50 p-2 rounded">${binary}</div>
+                            <div class="code-font text-lg bg-blue-50 p-2 rounded break-all">${binary}</div>
                         </div>
                         <div>
                             <h4 class="font-semibold mb-2">Field Breakdown:</h4>
@@ -1044,24 +1410,25 @@
                     <div>
                         <label class="block font-medium mb-1">Source Register (rs):</label>
                         <select id="field-rs" class="w-full p-2 border rounded">
-                            <option value="01000">$t0</option>
-                            <option value="01001">$t1</option>
-                            <option value="10000">$s0</option>
-                            <option value="00000">$zero</option>
+                            <option value="01000">$t0 (8)</option>
+                            <option value="01001">$t1 (9)</option>
+                            <option value="10000">$s0 (16)</option>
+                            <option value="00000">$zero (0)</option>
                         </select>
                     </div>
                     <div>
                         <label class="block font-medium mb-1">Target Register (rt):</label>
                         <select id="field-rt" class="w-full p-2 border rounded">
-                            <option value="01000">$t0</option>
-                            <option value="01001">$t1</option>
-                            <option value="10000">$s0</option>
-                            <option value="00000">$zero</option>
+                            <option value="01000">$t0 (8)</option>
+                            <option value="01001">$t1 (9)</option>
+                            <option value="10000">$s0 (16)</option>
+                            <option value="00000">$zero (0)</option>
                         </select>
                     </div>
                     <div>
                         <label class="block font-medium mb-1">Branch Offset:</label>
-                        <input type="number" id="field-offset" class="w-full p-2 border rounded" value="4">
+                        <input type="number" id="field-offset" class="w-full p-2 border rounded" value="4" min="-32768" max="32767">
+                        <div class="text-xs text-gray-500 mt-1">Word offset (-32768 to 32767)</div>
                     </div>
                 `;
             } else if (type === 'j' || type === 'jal') {
@@ -1070,6 +1437,7 @@
                         <label class="block font-medium mb-1">Jump Address (26-bit):</label>
                         <input type="text" id="field-address" class="w-full p-2 border rounded code-font" 
                                value="0x100000" placeholder="0x100000">
+                        <div class="text-xs text-gray-500 mt-1">26-bit address field (hex)</div>
                     </div>
                 `;
             } else if (type === 'jr') {
@@ -1077,9 +1445,10 @@
                     <div>
                         <label class="block font-medium mb-1">Jump Register (rs):</label>
                         <select id="field-rs" class="w-full p-2 border rounded">
-                            <option value="11111">$ra</option>
-                            <option value="01000">$t0</option>
-                            <option value="01001">$t1</option>
+                            <option value="11111">$ra (31)</option>
+                            <option value="01000">$t0 (8)</option>
+                            <option value="01001">$t1 (9)</option>
+                            <option value="10000">$s0 (16)</option>
                         </select>
                     </div>
                 `;
@@ -1133,6 +1502,7 @@
                         <div class="space-y-2 text-sm">
                             <div><strong>Opcode:</strong> 000000</div>
                             <div><strong>rs:</strong> ${rs}</div>
+                            <div><strong>Unused fields:</strong> 00000</div>
                             <div><strong>Function:</strong> ${funct}</div>
                         </div>
                     `;
@@ -1140,7 +1510,7 @@
                 
                 const hex = parseInt(binary, 2).toString(16).toUpperCase().padStart(8, '0');
                 
-                document.getElementById('binary-output').innerHTML = `<div class="text-blue-700">${binary}</div>`;
+                document.getElementById('binary-output').innerHTML = `<div class="text-blue-700 break-all">${binary}</div>`;
                 document.getElementById('field-breakdown').innerHTML = breakdown;
                 document.getElementById('hex-output').textContent = '0x' + hex;
                 
@@ -1149,7 +1519,7 @@
             }
         }
 
-        // Binary editor
+        // Binary editor - FIXED to be horizontal
         function initializeBinaryEditor() {
             const editor = document.getElementById('binary-editor');
             editor.innerHTML = '';
@@ -1158,6 +1528,7 @@
                 const bit = document.createElement('div');
                 bit.className = 'binary-bit bg-gray-200 text-center cursor-pointer hover:bg-gray-300';
                 bit.textContent = '0';
+                bit.style.minHeight = '28px';
                 bit.onclick = () => toggleBit(i);
                 editor.appendChild(bit);
             }
@@ -1177,6 +1548,18 @@
 
         function randomBinary() {
             currentBits = Array.from({length: 32}, () => Math.random() > 0.5 ? 1 : 0);
+            updateBinaryDisplay();
+        }
+
+        function loadExamplePattern() {
+            // Load beq $t0, $t1, 8 as example
+            setBinaryPattern('00010001000010010000000000001000');
+        }
+
+        function setBinaryPattern(binaryString) {
+            for (let i = 0; i < 32; i++) {
+                currentBits[i] = parseInt(binaryString[i]) || 0;
+            }
             updateBinaryDisplay();
         }
 
@@ -1203,30 +1586,57 @@
             const opcode = binary.substring(0, 6);
             
             let instruction = 'Unknown instruction';
+            let details = '';
             
             switch (opcode) {
-                case '000100': instruction = 'beq (Branch if Equal)'; break;
-                case '000101': instruction = 'bne (Branch if Not Equal)'; break;
-                case '000010': instruction = 'j (Jump)'; break;
-                case '000011': instruction = 'jal (Jump and Link)'; break;
+                case '000100': 
+                    const rs_beq = parseInt(binary.substring(6, 11), 2);
+                    const rt_beq = parseInt(binary.substring(11, 16), 2);
+                    const offset_beq = parseInt(binary.substring(16, 32), 2);
+                    instruction = 'beq (Branch if Equal)';
+                    details = `rs=$${rs_beq}, rt=$${rt_beq}, offset=${offset_beq}`;
+                    break;
+                case '000101': 
+                    instruction = 'bne (Branch if Not Equal)'; 
+                    break;
+                case '000010': 
+                    const addr_j = parseInt(binary.substring(6, 32), 2);
+                    instruction = 'j (Jump)';
+                    details = `address=0x${addr_j.toString(16).toUpperCase()}`;
+                    break;
+                case '000011': 
+                    instruction = 'jal (Jump and Link)'; 
+                    break;
                 case '000000':
                     const funct = binary.substring(26, 32);
-                    if (funct === '001000') instruction = 'jr (Jump Register)';
-                    else if (funct === '001001') instruction = 'jalr (Jump and Link Register)';
+                    if (funct === '001000') {
+                        const rs_jr = parseInt(binary.substring(6, 11), 2);
+                        instruction = 'jr (Jump Register)';
+                        details = `rs=$${rs_jr}`;
+                    } else if (funct === '001001') {
+                        instruction = 'jalr (Jump and Link Register)';
+                    }
                     break;
             }
             
             decoded.innerHTML = `
-                <div class="text-center">
+                <div class="space-y-2">
                     <div class="font-semibold text-lg">${instruction}</div>
-                    <div class="text-sm text-gray-600 mt-2">Opcode: ${opcode}</div>
+                    <div class="text-sm text-gray-600">Opcode: ${opcode}</div>
+                    ${details ? `<div class="text-sm">${details}</div>` : ''}
                 </div>
             `;
         }
 
-                // Quiz functionality
+        // Quiz functionality
         function checkQuiz() {
-            const answers = { q1: 'I', q2: '000010', q3: 'jal', q4: '001000', q5: '11111' };
+            const answers = { 
+                q1: 'I', 
+                q2: '000010', 
+                q3: 'jal', 
+                q4: '001000', 
+                q5: 'both' 
+            };
             
             let correct = 0;
             let total = Object.keys(answers).length;
@@ -1271,7 +1681,7 @@
                     feedback.dataset.solved = 'true';
                 }
             } else {
-                feedback.innerHTML = `<div class="text-red-600">❌ Incorrect. Expected: <code>${correctAnswer}</code></div>`;
+                feedback.innerHTML = `<div class="text-red-600">❌ Incorrect. Expected: <code class="bg-gray-100 px-1 rounded">${correctAnswer}</code></div>`;
                 feedback.dataset.solved = 'false';
             }
             
@@ -1285,8 +1695,25 @@
             document.getElementById('total-score').textContent = quizState.score + (quizState.challengesSolved * 20);
         }
 
-        // Reset functionality
-        function resetAllProgress() {
+        // Export and reset functionality
+        function exportResults() {
+            const results = {
+                timestamp: new Date().toISOString(),
+                quizScore: quizState.score,
+                challengesSolved: quizState.challengesSolved,
+                totalScore: quizState.totalScore
+            };
+            
+            const dataStr = JSON.stringify(results, null, 2);
+            const dataBlob = new Blob([dataStr], {type: 'application/json'});
+            
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(dataBlob);
+            link.download = `mips-control-flow-results-${new Date().toISOString().slice(0,10)}.json`;
+            link.click();
+        }
+
+        function resetProgress() {
             if (confirm('Are you sure you want to reset all progress?')) {
                 quizState = { score: 0, challengesSolved: 0, totalScore: 0 };
                 updateScoreboard();
@@ -1307,293 +1734,13 @@
                 });
                 
                 document.getElementById('quiz-results').innerHTML = '';
-            }
-        }
-
-        // Helper function to format binary for display
-        function formatBinary(binary) {
-            // Add spaces every 4 bits for readability
-            return binary.match(/.{1,4}/g).join(' ');
-        }
-
-        // Additional helper function for instruction analysis
-        function analyzeInstruction(binary) {
-            const opcode = binary.substring(0, 6);
-            let analysis = {};
-            
-            switch (opcode) {
-                case '000100': // beq
-                case '000101': // bne
-                    analysis = {
-                        type: 'I-Type Branch',
-                        opcode: opcode,
-                        rs: binary.substring(6, 11),
-                        rt: binary.substring(11, 16),
-                        immediate: binary.substring(16, 32)
-                    };
-                    break;
-                case '000010': // j
-                case '000011': // jal
-                    analysis = {
-                        type: 'J-Type Jump',
-                        opcode: opcode,
-                        address: binary.substring(6, 32)
-                    };
-                    break;
-                case '000000': // R-Type
-                    analysis = {
-                        type: 'R-Type',
-                        opcode: opcode,
-                        rs: binary.substring(6, 11),
-                        rt: binary.substring(11, 16),
-                        rd: binary.substring(16, 21),
-                        shamt: binary.substring(21, 26),
-                        funct: binary.substring(26, 32)
-                    };
-                    break;
-                default:
-                    analysis = {
-                        type: 'Unknown',
-                        opcode: opcode
-                    };
-            }
-            
-            return analysis;
-        }
-
-        // Enhanced instruction decoder with more detail
-        function enhancedDecodeBinary(binary) {
-            const analysis = analyzeInstruction(binary);
-            const decoded = document.getElementById('decoded-instruction');
-            
-            let html = `<div class="space-y-2">`;
-            html += `<div class="font-semibold text-lg">${getInstructionName(analysis)}</div>`;
-            html += `<div class="text-sm"><strong>Type:</strong> ${analysis.type}</div>`;
-            html += `<div class="text-sm"><strong>Opcode:</strong> ${analysis.opcode}</div>`;
-            
-            if (analysis.type === 'I-Type Branch') {
-                html += `<div class="text-xs mt-2">`;
-                html += `<div>rs: ${analysis.rs} (${parseInt(analysis.rs, 2)})</div>`;
-                html += `<div>rt: ${analysis.rt} (${parseInt(analysis.rt, 2)})</div>`;
-                html += `<div>offset: ${analysis.immediate} (${parseInt(analysis.immediate, 2)})</div>`;
-                html += `</div>`;
-            } else if (analysis.type === 'J-Type Jump') {
-                html += `<div class="text-xs mt-2">`;
-                html += `<div>address: ${analysis.address}</div>`;
-                html += `<div>target: 0x${(parseInt(analysis.address, 2) << 2).toString(16).toUpperCase()}</div>`;
-                html += `</div>`;
-            } else if (analysis.type === 'R-Type') {
-                html += `<div class="text-xs mt-2">`;
-                html += `<div>rs: ${analysis.rs} (${parseInt(analysis.rs, 2)})</div>`;
-                html += `<div>funct: ${analysis.funct}</div>`;
-                html += `</div>`;
-            }
-            html += `</div>`;
-            
-            decoded.innerHTML = html;
-        }
-
-        function getInstructionName(analysis) {
-            if (analysis.opcode === '000100') return 'beq (Branch if Equal)';
-            if (analysis.opcode === '000101') return 'bne (Branch if Not Equal)';
-            if (analysis.opcode === '000010') return 'j (Jump)';
-            if (analysis.opcode === '000011') return 'jal (Jump and Link)';
-            if (analysis.opcode === '000000') {
-                if (analysis.funct === '001000') return 'jr (Jump Register)';
-                if (analysis.funct === '001001') return 'jalr (Jump and Link Register)';
-            }
-            return 'Unknown Instruction';
-        }
-
-        // Keyboard shortcuts for better usability
-        document.addEventListener('keydown', (e) => {
-            // Press 'R' to clear binary editor
-            if (e.key === 'r' || e.key === 'R') {
-                if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
-                    e.preventDefault();
-                    clearBinary();
-                }
-            }
-            
-            // Press 'T' to generate random binary
-            if (e.key === 't' || e.key === 'T') {
-                if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
-                    e.preventDefault();
-                    randomBinary();
-                }
-            }
-        });
-
-        // Auto-save functionality for form inputs
-        function saveFormState() {
-            const formData = {};
-            
-            // Save instruction builder state
-            const instrType = document.getElementById('instruction-type');
-            if (instrType) formData.instructionType = instrType.value;
-            
-            // Save branch input
-            const branchInput = document.getElementById('branch-input');
-            if (branchInput) formData.branchInput = branchInput.value;
-            
-            // Save jump calculator inputs
-            const jPc = document.getElementById('j-pc');
-            const jAddress = document.getElementById('j-address');
-            if (jPc) formData.jumpPc = jPc.value;
-            if (jAddress) formData.jumpAddress = jAddress.value;
-            
-            localStorage.setItem('mipsGuideState', JSON.stringify(formData));
-        }
-
-        function loadFormState() {
-            try {
-                const saved = localStorage.getItem('mipsGuideState');
-                if (!saved) return;
                 
-                const formData = JSON.parse(saved);
-                
-                // Restore instruction builder
-                const instrType = document.getElementById('instruction-type');
-                if (instrType && formData.instructionType) {
-                    instrType.value = formData.instructionType;
-                    updateInstructionBuilder();
-                }
-                
-                // Restore branch input
-                const branchInput = document.getElementById('branch-input');
-                if (branchInput && formData.branchInput) {
-                    branchInput.value = formData.branchInput;
-                    decodeBranch();
-                }
-                
-                // Restore jump calculator
-                const jPc = document.getElementById('j-pc');
-                const jAddress = document.getElementById('j-address');
-                if (jPc && formData.jumpPc) jPc.value = formData.jumpPc;
-                if (jAddress && formData.jumpAddress) jAddress.value = formData.jumpAddress;
-                if (formData.jumpPc || formData.jumpAddress) calculateJump();
-                
-            } catch (error) {
-                console.log('Could not restore form state:', error);
+                // Reset binary editor
+                clearBinary();
             }
         }
 
-        // Auto-save on input changes
-        document.addEventListener('input', (e) => {
-            if (e.target.id === 'instruction-type' || 
-                e.target.id === 'branch-input' || 
-                e.target.id === 'j-pc' || 
-                e.target.id === 'j-address') {
-                setTimeout(saveFormState, 500); // Debounce saves
-            }
-        });
-
-        // Load saved state on page load
-        document.addEventListener('DOMContentLoaded', () => {
-            setTimeout(loadFormState, 100); // Give DOM time to fully load
-        });
-
-        // Export functionality for instructors
-        function exportResults() {
-            const results = {
-                timestamp: new Date().toISOString(),
-                quizScore: quizState.score,
-                challengesSolved: quizState.challengesSolved,
-                totalScore: quizState.totalScore,
-                currentSession: {
-                    instructionType: document.getElementById('instruction-type').value,
-                    branchInput: document.getElementById('branch-input').value,
-                    jumpCalculator: {
-                        pc: document.getElementById('j-pc').value,
-                        address: document.getElementById('j-address').value
-                    }
-                }
-            };
-            
-            const dataStr = JSON.stringify(results, null, 2);
-            const dataBlob = new Blob([dataStr], {type: 'application/json'});
-            
-            const link = document.createElement('a');
-            link.href = URL.createObjectURL(dataBlob);
-            link.download = `mips-control-flow-results-${new Date().toISOString().slice(0,10)}.json`;
-            link.click();
-        }
-
-        // Add export button to progress section
-        document.addEventListener('DOMContentLoaded', () => {
-            const progressSection = document.querySelector('#practice-panel .interactive-box:last-child .grid');
-            if (progressSection) {
-                const exportDiv = document.createElement('div');
-                exportDiv.className = 'text-center col-span-full mt-4';
-                exportDiv.innerHTML = `
-                    <button class="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700 text-sm"
-                            onclick="exportResults()">
-                        📊 Export Results
-                    </button>
-                `;
-                progressSection.parentNode.appendChild(exportDiv);
-            }
-        });
-
-        // Tooltip functionality for better UX
-        function addTooltips() {
-            const tooltips = {
-                'binary-editor': 'Click any bit to toggle between 0 and 1',
-                'instruction-type': 'Choose an instruction to see its binary encoding',
-                'branch-input': 'Enter a branch instruction like: beq $t0, $t1, 8',
-                'j-pc': 'Current program counter value in hexadecimal',
-                'j-address': '26-bit address field from the jump instruction'
-            };
-            
-            Object.keys(tooltips).forEach(id => {
-                const element = document.getElementById(id);
-                if (element) {
-                    element.title = tooltips[id];
-                }
-            });
-        }
-
-        // Initialize tooltips after DOM loads
-        document.addEventListener('DOMContentLoaded', addTooltips);
-
-        // Performance optimization: Debounce rapid operations
-        function debounce(func, wait) {
-            let timeout;
-            return function executedFunction(...args) {
-                const later = () => {
-                    clearTimeout(timeout);
-                    func(...args);
-                };
-                clearTimeout(timeout);
-                timeout = setTimeout(later, wait);
-            };
-        }
-
-        // Optimized versions of frequently called functions
-        const debouncedDecodeBranch = debounce(decodeBranch, 300);
-        const debouncedCalculateJump = debounce(calculateJump, 300);
-
-        // Replace direct calls with debounced versions for better performance
-        document.addEventListener('DOMContentLoaded', () => {
-            const branchInput = document.getElementById('branch-input');
-            if (branchInput) {
-                branchInput.removeAttribute('oninput');
-                branchInput.addEventListener('input', debouncedDecodeBranch);
-            }
-            
-            const jPc = document.getElementById('j-pc');
-            const jAddress = document.getElementById('j-address');
-            if (jPc) {
-                jPc.removeAttribute('oninput');
-                jPc.addEventListener('input', debouncedCalculateJump);
-            }
-            if (jAddress) {
-                jAddress.removeAttribute('oninput');
-                jAddress.addEventListener('input', debouncedCalculateJump);
-            }
-        });
-
-        // Final initialization
+        // Console log for debugging
         console.log('MIPS Control Flow Instructions Guide loaded successfully!');
     </script>
 </body>
