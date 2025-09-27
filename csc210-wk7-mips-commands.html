@@ -71,32 +71,68 @@
             color: #155724;
         }
         
-        .binary-bit {
-            width: 28px;
-            height: 28px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            border: 1px solid #ccc;
-            font-family: 'Fira Code', monospace;
-            font-size: 12px;
-            font-weight: bold;
-        }
-        
-        .binary-bit.active {
-            background-color: #3b82f6;
-            color: white;
-            border-color: #2563eb;
-        }
-        
-        .binary-bit:hover {
-            background-color: #e5e7eb;
-        }
-        
-        .binary-bit.active:hover {
-            background-color: #2563eb;
-        }
+/* Add this to the existing style section */
+.binary-bit {
+    width: 24px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border: 1px solid #ccc;
+    font-family: 'Fira Code', monospace;
+    font-size: 11px;
+    font-weight: bold;
+    border-radius: 3px;
+    transition: all 0.2s ease;
+    flex-shrink: 0; /* Prevent shrinking */
+}
+
+.binary-bit:hover {
+    border-color: #6b7280;
+    transform: scale(1.05);
+}
+
+.binary-bit.active {
+    background-color: #3b82f6;
+    color: white;
+    border-color: #2563eb;
+}
+
+.binary-bit.active:hover {
+    background-color: #2563eb;
+}
+
+/* Field coloring for visual grouping */
+.binary-bit.opcode-field {
+    background-color: #fef2f2;
+    border-color: #fca5a5;
+}
+
+.binary-bit.opcode-field.active {
+    background-color: #dc2626;
+    border-color: #b91c1c;
+}
+
+.binary-bit.register-field {
+    background-color: #eff6ff;
+    border-color: #93c5fd;
+}
+
+.binary-bit.register-field.active {
+    background-color: #2563eb;
+    border-color: #1d4ed8;
+}
+
+.binary-bit.immediate-field {
+    background-color: #f0fdf4;
+    border-color: #86efac;
+}
+
+.binary-bit.immediate-field.active {
+    background-color: #16a34a;
+    border-color: #15803d;
+}
         
         .field-group {
             border: 2px solid #6b7280;
@@ -728,108 +764,134 @@
                     </div>
 
                     <!-- Manual Binary Editor - FIXED -->
-                    <div class="interactive-box p-6">
-                        <h3 class="text-xl font-semibold mb-4">✏️ Interactive Binary Instruction Editor</h3>
-                        
-                        <div class="bg-blue-50 p-4 rounded-lg mb-6">
-                            <h4 class="font-semibold mb-2">🎯 How to Use This Tool:</h4>
-                            <div class="text-sm space-y-2">
-                                <p><strong>Purpose:</strong> Manually create and decode 32-bit MIPS instructions by toggling individual bits.</p>
-                                <p><strong>Instructions:</strong></p>
-                                <ul class="list-disc list-inside ml-4 space-y-1">
-                                    <li>Click any bit to toggle it between 0 (gray) and 1 (blue)</li>
-                                    <li>Watch the instruction decode in real-time as you modify bits</li>
-                                    <li>Use this to understand how different bit patterns create different instructions</li>
-                                    <li>Try setting the first 6 bits to known opcodes (e.g., 000100 for beq)</li>
-                                </ul>
-                                <p><strong>Learning Goals:</strong> Understand the relationship between binary patterns and MIPS instructions</p>
-                            </div>
-                        </div>
-                        
-                        <div class="mb-6">
-                            <h4 class="font-medium mb-3">32-Bit Instruction (MSB → LSB):</h4>
-                            
-                            <!-- Bit position labels -->
-                            <div class="flex justify-between text-xs text-gray-500 mb-1 px-1">
-                                <span>31</span>
-                                <span>28</span>
-                                <span>24</span>
-                                <span>20</span>
-                                <span>16</span>
-                                <span>12</span>
-                                <span>8</span>
-                                <span>4</span>
-                                <span>0</span>
-                            </div>
-                            
-                            <!-- Binary editor with proper horizontal layout -->
-                            <div class="grid grid-cols-32 gap-px bg-gray-300 p-2 rounded" id="binary-editor">
-                                <!-- 32 binary digits will be generated here -->
-                            </div>
-                            
-                            <!-- Field labels for different instruction types -->
-                            <div class="mt-2">
-                                <div class="text-xs text-gray-600 mb-1">Common field boundaries:</div>
-                                <div class="flex text-xs">
-                                    <div class="w-24 text-red-600">Opcode (31-26)</div>
-                                    <div class="w-20 text-blue-600">rs (25-21)</div>
-                                    <div class="w-20 text-blue-600">rt (20-16)</div>
-                                    <div class="flex-1 text-green-600">rd/immediate/address (15-0)</div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="grid md:grid-cols-2 gap-6 mb-6">
-                            <div class="space-x-2">
-                                <button class="bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-700"
-                                        onclick="clearBinary()">
-                                    🗑️ Clear All Bits
-                                </button>
-                                <button class="bg-yellow-600 text-white px-4 py-2 rounded hover:bg-yellow-700"
-                                        onclick="randomBinary()">
-                                    🎲 Random Pattern
-                                </button>
-                                <button class="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700"
-                                        onclick="loadExamplePattern()">
-                                    📝 Load Example
-                                </button>
-                            </div>
-                            <div class="text-right">
-                                <div class="mb-1"><strong>Hexadecimal:</strong></div>
-                                <div class="code-font text-lg bg-gray-100 p-2 rounded" id="manual-hex">0x00000000</div>
-                            </div>
-                        </div>
-                        
-                        <div>
-                            <h4 class="font-medium mb-2">🔍 Decoded Instruction:</h4>
-                            <div id="decoded-instruction" class="bg-blue-50 p-4 rounded min-h-24">
-                                <div class="text-center text-gray-500">
-                                    Click bits above to create an instruction pattern
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- Quick Examples -->
-                        <div class="mt-6 bg-gray-50 p-4 rounded">
-                            <h5 class="font-medium mb-2">🚀 Try These Examples:</h5>
-                            <div class="grid md:grid-cols-2 gap-4 text-sm">
-                                <div>
-                                    <button class="bg-blue-500 text-white px-3 py-1 rounded text-xs hover:bg-blue-600 mr-2"
-                                            onclick="setBinaryPattern('00010001000010010000000000001000')">
-                                        Load beq Example
-                                    </button>
-                                    <span class="text-gray-600">beq $t0, $t1, 8</span>
-                                </div>
-                                <div>
-                                    <button class="bg-green-500 text-white px-3 py-1 rounded text-xs hover:bg-green-600 mr-2"
-                                            onclick="setBinaryPattern('00001000000100000000000000100000')">
-                                        Load j Example
-                                    </button>
-                                    <span class="text-gray-600">j 0x100020</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    <!-- Replace the Manual Binary Editor section in the encoder panel with this: -->
+<div class="interactive-box p-6">
+    <h3 class="text-xl font-semibold mb-4">✏️ Interactive Binary Instruction Editor</h3>
+    
+    <div class="bg-blue-50 p-4 rounded-lg mb-6">
+        <h4 class="font-semibold mb-2">🎯 How to Use This Tool:</h4>
+        <div class="text-sm space-y-2">
+            <p><strong>Purpose:</strong> Manually create and decode 32-bit MIPS instructions by toggling individual bits.</p>
+            <p><strong>Instructions:</strong></p>
+            <ul class="list-disc list-inside ml-4 space-y-1">
+                <li>Click any bit to toggle it between 0 (gray) and 1 (blue)</li>
+                <li>Watch the instruction decode in real-time as you modify bits</li>
+                <li>Use this to understand how different bit patterns create different instructions</li>
+                <li>Try setting the first 6 bits to known opcodes (e.g., 000100 for beq)</li>
+            </ul>
+            <p><strong>Learning Goals:</strong> Understand the relationship between binary patterns and MIPS instructions</p>
+        </div>
+    </div>
+    
+    <div class="mb-6">
+        <h4 class="font-medium mb-3">32-Bit Instruction Editor:</h4>
+        
+        <!-- Bit position labels -->
+        <div class="mb-2">
+            <div class="flex justify-between text-xs text-gray-500 px-1">
+                <span>31</span>
+                <span>28</span>
+                <span>24</span>
+                <span>20</span>
+                <span>16</span>
+                <span>12</span>
+                <span>8</span>
+                <span>4</span>
+                <span>0</span>
+            </div>
+        </div>
+        
+        <!-- Binary editor with proper horizontal layout -->
+        <div class="overflow-x-auto">
+            <div class="flex gap-1 p-3 bg-gray-100 rounded border min-w-max" id="binary-editor">
+                <!-- 32 binary digits will be generated here in horizontal layout -->
+            </div>
+        </div>
+        
+        <!-- Field grouping indicators -->
+        <div class="mt-3">
+            <div class="text-xs text-gray-600 mb-2">Field Boundaries:</div>
+            <div class="flex gap-2 text-xs flex-wrap">
+                <div class="flex items-center gap-1">
+                    <div class="w-3 h-3 bg-red-200 border border-red-400 rounded"></div>
+                    <span>Opcode (31-26)</span>
+                </div>
+                <div class="flex items-center gap-1">
+                    <div class="w-3 h-3 bg-blue-200 border border-blue-400 rounded"></div>
+                    <span>Registers (25-16)</span>
+                </div>
+                <div class="flex items-center gap-1">
+                    <div class="w-3 h-3 bg-green-200 border border-green-400 rounded"></div>
+                    <span>Immediate/Address (15-0)</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="grid md:grid-cols-2 gap-6 mb-6">
+        <div>
+            <h4 class="font-medium mb-3">Control Buttons:</h4>
+            <div class="space-y-2">
+                <button class="w-full bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-700"
+                        onclick="clearBinary()">
+                    🗑️ Clear All Bits
+                </button>
+                <button class="w-full bg-yellow-600 text-white px-4 py-2 rounded hover:bg-yellow-700"
+                        onclick="randomBinary()">
+                    🎲 Random Pattern
+                </button>
+                <button class="w-full bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700"
+                        onclick="loadExamplePattern()">
+                    📝 Load beq Example
+                </button>
+            </div>
+        </div>
+        <div>
+            <h4 class="font-medium mb-3">Current Values:</h4>
+            <div class="space-y-2">
+                <div class="bg-gray-50 p-2 rounded">
+                    <div class="text-sm font-medium">Hexadecimal:</div>
+                    <div class="code-font text-lg" id="manual-hex">0x00000000</div>
+                </div>
+                <div class="bg-gray-50 p-2 rounded">
+                    <div class="text-sm font-medium">Decimal:</div>
+                    <div class="code-font text-lg" id="manual-decimal">0</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div>
+        <h4 class="font-medium mb-2">🔍 Decoded Instruction:</h4>
+        <div id="decoded-instruction" class="bg-blue-50 p-4 rounded min-h-24">
+            <div class="text-center text-gray-500">
+                Click bits above to create an instruction pattern
+            </div>
+        </div>
+    </div>
+    
+    <!-- Quick Examples -->
+    <div class="mt-6 bg-gray-50 p-4 rounded">
+        <h5 class="font-medium mb-3">🚀 Try These Examples:</h5>
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-3">
+            <button class="bg-blue-500 text-white px-3 py-2 rounded text-sm hover:bg-blue-600 flex flex-col items-center"
+                    onclick="setBinaryPattern('00010001000010010000000000001000')">
+                <span class="font-semibold">beq $t0, $t1, 8</span>
+                <span class="text-xs opacity-80">Branch if Equal</span>
+            </button>
+            <button class="bg-green-500 text-white px-3 py-2 rounded text-sm hover:bg-green-600 flex flex-col items-center"
+                    onclick="setBinaryPattern('00001000000100000000000000100000')">
+                <span class="font-semibold">j 0x100020</span>
+                <span class="text-xs opacity-80">Jump</span>
+            </button>
+            <button class="bg-purple-500 text-white px-3 py-2 rounded text-sm hover:bg-purple-600 flex flex-col items-center"
+                    onclick="setBinaryPattern('00000011111000000000000000001000')">
+                <span class="font-semibold">jr $ra</span>
+                <span class="text-xs opacity-80">Jump Register</span>
+            </button>
+        </div>
+    </div>
+</div>
 
                     <!-- Opcode Reference -->
                     <div class="interactive-box p-6">
@@ -1520,113 +1582,196 @@
         }
 
         // Binary editor - FIXED to be horizontal
-        function initializeBinaryEditor() {
-            const editor = document.getElementById('binary-editor');
-            editor.innerHTML = '';
+        // Replace the initializeBinaryEditor function and related functions with these:
+
+function initializeBinaryEditor() {
+    const editor = document.getElementById('binary-editor');
+    editor.innerHTML = '';
+    
+    // Create 32 bits in horizontal layout
+    for (let i = 0; i < 32; i++) {
+        const bit = document.createElement('div');
+        
+        // Add field-specific classes for visual grouping
+        let fieldClass = '';
+        if (i < 6) fieldClass = 'opcode-field';
+        else if (i < 16) fieldClass = 'register-field';
+        else fieldClass = 'immediate-field';
+        
+        bit.className = `binary-bit ${fieldClass}`;
+        bit.textContent = '0';
+        bit.title = `Bit ${31-i} (position ${31-i})`; // Add tooltip
+        bit.onclick = () => toggleBit(i);
+        editor.appendChild(bit);
+    }
+    
+    updateBinaryDisplay();
+}
+
+function toggleBit(index) {
+    currentBits[index] = 1 - currentBits[index];
+    updateBinaryDisplay();
+}
+
+function clearBinary() {
+    currentBits = new Array(32).fill(0);
+    updateBinaryDisplay();
+}
+
+function randomBinary() {
+    // Generate a more realistic random instruction
+    const opcodes = ['000100', '000101', '000010', '000011', '000000'];
+    const randomOpcode = opcodes[Math.floor(Math.random() * opcodes.length)];
+    
+    let binaryString = randomOpcode;
+    for (let i = 6; i < 32; i++) {
+        binaryString += Math.random() > 0.5 ? '1' : '0';
+    }
+    
+    setBinaryPattern(binaryString);
+}
+
+function loadExamplePattern() {
+    // Load beq $t0, $t1, 8 as example
+    setBinaryPattern('00010001000010010000000000001000');
+}
+
+function setBinaryPattern(binaryString) {
+    for (let i = 0; i < 32 && i < binaryString.length; i++) {
+        currentBits[i] = parseInt(binaryString[i]) || 0;
+    }
+    updateBinaryDisplay();
+}
+
+function updateBinaryDisplay() {
+    const editor = document.getElementById('binary-editor');
+    const children = editor.children;
+    
+    for (let i = 0; i < 32; i++) {
+        const bit = children[i];
+        bit.textContent = currentBits[i];
+        
+        // Update classes based on bit value
+        if (currentBits[i] === 1) {
+            bit.classList.add('active');
+        } else {
+            bit.classList.remove('active');
+        }
+    }
+    
+    // Update hex and decimal displays
+    const binaryString = currentBits.join('');
+    const value = parseInt(binaryString, 2);
+    const hex = value.toString(16).toUpperCase().padStart(8, '0');
+    
+    document.getElementById('manual-hex').textContent = '0x' + hex;
+    if (document.getElementById('manual-decimal')) {
+        document.getElementById('manual-decimal').textContent = value.toLocaleString();
+    }
+    
+    // Decode the instruction
+    decodeBinaryInstruction(binaryString);
+}
+
+function decodeBinaryInstruction(binary) {
+    const decoded = document.getElementById('decoded-instruction');
+    const opcode = binary.substring(0, 6);
+    
+    let instruction = 'Unknown instruction';
+    let details = '';
+    let breakdown = '';
+    
+    switch (opcode) {
+        case '000100': 
+            const rs_beq = parseInt(binary.substring(6, 11), 2);
+            const rt_beq = parseInt(binary.substring(11, 16), 2);
+            const offset_beq = parseInt(binary.substring(16, 32), 2);
+            // Handle signed offset
+            const signed_offset = offset_beq > 32767 ? offset_beq - 65536 : offset_beq;
+            instruction = 'beq (Branch if Equal)';
+            details = `Compare registers $${rs_beq} and $${rt_beq}, branch if equal`;
+            breakdown = `Offset: ${signed_offset} words (${signed_offset * 4} bytes)`;
+            break;
             
-            for (let i = 0; i < 32; i++) {
-                const bit = document.createElement('div');
-                bit.className = 'binary-bit bg-gray-200 text-center cursor-pointer hover:bg-gray-300';
-                bit.textContent = '0';
-                bit.style.minHeight = '28px';
-                bit.onclick = () => toggleBit(i);
-                editor.appendChild(bit);
+        case '000101': 
+            const rs_bne = parseInt(binary.substring(6, 11), 2);
+            const rt_bne = parseInt(binary.substring(11, 16), 2);
+            const offset_bne = parseInt(binary.substring(16, 32), 2);
+            const signed_offset_bne = offset_bne > 32767 ? offset_bne - 65536 : offset_bne;
+            instruction = 'bne (Branch if Not Equal)';
+            details = `Compare registers $${rs_bne} and $${rt_bne}, branch if not equal`;
+            breakdown = `Offset: ${signed_offset_bne} words`;
+            break;
+            
+        case '000010': 
+            const addr_j = parseInt(binary.substring(6, 32), 2);
+            instruction = 'j (Jump)';
+            details = `Unconditional jump to address`;
+            breakdown = `Target address field: 0x${addr_j.toString(16).toUpperCase()}`;
+            break;
+            
+        case '000011': 
+            const addr_jal = parseInt(binary.substring(6, 32), 2);
+            instruction = 'jal (Jump and Link)';
+            details = `Jump to address and save return address in $ra`;
+            breakdown = `Target address field: 0x${addr_jal.toString(16).toUpperCase()}`;
+            break;
+            
+        case '000000':
+            const funct = binary.substring(26, 32);
+            const rs_r = parseInt(binary.substring(6, 11), 2);
+            if (funct === '001000') {
+                instruction = 'jr (Jump Register)';
+                details = `Jump to address stored in register $${rs_r}`;
+                breakdown = `Source register: $${rs_r}`;
+            } else if (funct === '001001') {
+                const rd_jalr = parseInt(binary.substring(16, 21), 2);
+                instruction = 'jalr (Jump and Link Register)';
+                details = `Jump to address in $${rs_r}, save return in $${rd_jalr}`;
+                breakdown = `rs: $${rs_r}, rd: $${rd_jalr}`;
+            } else {
+                instruction = 'Unknown R-type instruction';
+                details = `Function code: ${funct}`;
             }
+            break;
             
-            updateBinaryDisplay();
-        }
-
-        function toggleBit(index) {
-            currentBits[index] = 1 - currentBits[index];
-            updateBinaryDisplay();
-        }
-
-        function clearBinary() {
-            currentBits = new Array(32).fill(0);
-            updateBinaryDisplay();
-        }
-
-        function randomBinary() {
-            currentBits = Array.from({length: 32}, () => Math.random() > 0.5 ? 1 : 0);
-            updateBinaryDisplay();
-        }
-
-        function loadExamplePattern() {
-            // Load beq $t0, $t1, 8 as example
-            setBinaryPattern('00010001000010010000000000001000');
-        }
-
-        function setBinaryPattern(binaryString) {
-            for (let i = 0; i < 32; i++) {
-                currentBits[i] = parseInt(binaryString[i]) || 0;
+        case '000001':
+            const rs_branch = parseInt(binary.substring(6, 11), 2);
+            const rt_field = parseInt(binary.substring(11, 16), 2);
+            const offset_branch = parseInt(binary.substring(16, 32), 2);
+            const signed_offset_branch = offset_branch > 32767 ? offset_branch - 65536 : offset_branch;
+            
+            if (rt_field === 0) {
+                instruction = 'bltz (Branch if Less Than Zero)';
+                details = `Branch if register $${rs_branch} < 0`;
+            } else if (rt_field === 1) {
+                instruction = 'bgez (Branch if Greater or Equal Zero)';
+                details = `Branch if register $${rs_branch} >= 0`;
             }
-            updateBinaryDisplay();
-        }
-
-        function updateBinaryDisplay() {
-            const editor = document.getElementById('binary-editor');
-            const children = editor.children;
+            breakdown = `Offset: ${signed_offset_branch} words`;
+            break;
+    }
+    
+    decoded.innerHTML = `
+        <div class="space-y-3">
+            <div>
+                <div class="font-semibold text-lg text-blue-800">${instruction}</div>
+                <div class="text-sm text-gray-600 mt-1">${details}</div>
+            </div>
             
-            for (let i = 0; i < 32; i++) {
-                children[i].textContent = currentBits[i];
-                children[i].className = currentBits[i] === 1 ? 
-                    'binary-bit bg-blue-500 text-white text-center cursor-pointer hover:bg-blue-600' :
-                    'binary-bit bg-gray-200 text-center cursor-pointer hover:bg-gray-300';
-            }
-            
-            const binaryString = currentBits.join('');
-            const hex = parseInt(binaryString, 2).toString(16).toUpperCase().padStart(8, '0');
-            document.getElementById('manual-hex').textContent = '0x' + hex;
-            
-            decodeBinaryInstruction(binaryString);
-        }
-
-        function decodeBinaryInstruction(binary) {
-            const decoded = document.getElementById('decoded-instruction');
-            const opcode = binary.substring(0, 6);
-            
-            let instruction = 'Unknown instruction';
-            let details = '';
-            
-            switch (opcode) {
-                case '000100': 
-                    const rs_beq = parseInt(binary.substring(6, 11), 2);
-                    const rt_beq = parseInt(binary.substring(11, 16), 2);
-                    const offset_beq = parseInt(binary.substring(16, 32), 2);
-                    instruction = 'beq (Branch if Equal)';
-                    details = `rs=$${rs_beq}, rt=$${rt_beq}, offset=${offset_beq}`;
-                    break;
-                case '000101': 
-                    instruction = 'bne (Branch if Not Equal)'; 
-                    break;
-                case '000010': 
-                    const addr_j = parseInt(binary.substring(6, 32), 2);
-                    instruction = 'j (Jump)';
-                    details = `address=0x${addr_j.toString(16).toUpperCase()}`;
-                    break;
-                case '000011': 
-                    instruction = 'jal (Jump and Link)'; 
-                    break;
-                case '000000':
-                    const funct = binary.substring(26, 32);
-                    if (funct === '001000') {
-                        const rs_jr = parseInt(binary.substring(6, 11), 2);
-                        instruction = 'jr (Jump Register)';
-                        details = `rs=$${rs_jr}`;
-                    } else if (funct === '001001') {
-                        instruction = 'jalr (Jump and Link Register)';
-                    }
-                    break;
-            }
-            
-            decoded.innerHTML = `
-                <div class="space-y-2">
-                    <div class="font-semibold text-lg">${instruction}</div>
-                    <div class="text-sm text-gray-600">Opcode: ${opcode}</div>
-                    ${details ? `<div class="text-sm">${details}</div>` : ''}
+            <div class="grid md:grid-cols-2 gap-4 text-sm">
+                <div>
+                    <strong>Opcode:</strong> ${opcode} (${parseInt(opcode, 2)})
                 </div>
-            `;
-        }
+                <div>
+                    <strong>Format:</strong> ${opcode === '000000' ? 'R-type' : (opcode === '000010' || opcode === '000011' ? 'J-type' : 'I-type')}
+                </div>
+            </div>
+            
+            ${breakdown ? `<div class="text-sm text-gray-700 bg-gray-100 p-2 rounded">${breakdown}</div>` : ''}
+        </div>
+    `;
+}
 
         // Quiz functionality
         function checkQuiz() {
