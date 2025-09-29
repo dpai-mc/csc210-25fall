@@ -5,16 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Week 7 Assignment: MIPS Calculator Program</title>
     
-    <!-- Required CDN Links -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
-    
-    <!-- Meta Comments -->
-    <!-- Chosen Palette: Scholarly Neutrals -->
-    <!-- Application Structure Plan: Single comprehensive MIPS program assignment with detailed requirements and grading rubric -->
-    <!-- Visualization & Content Choices: Clear specifications, example code snippets, and interactive checklist -->
-    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
     
     <style>
         body {
@@ -125,7 +118,6 @@
             </div>
         </header>
 
-        <!-- Assignment Overview -->
         <section class="mb-8 p-6 bg-blue-50 border border-blue-200 rounded-lg">
             <h2 class="text-xl font-semibold mb-4">📋 Program Requirements</h2>
             <div class="grid md:grid-cols-2 gap-6">
@@ -140,7 +132,6 @@
                         <li>✓ Proper procedure implementations with calling conventions</li>
                         <li>✓ Loop structures (while/for loops)</li>
                         <li>✓ Conditional branching logic</li>
-                        <li>✓ At least one recursive function</li>
                         <li>✓ Proper stack management</li>
                     </ul>
                 </div>
@@ -158,7 +149,6 @@
             </div>
         </section>
 
-        <!-- Program Specification -->
         <section class="mb-8">
             <h2 class="text-2xl font-bold mb-4">📐 Program Specification</h2>
             
@@ -183,7 +173,7 @@ Enter your choice (1-6): _</div>
                         <h4 class="font-semibold mb-2">Required Functions:</h4>
                         <ul class="text-sm space-y-2">
                             <li><strong>Sum (1-N):</strong> Calculate sum using loop structure</li>
-                            <li><strong>Factorial:</strong> Implement recursively (n!)</li>
+                            <li><strong>Factorial:</strong> Implement iteratively (n!)</li>
                             <li><strong>Fibonacci:</strong> Generate Nth Fibonacci number</li>
                             <li><strong>GCD:</strong> Find greatest common divisor of two numbers</li>
                             <li><strong>Power:</strong> Calculate X raised to power Y</li>
@@ -203,12 +193,10 @@ Enter your choice (1-6): _</div>
             </div>
         </section>
 
-        <!-- Implementation Guidelines -->
         <section class="mb-8">
             <h2 class="text-2xl font-bold mb-4">💻 Implementation Guidelines</h2>
             
             <div class="grid lg:grid-cols-2 gap-6">
-                <!-- Code Structure -->
                 <div class="interactive-box p-6">
                     <h3 class="text-xl font-semibold mb-4">Code Structure Template</h3>
                     <div class="code-block text-sm"># =======================================
@@ -248,7 +236,6 @@ sum_1_to_n:
 # Additional procedures...</div>
                 </div>
 
-                <!-- Commenting Standards -->
                 <div class="interactive-box p-6">
                     <h3 class="text-xl font-semibold mb-4">Commenting Standards</h3>
                     <div class="space-y-4">
@@ -277,12 +264,10 @@ loop_start:        # Begin sum calculation loop
             </div>
         </section>
 
-        <!-- Detailed Function Specifications -->
         <section class="mb-8">
             <h2 class="text-2xl font-bold mb-4">🔧 Function Specifications</h2>
             
             <div class="space-y-6">
-                <!-- Function 1: Sum -->
                 <div class="interactive-box p-6">
                     <h3 class="text-lg font-semibold mb-3">1. Sum Calculator (1 to N)</h3>
                     <div class="grid md:grid-cols-2 gap-4">
@@ -305,14 +290,13 @@ loop_start:        # Begin sum calculation loop
                     </div>
                 </div>
 
-                <!-- Function 2: Factorial -->
                 <div class="interactive-box p-6">
-                    <h3 class="text-lg font-semibold mb-3">2. Recursive Factorial</h3>
+                    <h3 class="text-lg font-semibold mb-3">2. Factorial Calculator</h3>
                     <div class="grid md:grid-cols-2 gap-4">
                         <div>
                             <h4 class="font-medium mb-2">Requirements:</h4>
                             <ul class="text-sm space-y-1">
-                                <li>• <strong>Must be recursive</strong></li>
+                                <li>• Must use an iterative loop structure</li>
                                 <li>• Handle base case (0! = 1)</li>
                                 <li>• Proper stack management</li>
                                 <li>• Input validation (N ≥ 0)</li>
@@ -321,16 +305,14 @@ loop_start:        # Begin sum calculation loop
                         <div>
                             <h4 class="font-medium mb-2">Algorithm:</h4>
                             <div class="text-sm space-y-1">
-                                <div>• If N = 0, return 1</div>
-                                <div>• Else return N × factorial(N-1)</div>
-                                <div>• Save $ra and N on stack</div>
-                                <div>• Restore stack before return</div>
+                                <div>• If N = 0, the result is 1.</div>
+                                <div>• Otherwise, use a loop to multiply the numbers from 1 up to N.</div>
+                                <div>• For example: 5! = 1 * 2 * 3 * 4 * 5</div>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Function 3: Fibonacci -->
                 <div class="interactive-box p-6">
                     <h3 class="text-lg font-semibold mb-3">3. Fibonacci Calculator</h3>
                     <div class="grid md:grid-cols-2 gap-4">
@@ -338,7 +320,7 @@ loop_start:        # Begin sum calculation loop
                             <h4 class="font-medium mb-2">Requirements:</h4>
                             <ul class="text-sm space-y-1">
                                 <li>• Generate Nth Fibonacci number</li>
-                                <li>• Can be iterative or recursive</li>
+                                <li>• Use an iterative (loop-based) approach</li>
                                 <li>• Handle base cases (F₀=0, F₁=1)</li>
                                 <li>• Input validation (N ≥ 0)</li>
                             </ul>
@@ -352,7 +334,6 @@ loop_start:        # Begin sum calculation loop
                     </div>
                 </div>
 
-                <!-- Function 4: GCD -->
                 <div class="interactive-box p-6">
                     <h3 class="text-lg font-semibold mb-3">4. Greatest Common Divisor</h3>
                     <div class="grid md:grid-cols-2 gap-4">
@@ -378,7 +359,6 @@ loop_start:        # Begin sum calculation loop
                     </div>
                 </div>
 
-                <!-- Function 5: Power -->
                 <div class="interactive-box p-6">
                     <h3 class="text-lg font-semibold mb-3">5. Power Calculator</h3>
                     <div class="grid md:grid-cols-2 gap-4">
@@ -387,7 +367,7 @@ loop_start:        # Begin sum calculation loop
                             <ul class="text-sm space-y-1">
                                 <li>• Calculate X raised to power Y</li>
                                 <li>• Handle Y = 0 case (result = 1)</li>
-                                <li>• Use loop or recursive approach</li>
+                                <li>• Use a loop structure</li>
                                 <li>• Input validation</li>
                             </ul>
                         </div>
@@ -403,7 +383,6 @@ loop_start:        # Begin sum calculation loop
             </div>
         </section>
 
-        <!-- Testing Requirements -->
         <section class="mb-8">
             <h2 class="text-2xl font-bold mb-4">🧪 Testing Requirements</h2>
             
@@ -440,7 +419,6 @@ loop_start:        # Begin sum calculation loop
             </div>
         </section>
 
-        <!-- Self-Check Checklist -->
         <section class="mb-8">
             <h2 class="text-2xl font-bold mb-4">✅ Self-Check Checklist</h2>
             
@@ -488,10 +466,6 @@ loop_start:        # Begin sum calculation loop
                             </label>
                             <label class="flex items-center gap-2">
                                 <input type="checkbox" class="checklist-item">
-                                <span class="text-sm">At least one recursive function</span>
-                            </label>
-                            <label class="flex items-center gap-2">
-                                <input type="checkbox" class="checklist-item">
                                 <span class="text-sm">Proper stack management in procedures</span>
                             </label>
                             <label class="flex items-center gap-2">
@@ -507,7 +481,7 @@ loop_start:        # Begin sum calculation loop
                 </div>
                 
                 <div class="mt-6 text-center">
-                    <div id="checklist-progress" class="text-lg font-semibold mb-4">Progress: 0/11 items complete</div>
+                    <div id="checklist-progress" class="text-lg font-semibold mb-4">Progress: 0/10 items complete</div>
                     <div class="w-full bg-gray-200 rounded-full h-3">
                         <div id="progress-bar" class="bg-green-500 h-3 rounded-full transition-all duration-300" style="width: 0%"></div>
                     </div>
@@ -515,7 +489,6 @@ loop_start:        # Begin sum calculation loop
             </div>
         </section>
 
-        <!-- Grading Rubric -->
         <section class="mb-8">
             <h2 class="text-2xl font-bold mb-4">📊 Grading Rubric (100 Points Total)</h2>
             
@@ -564,12 +537,12 @@ loop_start:        # Begin sum calculation loop
                         </tr>
                         <tr>
                             <td><strong>Control Flow Implementation</strong><br>
-                                <small>Branching, loops, recursion, proper logic flow</small>
+                                <small>Branching, loops, proper logic flow</small>
                             </td>
-                            <td>Excellent use of branches/loops, recursive implementation, efficient logic</td>
-                            <td>Good control structures, recursion present, logical flow</td>
-                            <td>Basic control flow, some recursion, adequate logic</td>
-                            <td>Poor control structures, missing recursion, illogical flow</td>
+                            <td>Excellent use of branches and loops for clear and efficient logic</td>
+                            <td>Good use of control structures and logical flow</td>
+                            <td>Basic control flow and adequate logic</td>
+                            <td>Poor control structures or illogical flow</td>
                             <td><strong>15 points</strong></td>
                         </tr>
                         <tr>
@@ -620,7 +593,6 @@ loop_start:        # Begin sum calculation loop
             </div>
         </section>
 
-        <!-- Submission Instructions -->
         <section class="mb-8">
             <h2 class="text-2xl font-bold mb-4">📤 Submission Instructions</h2>
             
@@ -685,7 +657,6 @@ loop_start:        # Begin sum calculation loop
             </div>
         </section>
 
-        <!-- Additional Resources -->
         <section class="mb-8">
             <h2 class="text-2xl font-bold mb-4">📚 Additional Resources</h2>
             
@@ -722,7 +693,6 @@ loop_start:        # Begin sum calculation loop
             </div>
         </section>
 
-        <!-- Example Code Snippets -->
         <section class="mb-8">
             <h2 class="text-2xl font-bold mb-4">💡 Code Examples</h2>
             
@@ -800,7 +770,6 @@ get_positive_int:
             </div>
         </section>
 
-        <!-- Save/Print Section -->
         <section class="mb-8">
             <div class="bg-gray-50 p-6 rounded-lg text-center">
                 <h3 class="text-xl font-semibold mb-4">📄 Save This Assignment</h3>
@@ -887,4 +856,3 @@ get_positive_int:
     </script>
 </body>
 </html>
-                        
