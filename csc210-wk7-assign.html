@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Week 7 Assignment: MIPS Control Flow & Procedures</title>
+    <title>Week 7 Assignment: MIPS Calculator Program</title>
     
     <!-- Required CDN Links -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -12,8 +12,8 @@
     
     <!-- Meta Comments -->
     <!-- Chosen Palette: Scholarly Neutrals -->
-    <!-- Application Structure Plan: Progressive MIPS programming exercises covering branching, loops, procedures, and recursion -->
-    <!-- Visualization & Content Choices: Interactive code completion with real-time feedback and MARS simulator integration -->
+    <!-- Application Structure Plan: Single comprehensive MIPS program assignment with detailed requirements and grading rubric -->
+    <!-- Visualization & Content Choices: Clear specifications, example code snippets, and interactive checklist -->
     <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
     
     <style>
@@ -43,6 +43,8 @@
             font-weight: 600;
             padding: 0.75rem 1.5rem;
             border-radius: 0.5rem;
+            border: none;
+            cursor: pointer;
         }
 
         .submit-btn:hover {
@@ -51,9 +53,12 @@
 
         .check-btn {
             background-color: #EADDD7;
+            color: #383838;
             font-weight: 600;
             padding: 0.5rem 1rem;
             border-radius: 0.375rem;
+            border: none;
+            cursor: pointer;
         }
 
         .check-btn:hover {
@@ -67,6 +72,7 @@
             border-radius: 0.5rem;
             white-space: pre-wrap;
             font-family: 'Fira Code', monospace;
+            overflow-x: auto;
         }
 
         .success-feedback {
@@ -84,6 +90,23 @@
             color: #212529;
         }
 
+        .rubric-table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        .rubric-table th, 
+        .rubric-table td {
+            border: 1px solid #D1C7BF;
+            padding: 0.75rem;
+            text-align: left;
+        }
+
+        .rubric-table th {
+            background-color: #EADDD7;
+            font-weight: 600;
+        }
+
         @media print {
             .no-print { display: none; }
             body { background: white; color: black; }
@@ -93,477 +116,775 @@
 </head>
 
 <body class="antialiased">
-    <main class="container mx-auto max-w-4xl p-4 md:p-8">
+    <main class="container mx-auto max-w-5xl p-4 md:p-8">
         <header class="text-center mb-8">
-            <h1 class="text-3xl md:text-4xl font-bold mb-4">Week 7 Assignment: MIPS Control Flow & Procedures</h1>
+            <h1 class="text-3xl md:text-4xl font-bold mb-4">Week 7 Assignment: MIPS Multi-Function Calculator</h1>
             <div class="text-lg text-gray-600 mb-6">
-                <p>Master conditional branching, loops, and procedure calls in MIPS assembly</p>
-                <p class="text-sm mt-2"><strong>Due:</strong> [Insert Due Date] | <strong>Points:</strong> 100</p>
+                <p>Create a comprehensive MIPS assembly program demonstrating control flow and procedures</p>
+                <p class="text-sm mt-2"><strong>Submission:</strong> Single .asm file | <strong>Points:</strong> 100</p>
             </div>
         </header>
 
         <!-- Assignment Overview -->
         <section class="mb-8 p-6 bg-blue-50 border border-blue-200 rounded-lg">
-            <h2 class="text-xl font-semibold mb-4">📋 Assignment Overview</h2>
+            <h2 class="text-xl font-semibold mb-4">📋 Program Requirements</h2>
             <div class="grid md:grid-cols-2 gap-6">
                 <div>
-                    <h3 class="font-semibold mb-2">Learning Objectives:</h3>
+                    <h3 class="font-semibold mb-2">Your Task:</h3>
+                    <p class="text-sm mb-3">Create a single MIPS assembly program (<code>calculator.asm</code>) that implements a menu-driven calculator with multiple mathematical functions.</p>
+                    
+                    <h3 class="font-semibold mb-2">Required Features:</h3>
                     <ul class="text-sm space-y-1">
-                        <li>✓ Implement conditional branching logic</li>
-                        <li>✓ Construct while, for, and do-while loops</li>
-                        <li>✓ Follow MIPS calling conventions</li>
-                        <li>✓ Manage the runtime stack properly</li>
-                        <li>✓ Write recursive procedures</li>
+                        <li>✓ Interactive menu system with user input validation</li>
+                        <li>✓ At least 4 different calculation functions</li>
+                        <li>✓ Proper procedure implementations with calling conventions</li>
+                        <li>✓ Loop structures (while/for loops)</li>
+                        <li>✓ Conditional branching logic</li>
+                        <li>✓ At least one recursive function</li>
+                        <li>✓ Proper stack management</li>
                     </ul>
                 </div>
                 <div>
-                    <h3 class="font-semibold mb-2">Tools Needed:</h3>
+                    <h3 class="font-semibold mb-2">Submission Requirements:</h3>
                     <ul class="text-sm space-y-1">
-                        <li>• MARS MIPS Simulator</li>
-                        <li>• Text editor or IDE</li>
-                        <li>• MIPS Green Sheet (reference)</li>
-                        <li>• This interactive worksheet</li>
+                        <li>• Submit as <code>calculator.asm</code> file</li>
+                        <li>• Must run successfully in MARS simulator</li>
+                        <li>• Every line must have meaningful comments</li>
+                        <li>• Follow MIPS coding conventions</li>
+                        <li>• Include your name and date in header comment</li>
+                        <li>• Demonstrate all required concepts</li>
                     </ul>
                 </div>
             </div>
         </section>
 
-        <!-- Problem 1: Conditional Logic -->
+        <!-- Program Specification -->
         <section class="mb-8">
-            <h2 class="text-2xl font-bold mb-4">Problem 1: Grade Calculator (20 points)</h2>
-            <p class="mb-4">Write a MIPS program that reads a numeric grade (0-100) and outputs the corresponding letter grade using the standard scale:</p>
+            <h2 class="text-2xl font-bold mb-4">📐 Program Specification</h2>
             
-            <div class="bg-gray-50 p-4 rounded mb-4">
-                <ul class="text-sm space-y-1">
-                    <li>A: 90-100</li>
-                    <li>B: 80-89</li>
-                    <li>C: 70-79</li>
-                    <li>D: 60-69</li>
-                    <li>F: 0-59</li>
-                </ul>
-            </div>
+            <div class="bg-gray-50 p-6 rounded-lg mb-6">
+                <h3 class="text-xl font-semibold mb-4">Calculator Menu System</h3>
+                <p class="mb-4">Your program should display a menu and allow users to select different mathematical operations:</p>
+                
+                <div class="code-block mb-4">===============================
+    MIPS Multi-Function Calculator
+===============================
+1. Sum of Numbers (1 to N)
+2. Factorial Calculator  
+3. Fibonacci Sequence
+4. Greatest Common Divisor (GCD)
+5. Power Calculator (X^Y)
+6. Exit Program
 
-            <div class="mb-4">
-                <label class="block font-medium mb-2">Complete the MIPS code below:</label>
-                <div class="code-block mb-4">.data
-grade_prompt: .asciiz "Enter numeric grade (0-100): "
-grade_a: .asciiz "Letter Grade: A\n"
-grade_b: .asciiz "Letter Grade: B\n"
-grade_c: .asciiz "Letter Grade: C\n"
-grade_d: .asciiz "Letter Grade: D\n"
-grade_f: .asciiz "Letter Grade: F\n"
+Enter your choice (1-6): _</div>
+
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div>
+                        <h4 class="font-semibold mb-2">Required Functions:</h4>
+                        <ul class="text-sm space-y-2">
+                            <li><strong>Sum (1-N):</strong> Calculate sum using loop structure</li>
+                            <li><strong>Factorial:</strong> Implement recursively (n!)</li>
+                            <li><strong>Fibonacci:</strong> Generate Nth Fibonacci number</li>
+                            <li><strong>GCD:</strong> Find greatest common divisor of two numbers</li>
+                            <li><strong>Power:</strong> Calculate X raised to power Y</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 class="font-semibold mb-2">Technical Requirements:</h4>
+                        <ul class="text-sm space-y-2">
+                            <li>• Each function as separate procedure</li>
+                            <li>• Proper register saving/restoring</li>
+                            <li>• Input validation and error handling</li>
+                            <li>• User-friendly output formatting</li>
+                            <li>• Loop back to menu after each calculation</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Implementation Guidelines -->
+        <section class="mb-8">
+            <h2 class="text-2xl font-bold mb-4">💻 Implementation Guidelines</h2>
+            
+            <div class="grid lg:grid-cols-2 gap-6">
+                <!-- Code Structure -->
+                <div class="interactive-box p-6">
+                    <h3 class="text-xl font-semibold mb-4">Code Structure Template</h3>
+                    <div class="code-block text-sm"># =======================================
+# Student Name: [Your Name]
+# Date: [Current Date]  
+# Assignment: Week 7 MIPS Calculator
+# Description: Multi-function calculator
+#              demonstrating control flow
+# =======================================
+
+.data
+    # Your data declarations here
+    menu: .asciiz "Menu text here..."
+    # ... other strings and variables
 
 .text
 .globl main
+
 main:
-    # Print prompt
-    li $v0, 4
-    la $a0, grade_prompt
-    syscall
+    # Main program loop
+    # Display menu
+    # Get user choice  
+    # Branch to appropriate function
+    # Loop back to menu
     
-    # Read integer
-    li $v0, 5
-    syscall
-    move $t0, $v0    # $t0 = grade
+# =======================================
+# PROCEDURE: sum_1_to_n
+# Purpose: Calculate sum from 1 to N
+# Parameters: $a0 = N
+# Returns: $v0 = sum
+# =======================================
+sum_1_to_n:
+    # Procedure implementation
+    # Your code here with comments
+    jr $ra
     
-    # Your conditional logic here
-    # Complete the branching structure</div>
-                
-                <textarea class="worksheet-input w-full h-40" id="problem1-answer" 
-                          placeholder="Write your conditional branching code here...
-Example:
-    li $t1, 90
-    bge $t0, $t1, print_a
-    # Continue with other conditions..."></textarea>
-            </div>
-
-            <div class="mb-4">
-                <button class="check-btn" onclick="checkProblem1()">Check Solution</button>
-                <div id="problem1-feedback" class="mt-2"></div>
-            </div>
-
-            <details class="mb-4">
-                <summary class="cursor-pointer font-medium">💡 Hints (click to expand)</summary>
-                <div class="mt-2 p-3 bg-yellow-50 border border-yellow-200 rounded">
-                    <ul class="text-sm space-y-1">
-                        <li>• Use bge (branch greater or equal) to check upper bounds</li>
-                        <li>• Start with the highest grade and work down</li>
-                        <li>• Each branch should jump to the appropriate print statement</li>
-                        <li>• Don't forget to exit the program after printing</li>
-                    </ul>
-                </div>
-            </details>
-        </section>
-
-        <!-- Problem 2: Loop Construction -->
-        <section class="mb-8">
-            <h2 class="text-2xl font-bold mb-4">Problem 2: Sum Calculator (25 points)</h2>
-            <p class="mb-4">Write a MIPS program that calculates the sum of integers from 1 to N, where N is entered by the user. Use a loop structure.</p>
-
-            <div class="grid md:grid-cols-2 gap-6 mb-4">
-                <div>
-                    <h3 class="font-semibold mb-2">Part A: While Loop Implementation</h3>
-                    <textarea class="worksheet-input w-full h-32" id="problem2a-answer" 
-                              placeholder="# Calculate sum using while loop
-# Assume N is in $t0, sum should be in $t1
-li $t1, 0        # sum = 0
-li $t2, 1        # counter = 1
-
-# Your while loop here..."></textarea>
-                    <button class="check-btn mt-2" onclick="checkProblem2A()">Check While Loop</button>
-                    <div id="problem2a-feedback" class="mt-2"></div>
+# Additional procedures...</div>
                 </div>
 
-                <div>
-                    <h3 class="font-semibold mb-2">Part B: For Loop Implementation</h3>
-                    <textarea class="worksheet-input w-full h-32" id="problem2b-answer" 
-                              placeholder="# Calculate sum using for loop pattern
-# Assume N is in $t0, sum should be in $t1
-li $t1, 0        # sum = 0
-
-# Your for loop here..."></textarea>
-                    <button class="check-btn mt-2" onclick="checkProblem2B()">Check For Loop</button>
-                    <div id="problem2b-feedback" class="mt-2"></div>
-                </div>
-            </div>
-
-            <div class="mb-4">
-                <h3 class="font-semibold mb-2">Part C: Complete Program</h3>
-                <p class="text-sm mb-2">Combine your loop with input/output to create a complete program:</p>
-                <textarea class="worksheet-input w-full h-40" id="problem2c-answer" 
-                          placeholder="Write the complete program including:
-- Data section with prompts
-- Input reading
-- Your loop implementation  
-- Output of the result"></textarea>
-                <button class="check-btn mt-2" onclick="checkProblem2C()">Check Complete Program</button>
-                <div id="problem2c-feedback" class="mt-2"></div>
-            </div>
-        </section>
-
-        <!-- Problem 3: Procedure Calls -->
-        <section class="mb-8">
-            <h2 class="text-2xl font-bold mb-4">Problem 3: Maximum Finder Procedure (25 points)</h2>
-            <p class="mb-4">Write a MIPS procedure that finds the maximum of three integers following proper calling conventions.</p>
-
-            <div class="bg-blue-50 p-4 rounded mb-4">
-                <h3 class="font-semibold mb-2">Procedure Specification:</h3>
-                <ul class="text-sm space-y-1">
-                    <li><strong>Name:</strong> find_max_three</li>
-                    <li><strong>Parameters:</strong> Three integers in $a0, $a1, $a2</li>
-                    <li><strong>Returns:</strong> Maximum value in $v0</li>
-                    <li><strong>Requirements:</strong> Must follow MIPS calling conventions</li>
-                </ul>
-            </div>
-
-            <div class="mb-4">
-                <label class="block font-medium mb-2">Implement the procedure:</label>
-                <textarea class="worksheet-input w-full h-48" id="problem3-answer" 
-                          placeholder="find_max_three:
-    # Prologue - save registers if needed
-    
-    # Your logic to find maximum of $a0, $a1, $a2
-    # Store result in $v0
-    
-    # Compare $a0 and $a1 first
-    # Then compare result with $a2
-    
-    # Epilogue - restore registers and return
-    jr $ra"></textarea>
-            </div>
-
-            <div class="mb-4">
-                <label class="block font-medium mb-2">Write a main program that tests your procedure:</label>
-                <textarea class="worksheet-input w-full h-32" id="problem3-main" 
-                          placeholder="main:
-    # Load test values into $a0, $a1, $a2
-    # Call find_max_three
-    # Print the result"></textarea>
-            </div>
-
-            <button class="check-btn" onclick="checkProblem3()">Check Procedure Implementation</button>
-            <div id="problem3-feedback" class="mt-2"></div>
-        </section>
-
-        <!-- Problem 4: Stack Management -->
-        <section class="mb-8">
-            <h2 class="text-2xl font-bold mb-4">Problem 4: Stack Operations (15 points)</h2>
-            <p class="mb-4">Complete the stack management code for a procedure that calls another procedure.</p>
-
-            <div class="code-block mb-4">outer_procedure:
-    # This procedure calls inner_procedure and uses $s0, $s1
-    # Complete the prologue and epilogue</div>
-
-            <div class="grid md:grid-cols-2 gap-6 mb-4">
-                <div>
-                    <label class="block font-medium mb-2">Prologue (saving registers):</label>
-                    <textarea class="worksheet-input w-full h-24" id="problem4a-answer" 
-                              placeholder="# Save necessary registers
-addi $sp, $sp, ___
-sw $ra, ___($sp)
-sw $s0, ___($sp)
-sw $s1, ___($sp)"></textarea>
-                </div>
-
-                <div>
-                    <label class="block font-medium mb-2">Epilogue (restoring registers):</label>
-                    <textarea class="worksheet-input w-full h-24" id="problem4b-answer" 
-                              placeholder="# Restore registers
-lw $s1, ___($sp)
-lw $s0, ___($sp) 
-lw $ra, ___($sp)
-addi $sp, $sp, ___
-jr $ra"></textarea>
-                </div>
-            </div>
-
-            <button class="check-btn" onclick="checkProblem4()">Check Stack Operations</button>
-            <div id="problem4-feedback" class="mt-2"></div>
-        </section>
-
-        <!-- Problem 5: Recursive Programming -->
-        <section class="mb-8">
-            <h2 class="text-2xl font-bold mb-4">Problem 5: Recursive Factorial (15 points)</h2>
-            <p class="mb-4">Implement a recursive factorial function with proper stack management and base case handling.</p>
-
-            <div class="bg-red-50 p-4 rounded mb-4">
-                <h3 class="font-semibold mb-2">Factorial Definition:</h3>
-                <ul class="text-sm space-y-1">
-                    <li>factorial(0) = 1 (base case)</li>
-                    <li>factorial(n) = n × factorial(n-1) for n > 0</li>
-                </ul>
-            </div>
-
-            <div class="mb-4">
-                <label class="block font-medium mb-2">Complete the recursive factorial procedure:</label>
-                <textarea class="worksheet-input w-full h-56" id="problem5-answer" 
-                          placeholder="factorial:
-    # Input: $a0 = n
-    # Output: $v0 = n!
-    
-    # Prologue
-    
-    # Base case: if n == 0, return 1
-    
-    # Recursive case:
-    # 1. Save n
-    # 2. Calculate factorial(n-1)  
-    # 3. Multiply result by n
-    # 4. Return result
-    
-    # Epilogue"></textarea>
-            </div>
-
-            <button class="check-btn" onclick="checkProblem5()">Check Recursive Implementation</button>
-            <div id="problem5-feedback" class="mt-2"></div>
-        </section>
-
-        <!-- Submission Section -->
-        <section class="mb-8">
-            <h2 class="text-2xl font-bold mb-4">📤 Submission</h2>
-            <div class="bg-gray-50 p-6 rounded-lg">
-                <div class="mb-4">
-                    <h3 class="font-semibold mb-2">Completion Status:</h3>
-                    <div class="grid md:grid-cols-5 gap-4 text-sm">
-                        <div class="text-center">
-                            <div id="status1" class="w-8 h-8 rounded-full bg-gray-300 mx-auto mb-1"></div>
-                            <div>Problem 1</div>
+                <!-- Commenting Standards -->
+                <div class="interactive-box p-6">
+                    <h3 class="text-xl font-semibold mb-4">Commenting Standards</h3>
+                    <div class="space-y-4">
+                        <div>
+                            <h4 class="font-medium mb-2">Required Comment Types:</h4>
+                            <ul class="text-sm space-y-2">
+                                <li>• <strong>Header block:</strong> Program info, author, purpose</li>
+                                <li>• <strong>Section headers:</strong> Data/text section descriptions</li>
+                                <li>• <strong>Procedure headers:</strong> Purpose, parameters, returns</li>
+                                <li>• <strong>Line comments:</strong> Every instruction explained</li>
+                                <li>• <strong>Block comments:</strong> Algorithm explanations</li>
+                            </ul>
                         </div>
-                        <div class="text-center">
-                            <div id="status2" class="w-8 h-8 rounded-full bg-gray-300 mx-auto mb-1"></div>
-                            <div>Problem 2</div>
+                        
+                        <div>
+                            <h4 class="font-medium mb-2">Example Line Commenting:</h4>
+                            <div class="code-block text-sm">li $t0, 0          # Initialize counter to 0
+li $t1, 1          # Initialize sum to 1  
+loop_start:        # Begin sum calculation loop
+    add $t1, $t1, $t0   # Add counter to sum
+    addi $t0, $t0, 1    # Increment counter by 1
+    ble $t0, $a0, loop_start # Continue if counter <= N</div>
                         </div>
-                        <div class="text-center">
-                            <div id="status3" class="w-8 h-8 rounded-full bg-gray-300 mx-auto mb-1"></div>
-                            <div>Problem 3</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Detailed Function Specifications -->
+        <section class="mb-8">
+            <h2 class="text-2xl font-bold mb-4">🔧 Function Specifications</h2>
+            
+            <div class="space-y-6">
+                <!-- Function 1: Sum -->
+                <div class="interactive-box p-6">
+                    <h3 class="text-lg font-semibold mb-3">1. Sum Calculator (1 to N)</h3>
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div>
+                            <h4 class="font-medium mb-2">Requirements:</h4>
+                            <ul class="text-sm space-y-1">
+                                <li>• Use loop structure (while or for pattern)</li>
+                                <li>• Input validation (N > 0)</li>
+                                <li>• Calculate: 1 + 2 + 3 + ... + N</li>
+                                <li>• Display formatted result</li>
+                            </ul>
                         </div>
-                        <div class="text-center">
-                            <div id="status4" class="w-8 h-8 rounded-full bg-gray-300 mx-auto mb-1"></div>
-                            <div>Problem 4</div>
-                        </div>
-                        <div class="text-center">
-                            <div id="status5" class="w-8 h-8 rounded-full bg-gray-300 mx-auto mb-1"></div>
-                            <div>Problem 5</div>
+                        <div>
+                            <h4 class="font-medium mb-2">Calling Convention:</h4>
+                            <div class="code-block text-xs">sum_1_to_n:
+# Input: $a0 = N
+# Output: $v0 = sum
+# Must save/restore registers</div>
                         </div>
                     </div>
                 </div>
 
-                <div class="text-center">
-                    <button class="submit-btn" onclick="window.print()">💾 Save as PDF</button>
-                    <p class="text-sm text-gray-600 mt-2">Save this completed assignment and submit according to your instructor's directions.</p>
+                <!-- Function 2: Factorial -->
+                <div class="interactive-box p-6">
+                    <h3 class="text-lg font-semibold mb-3">2. Recursive Factorial</h3>
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div>
+                            <h4 class="font-medium mb-2">Requirements:</h4>
+                            <ul class="text-sm space-y-1">
+                                <li>• <strong>Must be recursive</strong></li>
+                                <li>• Handle base case (0! = 1)</li>
+                                <li>• Proper stack management</li>
+                                <li>• Input validation (N ≥ 0)</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4 class="font-medium mb-2">Algorithm:</h4>
+                            <div class="text-sm space-y-1">
+                                <div>• If N = 0, return 1</div>
+                                <div>• Else return N × factorial(N-1)</div>
+                                <div>• Save $ra and N on stack</div>
+                                <div>• Restore stack before return</div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
+
+                <!-- Function 3: Fibonacci -->
+                <div class="interactive-box p-6">
+                    <h3 class="text-lg font-semibold mb-3">3. Fibonacci Calculator</h3>
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div>
+                            <h4 class="font-medium mb-2">Requirements:</h4>
+                            <ul class="text-sm space-y-1">
+                                <li>• Generate Nth Fibonacci number</li>
+                                <li>• Can be iterative or recursive</li>
+                                <li>• Handle base cases (F₀=0, F₁=1)</li>
+                                <li>• Input validation (N ≥ 0)</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4 class="font-medium mb-2">Sequence:</h4>
+                            <div class="text-sm">
+                                0, 1, 1, 2, 3, 5, 8, 13, 21, 34...
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Function 4: GCD -->
+                <div class="interactive-box p-6">
+                    <h3 class="text-lg font-semibold mb-3">4. Greatest Common Divisor</h3>
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div>
+                            <h4 class="font-medium mb-2">Requirements:</h4>
+                            <ul class="text-sm space-y-1">
+                                <li>• Find GCD of two positive integers</li>
+                                <li>• Use Euclidean algorithm</li>
+                                <li>• Input validation (both > 0)</li>
+                                <li>• Loop until remainder = 0</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4 class="font-medium mb-2">Algorithm:</h4>
+                            <div class="text-sm space-y-1">
+                                <div>• While B ≠ 0:</div>
+                                <div>&nbsp;&nbsp;temp = A mod B</div>
+                                <div>&nbsp;&nbsp;A = B</div>
+                                <div>&nbsp;&nbsp;B = temp</div>
+                                <div>• Return A</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Function 5: Power -->
+                <div class="interactive-box p-6">
+                    <h3 class="text-lg font-semibold mb-3">5. Power Calculator</h3>
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div>
+                            <h4 class="font-medium mb-2">Requirements:</h4>
+                            <ul class="text-sm space-y-1">
+                                <li>• Calculate X raised to power Y</li>
+                                <li>• Handle Y = 0 case (result = 1)</li>
+                                <li>• Use loop or recursive approach</li>
+                                <li>• Input validation</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4 class="font-medium mb-2">Parameters:</h4>
+                            <div class="code-block text-xs">power:
+# Input: $a0 = base (X)
+#        $a1 = exponent (Y)  
+# Output: $v0 = X^Y</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Testing Requirements -->
+        <section class="mb-8">
+            <h2 class="text-2xl font-bold mb-4">🧪 Testing Requirements</h2>
+            
+            <div class="interactive-box p-6">
+                <h3 class="text-xl font-semibold mb-4">Required Test Cases</h3>
+                <p class="mb-4">Your program must handle these test scenarios correctly:</p>
+                
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div>
+                        <h4 class="font-semibold mb-2">Functional Tests:</h4>
+                        <ul class="text-sm space-y-1">
+                            <li>• Sum 1 to 5 = 15</li>
+                            <li>• Sum 1 to 10 = 55</li>
+                            <li>• Factorial 5 = 120</li>
+                            <li>• Factorial 0 = 1</li>
+                            <li>• Fibonacci 7 = 13</li>
+                            <li>• GCD(48, 18) = 6</li>
+                            <li>• Power(2, 8) = 256</li>
+                            <li>• Power(5, 0) = 1</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 class="font-semibold mb-2">Error Handling:</h4>
+                        <ul class="text-sm space-y-1">
+                            <li>• Invalid menu choices (display error)</li>
+                            <li>• Negative inputs (prompt for positive)</li>
+                            <li>• Zero inputs where invalid</li>
+                            <li>• Large numbers (handle gracefully)</li>
+                            <li>• Return to menu after each operation</li>
+                            <li>• Clean program exit</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Self-Check Checklist -->
+        <section class="mb-8">
+            <h2 class="text-2xl font-bold mb-4">✅ Self-Check Checklist</h2>
+            
+            <div class="interactive-box p-6">
+                <h3 class="text-xl font-semibold mb-4">Before Submission</h3>
+                <p class="mb-4">Check off each item to ensure your program meets all requirements:</p>
+                
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div>
+                        <h4 class="font-semibold mb-3">Code Quality:</h4>
+                        <div class="space-y-2">
+                            <label class="flex items-center gap-2">
+                                <input type="checkbox" class="checklist-item">
+                                <span class="text-sm">Every line has meaningful comments</span>
+                            </label>
+                            <label class="flex items-center gap-2">
+                                <input type="checkbox" class="checklist-item">
+                                <span class="text-sm">Header comment with name and date</span>
+                            </label>
+                            <label class="flex items-center gap-2">
+                                <input type="checkbox" class="checklist-item">
+                                <span class="text-sm">Procedure headers with purpose/parameters</span>
+                            </label>
+                            <label class="flex items-center gap-2">
+                                <input type="checkbox" class="checklist-item">
+                                <span class="text-sm">Consistent indentation and formatting</span>
+                            </label>
+                            <label class="flex items-center gap-2">
+                                <input type="checkbox" class="checklist-item">
+                                <span class="text-sm">Meaningful variable and label names</span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <h4 class="font-semibold mb-3">Functionality:</h4>
+                        <div class="space-y-2">
+                            <label class="flex items-center gap-2">
+                                <input type="checkbox" class="checklist-item">
+                                <span class="text-sm">Menu system works correctly</span>
+                            </label>
+                            <label class="flex items-center gap-2">
+                                <input type="checkbox" class="checklist-item">
+                                <span class="text-sm">All 5 calculation functions implemented</span>
+                            </label>
+                            <label class="flex items-center gap-2">
+                                <input type="checkbox" class="checklist-item">
+                                <span class="text-sm">At least one recursive function</span>
+                            </label>
+                            <label class="flex items-center gap-2">
+                                <input type="checkbox" class="checklist-item">
+                                <span class="text-sm">Proper stack management in procedures</span>
+                            </label>
+                            <label class="flex items-center gap-2">
+                                <input type="checkbox" class="checklist-item">
+                                <span class="text-sm">Input validation and error handling</span>
+                            </label>
+                            <label class="flex items-center gap-2">
+                                <input type="checkbox" class="checklist-item">
+                                <span class="text-sm">Program runs successfully in MARS</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mt-6 text-center">
+                    <div id="checklist-progress" class="text-lg font-semibold mb-4">Progress: 0/11 items complete</div>
+                    <div class="w-full bg-gray-200 rounded-full h-3">
+                        <div id="progress-bar" class="bg-green-500 h-3 rounded-full transition-all duration-300" style="width: 0%"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Grading Rubric -->
+        <section class="mb-8">
+            <h2 class="text-2xl font-bold mb-4">📊 Grading Rubric (100 Points Total)</h2>
+            
+            <div class="overflow-x-auto">
+                <table class="rubric-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 25%;">Criteria</th>
+                            <th style="width: 15%;">Excellent (A)</th>
+                            <th style="width: 15%;">Good (B)</th>
+                            <th style="width: 15%;">Satisfactory (C)</th>
+                            <th style="width: 15%;">Needs Improvement (D/F)</th>
+                            <th style="width: 15%;">Points</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Program Functionality</strong><br>
+                                <small>All functions work correctly, menu system, proper I/O</small>
+                            </td>
+                            <td>All functions work perfectly, excellent user interface, handles all test cases</td>
+                            <td>Functions work correctly, minor interface issues, handles most test cases</td>
+                            <td>Most functions work, some bugs, basic functionality present</td>
+                            <td>Major functionality missing, significant bugs, program may not run</td>
+                            <td><strong>25 points</strong></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Code Comments</strong><br>
+                                <small>Every line commented, header block, procedure documentation</small>
+                            </td>
+                            <td>Every line meaningfully commented, excellent documentation, clear explanations</td>
+                            <td>Most lines commented, good documentation, minor gaps</td>
+                            <td>Basic commenting present, some documentation, adequate explanations</td>
+                            <td>Minimal or poor commenting, missing documentation, unclear</td>
+                            <td><strong>20 points</strong></td>
+                        </tr>
+                        <tr>
+                            <td><strong>MIPS Calling Conventions</strong><br>
+                                <small>Proper register usage, stack management, parameter passing</small>
+                            </td>
+                            <td>Perfect adherence to conventions, excellent stack management, proper register usage</td>
+                            <td>Good convention usage, minor stack issues, mostly proper registers</td>
+                            <td>Basic conventions followed, some stack problems, adequate register usage</td>
+                            <td>Poor convention usage, stack errors, incorrect register usage</td>
+                            <td><strong>20 points</strong></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Control Flow Implementation</strong><br>
+                                <small>Branching, loops, recursion, proper logic flow</small>
+                            </td>
+                            <td>Excellent use of branches/loops, recursive implementation, efficient logic</td>
+                            <td>Good control structures, recursion present, logical flow</td>
+                            <td>Basic control flow, some recursion, adequate logic</td>
+                            <td>Poor control structures, missing recursion, illogical flow</td>
+                            <td><strong>15 points</strong></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Code Organization</strong><br>
+                                <small>Structure, formatting, readability, modularity</small>
+                            </td>
+                            <td>Excellent organization, perfect formatting, highly readable, well-modularized</td>
+                            <td>Good organization, consistent formatting, readable, modular</td>
+                            <td>Basic organization, some formatting, adequately readable</td>
+                            <td>Poor organization, inconsistent formatting, hard to read</td>
+                            <td><strong>10 points</strong></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Error Handling</strong><br>
+                                <small>Input validation, graceful error recovery, user feedback</small>
+                            </td>
+                            <td>Comprehensive error handling, excellent validation, clear user feedback</td>
+                            <td>Good error handling, adequate validation, helpful feedback</td>
+                            <td>Basic error handling, some validation, minimal feedback</td>
+                            <td>Poor or missing error handling, no validation, crashes on errors</td>
+                            <td><strong>10 points</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="mt-6 grid md:grid-cols-2 gap-6">
+                <div class="bg-green-50 p-4 rounded-lg">
+                    <h4 class="font-semibold text-green-800 mb-2">Grade Scale:</h4>
+                    <ul class="text-sm space-y-1">
+                        <li>A: 90-100 points (Excellent work)</li>
+                        <li>B: 80-89 points (Good work)</li>
+                        <li>C: 70-79 points (Satisfactory work)</li>
+                        <li>D: 60-69 points (Below expectations)</li>
+                        <li>F: Below 60 points (Unsatisfactory)</li>
+                    </ul>
+                </div>
+                
+                <div class="bg-blue-50 p-4 rounded-lg">
+                    <h4 class="font-semibold text-blue-800 mb-2">Late Submission Policy:</h4>
+                    <ul class="text-sm space-y-1">
+                        <li>• Check your course syllabus</li>
+                        <li>• Contact instructor for extensions</li>
+                        <li>• Submit partial work for partial credit</li>
+                        <li>• Document any technical difficulties</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Submission Instructions -->
+        <section class="mb-8">
+            <h2 class="text-2xl font-bold mb-4">📤 Submission Instructions</h2>
+            
+            <div class="interactive-box p-6">
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div>
+                        <h3 class="font-semibold mb-3">File Requirements:</h3>
+                        <ul class="text-sm space-y-2">
+                            <li>• <strong>Filename:</strong> <code>calculator.asm</code></li>
+                            <li>• <strong>Format:</strong> Plain text assembly file</li>
+                            <li>• <strong>Size:</strong> No specific limit</li>
+                            <li>• <strong>Testing:</strong> Must run in MARS without errors</li>
+                            <li>• <strong>Encoding:</strong> UTF-8 or ASCII</li>
+                        </ul>
+                    </div>
+                    
+                                        <div>
+                        <h3 class="font-semibold mb-3">Submission Steps:</h3>
+                        <ol class="text-sm space-y-2">
+                            <li>1. Test your program thoroughly in MARS</li>
+                            <li>2. Run through all the checklist items above</li>
+                            <li>3. Save your file as <code>calculator.asm</code></li>
+                            <li>4. Submit through your course management system</li>
+                            <li>5. Verify successful submission</li>
+                        </ol>
+                    </div>
+                </div>
+                
+                <div class="mt-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+                    <h4 class="font-semibold mb-2">📋 Submission Checklist:</h4>
+                    <div class="grid md:grid-cols-2 gap-4 text-sm">
+                        <div>
+                            <label class="flex items-center gap-2">
+                                <input type="checkbox" class="submission-check">
+                                <span>Program compiles and runs in MARS</span>
+                            </label>
+                            <label class="flex items-center gap-2">
+                                <input type="checkbox" class="submission-check">
+                                <span>All required functions implemented</span>
+                            </label>
+                            <label class="flex items-center gap-2">
+                                <input type="checkbox" class="submission-check">
+                                <span>Every line has comments</span>
+                            </label>
+                        </div>
+                        <div>
+                            <label class="flex items-center gap-2">
+                                <input type="checkbox" class="submission-check">
+                                <span>File named correctly (calculator.asm)</span>
+                            </label>
+                            <label class="flex items-center gap-2">
+                                <input type="checkbox" class="submission-check">
+                                <span>Header comment with name/date</span>
+                            </label>
+                            <label class="flex items-center gap-2">
+                                <input type="checkbox" class="submission-check">
+                                <span>Tested with all required test cases</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Additional Resources -->
+        <section class="mb-8">
+            <h2 class="text-2xl font-bold mb-4">📚 Additional Resources</h2>
+            
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="interactive-box p-6">
+                    <h3 class="font-semibold mb-3">MIPS Reference Materials:</h3>
+                    <ul class="text-sm space-y-2">
+                        <li>• MIPS Green Sheet (instruction reference)</li>
+                        <li>• MARS simulator documentation</li>
+                        <li>• Course textbook chapters on procedures</li>
+                        <li>• Lecture slides on MIPS calling conventions</li>
+                        <li>• Lab examples from previous weeks</li>
+                    </ul>
+                </div>
+                
+                <div class="interactive-box p-6">
+                    <h3 class="font-semibold mb-3">Getting Help:</h3>
+                    <ul class="text-sm space-y-2">
+                        <li>• Office hours: Check syllabus for times</li>
+                        <li>• Course discussion forum</li>
+                        <li>• Study groups with classmates</li>
+                        <li>• Tutoring center (if available)</li>
+                        <li>• Email instructor for specific questions</li>
+                    </ul>
+                    
+                    <div class="mt-4 p-3 bg-red-50 border border-red-200 rounded">
+                        <p class="text-sm text-red-800">
+                            <strong>Academic Integrity:</strong> Your submitted code must be your own work. 
+                            You may discuss algorithms and approaches with classmates, but the actual 
+                            implementation must be individual.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Example Code Snippets -->
+        <section class="mb-8">
+            <h2 class="text-2xl font-bold mb-4">💡 Code Examples</h2>
+            
+            <div class="space-y-6">
+                <div class="interactive-box p-6">
+                    <h3 class="font-semibold mb-3">Example: Menu Display and Input</h3>
+                    <div class="code-block"># Display menu and get user choice
+display_menu:
+    li $v0, 4                    # Load print string syscall
+    la $a0, menu_text           # Load address of menu string
+    syscall                     # Print the menu
+    
+    li $v0, 5                   # Load read integer syscall  
+    syscall                     # Read user input
+    move $t0, $v0               # Store choice in $t0
+    
+    # Validate input (1-6)
+    li $t1, 1                   # Load minimum valid choice
+    blt $t0, $t1, invalid_choice # Branch if choice < 1
+    li $t1, 6                   # Load maximum valid choice
+    bgt $t0, $t1, invalid_choice # Branch if choice > 6
+    
+    jr $ra                      # Return to caller</div>
+                </div>
+                
+                <div class="interactive-box p-6">
+                    <h3 class="font-semibold mb-3">Example: Procedure with Stack Management</h3>
+                    <div class="code-block"># Example procedure showing proper stack usage
+example_procedure:
+    # Prologue - save registers on stack
+    addi $sp, $sp, -12          # Allocate space (3 registers × 4 bytes)
+    sw $ra, 8($sp)              # Save return address
+    sw $s0, 4($sp)              # Save $s0 register
+    sw $s1, 0($sp)              # Save $s1 register
+    
+    # Procedure body
+    move $s0, $a0               # Save parameter in $s0
+    # ... your procedure logic here ...
+    
+    # Epilogue - restore registers from stack
+    lw $s1, 0($sp)              # Restore $s1 register
+    lw $s0, 4($sp)              # Restore $s0 register  
+    lw $ra, 8($sp)              # Restore return address
+    addi $sp, $sp, 12           # Deallocate stack space
+    
+    jr $ra                      # Return to caller</div>
+                </div>
+                
+                <div class="interactive-box p-6">
+                    <h3 class="font-semibold mb-3">Example: Input Validation Loop</h3>
+                    <div class="code-block"># Get positive integer from user with validation
+get_positive_int:
+    input_loop:
+        li $v0, 4               # Print string syscall
+        la $a0, prompt_msg      # Load prompt message
+        syscall                 # Display prompt
+        
+        li $v0, 5               # Read integer syscall
+        syscall                 # Get user input
+        move $t0, $v0           # Store input in $t0
+        
+        bgtz $t0, valid_input   # Branch if input > 0
+        
+        # Display error message for invalid input
+        li $v0, 4               # Print string syscall
+        la $a0, error_msg       # Load error message
+        syscall                 # Display error
+        
+        j input_loop            # Try again
+        
+    valid_input:
+        move $v0, $t0           # Return validated input
+        jr $ra                  # Return to caller</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Save/Print Section -->
+        <section class="mb-8">
+            <div class="bg-gray-50 p-6 rounded-lg text-center">
+                <h3 class="text-xl font-semibold mb-4">📄 Save This Assignment</h3>
+                <p class="mb-4">Save this assignment sheet for reference while working on your program.</p>
+                <button class="submit-btn" onclick="window.print()">💾 Save as PDF</button>
+                <p class="text-sm text-gray-600 mt-2">This will save the assignment requirements and rubric for offline reference.</p>
             </div>
         </section>
     </main>
 
     <script>
-        // Problem completion tracking
-        let problemStatus = {
-            1: false, 2: false, 3: false, 4: false, 5: false
-        };
-
-        // Problem 1: Grade Calculator
-        function checkProblem1() {
-            const answer = document.getElementById('problem1-answer').value.toLowerCase();
-            const feedback = document.getElementById('problem1-feedback');
+        // Checklist progress tracking
+        document.addEventListener('DOMContentLoaded', function() {
+            const checklistItems = document.querySelectorAll('.checklist-item');
+            const submissionChecks = document.querySelectorAll('.submission-check');
+            const progressText = document.getElementById('checklist-progress');
+            const progressBar = document.getElementById('progress-bar');
             
-            // Check for key components
-            const hasComparisons = answer.includes('bge') || answer.includes('blt') || answer.includes('ble') || answer.includes('bgt');
-            const hasLabels = answer.includes(':') && (answer.includes('print') || answer.includes('grade'));
-            const hasConstants = answer.includes('90') && answer.includes('80') && answer.includes('70') && answer.includes('60');
-            
-            if (hasComparisons && hasLabels && hasConstants) {
-                feedback.innerHTML = '<div class="p-3 rounded success-feedback">✅ Great! Your solution includes proper branching logic, labels, and grade boundaries.</div>';
-                problemStatus[1] = true;
-                updateStatus(1);
-            } else {
-                let hints = [];
-                if (!hasComparisons) hints.push('Include branch instructions (bge, blt, etc.)');
-                if (!hasLabels) hints.push('Create labels for each grade output');
-                if (!hasConstants) hints.push('Use the correct grade boundaries (90, 80, 70, 60)');
+            function updateProgress() {
+                const checkedItems = document.querySelectorAll('.checklist-item:checked').length;
+                const totalItems = checklistItems.length;
+                const percentage = Math.round((checkedItems / totalItems) * 100);
                 
-                feedback.innerHTML = `<div class="p-3 rounded hint-feedback">💡 Getting closer! Consider: ${hints.join(', ')}</div>`;
+                progressText.textContent = `Progress: ${checkedItems}/${totalItems} items complete`;
+                progressBar.style.width = `${percentage}%`;
+                
+                // Change color based on progress
+                if (percentage >= 90) {
+                    progressBar.className = 'bg-green-500 h-3 rounded-full transition-all duration-300';
+                } else if (percentage >= 70) {
+                    progressBar.className = 'bg-yellow-500 h-3 rounded-full transition-all duration-300';
+                } else {
+                    progressBar.className = 'bg-red-500 h-3 rounded-full transition-all duration-300';
+                }
             }
-        }
-
-        // Problem 2A: While Loop
-        function checkProblem2A() {
-            const answer = document.getElementById('problem2a-answer').value.toLowerCase();
-            const feedback = document.getElementById('problem2a-feedback');
             
-            const hasLoop = answer.includes('loop') || answer.includes('while');
-            const hasCondition = answer.includes('bgt') || answer.includes('ble') || answer.includes('bge') || answer.includes('blt');
-            const hasAdd = answer.includes('add') && answer.includes('$t1');
-            const hasIncrement = answer.includes('addi') && answer.includes('$t2');
-            const hasJump = answer.includes('j ') || answer.includes('b ');
+            // Add event listeners to all checklist items
+            checklistItems.forEach(item => {
+                item.addEventListener('change', updateProgress);
+            });
             
-            if (hasLoop && hasCondition && hasAdd && hasIncrement && hasJump) {
-                feedback.innerHTML = '<div class="p-3 rounded success-feedback">✅ Excellent while loop structure!</div>';
-                updateProblem2Status();
-            } else {
-                feedback.innerHTML = '<div class="p-3 rounded hint-feedback">💡 Include: loop label, condition check, sum accumulation, counter increment, and jump back.</div>';
-            }
-        }
-
-        // Problem 2B: For Loop
-        function checkProblem2B() {
-            const answer = document.getElementById('problem2b-answer').value.toLowerCase();
-            const feedback = document.getElementById('problem2b-feedback');
+            submissionChecks.forEach(item => {
+                item.addEventListener('change', function() {
+                    const checkedSubmission = document.querySelectorAll('.submission-check:checked').length;
+                    const totalSubmission = submissionChecks.length;
+                    
+                    if (checkedSubmission === totalSubmission) {
+                        // All submission checks complete
+                        console.log('Ready for submission!');
+                    }
+                });
+            });
             
-            const hasLoop = answer.includes('for') || answer.includes('loop');
-            const hasCondition = answer.includes('bgt') || answer.includes('ble') || answer.includes('bge') || answer.includes('blt');
-            const hasAdd = answer.includes('add');
-            
-            if (hasLoop && hasCondition && hasAdd) {
-                feedback.innerHTML = '<div class="p-3 rounded success-feedback">✅ Good for loop implementation!</div>';
-                updateProblem2Status();
-            } else {
-                feedback.innerHTML = '<div class="p-3 rounded hint-feedback">💡 For loops need initialization, condition, body, and increment.</div>';
-            }
-        }
-
-        // Problem 2C: Complete Program
-        function checkProblem2C() {
-            const answer = document.getElementById('problem2c-answer').value.toLowerCase();
-            const feedback = document.getElementById('problem2c-feedback');
-            
-            const hasData = answer.includes('.data');
-            const hasInput = answer.includes('syscall') && answer.includes('5');
-            const hasOutput = answer.includes('syscall') && answer.includes('1');
-            const hasLoop = answer.includes('loop') || answer.includes('while') || answer.includes('for');
-            
-            if (hasData && hasInput && hasOutput && hasLoop) {
-                feedback.innerHTML = '<div class="p-3 rounded success-feedback">✅ Complete program with all required components!</div>';
-                problemStatus[2] = true;
-                updateStatus(2);
-            } else {
-                feedback.innerHTML = '<div class="p-3 rounded hint-feedback">💡 Include: .data section, input syscall, loop implementation, and output syscall.</div>';
-            }
-        }
-
-        function updateProblem2Status() {
-            const a = document.getElementById('problem2a-feedback').innerHTML.includes('success-feedback');
-            const b = document.getElementById('problem2b-feedback').innerHTML.includes('success-feedback');
-            const c = document.getElementById('problem2c-feedback').innerHTML.includes('success-feedback');
-            
-            if (a && b && c) {
-                problemStatus[2] = true;
-                updateStatus(2);
-            }
-        }
-
-        // Problem 3: Procedure Implementation
-        function checkProblem3() {
-            const answer = document.getElementById('problem3-answer').value.toLowerCase();
-            const main = document.getElementById('problem3-main').value.toLowerCase();
-            const feedback = document.getElementById('problem3-feedback');
-            
-            const hasLabel = answer.includes('find_max_three:');
-            const hasComparisons = answer.includes('bgt') || answer.includes('bge') || answer.includes('blt') || answer.includes('ble');
-            const hasReturn = answer.includes('jr $ra');
-            const hasResult = answer.includes('$v0');
-            const hasCall = main.includes('jal') && main.includes('find_max_three');
-            
-            if (hasLabel && hasComparisons && hasReturn && hasResult && hasCall) {
-                feedback.innerHTML = '<div class="p-3 rounded success-feedback">✅ Excellent procedure with proper calling conventions!</div>';
-                problemStatus[3] = true;
-                updateStatus(3);
-            } else {
-                feedback.innerHTML = '<div class="p-3 rounded hint-feedback">💡 Include: procedure label, comparison logic, $v0 result, jr $ra return, and jal call in main.</div>';
-            }
-        }
-
-        // Problem 4: Stack Operations
-        function checkProblem4() {
-            const prologue = document.getElementById('problem4a-answer').value;
-            const epilogue = document.getElementById('problem4b-answer').value;
-            const feedback = document.getElementById('problem4-feedback');
-            
-            const prologueCorrect = prologue.includes('-12') && prologue.includes('8($sp)') && prologue.includes('4($sp)') && prologue.includes('0($sp)');
-            const epilogueCorrect = epilogue.includes('0($sp)') && epilogue.includes('4($sp)') && epilogue.includes('8($sp)') && epilogue.includes('12');
-            
-            if (prologueCorrect && epilogueCorrect) {
-                feedback.innerHTML = '<div class="p-3 rounded success-feedback">✅ Perfect stack management! Proper allocation, saving, and restoration order.</div>';
-                problemStatus[4] = true;
-                updateStatus(4);
-            } else {
-                feedback.innerHTML = '<div class="p-3 rounded hint-feedback">💡 Remember: allocate -12 bytes, save in order ($ra at 8, $s0 at 4, $s1 at 0), restore in reverse order.</div>';
-            }
-        }
-
-        // Problem 5: Recursive Factorial
-        function checkProblem5() {
-            const answer = document.getElementById('problem5-answer').value.toLowerCase();
-            const feedback = document.getElementById('problem5-feedback');
-            
-            const hasBaseCase = answer.includes('beq') && answer.includes('0') && answer.includes('1');
-            const hasRecursiveCall = answer.includes('jal') && answer.includes('factorial');
-            const hasStack = answer.includes('addi') && answer.includes('$sp') && answer.includes('sw') && answer.includes('lw');
-            const hasMultiplication = answer.includes('mul') || (answer.includes('mult') && answer.includes('mflo'));
-            const hasReturn = answer.includes('jr $ra');
-            
-            if (hasBaseCase && hasRecursiveCall && hasStack && hasMultiplication && hasReturn) {
-                feedback.innerHTML = '<div class="p-3 rounded success-feedback">✅ Outstanding recursive implementation with proper base case, stack management, and multiplication!</div>';
-                problemStatus[5] = true;
-                updateStatus(5);
-            } else {
-                feedback.innerHTML = '<div class="p-3 rounded hint-feedback">💡 Include: base case check, recursive jal call, stack operations, multiplication of result, and return.</div>';
-            }
-        }
-
-        // Update visual status indicators
-        function updateStatus(problemNum) {
-            const status = document.getElementById(`status${problemNum}`);
-            if (problemStatus[problemNum]) {
-                status.className = 'w-8 h-8 rounded-full bg-green-500 mx-auto mb-1';
-                status.innerHTML = '<div class="text-white text-xs leading-8">✓</div>';
-            }
-        }
-
-        // Initialize page
-        document.addEventListener('DOMContentLoaded', () => {
-            console.log('MIPS Control Flow & Procedures Assignment loaded');
+            // Initialize progress
+            updateProgress();
         });
+
+        // Smooth scrolling for internal links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Print styling enhancement
+        window.addEventListener('beforeprint', function() {
+            document.body.classList.add('printing');
+        });
+        
+        window.addEventListener('afterprint', function() {
+            document.body.classList.remove('printing');
+        });
+
+        // Console message for students
+        console.log('MIPS Calculator Assignment loaded successfully!');
+        console.log('Remember: Every line of code must have meaningful comments!');
     </script>
 </body>
 </html>
+                        
