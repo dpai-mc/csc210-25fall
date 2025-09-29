@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSC210 - Week 7: MIPS Flow Control and Procedures</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            background-color: #FDFBF8;
+            color: #383838;
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .code-font {
+            font-family: 'Fira Code', monospace;
+        }
+        
+        /* Style for the currently active transcript line */
+        .active-transcript-line {
+            background-color: #F0EBE8;
+            font-weight: 600;
+            color: #000;
+            border-left: 4px solid #383838;
+        }
+
+        /* Accessibility: visible-on-focus skip link */
+        .skip-link {
+            position: absolute;
+            top: -40px;
+            left: 0;
+            background: #383838;
+            color: white;
+            padding: 8px;
+            z-index: 100;
+            transition: top 0.3s;
+        }
+
+        .skip-link:focus {
+            top: 0;
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+
+    <div class="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8">
+        <header class="mb-8">
+            <h1 class="text-4xl font-bold text-gray-900">CSC210 - Week 7 Introduction</h1>
+            <p class="text-lg text-gray-600 mt-1">MIPS: Flow Control and Procedures</p>
+        </header>
+
+        <main id="main-content">
+            <p class="mb-8 text-gray-700">
+                Welcome to Week 7. This week we will be covering MIPS flow control and procedures. Before you begin the learning modules, please watch the introductory video below. The transcript will highlight the text in sync with the video.
+            </p>
+
+            <div class="grid grid-cols-1 lg:grid-cols-5 gap-8">
+                <div class="lg:col-span-3">
+                    <div class="aspect-video w-full bg-black rounded-lg shadow-lg overflow-hidden">
+                        <div id="player" class="w-full h-full"></div>
+                    </div>
+                </div>
+                <div class="lg:col-span-2">
+                    <h2 class="text-2xl font-bold mb-4">Transcript</h2>
+                    <div id="transcript-container" class="h-96 bg-white p-4 rounded-lg shadow-sm border overflow-y-auto space-y-2" tabindex="0" aria-label="Video Transcript">
+                        </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const transcriptData = `1
+00:00:01,000 --> 00:00:07,320
+Aloha and welcome. This is week 7 and we're going to talk more about programming in MIT.
+
+2
+00:00:08,020 --> 00:00:12,660
+Primarily flow control commands and procedures.
+
+3
+00:00:13,680 --> 00:00:16,940
+And so I've split it up into two parts here this week.
+
+4
+00:00:17,340 --> 00:00:20,400
+The first part we have the flow control commands.
+
+5
+00:00:20,840 --> 00:00:25,920
+And this just walks through the different commands, the different types, what they are.
+
+6
+00:00:25,920 --> 00:00:32,860
+You know, what the different formats in machine language are for each type.
+
+7
+00:00:33,420 --> 00:00:38,940
+And then you can go through the branch instructions and we'lltalk about the different branch instructions.
+
+8
+00:00:39,700 --> 00:00:45,840
+Give examples of here your branch equals, RS, RT, label.
+
+9
+00:00:46,280 --> 00:00:47,600
+What does label mean?
+
+10
+00:00:48,300 --> 00:00:50,740
+So up here we'll talk about a label and targets.
+
+11
+00:00:51,060 --> 00:00:55,740
+They're just basically you can put labels in your program.
+
+12
+00:00:55,920 --> 00:01:02,680
+And they're like places where you want to be able to jump to in your program.
+
+13
+00:01:03,100 --> 00:01:06,080
+So like main colon is a label.
+
+14
+00:01:06,240 --> 00:01:08,340
+Anything followed by colon is a label.
+
+15
+00:01:09,740 --> 00:01:18,440
+So typically if you're going to run a function or a set of code that you want to keep running over and over or a loop.
+
+16
+00:01:18,840 --> 00:01:24,720
+You have a loop start and then you have an end or a jump to the start, you know, to loop.
+
+17
+00:01:24,920 --> 00:01:25,840
+You get to the bottom.
+
+18
+00:01:25,920 --> 00:01:27,980
+You want to jump to loop start, jump to loop start.
+
+19
+00:01:28,080 --> 00:01:28,800
+You know, that kind of thing.
+
+20
+00:01:29,840 --> 00:01:30,060
+Okay.
+
+21
+00:01:30,240 --> 00:01:32,580
+So anyway, it talks about branches.
+
+22
+00:01:33,580 --> 00:01:36,700
+There are two register branches.
+
+23
+00:01:38,040 --> 00:01:38,440
+Okay.
+
+24
+00:01:38,460 --> 00:01:40,260
+And there are single register branches.
+
+25
+00:01:41,680 --> 00:01:42,880
+So the different types.
+
+26
+00:01:43,880 --> 00:01:47,340
+We have a little interactive branch decoder to practice with.
+
+27
+00:01:48,920 --> 00:01:49,320
+Okay.
+
+28
+00:01:49,400 --> 00:01:52,360
+And then same for jump instructions.
+
+29
+00:01:55,040 --> 00:01:55,800
+How to insert.
+
+30
+00:01:55,920 --> 00:02:04,260
+Jump instructions if they are, we have a binary encoder here where you can build your own instructions and generate the binary code.
+
+31
+00:02:04,320 --> 00:02:23,780
+Or you can come down here to this binary instruction editor and we have a binary instruction, excuse me, and it'll put you all your values so you can start like, oh, well, I think this is a one and this is one, one or something like that.
+
+32
+00:02:23,840 --> 00:02:25,880
+And if it's a binary instruction, it'll tell you.
+
+33
+00:02:25,920 --> 00:02:26,640
+What it is.
+
+34
+00:02:26,880 --> 00:02:27,260
+Okay.
+
+35
+00:02:28,400 --> 00:02:36,160
+Or you can say, oh, I want to branch equal, you know, dollar sign T zero dollar sign T one branch of equal eight.
+
+36
+00:02:36,920 --> 00:02:37,860
+Well, what does that look like?
+
+37
+00:02:37,860 --> 00:02:41,100
+And then you can go up here and look at the, here's the binary bits.
+
+38
+00:02:41,840 --> 00:02:47,240
+Here's the opcode RS and RT, the immediate address.
+
+39
+00:02:49,220 --> 00:02:49,460
+Okay.
+
+40
+00:02:49,700 --> 00:02:55,820
+So you can look at it and it'll tell you what the command is and what the type.
+
+41
+00:02:55,880 --> 00:02:58,640
+Is okay.
+
+42
+00:02:58,820 --> 00:03:03,700
+And then some quick reference tables for the different branch codes, jump codes, and common registers.
+
+43
+00:03:05,820 --> 00:03:06,020
+All right.
+
+44
+00:03:06,020 --> 00:03:18,500
+And then there's a little, uh, practice quiz to, you know, just check your understanding of the different register types and what the different commands are and that kind of thing.
+
+45
+00:03:20,840 --> 00:03:21,080
+Okay.
+
+46
+00:03:21,200 --> 00:03:23,960
+So that's the first one, the second part.
+
+47
+00:03:24,800 --> 00:03:25,860
+So that's the basic command.
+
+48
+00:03:26,660 --> 00:03:30,020
+And the second part goes a little bit more into how to use those commands.
+
+49
+00:03:31,640 --> 00:03:32,060
+Okay.
+
+50
+00:03:32,480 --> 00:03:37,580
+So by branching loops, stacks, or as a stack and procedures.
+
+51
+00:03:38,700 --> 00:03:39,020
+Okay.
+
+52
+00:03:39,020 --> 00:03:46,620
+And so give a little mission brief, kind of explain what's going on and then you can do decision-making, which is branching.
+
+53
+00:03:48,380 --> 00:03:48,740
+Okay.
+
+54
+00:03:49,220 --> 00:03:53,120
+You can do loops, which tend to use jumps to loop.
+
+55
+00:03:53,900 --> 00:03:55,640
+And this is an interactive, uh,
+
+56
+00:03:56,780 --> 00:03:58,100
+drag, come on to build your own loop.
+
+57
+00:03:58,200 --> 00:04:05,400
+And so you can say, oh, loop, start, drop it in, and you can move stuff around that way to build your program that way.
+
+58
+00:04:05,400 --> 00:04:17,040
+Just as a check, um, and then you can execute your loop step through your loop, check it, add a little tech.
+
+59
+00:04:17,040 --> 00:04:18,120
+Do you understand loops?
+
+60
+00:04:20,960 --> 00:04:22,860
+And when you're done with that, you can go to stack.
+
+61
+00:04:24,140 --> 00:04:24,380
+Okay.
+
+62
+00:04:24,380 --> 00:04:25,160
+And stacks important.
+
+63
+00:04:25,160 --> 00:04:25,820
+Cause this has to do.
+
+64
+00:04:25,820 --> 00:04:29,420
+With memory and what you do with memory and function calls and stuff like that.
+
+65
+00:04:30,500 --> 00:04:30,820
+Okay.
+
+66
+00:04:31,060 --> 00:04:37,200
+So here's the steps, the call sequence, okay.
+
+67
+00:04:37,200 --> 00:04:45,440
+Stack builder to check your understanding of stacks and then procedures are how to deal with procedures.
+
+68
+00:04:47,320 --> 00:04:47,580
+Okay.
+
+69
+00:04:47,580 --> 00:04:55,700
+Argument registers, return value registers, and temporary registers, which are, which until you have to go look these.
+
+70
+00:04:55,700 --> 00:04:55,800
+Up.
+
+71
+00:04:55,820 --> 00:04:59,940
+As Vs, Ts Ss, they're different.
+
+72
+00:04:59,940 --> 00:05:02,240
+They fall into different categories.
+
+73
+00:05:02,240 --> 00:05:07,440
+You're gonna drop the ones that fall into the right places and check it.
+
+74
+00:05:07,440 --> 00:05:12,260
+Um, the big difference obviously is temporary registers.
+
+75
+00:05:12,260 --> 00:05:21,500
+When you call a procedure or a function and you're trying to pass values back and forth into your function or back out of your function.
+
+76
+00:05:21,500 --> 00:05:24,500
+Um, just as like a method call where it returns a value.
+
+77
+00:05:24,500 --> 00:05:25,700
+You're gonna pass a value and returns a value.
+
+78
+00:05:25,700 --> 00:05:33,800
+we have to use certain registers to do that and so temporary registers aren't what you want to
+
+79
+00:05:33,800 --> 00:05:42,860
+use for that okay argument registers pass in return value registers pass it back all right
+
+80
+00:05:42,860 --> 00:05:51,740
+so you can build a procedure talks a little about procedures here and then there's a little
+
+81
+00:05:51,740 --> 00:06:00,240
+challenge which is really a check you know that's how well do you understand this okay and so that's
+
+82
+00:06:00,240 --> 00:06:06,620
+the learning content this week and then you have an assignment and the assignments a little bit
+
+83
+00:06:06,620 --> 00:06:11,700
+more involved this week than the previous ones it's going to be build a calculator in assembly
+
+84
+00:06:11,700 --> 00:06:21,440
+language and you're going to build a calculator that does these five things sum of numbers
+
+85
+00:06:21,740 --> 00:06:28,160
+from one to n so you're gonna make an arena in a number an integer and then you're gonna
+
+86
+00:06:28,160 --> 00:06:33,380
+sum the numbers to one and if you choose one you're going to create get the factorial of n
+
+87
+00:06:33,380 --> 00:06:41,360
+if you choose to get to the Fibonacci sequence if you choose 3g CD of 2 numbers if you choose
+
+88
+00:06:41,360 --> 00:06:48,260
+4 and a power calculator X to the Y power if you choose 5 okay and so you choose and 6 to
+
+89
+00:06:48,260 --> 00:06:51,680
+exit and then you have to create these functions one for each
+
+90
+00:06:51,740 --> 00:07:00,020
+each option and it goes through this and it gives you a little starting point put
+
+91
+00:07:00,020 --> 00:07:04,220
+data at the top today just so they have it there you can move it to the bottom
+
+92
+00:07:04,220 --> 00:07:11,420
+if you want and your main program and some kind of like menu say and then the
+
+93
+00:07:11,420 --> 00:07:19,060
+enter a value okay and then there's all definitions for each function what that
+
+94
+00:07:19,060 --> 00:07:23,560
+means what they mean so you know not just out there I'm trying to figure out
+
+95
+00:07:23,560 --> 00:07:28,960
+how to do you know GCD or how to do stuff because this isn't a math class
+
+96
+00:07:28,960 --> 00:07:36,940
+computer science class all right and then testing give some answers here throw
+
+97
+00:07:36,940 --> 00:07:42,480
+them in your program double check your program and then some air handling like
+
+98
+00:07:42,480 --> 00:07:49,060
+you know if they type in a value in it they type in 7 or 8 or 52 instead of one
+
+99
+00:07:49,060 --> 00:07:55,480
+through six you know hey that's an error you can deflate an error and count in
+
+100
+00:07:55,480 --> 00:08:01,060
+the program negative inputs you want to say it has to be a positive and try to
+
+101
+00:08:01,060 --> 00:08:09,180
+get in again zero inputs obviously in the menu zero inputs invalid number
+
+102
+00:08:09,180 --> 00:08:13,420
+large numbers not too worried about large numbers but if you want to try to
+
+103
+00:08:13,420 --> 00:08:18,620
+handle large numbers do so gracefully large numbers would be numbers that go
+
+104
+00:08:18,620 --> 00:08:19,040
+beyond that
+
+105
+00:08:19,060 --> 00:08:27,460
+the size of our registers so then then they become too big to fit return to the
+
+106
+00:08:27,460 --> 00:08:34,620
+menu after each operation so you do an operation like I want the factorial 5 so
+
+107
+00:08:34,620 --> 00:08:40,060
+you'll type in I'm gonna do option 2 enter your value do your factorial and
+
+108
+00:08:40,060 --> 00:08:43,260
+then it comes back up and goes here's a result and then it displays the menu
+
+109
+00:08:43,260 --> 00:08:48,620
+again so you'll keep looping until you select six tags
+
+110
+00:08:48,620 --> 00:08:56,300
+okay and then obviously a clean program exit all right so checklists a grading
+
+111
+00:08:56,300 --> 00:09:03,600
+rubric in terms of what everything's worth obviously grading scale submission
+
+112
+00:09:03,600 --> 00:09:10,520
+should be calculator data sm obviously run your program in Mars make sure it
+
+113
+00:09:10,520 --> 00:09:17,100
+works okay and then some additional resources I'm just eating check out my
+
+114
+00:09:17,100 --> 00:09:18,460
+office hours you have questions you can help me out at www.propertybusiness.com.au
+
+115
+00:09:18,620 --> 00:09:24,520
+send me emails post stuff on the discussion forum use the course AI
+
+116
+00:09:24,520 --> 00:09:30,260
+tutor that you'll find at the top of the modules page obviously I expect this to
+
+117
+00:09:30,260 --> 00:09:35,420
+be your work and not the work of somebody else or an AI you're gonna use
+
+118
+00:09:35,420 --> 00:09:40,900
+a I use the a tutor to get help to understand help guide you through stuff
+
+119
+00:09:40,900 --> 00:09:45,360
+but not to write your program for you and we have some code examples of how
+
+120
+00:09:45,360 --> 00:09:51,340
+you can do some things okay but you may or may not help you like stack
+
+121
+00:09:51,340 --> 00:09:54,720
+management may or may not help you for these programs typically stack
+
+122
+00:09:54,720 --> 00:10:00,120
+management becomes useful when we do recursion which we'll do next week and
+
+123
+00:10:00,120 --> 00:10:06,120
+week 8 so it'll you'll see it again next week and week 8 how to do stack
+
+124
+00:10:06,120 --> 00:10:15,240
+management input validation Lou say this assignment so save as a PDF means you
+
+125
+00:10:15,240 --> 00:10:15,360
+could
+
+126
+00:10:15,360 --> 00:10:20,680
+print this as a PDF if you want the assignment and so you can have it as a
+
+127
+00:10:20,680 --> 00:10:29,180
+reference if you need it separately or you want to you want a paper copy or
+
+128
+00:10:29,180 --> 00:10:34,120
+something like that that's why okay so that's what we have for this week and
+
+129
+00:10:34,120 --> 00:10:42,400
+then I will tell you for next week I will also be assigning a kind of a
+
+130
+00:10:42,400 --> 00:10:45,240
+midterm but it's kind of midterm slash project
+
+131
+00:10:45,240 --> 00:10:52,920
+term that you'll have a couple weeks to submit and do and it'll involve two
+
+132
+00:10:52,920 --> 00:10:57,660
+parts to it there'll be a part that goes with your final project so I'll ask you
+
+133
+00:10:57,660 --> 00:11:01,660
+to do certain amount of stuff and submit that as part of you know a logic Sam
+
+134
+00:11:01,660 --> 00:11:08,260
+digital circuit assignment and then probably like a debug and coding kind of
+
+135
+00:11:08,260 --> 00:11:13,220
+an assignment in assembly alright but again that'll get posted next week and
+
+136
+00:11:13,220 --> 00:11:13,760
+it'll be
+
+137
+00:11:15,240 --> 00:11:18,200
+You have a couple of weeks to work on that as well or doing other stuff, too.
+
+138
+00:11:18,380 --> 00:11:20,100
+So just be aware.
+
+139
+00:11:20,220 --> 00:11:23,480
+I'll try not to overload you, but be aware there's going to be some overlap.
+
+140
+00:11:25,400 --> 00:11:25,940
+All right.
+
+141
+00:11:27,040 --> 00:11:27,920
+Everything's going great.
+
+142
+00:11:28,260 --> 00:11:31,520
+And if you have questions, make sure to reach out.
+
+143
+00:11:31,980 --> 00:11:33,900
+And hopefully we'll talk to you soon.
+
+144
+00:11:34,340 --> 00:11:34,700
+Thanks.`;
+            let parsedTranscript = [];
+            let player;
+            let timeUpdater;
+            
+            // --- Helper Functions ---
+            const timeToSeconds = (timeStr) => {
+                const [hms, ms] = timeStr.split(',');
+                const [h, m, s] = hms.split(':').map(Number);
+                return h * 3600 + m * 60 + s + Number(ms) / 1000;
+            };
+
+            const parseSrt = (srt) => {
+                const lines = srt.trim().split(/\r?\n\r?\n/);
+                return lines.map(line => {
+                    const parts = line.split('\n');
+                    if (parts.length < 3) return null; // Basic error check for malformed entries
+                    const time = parts[1].split(' --> ');
+                    if (time.length < 2) return null;
+                    return {
+                        start: timeToSeconds(time[0]),
+                        end: timeToSeconds(time[1]),
+                        text: parts.slice(2).join(' ')
+                    };
+                }).filter(Boolean); // Filter out any null entries
+            };
+
+            const populateTranscript = () => {
+                const container = document.getElementById('transcript-container');
+                if (!container) return;
+                container.innerHTML = ''; // Clear previous content
+                parsedTranscript.forEach((line, index) => {
+                    const p = document.createElement('p');
+                    p.id = `transcript-line-${index}`;
+                    p.dataset.start = line.start;
+                    p.dataset.end = line.end;
+                    p.textContent = line.text;
+                    p.className = 'p-2 rounded-md transition-colors duration-200 cursor-pointer';
+                    p.setAttribute('role', 'button');
+                    p.setAttribute('tabindex', '0');
+                    
+                    const seekAndPlay = () => {
+                        if(player && typeof player.seekTo === 'function') {
+                            player.seekTo(line.start);
+                            player.playVideo();
+                        }
+                    };
+                    
+                    p.addEventListener('click', seekAndPlay);
+                    p.addEventListener('keydown', (e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                           e.preventDefault();
+                           seekAndPlay();
+                        }
+                    });
+
+                    container.appendChild(p);
+                });
+            };
+
+            const highlightCurrentLine = () => {
+                if (!player || typeof player.getCurrentTime !== 'function') return;
+                const currentTime = player.getCurrentTime();
+                const allLines = document.querySelectorAll('#transcript-container p');
+                
+                let foundActive = false;
+                allLines.forEach(line => {
+                    const start = parseFloat(line.dataset.start);
+                    const end = parseFloat(line.dataset.end);
+
+                    if (currentTime >= start && currentTime <= end) {
+                        if (!line.classList.contains('active-transcript-line')) {
+                           const currentlyActive = document.querySelector('.active-transcript-line');
+                           if(currentlyActive) {
+                               currentlyActive.classList.remove('active-transcript-line');
+                           }
+                           line.classList.add('active-transcript-line');
+                           line.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'nearest' });
+                        }
+                        foundActive = true;
+                    }
+                });
+                
+                if(!foundActive) {
+                    const currentlyActive = document.querySelector('.active-transcript-line');
+                    if(currentlyActive) {
+                        currentlyActive.classList.remove('active-transcript-line');
+                    }
+                }
+            };
+
+            // --- YouTube IFrame API ---
+            window.onYouTubeIframeAPIReady = function() {
+                player = new YT.Player('player', {
+                    height: '100%',
+                    width: '100%',
+                    videoId: 'kmXFXtYZ22s',
+                    playerVars: {
+                        'playsinline': 1,
+                        'rel': 0, // Disable related videos
+                        'modestbranding': 1 // Use a more subtle YouTube logo
+                    },
+                    events: {
+                        'onReady': onPlayerReady,
+                        'onStateChange': onPlayerStateChange
+                    }
+                });
+            };
+
+            function onPlayerReady(event) {
+                console.log('YouTube player is ready.');
+            }
+
+            function onPlayerStateChange(event) {
+                clearInterval(timeUpdater); // Clear any existing interval
+                if (event.data === YT.PlayerState.PLAYING) {
+                    timeUpdater = setInterval(highlightCurrentLine, 300);
+                }
+            }
+            
+            // --- Initialization ---
+            function initialize() {
+                parsedTranscript = parseSrt(transcriptData);
+                populateTranscript();
+                
+                // Load the YouTube IFrame Player API script if it's not already loaded
+                if (typeof(YT) == 'undefined' || typeof(YT.Player) == 'undefined') {
+                    const tag = document.createElement('script');
+                    tag.src = "https://www.youtube.com/iframe_api";
+                    const firstScriptTag = document.getElementsByTagName('script')[0];
+                    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+                } else {
+                    onYouTubeIframeAPIReady();
+                }
+                
+                console.log('Introduction page initialized.');
+            }
+
+            initialize();
+        });
+    </script>
+</body>
+</html>
