@@ -12,8 +12,8 @@
     
     <!-- Meta Comments -->
     <!-- Chosen Palette: Scholarly Neutrals -->
-    <!-- Application Structure Plan: Focused lab assignment with step-by-step procedure implementation -->
-    <!-- Visualization & Content Choices: Clear specifications, code templates, and testing requirements -->
+    <!-- Application Structure Plan: Focused lab assignment with clear specifications -->
+    <!-- Visualization & Content Choices: Clean requirements and testing specifications -->
     <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
     
     <style>
@@ -21,20 +21,6 @@
             background-color: #FDFBF8;
             color: #383838;
             font-family: 'Inter', sans-serif;
-        }
-
-        .worksheet-input {
-            font-family: 'Fira Code', monospace;
-            border: 1px solid #D1C7BF;
-            background-color: #FFFFFF;
-            padding: 0.5rem;
-            border-radius: 0.375rem;
-        }
-
-        .worksheet-input:focus {
-            outline: none;
-            border-color: #4A90E2;
-            box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.5);
         }
 
         .submit-btn {
@@ -51,20 +37,6 @@
             background-color: #357ABD;
         }
 
-        .check-btn {
-            background-color: #EADDD7;
-            color: #383838;
-            font-weight: 600;
-            padding: 0.5rem 1rem;
-            border-radius: 0.375rem;
-            border: none;
-            cursor: pointer;
-        }
-
-        .check-btn:hover {
-            background-color: #D1C7BF;
-        }
-
         .code-block {
             background-color: #f4f4f4;
             border: 1px solid #ddd;
@@ -75,15 +47,15 @@
             overflow-x: auto;
         }
 
-        .step-box {
-            border-left: 4px solid #4A90E2;
-            background-color: #f8fafc;
+        .interactive-box {
+            border: 2px solid #EADDD7;
+            border-radius: 8px;
+            background-color: #FDFBF8;
         }
 
         @media print {
             .no-print { display: none; }
             body { background: white; color: black; }
-            .worksheet-input { border: 1px solid #000; }
         }
     </style>
 </head>
@@ -103,7 +75,7 @@
             <h2 class="text-xl font-semibold mb-4">🎯 Lab Objectives</h2>
             <div class="grid md:grid-cols-2 gap-6">
                 <div>
-                    <h3 class="font-semibold mb-2">What You'll Learn:</h3>
+                    <h3 class="font-semibold mb-2">What You'll Demonstrate:</h3>
                     <ul class="text-sm space-y-1">
                         <li>✓ Write procedures with parameters and return values</li>
                         <li>✓ Follow MIPS calling conventions</li>
@@ -113,18 +85,12 @@
                     </ul>
                 </div>
                 <div>
-                    <h3 class="font-semibold mb-2">Required Tools:</h3>
-                    <ul class="text-sm space-y-1">
-                        <li>• MARS MIPS Simulator</li>
-                        <li>• Text editor</li>
-                        <li>• MIPS reference sheet</li>
-                    </ul>
-                    
-                    <h3 class="font-semibold mb-2 mt-4">Deliverable:</h3>
+                    <h3 class="font-semibold mb-2">Deliverable:</h3>
                     <ul class="text-sm space-y-1">
                         <li>• Single file named <code>lab7.asm</code></li>
                         <li>• All lines commented</li>
                         <li>• Must run without errors in MARS</li>
+                        <li>• Include your name and date in header</li>
                     </ul>
                 </div>
             </div>
@@ -134,9 +100,9 @@
         <section class="mb-8">
             <h2 class="text-2xl font-bold mb-4">📋 Program Specification</h2>
             
-            <div class="bg-gray-50 p-6 rounded-lg mb-6">
-                <h3 class="text-xl font-semibold mb-4">Your Task</h3>
-                <p class="mb-4">Create a program that reads two integers from the user and calls three different procedures to process them:</p>
+            <div class="interactive-box p-6 mb-6">
+                <h3 class="text-xl font-semibold mb-4">Program Requirements</h3>
+                <p class="mb-4">Create a MIPS assembly program that reads two integers from the user and calls three procedures to process them. The program should display formatted output showing the results of each procedure call.</p>
                 
                 <div class="bg-white p-4 rounded border mb-4">
                     <h4 class="font-semibold mb-2">Expected Program Output:</h4>
@@ -150,291 +116,100 @@ Sum from 7 to 15: 99
 
 Program complete.</div>
                 </div>
+            </div>
 
-                <div class="grid md:grid-cols-3 gap-4">
-                    <div class="bg-green-50 p-4 rounded">
-                        <h4 class="font-semibold text-green-800 mb-2">Procedure 1: getMin</h4>
+            <!-- Procedure Specifications -->
+            <div class="grid md:grid-cols-3 gap-6 mb-6">
+                <div class="interactive-box p-4">
+                    <h4 class="font-semibold text-green-800 mb-3">Procedure 1: getMin</h4>
+                    <ul class="text-sm space-y-1">
+                        <li><strong>Parameters:</strong> Two integers in $a0, $a1</li>
+                        <li><strong>Returns:</strong> Minimum value in $v0</li>
+                        <li><strong>Implementation:</strong> Use conditional branching</li>
+                        <li><strong>Stack:</strong> Not required (leaf procedure)</li>
+                    </ul>
+                </div>
+                
+                <div class="interactive-box p-4">
+                    <h4 class="font-semibold text-blue-800 mb-3">Procedure 2: getMax</h4>
+                    <ul class="text-sm space-y-1">
+                        <li><strong>Parameters:</strong> Two integers in $a0, $a1</li>
+                        <li><strong>Returns:</strong> Maximum value in $v0</li>
+                        <li><strong>Implementation:</strong> Use conditional branching</li>
+                        <li><strong>Stack:</strong> Not required (leaf procedure)</li>
+                    </ul>
+                </div>
+                
+                <div class="interactive-box p-4">
+                    <h4 class="font-semibold text-orange-800 mb-3">Procedure 3: sumRange</h4>
+                    <ul class="text-sm space-y-1">
+                        <li><strong>Parameters:</strong> Two integers in $a0, $a1</li>
+                        <li><strong>Returns:</strong> Sum from min to max in $v0</li>
+                        <li><strong>Implementation:</strong> Use loop structure</li>
+                        <li><strong>Stack:</strong> Required for register preservation</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Detailed Specifications -->
+            <div class="interactive-box p-6">
+                <h3 class="text-xl font-semibold mb-4">Detailed Specifications</h3>
+                
+                <div class="space-y-4">
+                    <div>
+                        <h4 class="font-semibold mb-2">Main Program:</h4>
                         <ul class="text-sm space-y-1">
-                            <li>• Input: Two integers</li>
-                            <li>• Output: Smaller value</li>
-                            <li>• Uses: Conditional branching</li>
+                            <li>• Prompt user for two integers and read them using syscalls</li>
+                            <li>• Call each procedure in sequence: getMin, getMax, sumRange</li>
+                            <li>• Display results with appropriate labels and formatting</li>
+                            <li>• Exit cleanly using syscall 10</li>
                         </ul>
                     </div>
                     
-                    <div class="bg-blue-50 p-4 rounded">
-                        <h4 class="font-semibold text-blue-800 mb-2">Procedure 2: getMax</h4>
+                    <div>
+                        <h4 class="font-semibold mb-2">sumRange Algorithm:</h4>
                         <ul class="text-sm space-y-1">
-                            <li>• Input: Two integers</li>
-                            <li>• Output: Larger value</li>
-                            <li>• Uses: Conditional branching</li>
+                            <li>• Determine which parameter is smaller and which is larger</li>
+                            <li>• Initialize sum to 0 and use a counter starting from the smaller value</li>
+                            <li>• Loop from minimum to maximum (inclusive), adding each value to sum</li>
+                            <li>• Example: sumRange(7, 15) = 7+8+9+10+11+12+13+14+15 = 99</li>
+                            <li>• Handle case where both parameters are equal</li>
                         </ul>
                     </div>
                     
-                    <div class="bg-orange-50 p-4 rounded">
-                        <h4 class="font-semibold text-orange-800 mb-2">Procedure 3: sumRange</h4>
+                    <div>
+                        <h4 class="font-semibold mb-2">MIPS Calling Conventions:</h4>
                         <ul class="text-sm space-y-1">
-                            <li>• Input: Two integers</li>
-                            <li>• Output: Sum from min to max</li>
-                            <li>• Uses: Loop structure</li>
+                            <li>• Use $a0 and $a1 for procedure parameters</li>
+                            <li>• Return values in $v0</li>
+                            <li>• Save and restore $s registers if used in sumRange</li>
+                            <li>• Include proper procedure headers with purpose, parameters, and returns</li>
                         </ul>
                     </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Step-by-Step Implementation -->
-        <section class="mb-8">
-            <h2 class="text-2xl font-bold mb-4">🔧 Step-by-Step Implementation</h2>
-
-            <!-- Step 1: Program Structure -->
-            <div class="step-box p-6 mb-6">
-                <h3 class="text-lg font-semibold mb-4">Step 1: Set Up Program Structure</h3>
-                <p class="mb-4">Start with this template and add your name/date:</p>
-                
-                <div class="code-block mb-4"># =======================================
-# Student Name: [Your Name Here]
-# Date: [Today's Date]
-# Lab 7: MIPS Procedures and Control Flow
-# Description: Program with three procedures
-#              demonstrating parameter passing
-# =======================================
-
-.data
-prompt1:    .asciiz "Enter first integer: "
-prompt2:    .asciiz "Enter second integer: "
-result_hdr: .asciiz "\nResults:\n"
-min_msg:    .asciiz "Minimum value: "
-max_msg:    .asciiz "Maximum value: "
-sum_msg:    .asciiz "Sum from "
-to_msg:     .asciiz " to "
-colon_msg:  .asciiz ": "
-newline:    .asciiz "\n"
-complete:   .asciiz "Program complete.\n"
-
-.text
-.globl main
-
-main:
-    # Your main program code here
-    
-    # Exit program
-    li $v0, 10                  # Load exit syscall
-    syscall                     # Exit program</div>
-
-                <div class="bg-yellow-50 p-4 rounded">
-                    <h4 class="font-medium mb-2">📝 Your Task:</h4>
-                    <p class="text-sm">Copy this template and fill in your name and today's date. Make sure you understand what each string variable will be used for.</p>
-                </div>
-            </div>
-
-            <!-- Step 2: Main Program -->
-            <div class="step-box p-6 mb-6">
-                <h3 class="text-lg font-semibold mb-4">Step 2: Implement Main Program</h3>
-                <p class="mb-4">Complete the main program to read two integers and call your procedures:</p>
-                
-                <div class="code-block mb-4">main:
-    # Read first integer
-    li $v0, 4                   # Print string syscall
-    la $a0, prompt1             # Load address of first prompt
-    syscall                     # Display prompt
-    
-    li $v0, 5                   # Read integer syscall
-    syscall                     # Read first integer
-    move $s0, $v0               # Store first integer in $s0
-    
-    # Read second integer  
-    li $v0, 4                   # Print string syscall
-    la $a0, prompt2             # Load address of second prompt
-    syscall                     # Display prompt
-    
-    li $v0, 5                   # Read integer syscall
-    syscall                     # Read second integer
-    move $s1, $v0               # Store second integer in $s1
-    
-    # Display results header
-    li $v0, 4                   # Print string syscall
-    la $a0, result_hdr          # Load results header
-    syscall                     # Display header
-    
-    # Call getMin procedure
-    move $a0, $s0               # Put first integer in $a0
-    move $a1, $s1               # Put second integer in $a1
-    jal getMin                  # Call getMin procedure
-    move $s2, $v0               # Store minimum in $s2
-    
-    # Display minimum result
-    li $v0, 4                   # Print string syscall
-    la $a0, min_msg             # Load minimum message
-    syscall                     # Display message
-    
-    li $v0, 1                   # Print integer syscall
-    move $a0, $s2               # Load minimum value
-    syscall                     # Display minimum
-    
-    li $v0, 4                   # Print string syscall
-    la $a0, newline             # Load newline
-    syscall                     # Print newline
-    
-    # TODO: Add calls to getMax and sumRange procedures
-    # TODO: Add display code for maximum and sum results
-    
-    # Exit program
-    li $v0, 10                  # Load exit syscall
-    syscall                     # Exit program</div>
-
-                <div class="bg-yellow-50 p-4 rounded">
-                    <h4 class="font-medium mb-2">📝 Your Task:</h4>
-                    <p class="text-sm">Complete the main program by adding calls to getMax and sumRange, along with the code to display their results. Follow the same pattern shown for getMin.</p>
-                </div>
-            </div>
-
-            <!-- Step 3: getMin Procedure -->
-            <div class="step-box p-6 mb-6">
-                <h3 class="text-lg font-semibold mb-4">Step 3: Implement getMin Procedure</h3>
-                <p class="mb-4">This procedure finds the minimum of two integers using conditional branching:</p>
-                
-                <div class="code-block mb-4"># =======================================
-# PROCEDURE: getMin
-# Purpose: Find the minimum of two integers
-# Parameters: $a0 = first integer
-#            $a1 = second integer  
-# Returns: $v0 = minimum value
-# =======================================
-getMin:
-    # Compare the two values
-    blt $a0, $a1, first_smaller    # Branch if $a0 < $a1
-    
-    # If we reach here, $a1 <= $a0
-    move $v0, $a1               # Return second value (smaller)
-    jr $ra                      # Return to caller
-    
-first_smaller:
-    move $v0, $a0               # Return first value (smaller)  
-    jr $ra                      # Return to caller</div>
-
-                <div class="bg-green-50 p-4 rounded">
-                    <h4 class="font-medium mb-2">✅ Analysis:</h4>
-                    <p class="text-sm">This procedure demonstrates conditional branching. Notice how we use <code>blt</code> (branch less than) to compare the values and <code>move</code> to set the return value. The procedure follows MIPS calling conventions by using <code>$a0/$a1</code> for parameters and <code>$v0</code> for the return value.</p>
-                </div>
-            </div>
-
-            <!-- Step 4: getMax Procedure -->
-            <div class="step-box p-6 mb-6">
-                <h3 class="text-lg font-semibold mb-4">Step 4: Implement getMax Procedure</h3>
-                <p class="mb-4">Similar to getMin, but finds the larger value:</p>
-                
-                <div class="bg-yellow-50 p-4 rounded mb-4">
-                    <h4 class="font-medium mb-2">📝 Your Task:</h4>
-                    <p class="text-sm mb-2">Write the getMax procedure following the same pattern as getMin. You'll need to:</p>
-                    <ul class="text-sm space-y-1">
-                        <li>• Use a different branch instruction (hint: <code>bgt</code> = branch greater than)</li>
-                        <li>• Return the larger value instead of the smaller</li>
-                        <li>• Include proper procedure header comments</li>
-                        <li>• Follow the same parameter and return value conventions</li>
-                    </ul>
-                </div>
-
-                <textarea class="worksheet-input w-full h-40" placeholder="Write your getMax procedure here...
-
-# =======================================
-# PROCEDURE: getMax
-# Purpose: Find the maximum of two integers  
-# Parameters: $a0 = first integer
-#            $a1 = second integer
-# Returns: $v0 = maximum value
-# =======================================
-getMax:
-    # Your implementation here..."></textarea>
-            </div>
-
-            <!-- Step 5: sumRange Procedure -->
-            <div class="step-box p-6 mb-6">
-                <h3 class="text-lg font-semibold mb-4">Step 5: Implement sumRange Procedure (Most Complex)</h3>
-                <p class="mb-4">This procedure calculates the sum from the smaller to the larger number using a loop:</p>
-                
-                <div class="code-block mb-4"># =======================================
-# PROCEDURE: sumRange  
-# Purpose: Calculate sum from smaller to larger number
-# Parameters: $a0 = first integer
-#            $a1 = second integer
-# Returns: $v0 = sum from min to max (inclusive)
-# Example: sumRange(7, 15) = 7+8+9+10+11+12+13+14+15 = 99
-# =======================================
-sumRange:
-    # Save registers we'll modify
-    addi $sp, $sp, -8           # Allocate stack space
-    sw $s0, 4($sp)              # Save $s0
-    sw $s1, 0($sp)              # Save $s1
-    
-    # Determine which is smaller and which is larger
-    blt $a0, $a1, order_correct # Branch if $a0 < $a1
-    
-    # If we reach here, need to swap values
-    move $s0, $a1               # $s0 = smaller value
-    move $s1, $a0               # $s1 = larger value
-    j start_sum                 # Jump to sum calculation
-    
-order_correct:
-    move $s0, $a0               # $s0 = smaller value  
-    move $s1, $a1               # $s1 = larger value
-    
-start_sum:
-    li $v0, 0                   # Initialize sum to 0
-    move $t0, $s0               # Initialize counter to smaller value
-    
-sum_loop:
-    add $v0, $v0, $t0           # Add current number to sum
-    addi $t0, $t0, 1            # Increment counter
-    ble $t0, $s1, sum_loop      # Continue if counter <= larger value
-    
-    # Restore saved registers
-    lw $s1, 0($sp)              # Restore $s1
-    lw $s0, 4($sp)              # Restore $s0  
-    addi $sp, $sp, 8            # Deallocate stack space
-    
-    jr $ra                      # Return to caller</div>
-
-                <div class="bg-green-50 p-4 rounded">
-                    <h4 class="font-medium mb-2">✅ Analysis:</h4>
-                    <p class="text-sm mb-2">This procedure demonstrates several important concepts:</p>
-                    <ul class="text-sm space-y-1">
-                        <li>• <strong>Stack Management:</strong> Saves/restores $s0 and $s1 registers</li>
-                        <li>• <strong>Conditional Logic:</strong> Determines correct order of values</li>
-                        <li>• <strong>Loop Structure:</strong> Uses counter-controlled loop with <code>ble</code></li>
-                        <li>• <strong>Accumulator Pattern:</strong> Builds sum incrementally</li>
-                    </ul>
                 </div>
             </div>
         </section>
 
         <!-- Testing Requirements -->
         <section class="mb-8">
-            <h2 class="text-2xl font-bold mb-4">🧪 Testing Your Program</h2>
+            <h2 class="text-2xl font-bold mb-4">🧪 Testing Requirements</h2>
             
             <div class="interactive-box p-6">
                 <h3 class="text-xl font-semibold mb-4">Required Test Cases</h3>
-                <p class="mb-4">Test your program with these inputs to ensure it works correctly:</p>
+                <p class="mb-4">Your program must handle these test scenarios correctly:</p>
                 
                 <div class="grid md:grid-cols-2 gap-6">
                     <div>
                         <h4 class="font-semibold mb-3">Test Case 1:</h4>
                         <div class="bg-gray-50 p-3 rounded text-sm">
                             <div><strong>Input:</strong> 15, 7</div>
-                            <div><strong>Expected Output:</strong></div>
-                            <div>• Minimum: 7</div>
-                            <div>• Maximum: 15</div>
-                            <div>• Sum: 99 (7+8+9+10+11+12+13+14+15)</div>
+                            <div><strong>Expected:</strong> Min=7, Max=15, Sum=99</div>
                         </div>
-                    </div>
-                    
-                    <div>
-                        <h4 class="font-semibold mb-3">Test Case 2:</h4>
+                        
+                        <h4 class="font-semibold mb-3 mt-4">Test Case 2:</h4>
                         <div class="bg-gray-50 p-3 rounded text-sm">
                             <div><strong>Input:</strong> 3, 6</div>
-                            <div><strong>Expected Output:</strong></div>
-                            <div>• Minimum: 3</div>
-                            <div>• Maximum: 6</div>
-                            <div>• Sum: 18 (3+4+5+6)</div>
+                            <div><strong>Expected:</strong> Min=3, Max=6, Sum=18</div>
                         </div>
                     </div>
                     
@@ -442,23 +217,20 @@ sum_loop:
                         <h4 class="font-semibold mb-3">Test Case 3:</h4>
                         <div class="bg-gray-50 p-3 rounded text-sm">
                             <div><strong>Input:</strong> 10, 2</div>
-                            <div><strong>Expected Output:</strong></div>
-                            <div>• Minimum: 2</div>
-                            <div>• Maximum: 10</div>
-                            <div>• Sum: 54 (2+3+4+5+6+7+8+9+10)</div>
+                            <div><strong>Expected:</strong> Min=2, Max=10, Sum=54</div>
                         </div>
-                    </div>
-                    
-                    <div>
-                        <h4 class="font-semibold mb-3">Test Case 4:</h4>
+                        
+                        <h4 class="font-semibold mb-3 mt-4">Test Case 4:</h4>
                         <div class="bg-gray-50 p-3 rounded text-sm">
                             <div><strong>Input:</strong> 5, 5</div>
-                            <div><strong>Expected Output:</strong></div>
-                            <div>• Minimum: 5</div>
-                            <div>• Maximum: 5</div>
-                            <div>• Sum: 5 (just the number itself)</div>
+                            <div><strong>Expected:</strong> Min=5, Max=5, Sum=5</div>
                         </div>
                     </div>
+                </div>
+                
+                <div class="mt-6 p-4 bg-yellow-50 border border-yellow-200 rounded">
+                    <h4 class="font-semibold mb-2">Verification:</h4>
+                    <p class="text-sm">Test your program with all cases above. The sumRange calculation for Test Case 1: 7+8+9+10+11+12+13+14+15 = 99</p>
                 </div>
             </div>
         </section>
@@ -472,7 +244,7 @@ sum_loop:
                 
                 <div class="grid md:grid-cols-2 gap-6">
                     <div>
-                        <h4 class="font-semibold mb-3">Code Requirements:</h4>
+                        <h4 class="font-semibold mb-3">Code Quality:</h4>
                         <div class="space-y-2">
                             <label class="flex items-center gap-2">
                                 <input type="checkbox" class="checklist-item">
@@ -484,15 +256,15 @@ sum_loop:
                             </label>
                             <label class="flex items-center gap-2">
                                 <input type="checkbox" class="checklist-item">
-                                <span class="text-sm">All three procedures implemented</span>
-                            </label>
-                            <label class="flex items-center gap-2">
-                                <input type="checkbox" class="checklist-item">
                                 <span class="text-sm">Proper procedure header comments</span>
                             </label>
                             <label class="flex items-center gap-2">
                                 <input type="checkbox" class="checklist-item">
-                                <span class="text-sm">Stack management in sumRange</span>
+                                <span class="text-sm">Follows MIPS calling conventions</span>
+                            </label>
+                            <label class="flex items-center gap-2">
+                                <input type="checkbox" class="checklist-item">
+                                <span class="text-sm">Proper stack management in sumRange</span>
                             </label>
                         </div>
                     </div>
@@ -502,7 +274,7 @@ sum_loop:
                         <div class="space-y-2">
                             <label class="flex items-center gap-2">
                                 <input type="checkbox" class="checklist-item">
-                                <span class="text-sm">Program compiles without errors</span>
+                                <span class="text-sm">Program compiles and runs without errors</span>
                             </label>
                             <label class="flex items-center gap-2">
                                 <input type="checkbox" class="checklist-item">
@@ -510,26 +282,22 @@ sum_loop:
                             </label>
                             <label class="flex items-center gap-2">
                                 <input type="checkbox" class="checklist-item">
-                                <span class="text-sm">getMin returns correct minimum</span>
+                                <span class="text-sm">All three procedures implemented</span>
                             </label>
                             <label class="flex items-center gap-2">
                                 <input type="checkbox" class="checklist-item">
-                                <span class="text-sm">getMax returns correct maximum</span>
+                                <span class="text-sm">Output formatting matches specification</span>
                             </label>
                             <label class="flex items-center gap-2">
                                 <input type="checkbox" class="checklist-item">
-                                <span class="text-sm">sumRange calculates sum correctly</span>
-                            </label>
-                            <label class="flex items-center gap-2">
-                                <input type="checkbox" class="checklist-item">
-                                <span class="text-sm">All test cases produce correct output</span>
+                                <span class="text-sm">All test cases produce correct results</span>
                             </label>
                         </div>
                     </div>
                 </div>
                 
                 <div class="mt-6 text-center">
-                    <div id="checklist-progress" class="text-lg font-semibold mb-4">Progress: 0/11 items complete</div>
+                    <div id="checklist-progress" class="text-lg font-semibold mb-4">Progress: 0/10 items complete</div>
                     <div class="w-full bg-gray-200 rounded-full h-3">
                         <div id="progress-bar" class="bg-green-500 h-3 rounded-full transition-all duration-300" style="width: 0%"></div>
                     </div>
@@ -541,7 +309,7 @@ sum_loop:
         <section class="mb-8">
             <h2 class="text-2xl font-bold mb-4">📊 Grading Rubric (50 Points Total)</h2>
             
-            <div class="bg-gray-50 p-6 rounded-lg">
+            <div class="interactive-box p-6">
                 <div class="grid md:grid-cols-2 gap-6">
                     <div>
                         <h3 class="font-semibold mb-3">Point Distribution:</h3>
@@ -551,7 +319,7 @@ sum_loop:
                                 <span class="font-semibold">10 points</span>
                             </li>
                             <li class="flex justify-between">
-                                <span>Main Program Implementation</span>
+                                <span>Main Program (I/O & Procedure Calls)</span>
                                 <span class="font-semibold">10 points</span>
                             </li>
                             <li class="flex justify-between">
@@ -564,7 +332,7 @@ sum_loop:
                             </li>
                             <li class="flex justify-between">
                                 <span>sumRange Procedure</span>
-                                <span class="font-semibold">12 points</span>
+                                <span class="font-semibold">14 points</span>
                             </li>
                             <li class="flex justify-between border-t pt-2">
                                 <span><strong>Total</strong></span>
@@ -575,12 +343,12 @@ sum_loop:
                     
                     <div>
                         <h3 class="font-semibold mb-3">Grading Criteria:</h3>
-                        <ul class="space-y-1 text-sm">
-                            <li>• <strong>Excellent (90-100%):</strong> All procedures work perfectly, excellent comments, proper conventions</li>
-                            <li>• <strong>Good (80-89%):</strong> Most functionality correct, good comments, minor issues</li>
-                            <li>• <strong>Satisfactory (70-79%):</strong> Basic functionality, adequate comments, some problems</li>
-                            <li>• <strong>Needs Work (60-69%):</strong> Major functionality missing, poor comments</li>
-                            <li>• <strong>Incomplete (0-59%):</strong> Program doesn't run or major components missing</li>
+                        <ul class="space-y-2 text-sm">
+                            <li><strong>Excellent (45-50 pts):</strong> All procedures work correctly, excellent comments, proper MIPS conventions followed, handles all test cases</li>
+                            <li><strong>Good (40-44 pts):</strong> Most functionality correct, good comments, minor convention issues, handles most test cases</li>
+                            <li><strong>Satisfactory (35-39 pts):</strong> Basic functionality present, adequate comments, some procedural issues</li>
+                            <li><strong>Needs Improvement (25-34 pts):</strong> Major functionality problems, poor comments, significant errors</li>
+                            <li><strong>Incomplete (0-24 pts):</strong> Program doesn't compile or run, major components missing</li>
                         </ul>
                     </div>
                 </div>
@@ -623,7 +391,7 @@ sum_loop:
                 }
             }
             
-                        // Add event listeners to all checklist items
+            // Add event listeners to all checklist items
             checklistItems.forEach(item => {
                 item.addEventListener('change', updateProgress);
             });
@@ -632,32 +400,8 @@ sum_loop:
             updateProgress();
         });
 
-        // Smooth scrolling for better navigation
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
-                }
-            });
-        });
-
-        // Print styling enhancement
-        window.addEventListener('beforeprint', function() {
-            document.body.classList.add('printing');
-        });
-        
-        window.addEventListener('afterprint', function() {
-            document.body.classList.remove('printing');
-        });
-
         // Console message for students
         console.log('Week 7 Lab: MIPS Procedures and Control Flow loaded successfully!');
-        console.log('Remember: Every line needs meaningful comments!');
     </script>
 </body>
 </html>
