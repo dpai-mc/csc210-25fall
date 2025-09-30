@@ -1,313 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Week 7 Lab: MIPS Procedures and Control Flow</title>
-    
-    <!-- Required CDN Links -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
-    
-    <!-- Meta Comments -->
-    <!-- Chosen Palette: Scholarly Neutrals -->
-    <!-- Application Structure Plan: Focused lab assignment with clear specifications -->
-    <!-- Visualization & Content Choices: Clean requirements and testing specifications -->
-    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
-    
-    <style>
-        body {
-            background-color: #FDFBF8;
-            color: #383838;
-            font-family: 'Inter', sans-serif;
-        }
-
-        .submit-btn {
-            background-color: #4A90E2;
-            color: white;
-            font-weight: 600;
-            padding: 0.75rem 1.5rem;
-            border-radius: 0.5rem;
-            border: none;
-            cursor: pointer;
-        }
-
-        .submit-btn:hover {
-            background-color: #357ABD;
-        }
-
-        .code-block {
-            background-color: #f4f4f4;
-            border: 1px solid #ddd;
-            padding: 1rem;
-            border-radius: 0.5rem;
-            white-space: pre-wrap;
-            font-family: 'Fira Code', monospace;
-            overflow-x: auto;
-        }
-
-        .interactive-box {
-            border: 2px solid #EADDD7;
-            border-radius: 8px;
-            background-color: #FDFBF8;
-        }
-
-        @media print {
-            .no-print { display: none; }
-            body { background: white; color: black; }
-        }
-    </style>
-</head>
-
-<body class="antialiased">
-    <main class="container mx-auto max-w-4xl p-4 md:p-8">
-        <header class="text-center mb-8">
-            <h1 class="text-3xl md:text-4xl font-bold mb-4">Week 7 Lab: MIPS Procedures and Control Flow</h1>
-            <div class="text-lg text-gray-600 mb-6">
-                <p>Practice implementing MIPS procedures with parameter passing and loops</p>
-                <p class="text-sm mt-2"><strong>Submission:</strong> lab7.asm file | <strong>Time:</strong> 50 minutes</p>
-            </div>
-        </header>
-
-        <!-- Lab Overview -->
-        <section class="mb-8 p-6 bg-blue-50 border border-blue-200 rounded-lg">
-            <h2 class="text-xl font-semibold mb-4">🎯 Lab Objectives</h2>
-            <div class="grid md:grid-cols-2 gap-6">
-                <div>
-                    <h3 class="font-semibold mb-2">What You'll Demonstrate:</h3>
-                    <ul class="text-sm space-y-1">
-                        <li>✓ Write procedures with parameters and return values</li>
-                        <li>✓ Follow MIPS calling conventions</li>
-                        <li>✓ Implement conditional branching</li>
-                        <li>✓ Create loops in procedures</li>
-                        <li>✓ Manage the stack for register saving</li>
-                    </ul>
-                </div>
-                <div>
-                    <h3 class="font-semibold mb-2">Deliverable:</h3>
-                    <ul class="text-sm space-y-1">
-                        <li>• Single file named <code>lab7.asm</code></li>
-                        <li>• All lines commented</li>
-                        <li>• Must run without errors in MARS</li>
-                        <li>• Include your name and date in header</li>
-                    </ul>
-                </div>
-            </div>
-        </section>
-
-        <!-- Program Specification -->
-        <section class="mb-8">
-            <h2 class="text-2xl font-bold mb-4">📋 Program Specification</h2>
-            
-            <div class="interactive-box p-6 mb-6">
-                <h3 class="text-xl font-semibold mb-4">Program Requirements</h3>
-                <p class="mb-4">Create a MIPS assembly program that reads two integers from the user and calls three procedures to process them. The program should display formatted output showing the results of each procedure call.</p>
-                
-                <div class="bg-white p-4 rounded border mb-4">
-                    <h4 class="font-semibold mb-2">Expected Program Output:</h4>
-                    <div class="code-block text-sm">Enter first integer: 15
-Enter second integer: 7
-
-Results:
-Minimum value: 7
-Maximum value: 15
-Sum from 7 to 15: 99
-
-Program complete.</div>
-                </div>
-            </div>
-
-            <!-- Procedure Specifications -->
-            <div class="grid md:grid-cols-3 gap-6 mb-6">
-                <div class="interactive-box p-4">
-                    <h4 class="font-semibold text-green-800 mb-3">Procedure 1: getMin</h4>
-                    <ul class="text-sm space-y-1">
-                        <li><strong>Parameters:</strong> Two integers in $a0, $a1</li>
-                        <li><strong>Returns:</strong> Minimum value in $v0</li>
-                        <li><strong>Implementation:</strong> Use conditional branching</li>
-                        <li><strong>Stack:</strong> Not required (leaf procedure)</li>
-                    </ul>
-                </div>
-                
-                <div class="interactive-box p-4">
-                    <h4 class="font-semibold text-blue-800 mb-3">Procedure 2: getMax</h4>
-                    <ul class="text-sm space-y-1">
-                        <li><strong>Parameters:</strong> Two integers in $a0, $a1</li>
-                        <li><strong>Returns:</strong> Maximum value in $v0</li>
-                        <li><strong>Implementation:</strong> Use conditional branching</li>
-                        <li><strong>Stack:</strong> Not required (leaf procedure)</li>
-                    </ul>
-                </div>
-                
-                <div class="interactive-box p-4">
-                    <h4 class="font-semibold text-orange-800 mb-3">Procedure 3: sumRange</h4>
-                    <ul class="text-sm space-y-1">
-                        <li><strong>Parameters:</strong> Two integers in $a0, $a1</li>
-                        <li><strong>Returns:</strong> Sum from min to max in $v0</li>
-                        <li><strong>Implementation:</strong> Use loop structure</li>
-                        <li><strong>Stack:</strong> Required for register preservation</li>
-                    </ul>
-                </div>
-            </div>
-
-            <!-- Detailed Specifications -->
-            <div class="interactive-box p-6">
-                <h3 class="text-xl font-semibold mb-4">Detailed Specifications</h3>
-                
-                <div class="space-y-4">
-                    <div>
-                        <h4 class="font-semibold mb-2">Main Program:</h4>
-                        <ul class="text-sm space-y-1">
-                            <li>• Prompt user for two integers and read them using syscalls</li>
-                            <li>• Call each procedure in sequence: getMin, getMax, sumRange</li>
-                            <li>• Display results with appropriate labels and formatting</li>
-                            <li>• Exit cleanly using syscall 10</li>
-                        </ul>
-                    </div>
-                    
-                    <div>
-                        <h4 class="font-semibold mb-2">sumRange Algorithm:</h4>
-                        <ul class="text-sm space-y-1">
-                            <li>• Determine which parameter is smaller and which is larger</li>
-                            <li>• Initialize sum to 0 and use a counter starting from the smaller value</li>
-                            <li>• Loop from minimum to maximum (inclusive), adding each value to sum</li>
-                            <li>• Example: sumRange(7, 15) = 7+8+9+10+11+12+13+14+15 = 99</li>
-                            <li>• Handle case where both parameters are equal</li>
-                        </ul>
-                    </div>
-                    
-                    <div>
-                        <h4 class="font-semibold mb-2">MIPS Calling Conventions:</h4>
-                        <ul class="text-sm space-y-1">
-                            <li>• Use $a0 and $a1 for procedure parameters</li>
-                            <li>• Return values in $v0</li>
-                            <li>• Save and restore $s registers if used in sumRange</li>
-                            <li>• Include proper procedure headers with purpose, parameters, and returns</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Testing Requirements -->
-        <section class="mb-8">
-            <h2 class="text-2xl font-bold mb-4">🧪 Testing Requirements</h2>
-            
-            <div class="interactive-box p-6">
-                <h3 class="text-xl font-semibold mb-4">Required Test Cases</h3>
-                <p class="mb-4">Your program must handle these test scenarios correctly:</p>
-                
-                <div class="grid md:grid-cols-2 gap-6">
-                    <div>
-                        <h4 class="font-semibold mb-3">Test Case 1:</h4>
-                        <div class="bg-gray-50 p-3 rounded text-sm">
-                            <div><strong>Input:</strong> 15, 7</div>
-                            <div><strong>Expected:</strong> Min=7, Max=15, Sum=99</div>
-                        </div>
-                        
-                        <h4 class="font-semibold mb-3 mt-4">Test Case 2:</h4>
-                        <div class="bg-gray-50 p-3 rounded text-sm">
-                            <div><strong>Input:</strong> 3, 6</div>
-                            <div><strong>Expected:</strong> Min=3, Max=6, Sum=18</div>
-                        </div>
-                    </div>
-                    
-                    <div>
-                        <h4 class="font-semibold mb-3">Test Case 3:</h4>
-                        <div class="bg-gray-50 p-3 rounded text-sm">
-                            <div><strong>Input:</strong> 10, 2</div>
-                            <div><strong>Expected:</strong> Min=2, Max=10, Sum=54</div>
-                        </div>
-                        
-                        <h4 class="font-semibold mb-3 mt-4">Test Case 4:</h4>
-                        <div class="bg-gray-50 p-3 rounded text-sm">
-                            <div><strong>Input:</strong> 5, 5</div>
-                            <div><strong>Expected:</strong> Min=5, Max=5, Sum=5</div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="mt-6 p-4 bg-yellow-50 border border-yellow-200 rounded">
-                    <h4 class="font-semibold mb-2">Verification:</h4>
-                    <p class="text-sm">Test your program with all cases above. The sumRange calculation for Test Case 1: 7+8+9+10+11+12+13+14+15 = 99</p>
-                </div>
-            </div>
-        </section>
-
-        <!-- Completion Checklist -->
-        <section class="mb-8">
-            <h2 class="text-2xl font-bold mb-4">✅ Completion Checklist</h2>
-            
-            <div class="interactive-box p-6">
-                <h3 class="text-xl font-semibold mb-4">Before Submitting</h3>
-                
-                <div class="grid md:grid-cols-2 gap-6">
-                    <div>
-                        <h4 class="font-semibold mb-3">Code Quality:</h4>
-                        <div class="space-y-2">
-                            <label class="flex items-center gap-2">
-                                <input type="checkbox" class="checklist-item">
-                                <span class="text-sm">Header comment with name and date</span>
-                            </label>
-                            <label class="flex items-center gap-2">
-                                <input type="checkbox" class="checklist-item">
-                                <span class="text-sm">Every line has meaningful comments</span>
-                            </label>
-                            <label class="flex items-center gap-2">
-                                <input type="checkbox" class="checklist-item">
-                                <span class="text-sm">Proper procedure header comments</span>
-                            </label>
-                            <label class="flex items-center gap-2">
-                                <input type="checkbox" class="checklist-item">
-                                <span class="text-sm">Follows MIPS calling conventions</span>
-                            </label>
-                            <label class="flex items-center gap-2">
-                                <input type="checkbox" class="checklist-item">
-                                <span class="text-sm">Proper stack management in sumRange</span>
-                            </label>
-                        </div>
-                    </div>
-                    
-                    <div>
-                        <h4 class="font-semibold mb-3">Functionality:</h4>
-                        <div class="space-y-2">
-                            <label class="flex items-center gap-2">
-                                <input type="checkbox" class="checklist-item">
-                                <span class="text-sm">Program compiles and runs without errors</span>
-                            </label>
-                            <label class="flex items-center gap-2">
-                                <input type="checkbox" class="checklist-item">
-                                <span class="text-sm">Reads two integers correctly</span>
-                            </label>
-                            <label class="flex items-center gap-2">
-                                <input type="checkbox" class="checklist-item">
-                                <span class="text-sm">All three procedures implemented</span>
-                            </label>
-                            <label class="flex items-center gap-2">
-                                <input type="checkbox" class="checklist-item">
-                                <span class="text-sm">Output formatting matches specification</span>
-                            </label>
-                            <label class="flex items-center gap-2">
-                                <input type="checkbox" class="checklist-item">
-                                <span class="text-sm">All test cases produce correct results</span>
-                            </label>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="mt-6 text-center">
-                    <div id="checklist-progress" class="text-lg font-semibold mb-4">Progress: 0/10 items complete</div>
-                    <div class="w-full bg-gray-200 rounded-full h-3">
-                        <div id="progress-bar" class="bg-green-500 h-3 rounded-full transition-all duration-300" style="width: 0%"></div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
         <!-- Grading Rubric -->
         <section class="mb-8">
-            <h2 class="text-2xl font-bold mb-4">📊 Grading Rubric (50 Points Total)</h2>
+            <h2 class="text-2xl font-bold mb-4">📊 Grading Rubric (100 Points Total)</h2>
             
             <div class="interactive-box p-6">
                 <div class="grid md:grid-cols-2 gap-6">
@@ -316,27 +9,27 @@ Program complete.</div>
                         <ul class="space-y-2 text-sm">
                             <li class="flex justify-between">
                                 <span>Program Structure & Comments</span>
-                                <span class="font-semibold">10 points</span>
+                                <span class="font-semibold">20 points</span>
                             </li>
                             <li class="flex justify-between">
                                 <span>Main Program (I/O & Procedure Calls)</span>
-                                <span class="font-semibold">10 points</span>
+                                <span class="font-semibold">20 points</span>
                             </li>
                             <li class="flex justify-between">
                                 <span>getMin Procedure</span>
-                                <span class="font-semibold">8 points</span>
+                                <span class="font-semibold">16 points</span>
                             </li>
                             <li class="flex justify-between">
                                 <span>getMax Procedure</span>
-                                <span class="font-semibold">8 points</span>
+                                <span class="font-semibold">16 points</span>
                             </li>
                             <li class="flex justify-between">
                                 <span>sumRange Procedure</span>
-                                <span class="font-semibold">14 points</span>
+                                <span class="font-semibold">28 points</span>
                             </li>
                             <li class="flex justify-between border-t pt-2">
                                 <span><strong>Total</strong></span>
-                                <span class="font-bold">50 points</span>
+                                <span class="font-bold">100 points</span>
                             </li>
                         </ul>
                     </div>
@@ -344,64 +37,63 @@ Program complete.</div>
                     <div>
                         <h3 class="font-semibold mb-3">Grading Criteria:</h3>
                         <ul class="space-y-2 text-sm">
-                            <li><strong>Excellent (45-50 pts):</strong> All procedures work correctly, excellent comments, proper MIPS conventions followed, handles all test cases</li>
-                            <li><strong>Good (40-44 pts):</strong> Most functionality correct, good comments, minor convention issues, handles most test cases</li>
-                            <li><strong>Satisfactory (35-39 pts):</strong> Basic functionality present, adequate comments, some procedural issues</li>
-                            <li><strong>Needs Improvement (25-34 pts):</strong> Major functionality problems, poor comments, significant errors</li>
-                            <li><strong>Incomplete (0-24 pts):</strong> Program doesn't compile or run, major components missing</li>
+                            <li><strong>Excellent (90-100 pts):</strong> All procedures work correctly, excellent comments, proper MIPS conventions followed, handles all test cases</li>
+                            <li><strong>Good (80-89 pts):</strong> Most functionality correct, good comments, minor convention issues, handles most test cases</li>
+                            <li><strong>Satisfactory (70-79 pts):</strong> Basic functionality present, adequate comments, some procedural issues</li>
+                            <li><strong>Needs Improvement (60-69 pts):</strong> Major functionality problems, poor comments, significant errors</li>
+                            <li><strong>Incomplete (0-59 pts):</strong> Program doesn't compile or run, major components missing</li>
                         </ul>
+                        
+                        <div class="mt-4 p-3 bg-blue-50 rounded">
+                            <h4 class="font-semibold text-blue-800 mb-2">Grade Scale:</h4>
+                            <ul class="text-xs space-y-1">
+                                <li>A: 90-100 points</li>
+                                <li>B: 80-89 points</li>
+                                <li>C: 70-79 points</li>
+                                <li>D: 60-69 points</li>
+                                <li>F: Below 60 points</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mt-6 bg-gray-50 p-4 rounded">
+                    <h4 class="font-semibold mb-2">Detailed Breakdown:</h4>
+                    <div class="grid md:grid-cols-2 gap-6 text-sm">
+                        <div>
+                            <h5 class="font-medium mb-2">Program Structure & Comments (20 pts):</h5>
+                            <ul class="space-y-1 text-xs">
+                                <li>• Header comment with name/date (5 pts)</li>
+                                <li>• Procedure header comments (5 pts)</li>
+                                <li>• Line-by-line commenting (10 pts)</li>
+                            </ul>
+                            
+                            <h5 class="font-medium mb-2 mt-4">Main Program (20 pts):</h5>
+                            <ul class="space-y-1 text-xs">
+                                <li>• Input prompts and reading (8 pts)</li>
+                                <li>• Procedure calls with correct parameters (8 pts)</li>
+                                <li>• Output formatting and display (4 pts)</li>
+                            </ul>
+                        </div>
+                        
+                        <div>
+                            <h5 class="font-medium mb-2">Procedure Implementation:</h5>
+                            <ul class="space-y-1 text-xs">
+                                <li>• getMin: Correct logic & conventions (16 pts)</li>
+                                <li>• getMax: Correct logic & conventions (16 pts)</li>
+                                <li>• sumRange: Algorithm correctness (18 pts)</li>
+                                <li>• sumRange: Stack management (10 pts)</li>
+                            </ul>
+                            
+                            <h5 class="font-medium mb-2 mt-4">Quality Standards:</h5>
+                            <ul class="space-y-1 text-xs">
+                                <li>• Code compiles and runs without errors</li>
+                                <li>• Handles all test cases correctly</li>
+                                <li>• Follows MIPS calling conventions</li>
+                                <li>• Professional code organization</li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
             </div>
         </section>
-
-        <!-- Submission -->
-        <section class="mb-8">
-            <div class="bg-gray-50 p-6 rounded-lg text-center">
-                <h3 class="text-xl font-semibold mb-4">📤 Submission</h3>
-                <p class="mb-4">Save your completed program as <code>lab7.asm</code> and submit according to your instructor's directions.</p>
-                <button class="submit-btn" onclick="window.print()">💾 Save Lab Instructions</button>
-                <p class="text-sm text-gray-600 mt-2">Print or save this page for reference while coding.</p>
-            </div>
-        </section>
-    </main>
-
-    <script>
-        // Progress tracking functionality
-        document.addEventListener('DOMContentLoaded', function() {
-            const checklistItems = document.querySelectorAll('.checklist-item');
-            const progressText = document.getElementById('checklist-progress');
-            const progressBar = document.getElementById('progress-bar');
-            
-            function updateProgress() {
-                const checkedItems = document.querySelectorAll('.checklist-item:checked').length;
-                const totalItems = checklistItems.length;
-                const percentage = Math.round((checkedItems / totalItems) * 100);
-                
-                progressText.textContent = `Progress: ${checkedItems}/${totalItems} items complete`;
-                progressBar.style.width = `${percentage}%`;
-                
-                // Change color based on progress
-                if (percentage >= 90) {
-                    progressBar.className = 'bg-green-500 h-3 rounded-full transition-all duration-300';
-                } else if (percentage >= 70) {
-                    progressBar.className = 'bg-yellow-500 h-3 rounded-full transition-all duration-300';
-                } else {
-                    progressBar.className = 'bg-red-500 h-3 rounded-full transition-all duration-300';
-                }
-            }
-            
-            // Add event listeners to all checklist items
-            checklistItems.forEach(item => {
-                item.addEventListener('change', updateProgress);
-            });
-            
-            // Initialize progress
-            updateProgress();
-        });
-
-        // Console message for students
-        console.log('Week 7 Lab: MIPS Procedures and Control Flow loaded successfully!');
-    </script>
-</body>
-</html>
