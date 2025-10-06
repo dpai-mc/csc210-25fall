@@ -96,6 +96,13 @@
             font-size: 0.9rem;
             line-height: 1.5;
         }
+        
+        /* Helper for the interactive code block */
+        .code-block pre {
+            margin: 0;
+            padding: 0;
+            white-space: pre-wrap;
+        }
 
         /* Print-friendly styles */
         @media print {
@@ -113,6 +120,7 @@
             }
             .worksheet-input {
                 border-color: #383838 !important;
+                padding: 0.25rem;
             }
         }
     </style>
@@ -129,24 +137,24 @@
 
         <section id="exam-overview">
             <h2 class="border-b-2 border-gray-200 pb-2 mb-4">Part A: MIPS Programming (50%)</h2>
-            [cite_start]<p class="mb-2">This is Part A of your CSC210 Midterm Exam, focusing on MIPS assembly programming with emphasis on memory operations, arrays, and recursion. [cite: 1] [cite_start]Part B (Digital Circuit Design) will be provided separately. [cite: 2] [cite_start]This is an open-book, open-notes exam, but you must work independently. [cite: 2]</p>
+            <p class="mb-2">This is Part A of your CSC210 Midterm Exam, focusing on MIPS assembly programming with emphasis on memory operations, arrays, and recursion. Part B (Digital Circuit Design) will be provided separately. This is an open-book, open-notes exam, but you must work independently.</p>
             <ul class="list-disc list-inside space-y-1 bg-gray-50 p-4 rounded-lg">
-                [cite_start]<li><strong>Exam Opens:</strong> Week 8 [cite: 3]</li>
-                [cite_start]<li><strong>Due Date:</strong> October 19, 2025 at 11:59 PM [cite: 3]</li>
-                [cite_start]<li><strong>Total Points:</strong> 50 points (50% of Midterm grade) [cite: 3]</li>
-                [cite_start]<li><strong>Estimated Time:</strong> 1.5-2 hours [cite: 3]</li>
-                [cite_start]<li><strong>Submission Format:</strong> Submit all .asm files via the course management system [cite: 3]</li>
+                <li><strong>Exam Opens:</strong> Week 8</li>
+                <li><strong>Due Date:</strong> October 19, 2025 at 11:59 PM</li>
+                <li><strong>Total Points:</strong> 50 points (50% of Midterm grade)</li>
+                <li><strong>Estimated Time:</strong> 1.5-2 hours</li>
+                <li><strong>Submission Format:</strong> Submit all .asm files via the course management system</li>
             </ul>
         </section>
 
         <section id="honor-code">
             <h2>Honor Code Statement</h2>
-            <p class="mb-2">By submitting this exam, you affirm that all work is your own. [cite_start]You may use course materials, textbooks, and your own notes, but you may NOT: [cite: 4]</p>
+            <p class="mb-2">By submitting this exam, you affirm that all work is your own. You may use course materials, textbooks, and your own notes, but you may NOT:</p>
             <ul class="list-disc list-inside space-y-1">
-                [cite_start]<li>Collaborate with other students [cite: 4]</li>
-                [cite_start]<li>Share code or solutions [cite: 4]</li>
-                [cite_start]<li>Use solutions from previous semesters [cite: 4]</li>
-                [cite_start]<li>Use AI tools to generate complete solutions (you may use them only for syntax reference) [cite: 4]</li>
+                <li>Collaborate with other students</li>
+                <li>Share code or solutions</li>
+                <li>Use solutions from previous semesters</li>
+                <li>Use AI tools to generate complete solutions (you may use them only for syntax reference)</li>
             </ul>
         </section>
 
@@ -155,57 +163,57 @@
 
             <div class="problem" id="problem1">
                 <h3>Problem 1: Array Operations (15 points)</h3>
-                [cite_start]<p>Write a MIPS program that demonstrates array manipulation skills. [cite: 4]</p>
+                <p>Write a MIPS program that demonstrates array manipulation skills.</p>
                 <h4 class="font-semibold mt-4 mb-2">Requirements:</h4>
                 <ul class="list-disc list-inside space-y-1">
-                    [cite_start]<li>Declare an integer array with exactly 8 elements: `[12, 45, 7, 23, 67, 89, 34, 56]` [cite: 4]</li>
-                    [cite_start]<li>Implement and display results for: [cite: 4]
+                    <li>Declare an integer array with exactly 8 elements: `[12, 45, 7, 23, 67, 89, 34, 56]`</li>
+                    <li>Implement and display results for:
                         <ul class="list-circle list-inside ml-6">
-                            [cite_start]<li>Find and print the maximum value and its index [cite: 4]</li>
-                            [cite_start]<li>Calculate and print the sum of all elements [cite: 4]</li>
-                            [cite_start]<li>Reverse the array in-place (swap elements) [cite: 4]</li>
-                            [cite_start]<li>Print the reversed array [cite: 4]</li>
+                            <li>Find and print the maximum value and its index</li>
+                            <li>Calculate and print the sum of all elements</li>
+                            <li>Reverse the array in-place (swap elements)</li>
+                            <li>Print the reversed array</li>
                         </ul>
                     </li>
                 </ul>
                 <h4 class="font-semibold mt-4 mb-2">Constraints:</h4>
                 <ul class="list-disc list-inside space-y-1">
-                    [cite_start]<li>Use pointer-based traversal for finding max [cite: 4]</li>
-                    [cite_start]<li>Use index-based traversal for reversal [cite: 5]</li>
-                    [cite_start]<li>All output must have descriptive labels [cite: 5]</li>
+                    <li>Use pointer-based traversal for finding max</li>
+                    <li>Use index-based traversal for reversal</li>
+                    <li>All output must have descriptive labels</li>
                 </ul>
                 <h4 class="font-semibold mt-4 mb-2">Sample Output:</h4>
-                <pre><code class="code-block">Maximum value: 89 at index 5
+                <pre class="code-block"><code>Maximum value: 89 at index 5
 Sum of elements: 333
-[cite_start]Reversed array: 56 34 89 67 23 7 45 12</code></pre> [cite: 5]
+Reversed array: 56 34 89 67 23 7 45 12</code></pre>
             </div>
 
             <hr class="my-8 border-gray-200">
 
             <div class="problem" id="problem2">
                 <h3>Problem 2: String Palindrome Checker (10 points)</h3>
-                [cite_start]<p>Write a MIPS program that: Prompts the user for a string (max 50 characters), checks if it's a palindrome (ignoring spaces and case), and displays the result. [cite: 5]</p>
+                <p>Write a MIPS program that: Prompts the user for a string (max 50 characters), checks if it's a palindrome (ignoring spaces and case), and displays the result.</p>
                 <h4 class="font-semibold mt-4 mb-2">Requirements:</h4>
                 <ul class="list-disc list-inside space-y-1">
-                    [cite_start]<li>Must handle uppercase and lowercase letters [cite: 5]</li>
-                    [cite_start]<li>Must ignore spaces in comparison [cite: 5]</li>
-                    [cite_start]<li>Use two-pointer approach (start and end) [cite: 5]</li>
+                    <li>Must handle uppercase and lowercase letters</li>
+                    <li>Must ignore spaces in comparison</li>
+                    <li>Use two-pointer approach (start and end)</li>
                 </ul>
                 <h4 class="font-semibold mt-4 mb-2">Sample Runs:</h4>
-                <pre><code class="code-block">Enter string: A man a plan a canal Panama
+                <pre class="code-block"><code>Enter string: A man a plan a canal Panama
 Result: IS a palindrome
 
 Enter string: Hello World
-[cite_start]Result: NOT a palindrome</code></pre> [cite: 5]
+Result: NOT a palindrome</code></pre>
             </div>
 
             <hr class="my-8 border-gray-200">
 
             <div class="problem" id="problem3">
                 <h3>Problem 3: Recursive Array Maximum (15 points)</h3>
-                [cite_start]<p>Write a complete MIPS program with a recursive function that finds the maximum element in an array. [cite: 5, 6]</p>
+                <p>Write a complete MIPS program with a recursive function that finds the maximum element in an array.</p>
                 <h4 class="font-semibold mt-4 mb-2">Function Specification:</h4>
-                <pre><code class="code-block"># Function: findMax
+                <pre class="code-block"><code># Function: findMax
 # Parameters: 
 #   $a0 = array base address
 #   $a1 = array size (number of elements)
@@ -216,43 +224,43 @@ Enter string: Hello World
 #   Base case: if size == 1, return array[0]
 #   Recursive case: 
 #     - max_of_rest = findMax(array+4, size-1)
-#     [cite_start]- return max(array[0], max_of_rest)</code></pre> [cite: 6]
+#     - return max(array[0], max_of_rest)</code></pre>
                 <h4 class="font-semibold mt-4 mb-2">Function Requirements:</h4>
                 <ul class="list-disc list-inside space-y-1">
-                    [cite_start]<li>Properly manage stack frame (save $ra and any used registers) [cite: 6]</li>
-                    [cite_start]<li>Handle base case: single element array [cite: 6]</li>
-                    [cite_start]<li>Include clear stack frame diagram in comments [cite: 6]</li>
+                    <li>Properly manage stack frame (save $ra and any used registers)</li>
+                    <li>Handle base case: single element array</li>
+                    <li>Include clear stack frame diagram in comments</li>
                 </ul>
                 <h4 class="font-semibold mt-4 mb-2">Required Stack Frame Comment:</h4>
-                <pre><code class="code-block"># Stack frame layout:
+                <pre class="code-block"><code># Stack frame layout:
 # -----------------
 # $ra        [+12]
 # $s0        [+8]   # saved array[0] value
 # $a0        [+4]   # saved array address
 # $a1        [+0]   # saved size
 # -----------------
-# [cite_start]Total: 16 bytes</code></pre> [cite: 7]
+# Total: 16 bytes</code></pre>
                  <h4 class="font-semibold mt-4 mb-2">Main Program:</h4>
                 <ul class="list-disc list-inside space-y-1">
-                    [cite_start]<li>Test with at least two different arrays [cite: 6]</li>
-                    [cite_start]<li>Display the maximum value found for each test array [cite: 6, 7]</li>
+                    <li>Test with at least two different arrays</li>
+                    <li>Display the maximum value found for each test array</li>
                 </ul>
                 <h4 class="font-semibold mt-4 mb-2">Sample Output:</h4>
-                <pre><code class="code-block">Test array 1: [15, 72, 31, 8, 45, 90, 23]
+                <pre class="code-block"><code>Test array 1: [15, 72, 31, 8, 45, 90, 23]
 Maximum value: 90
 
 Test array 2: [5, -3, 12, 7, -8, 25]
-[cite_start]Maximum value: 25</code></pre> [cite: 7]
+Maximum value: 25</code></pre>
             </div>
             
             <hr class="my-8 border-gray-200">
 
             <div class="problem" id="problem4">
                 <h3>Problem 4: Debug Memory Errors (10 points)</h3>
-                [cite_start]<p>Fix the following buggy program that attempts to find the sum of positive numbers in an array. [cite: 7, 8] This program has 4 memory-related errors. [cite_start]Find and fix them all! [cite: 8, 9] [cite_start]Comment each error, explain why it's wrong, and provide the correct code. [cite: 10]</p>
-                <div class="bg-[#f4f4f4] border border-[#ddd] p-4 rounded-lg mt-4">
-                    <pre class="code-font whitespace-pre-wrap text-sm leading-relaxed">
-.data
+                <p>Fix the following buggy program that attempts to find the sum of positive numbers in an array. This program has 4 memory-related errors. Find and fix them all! Comment each error, explain why it's wrong, and provide the correct code.</p>
+                
+                <div class="code-block code-font">
+                    <pre>.data
 numbers: .word -3, 12, -7, 8, 15, -2, 9
 count:   .word 7
 result:  .word 0
@@ -271,30 +279,34 @@ loop:
 add_positive:
     add $t2, $t2, $t3
     
-next:
-    <span class="text-red-600 font-bold"># ERROR 1: Wrong increment</span>
-    <input type="text" id="error1" class="worksheet-input my-1" placeholder="Type corrected code for ERROR 1">
-    <div id="feedback1" class="text-xs h-4"></div>
-
-    addi $t1, $t1, -1
-    <span class="text-red-600 font-bold"># ERROR 2: Off-by-one error</span>
-    <input type="text" id="error2" class="worksheet-input my-1" placeholder="Type corrected code for ERROR 2">
-    <div id="feedback2" class="text-xs h-4"></div>
-    
-    <span class="text-red-600 font-bold"># ERROR 3: Wrong addressing</span>
-    <input type="text" id="error3" class="worksheet-input my-1" placeholder="Type corrected code for ERROR 3">
-    <div id="feedback3" class="text-xs h-4"></div>
-    
-    # Print result
-    li $v0, 1
-    <span class="text-red-600 font-bold"># ERROR 4: Should use $t2 or load correctly</span>
-    <input type="text" id="error4" class="worksheet-input my-1" placeholder="Type corrected code for ERROR 4">
-    <div id="feedback4" class="text-xs h-4"></div>
-    syscall
+next:</pre>
+                    <div class="my-2 ml-4">
+                        <label for="error1" class="text-red-600 font-bold block mb-1"># ERROR 1: Wrong increment</label>
+                        <input type="text" id="error1" class="worksheet-input" placeholder="Type corrected code for ERROR 1">
+                        <div id="feedback1" class="text-xs h-4 mt-1"></div>
+                    </div>
+                    <pre>    addi $t1, $t1, -1</pre>
+                    <div class="my-2 ml-4">
+                        <label for="error2" class="text-red-600 font-bold block mb-1"># ERROR 2: Off-by-one error</label>
+                        <input type="text" id="error2" class="worksheet-input" placeholder="Type corrected code for ERROR 2">
+                        <div id="feedback2" class="text-xs h-4 mt-1"></div>
+                    </div>
+                    <div class="my-2 ml-4">
+                         <label for="error3" class="text-red-600 font-bold block mb-1"># ERROR 3: Wrong addressing</label>
+                        <input type="text" id="error3" class="worksheet-input" placeholder="Type corrected code for ERROR 3">
+                        <div id="feedback3" class="text-xs h-4 mt-1"></div>
+                    </div>
+                    <pre>    # Print result
+    li $v0, 1</pre>
+                    <div class="my-2 ml-4">
+                         <label for="error4" class="text-red-600 font-bold block mb-1"># ERROR 4: Should use $t2 or load correctly</label>
+                        <input type="text" id="error4" class="worksheet-input" placeholder="Type corrected code for ERROR 4">
+                        <div id="feedback4" class="text-xs h-4 mt-1"></div>
+                    </div>
+                    <pre>    syscall
     
     li $v0, 10
-    syscall
-                    </pre>
+    syscall</pre>
                 </div>
                 <div class="mt-4 no-print">
                     <button id="check-answers-btn" class="check-btn">Check My Answers</button>
@@ -318,22 +330,22 @@ next:
                         <tr>
                             <td class="py-2 px-4 border-b border-[#EADDD7] font-semibold">Problem 1: Array Ops</td>
                             <td class="py-2 px-4 border-b border-[#EADDD7]">15</td>
-                            [cite_start]<td class="py-2 px-4 border-b border-[#EADDD7]">Correct max (5), sum (3), reversal (5), output (2) [cite: 11]</td>
+                            <td class="py-2 px-4 border-b border-[#EADDD7]">Correct max (5), sum (3), reversal (5), output (2)</td>
                         </tr>
                         <tr>
                             <td class="py-2 px-4 border-b border-[#EADDD7] font-semibold">Problem 2: Palindrome</td>
                             <td class="py-2 px-4 border-b border-[#EADDD7]">10</td>
-                            [cite_start]<td class="py-2 px-4 border-b border-[#EADDD7]">Correct algorithm (6), case/space handling (3), UI (1) [cite: 11]</td>
+                            <td class="py-2 px-4 border-b border-[#EADDD7]">Correct algorithm (6), case/space handling (3), UI (1)</td>
                         </tr>
                         <tr>
                             <td class="py-2 px-4 border-b border-[#EADDD7] font-semibold">Problem 3: Recursion</td>
                             <td class="py-2 px-4 border-b border-[#EADDD7]">15</td>
-                            [cite_start]<td class="py-2 px-4 border-b border-[#EADDD7]">Recursive logic (6), stack management (6), main program (3) [cite: 11]</td>
+                            <td class="py-2 px-4 border-b border-[#EADDD7]">Recursive logic (6), stack management (6), main program (3)</td>
                         </tr>
                         <tr>
                             <td class="py-2 px-4 border-b border-[#EADDD7] font-semibold">Problem 4: Debugging</td>
                             <td class="py-2 px-4 border-b border-[#EADDD7]">10</td>
-                            [cite_start]<td class="py-2 px-4 border-b border-[#EADDD7]">Find all 4 errors (6), correct explanations (4) [cite: 11]</td>
+                            <td class="py-2 px-4 border-b border-[#EADDD7]">Find all 4 errors (6), correct explanations (4)</td>
                         </tr>
                     </tbody>
                 </table>
@@ -364,7 +376,7 @@ next:
         function checkAnswer(id, solution, alternates = []) {
             const input = document.getElementById(id);
             const feedback = document.getElementById(id.replace('error', 'feedback'));
-            // Normalize by removing extra spaces and making it lowercase
+            // Normalize by removing extra spaces and making it lowercase for comparison
             const userValue = input.value.trim().replace(/\s+/g, ' ');
 
             const isCorrect = userValue.toLowerCase() === solution.toLowerCase() || alternates.some(alt => userValue.toLowerCase() === alt.toLowerCase());
@@ -372,12 +384,12 @@ next:
             if (isCorrect) {
                 input.classList.add('correct');
                 input.classList.remove('incorrect');
-                feedback.textContent = 'Correct!';
+                feedback.textContent = 'Correct! 👍';
                 feedback.style.color = feedbackColors.correct;
             } else {
                 input.classList.add('incorrect');
                 input.classList.remove('correct');
-                feedback.textContent = 'Incorrect. Try again.';
+                feedback.textContent = 'Incorrect. Please try again.';
                 feedback.style.color = feedbackColors.incorrect;
             }
         }
