@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSC210 Midterm Exam - Part A</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+
+    <style>
+        /* Embedded CSS for Component Styling */
+        body {
+            background-color: #FDFBF8;
+            font-family: 'Inter', sans-serif;
+            color: #383838;
+        }
+
+        /* Using Tailwind's @apply for custom classes based on the spec */
+        @layer base {
+            h1 {
+                @apply text-3xl md:text-4xl font-bold;
+            }
+            h2 {
+                @apply text-2xl font-bold mt-8 mb-4 pb-2 border-b border-[#EADDD7];
+            }
+            h3 {
+                @apply text-xl font-semibold mt-6 mb-2;
+            }
+            code, .code-font {
+                font-family: 'Fira Code', monospace;
+            }
+        }
+
+        .worksheet-input {
+            font-family: 'Fira Code', monospace;
+            border: 1px solid #D1C7BF;
+            background-color: #FFFFFF;
+            padding: 0.5rem;
+            border-radius: 0.375rem;
+            width: 100%;
+            transition: all 0.2s ease-in-out;
+        }
+
+        .worksheet-input:focus {
+            outline: none;
+            border-color: #4A90E2;
+            box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.5);
+        }
+
+        .worksheet-input.correct {
+            border-color: #28a745;
+        }
+
+        .worksheet-input.incorrect {
+            border-color: #dc3545;
+        }
+
+        .submit-btn {
+            background-color: #4A90E2;
+            color: white;
+            font-weight: 600;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            transition: background-color 0.2s ease-in-out;
+        }
+
+        .submit-btn:hover {
+            background-color: #357ABD;
+        }
+
+        .check-btn {
+            background-color: #EADDD7;
+            color: #383838;
+            font-weight: 600;
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+            transition: background-color 0.2s ease-in-out;
+        }
+
+        .check-btn:hover {
+            background-color: #D1C7BF;
+        }
+
+        .code-block {
+            background-color: #f4f4f4;
+            border: 1px solid #ddd;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            white-space: pre-wrap;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        /* Print-friendly styles */
+        @media print {
+            body {
+                background-color: #FFFFFF;
+            }
+            .no-print {
+                display: none;
+            }
+            main {
+                max-width: 100% !important;
+                padding: 0 !important;
+                border: none !important;
+                box-shadow: none !important;
+            }
+            .worksheet-input {
+                border-color: #383838 !important;
+            }
+        }
+    </style>
+</head>
+
+<body class="antialiased">
+
+    <main class="max-w-[800px] mx-auto p-4 md:p-8">
+        
+        <div class="flex justify-between items-center mb-6 no-print">
+            <h1 class="text-3xl md:text-4xl font-bold text-gray-800">CSC210 Midterm Exam</h1>
+            <button onclick="window.print()" class="submit-btn">Save as PDF</button>
+        </div>
+
+        <section id="exam-overview">
+            <h2 class="border-b-2 border-gray-200 pb-2 mb-4">Part A: MIPS Programming (50%)</h2>
+            [cite_start]<p class="mb-2">This is Part A of your CSC210 Midterm Exam, focusing on MIPS assembly programming with emphasis on memory operations, arrays, and recursion. [cite: 1] [cite_start]Part B (Digital Circuit Design) will be provided separately. [cite: 2] [cite_start]This is an open-book, open-notes exam, but you must work independently. [cite: 2]</p>
+            <ul class="list-disc list-inside space-y-1 bg-gray-50 p-4 rounded-lg">
+                [cite_start]<li><strong>Exam Opens:</strong> Week 8 [cite: 3]</li>
+                [cite_start]<li><strong>Due Date:</strong> October 19, 2025 at 11:59 PM [cite: 3]</li>
+                [cite_start]<li><strong>Total Points:</strong> 50 points (50% of Midterm grade) [cite: 3]</li>
+                [cite_start]<li><strong>Estimated Time:</strong> 1.5-2 hours [cite: 3]</li>
+                [cite_start]<li><strong>Submission Format:</strong> Submit all .asm files via the course management system [cite: 3]</li>
+            </ul>
+        </section>
+
+        <section id="honor-code">
+            <h2>Honor Code Statement</h2>
+            <p class="mb-2">By submitting this exam, you affirm that all work is your own. [cite_start]You may use course materials, textbooks, and your own notes, but you may NOT: [cite: 4]</p>
+            <ul class="list-disc list-inside space-y-1">
+                [cite_start]<li>Collaborate with other students [cite: 4]</li>
+                [cite_start]<li>Share code or solutions [cite: 4]</li>
+                [cite_start]<li>Use solutions from previous semesters [cite: 4]</li>
+                [cite_start]<li>Use AI tools to generate complete solutions (you may use them only for syntax reference) [cite: 4]</li>
+            </ul>
+        </section>
+
+        <section id="exam-problems">
+            <h2>Exam Problems</h2>
+
+            <div class="problem" id="problem1">
+                <h3>Problem 1: Array Operations (15 points)</h3>
+                [cite_start]<p>Write a MIPS program that demonstrates array manipulation skills. [cite: 4]</p>
+                <h4 class="font-semibold mt-4 mb-2">Requirements:</h4>
+                <ul class="list-disc list-inside space-y-1">
+                    [cite_start]<li>Declare an integer array with exactly 8 elements: `[12, 45, 7, 23, 67, 89, 34, 56]` [cite: 4]</li>
+                    [cite_start]<li>Implement and display results for: [cite: 4]
+                        <ul class="list-circle list-inside ml-6">
+                            [cite_start]<li>Find and print the maximum value and its index [cite: 4]</li>
+                            [cite_start]<li>Calculate and print the sum of all elements [cite: 4]</li>
+                            [cite_start]<li>Reverse the array in-place (swap elements) [cite: 4]</li>
+                            [cite_start]<li>Print the reversed array [cite: 4]</li>
+                        </ul>
+                    </li>
+                </ul>
+                <h4 class="font-semibold mt-4 mb-2">Constraints:</h4>
+                <ul class="list-disc list-inside space-y-1">
+                    [cite_start]<li>Use pointer-based traversal for finding max [cite: 4]</li>
+                    [cite_start]<li>Use index-based traversal for reversal [cite: 5]</li>
+                    [cite_start]<li>All output must have descriptive labels [cite: 5]</li>
+                </ul>
+                <h4 class="font-semibold mt-4 mb-2">Sample Output:</h4>
+                <pre><code class="code-block">Maximum value: 89 at index 5
+Sum of elements: 333
+[cite_start]Reversed array: 56 34 89 67 23 7 45 12</code></pre> [cite: 5]
+            </div>
+
+            <hr class="my-8 border-gray-200">
+
+            <div class="problem" id="problem2">
+                <h3>Problem 2: String Palindrome Checker (10 points)</h3>
+                [cite_start]<p>Write a MIPS program that: Prompts the user for a string (max 50 characters), checks if it's a palindrome (ignoring spaces and case), and displays the result. [cite: 5]</p>
+                <h4 class="font-semibold mt-4 mb-2">Requirements:</h4>
+                <ul class="list-disc list-inside space-y-1">
+                    [cite_start]<li>Must handle uppercase and lowercase letters [cite: 5]</li>
+                    [cite_start]<li>Must ignore spaces in comparison [cite: 5]</li>
+                    [cite_start]<li>Use two-pointer approach (start and end) [cite: 5]</li>
+                </ul>
+                <h4 class="font-semibold mt-4 mb-2">Sample Runs:</h4>
+                <pre><code class="code-block">Enter string: A man a plan a canal Panama
+Result: IS a palindrome
+
+Enter string: Hello World
+[cite_start]Result: NOT a palindrome</code></pre> [cite: 5]
+            </div>
+
+            <hr class="my-8 border-gray-200">
+
+            <div class="problem" id="problem3">
+                <h3>Problem 3: Recursive Array Maximum (15 points)</h3>
+                [cite_start]<p>Write a complete MIPS program with a recursive function that finds the maximum element in an array. [cite: 5, 6]</p>
+                <h4 class="font-semibold mt-4 mb-2">Function Specification:</h4>
+                <pre><code class="code-block"># Function: findMax
+# Parameters: 
+#   $a0 = array base address
+#   $a1 = array size (number of elements)
+# Returns:
+#   $v0 = maximum value in array
+#
+# Algorithm:
+#   Base case: if size == 1, return array[0]
+#   Recursive case: 
+#     - max_of_rest = findMax(array+4, size-1)
+#     [cite_start]- return max(array[0], max_of_rest)</code></pre> [cite: 6]
+                <h4 class="font-semibold mt-4 mb-2">Function Requirements:</h4>
+                <ul class="list-disc list-inside space-y-1">
+                    [cite_start]<li>Properly manage stack frame (save $ra and any used registers) [cite: 6]</li>
+                    [cite_start]<li>Handle base case: single element array [cite: 6]</li>
+                    [cite_start]<li>Include clear stack frame diagram in comments [cite: 6]</li>
+                </ul>
+                <h4 class="font-semibold mt-4 mb-2">Required Stack Frame Comment:</h4>
+                <pre><code class="code-block"># Stack frame layout:
+# -----------------
+# $ra        [+12]
+# $s0        [+8]   # saved array[0] value
+# $a0        [+4]   # saved array address
+# $a1        [+0]   # saved size
+# -----------------
+# [cite_start]Total: 16 bytes</code></pre> [cite: 7]
+                 <h4 class="font-semibold mt-4 mb-2">Main Program:</h4>
+                <ul class="list-disc list-inside space-y-1">
+                    [cite_start]<li>Test with at least two different arrays [cite: 6]</li>
+                    [cite_start]<li>Display the maximum value found for each test array [cite: 6, 7]</li>
+                </ul>
+                <h4 class="font-semibold mt-4 mb-2">Sample Output:</h4>
+                <pre><code class="code-block">Test array 1: [15, 72, 31, 8, 45, 90, 23]
+Maximum value: 90
+
+Test array 2: [5, -3, 12, 7, -8, 25]
+[cite_start]Maximum value: 25</code></pre> [cite: 7]
+            </div>
+            
+            <hr class="my-8 border-gray-200">
+
+            <div class="problem" id="problem4">
+                <h3>Problem 4: Debug Memory Errors (10 points)</h3>
+                [cite_start]<p>Fix the following buggy program that attempts to find the sum of positive numbers in an array. [cite: 7, 8] This program has 4 memory-related errors. [cite_start]Find and fix them all! [cite: 8, 9] [cite_start]Comment each error, explain why it's wrong, and provide the correct code. [cite: 10]</p>
+                <div class="bg-[#f4f4f4] border border-[#ddd] p-4 rounded-lg mt-4">
+                    <pre class="code-font whitespace-pre-wrap text-sm leading-relaxed">
+.data
+numbers: .word -3, 12, -7, 8, 15, -2, 9
+count:   .word 7
+result:  .word 0
+
+.text
+main:
+    la $t0, numbers
+    lw $t1, count
+    li $t2, 0        # sum of positive numbers
+    
+loop:
+    lw $t3, 0($t0)
+    bgtz $t3, add_positive
+    j next
+    
+add_positive:
+    add $t2, $t2, $t3
+    
+next:
+    <span class="text-red-600 font-bold"># ERROR 1: Wrong increment</span>
+    <input type="text" id="error1" class="worksheet-input my-1" placeholder="Type corrected code for ERROR 1">
+    <div id="feedback1" class="text-xs h-4"></div>
+
+    addi $t1, $t1, -1
+    <span class="text-red-600 font-bold"># ERROR 2: Off-by-one error</span>
+    <input type="text" id="error2" class="worksheet-input my-1" placeholder="Type corrected code for ERROR 2">
+    <div id="feedback2" class="text-xs h-4"></div>
+    
+    <span class="text-red-600 font-bold"># ERROR 3: Wrong addressing</span>
+    <input type="text" id="error3" class="worksheet-input my-1" placeholder="Type corrected code for ERROR 3">
+    <div id="feedback3" class="text-xs h-4"></div>
+    
+    # Print result
+    li $v0, 1
+    <span class="text-red-600 font-bold"># ERROR 4: Should use $t2 or load correctly</span>
+    <input type="text" id="error4" class="worksheet-input my-1" placeholder="Type corrected code for ERROR 4">
+    <div id="feedback4" class="text-xs h-4"></div>
+    syscall
+    
+    li $v0, 10
+    syscall
+                    </pre>
+                </div>
+                <div class="mt-4 no-print">
+                    <button id="check-answers-btn" class="check-btn">Check My Answers</button>
+                </div>
+            </div>
+
+        </section>
+
+        <section id="grading">
+            <h2>Grading Rubric</h2>
+            <div class="overflow-x-auto">
+                <table class="min-w-full bg-white border border-[#EADDD7]">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="text-left py-2 px-4 border-b border-[#EADDD7]">Component</th>
+                            <th class="text-left py-2 px-4 border-b border-[#EADDD7]">Points</th>
+                            <th class="text-left py-2 px-4 border-b border-[#EADDD7]">Details</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="py-2 px-4 border-b border-[#EADDD7] font-semibold">Problem 1: Array Ops</td>
+                            <td class="py-2 px-4 border-b border-[#EADDD7]">15</td>
+                            [cite_start]<td class="py-2 px-4 border-b border-[#EADDD7]">Correct max (5), sum (3), reversal (5), output (2) [cite: 11]</td>
+                        </tr>
+                        <tr>
+                            <td class="py-2 px-4 border-b border-[#EADDD7] font-semibold">Problem 2: Palindrome</td>
+                            <td class="py-2 px-4 border-b border-[#EADDD7]">10</td>
+                            [cite_start]<td class="py-2 px-4 border-b border-[#EADDD7]">Correct algorithm (6), case/space handling (3), UI (1) [cite: 11]</td>
+                        </tr>
+                        <tr>
+                            <td class="py-2 px-4 border-b border-[#EADDD7] font-semibold">Problem 3: Recursion</td>
+                            <td class="py-2 px-4 border-b border-[#EADDD7]">15</td>
+                            [cite_start]<td class="py-2 px-4 border-b border-[#EADDD7]">Recursive logic (6), stack management (6), main program (3) [cite: 11]</td>
+                        </tr>
+                        <tr>
+                            <td class="py-2 px-4 border-b border-[#EADDD7] font-semibold">Problem 4: Debugging</td>
+                            <td class="py-2 px-4 border-b border-[#EADDD7]">10</td>
+                            [cite_start]<td class="py-2 px-4 border-b border-[#EADDD7]">Find all 4 errors (6), correct explanations (4) [cite: 11]</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+    </main>
+
+<script>
+    document.getElementById('check-answers-btn').addEventListener('click', function() {
+        const solutions = {
+            error1: "addi $t0, $t0, 4",
+            error2: "bne $t1, $zero, loop",
+            error3: "sw $t2, result",
+            error4: "move $a0, $t2"
+        };
+        
+        const alternateSolutions = {
+            error2: ["bgtz $t1, loop"],
+            error4: ["lw $a0, result"]
+        };
+
+        const feedbackColors = {
+            correct: '#28a745',
+            incorrect: '#dc3545'
+        };
+
+        function checkAnswer(id, solution, alternates = []) {
+            const input = document.getElementById(id);
+            const feedback = document.getElementById(id.replace('error', 'feedback'));
+            // Normalize by removing extra spaces and making it lowercase
+            const userValue = input.value.trim().replace(/\s+/g, ' ');
+
+            const isCorrect = userValue.toLowerCase() === solution.toLowerCase() || alternates.some(alt => userValue.toLowerCase() === alt.toLowerCase());
+
+            if (isCorrect) {
+                input.classList.add('correct');
+                input.classList.remove('incorrect');
+                feedback.textContent = 'Correct!';
+                feedback.style.color = feedbackColors.correct;
+            } else {
+                input.classList.add('incorrect');
+                input.classList.remove('correct');
+                feedback.textContent = 'Incorrect. Try again.';
+                feedback.style.color = feedbackColors.incorrect;
+            }
+        }
+
+        checkAnswer('error1', solutions.error1);
+        checkAnswer('error2', solutions.error2, alternateSolutions.error2);
+        checkAnswer('error3', solutions.error3);
+        checkAnswer('error4', solutions.error4, alternateSolutions.error4);
+    });
+</script>
+
+</body>
+</html>
