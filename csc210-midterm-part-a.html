@@ -18,21 +18,28 @@
             background-color: #FDFBF8;
             font-family: 'Inter', sans-serif;
             color: #383838;
+            font-size: 16px; /* Explicit base font size */
         }
 
         /* Using Tailwind's @apply for custom classes based on the spec */
         @layer base {
             h1 {
-                @apply text-3xl md:text-4xl font-bold;
+                @apply text-4xl md:text-5xl font-bold;
             }
             h2 {
-                @apply text-2xl font-bold mt-8 mb-4 pb-2 border-b border-[#EADDD7];
+                /* Increased size and spacing */
+                @apply text-3xl font-bold mt-12 mb-6 pb-3 border-b-2 border-[#EADDD7];
             }
             h3 {
-                @apply text-xl font-semibold mt-6 mb-2;
+                 /* Increased size and spacing */
+                @apply text-2xl font-semibold mt-8 mb-4;
             }
             h4 {
-                @apply text-lg font-semibold mt-4 mb-2;
+                 /* Increased size and spacing */
+                @apply text-xl font-semibold mt-6 mb-3;
+            }
+            p {
+                @apply mb-4 leading-relaxed; /* Added line-height for readability */
             }
             code, .code-font {
                 font-family: 'Fira Code', monospace;
@@ -63,7 +70,6 @@
             line-height: 1.5;
         }
         
-        /* Helper for the code block */
         .code-block pre {
             margin: 0;
             padding: 0;
@@ -74,6 +80,7 @@
         @media print {
             body {
                 background-color: #FFFFFF;
+                font-size: 12pt;
             }
             .no-print {
                 display: none;
@@ -84,6 +91,9 @@
                 border: none !important;
                 box-shadow: none !important;
             }
+            h1, h2, h3, h4 {
+                page-break-after: avoid;
+            }
         }
     </style>
 </head>
@@ -92,14 +102,14 @@
 
     <main class="max-w-[800px] mx-auto p-4 md:p-8">
         
-        <header class="flex justify-between items-center mb-6 no-print">
-            <h1 class="text-3xl md:text-4xl font-bold text-gray-800">CSC210 Midterm Exam</h1>
+        <header class="flex justify-between items-center mb-8 no-print">
+            <h1 class="text-gray-800">CSC210 Midterm Exam</h1>
             <button onclick="window.print()" class="submit-btn">Save as PDF</button>
         </header>
 
         <section id="exam-overview">
             <h2>Part A: MIPS Programming (50%)</h2>
-            <p class="mb-2">This is Part A of your CSC210 Midterm Exam, focusing on MIPS assembly programming with emphasis on memory operations, arrays, and recursion. Part B (Digital Circuit Design) will be provided separately. This is an open-book, open-notes exam, but you must work independently.</p>
+            <p>This is Part A of your CSC210 Midterm Exam, focusing on MIPS assembly programming with emphasis on memory operations, arrays, and recursion. Part B (Digital Circuit Design) will be provided separately. This is an open-book, open-notes exam, but you must work independently.</p>
             <ul class="list-disc list-inside space-y-1 bg-gray-50 p-4 rounded-lg">
                 <li><strong>Exam Opens:</strong> Week 8</li>
                 <li><strong>Due Date:</strong> October 19, 2025 at 11:59 PM</li>
@@ -110,7 +120,7 @@
 
         <section id="honor-code">
             <h2>Honor Code Statement</h2>
-            <p class="mb-2">By submitting this exam, you affirm that all work is your own. You may use course materials, textbooks, and your own notes, but you may NOT:</p>
+            <p>By submitting this exam, you affirm that all work is your own. You may use course materials, textbooks, and your own notes, but you may NOT:</p>
             <ul class="list-disc list-inside space-y-1">
                 <li>Collaborate with other students</li>
                 <li>Share code or solutions</li>
@@ -125,7 +135,7 @@
             <article class="problem" id="problem1">
                 <h3>Problem 1: Array Operations (15 points)</h3>
                 <p>Write a MIPS program that demonstrates array manipulation skills.</p>
-                <h4 class="font-semibold mt-4 mb-2">Requirements:</h4>
+                <h4>Requirements:</h4>
                 <ul class="list-disc list-inside space-y-1">
                     <li>Declare an integer array with exactly 8 elements: `[12, 45, 7, 23, 67, 89, 34, 56]`</li>
                     <li>Implement and display results for:
@@ -137,30 +147,30 @@
                         </ul>
                     </li>
                 </ul>
-                <h4 class="font-semibold mt-4 mb-2">Constraints:</h4>
+                <h4>Constraints:</h4>
                 <ul class="list-disc list-inside space-y-1">
                     <li>Use pointer-based traversal for finding max</li>
                     <li>Use index-based traversal for reversal</li>
                     <li>All output must have descriptive labels</li>
                 </ul>
-                <h4 class="font-semibold mt-4 mb-2">Sample Output:</h4>
+                <h4>Sample Output:</h4>
                 <pre class="code-block"><code>Maximum value: 89 at index 5
 Sum of elements: 333
 Reversed array: 56 34 89 67 23 7 45 12</code></pre>
             </article>
 
-            <hr class="my-8 border-gray-200">
+            <hr class="my-12 border-gray-200">
 
             <article class="problem" id="problem2">
                 <h3>Problem 2: String Palindrome Checker (10 points)</h3>
                 <p>Write a MIPS program that: Prompts the user for a string (max 50 characters), checks if it's a palindrome (ignoring spaces and case), and displays the result.</p>
-                <h4 class="font-semibold mt-4 mb-2">Requirements:</h4>
+                <h4>Requirements:</h4>
                 <ul class="list-disc list-inside space-y-1">
                     <li>Must handle uppercase and lowercase letters</li>
                     <li>Must ignore spaces in comparison</li>
                     <li>Use two-pointer approach (start and end)</li>
                 </ul>
-                <h4 class="font-semibold mt-4 mb-2">Sample Runs:</h4>
+                <h4>Sample Runs:</h4>
                 <pre class="code-block"><code>Enter string: A man a plan a canal Panama
 Result: IS a palindrome
 
@@ -168,12 +178,12 @@ Enter string: Hello World
 Result: NOT a palindrome</code></pre>
             </article>
 
-            <hr class="my-8 border-gray-200">
+            <hr class="my-12 border-gray-200">
 
             <article class="problem" id="problem3">
                 <h3>Problem 3: Recursive Array Maximum (15 points)</h3>
                 <p>Write a complete MIPS program with a recursive function that finds the maximum element in an array.</p>
-                <h4 class="font-semibold mt-4 mb-2">Function Specification:</h4>
+                <h4>Function Specification:</h4>
                 <pre class="code-block"><code># Function: findMax
 # Parameters: 
 #   $a0 = array base address
@@ -186,13 +196,13 @@ Result: NOT a palindrome</code></pre>
 #   Recursive case: 
 #     - max_of_rest = findMax(array+4, size-1)
 #     - return max(array[0], max_of_rest)</code></pre>
-                <h4 class="font-semibold mt-4 mb-2">Function Requirements:</h4>
+                <h4>Function Requirements:</h4>
                 <ul class="list-disc list-inside space-y-1">
                     <li>Properly manage stack frame (save $ra and any used registers)</li>
                     <li>Handle base case: single element array</li>
                     <li>Include clear stack frame diagram in comments</li>
                 </ul>
-                <h4 class="font-semibold mt-4 mb-2">Required Stack Frame Comment:</h4>
+                <h4>Required Stack Frame Comment:</h4>
                 <pre class="code-block"><code># Stack frame layout:
 # -----------------
 # $ra        [+12]
@@ -201,12 +211,12 @@ Result: NOT a palindrome</code></pre>
 # $a1        [+0]   # saved size
 # -----------------
 # Total: 16 bytes</code></pre>
-                 <h4 class="font-semibold mt-4 mb-2">Main Program:</h4>
+                 <h4>Main Program:</h4>
                 <ul class="list-disc list-inside space-y-1">
                     <li>Test with at least two different arrays</li>
                     <li>Display the maximum value found for each test array</li>
                 </ul>
-                <h4 class="font-semibold mt-4 mb-2">Sample Output:</h4>
+                <h4>Sample Output:</h4>
                 <pre class="code-block"><code>Test array 1: [15, 72, 31, 8, 45, 90, 23]
 Maximum value: 90
 
@@ -214,7 +224,7 @@ Test array 2: [5, -3, 12, 7, -8, 25]
 Maximum value: 25</code></pre>
             </article>
             
-            <hr class="my-8 border-gray-200">
+            <hr class="my-12 border-gray-200">
 
             <article class="problem" id="problem4">
                 <h3>Problem 4: Debug Memory Errors (10 points)</h3>
@@ -305,7 +315,7 @@ next:
 
         <section id="submission">
             <h2>Submission Requirements</h2>
-            <p class="mb-2">Please submit a single compressed archive file containing your solutions for all four problems. Follow these instructions carefully:</p>
+            <p>Please submit a single compressed archive file containing your solutions for all four problems. Follow these instructions carefully:</p>
             <ul class="list-disc list-inside space-y-2 bg-blue-50 p-4 rounded-lg border border-blue-200">
                 <li><strong>File Format:</strong> The archive must be in `.zip`, `.7z`, or `.rar` format.</li>
                 <li><strong>File Naming:</strong> Name the archive `Midterm-partA` with the appropriate file extension (e.g., `Midterm-partA.zip`).</li>
