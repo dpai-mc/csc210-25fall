@@ -1,0 +1,1025 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Week 8: MIPS Memory & Arrays - Interactive Learning Experience</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #FDFBF8;
+            color: #383838;
+        }
+        
+        .code-block {
+            font-family: 'Fira Code', monospace;
+            background-color: #f8f9fa;
+            border: 1px solid #EADDD7;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            white-space: pre-wrap;
+            overflow-x: auto;
+        }
+        
+        .interactive-input {
+            font-family: 'Fira Code', monospace;
+            border: 2px solid #D1C7BF;
+            background-color: #FFFFFF;
+            padding: 0.5rem;
+            border-radius: 0.375rem;
+            transition: all 0.2s ease;
+        }
+        
+        .interactive-input:focus {
+            outline: none;
+            border-color: #4A90E2;
+            box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.3);
+        }
+        
+        .tab-button {
+            transition: all 0.3s ease;
+            border-bottom: 3px solid transparent;
+        }
+        
+        .tab-button.active {
+            background-color: #EADDD7;
+            border-bottom-color: #4A90E2;
+        }
+        
+        .tab-button:hover:not(.active) {
+            background-color: #F0EBE8;
+        }
+        
+        .feedback-correct {
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+            color: #155724;
+        }
+        
+        .feedback-incorrect {
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+            color: #721c24;
+        }
+        
+        .memory-address {
+            font-family: 'Fira Code', monospace;
+            background-color: #e9ecef;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            font-size: 0.875rem;
+        }
+        
+        .progress-bar {
+            background-color: #e9ecef;
+            height: 8px;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            background-color: #4A90E2;
+            height: 100%;
+            transition: width 0.3s ease;
+        }
+        
+        @media print {
+            .no-print { display: none; }
+            body { background-color: white; }
+        }
+    </style>
+</head>
+<body class="antialiased">
+    <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 bg-blue-600 text-white px-4 py-2 rounded">Skip to content</a>
+    
+    <header class="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-10">
+        <div class="max-w-6xl mx-auto px-4 py-4">
+            <h1 class="text-2xl md:text-3xl font-bold text-gray-900">Week 8: MIPS Memory & Arrays</h1>
+            <p class="text-lg text-gray-600 mt-2">Interactive Learning Experience</p>
+            <div class="mt-4">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-bar" style="width: 0%"></div>
+                </div>
+                <p class="text-sm text-gray-500 mt-1">Progress: <span id="progress-text">0% Complete</span></p>
+            </div>
+        </div>
+    </header>
+
+    <main id="main-content" class="max-w-6xl mx-auto p-4 md:p-8">
+        <nav class="mb-8" role="tablist">
+            <div class="flex flex-wrap gap-2 border-b border-gray-200">
+                <button class="tab-button px-4 py-3 font-medium rounded-t-lg active" 
+                        data-tab="overview" role="tab" aria-selected="true" aria-controls="overview-panel">
+                    📚 Overview
+                </button>
+                <button class="tab-button px-4 py-3 font-medium rounded-t-lg" 
+                        data-tab="memory-model" role="tab" aria-selected="false" aria-controls="memory-model-panel">
+                    🧠 Memory Model
+                </button>
+                <button class="tab-button px-4 py-3 font-medium rounded-t-lg" 
+                        data-tab="load-store" role="tab" aria-selected="false" aria-controls="load-store-panel">
+                    🔧 Load/Store
+                </button>
+                <button class="tab-button px-4 py-3 font-medium rounded-t-lg" 
+                        data-tab="addressing" role="tab" aria-selected="false" aria-controls="addressing-panel">
+                    🔍 Addressing
+                </button>
+                <button class="tab-button px-4 py-3 font-medium rounded-t-lg" 
+                        data-tab="arrays" role="tab" aria-selected="false" aria-controls="arrays-panel">
+                    📋 Arrays
+                </button>
+                <button class="tab-button px-4 py-3 font-medium rounded-t-lg" 
+                        data-tab="advanced" role="tab" aria-selected="false" aria-controls="advanced-panel">
+                    🚀 Advanced
+                </button>
+            </div>
+        </nav>
+
+        <section id="overview-panel" class="tab-panel" role="tabpanel" aria-labelledby="overview">
+            <div class="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-8">
+                <h2 class="text-2xl font-bold mb-4">🎯 Learning Objectives</h2>
+                <p class="text-lg mb-4">Transform from procedure-call programmers into memory manipulation experts!</p>
+                <ul class="space-y-2 text-gray-700">
+                    <li class="flex items-start"><span class="text-green-500 mr-2">✓</span>Use MIPS load/store instructions to access memory</li>
+                    <li class="flex items-start"><span class="text-green-500 mr-2">✓</span>Understand and apply different addressing modes</li>
+                    <li class="flex items-start"><span class="text-green-500 mr-2">✓</span>Manipulate arrays using MIPS assembly language</li>
+                    <li class="flex items-start"><span class="text-green-500 mr-2">✓</span>Translate high-level array operations to MIPS code</li>
+                    <li class="flex items-start"><span class="text-green-500 mr-2">✓</span>Debug memory-related issues in MARS</li>
+                </ul>
+            </div>
+            
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="bg-white rounded-lg shadow-sm border p-6">
+                    <h3 class="text-xl font-semibold mb-4">📖 Learning Path</h3>
+                    <ol class="space-y-3">
+                        <li class="flex items-center">
+                            <span class="bg-blue-100 text-blue-800 w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium mr-3">1</span>
+                            <span>Memory Model Foundation</span>
+                        </li>
+                        <li class="flex items-center">
+                            <span class="bg-blue-100 text-blue-800 w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium mr-3">2</span>
+                            <span>Load/Store Mastery</span>
+                        </li>
+                        <li class="flex items-center">
+                            <span class="bg-blue-100 text-blue-800 w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium mr-3">3</span>
+                            <span>Addressing Modes</span>
+                        </li>
+                        <li class="flex items-center">
+                            <span class="bg-blue-100 text-blue-800 w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium mr-3">4</span>
+                            <span>Array Algorithms</span>
+                        </li>
+                        <li class="flex items-center">
+                            <span class="bg-blue-100 text-blue-800 w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium mr-3">5</span>
+                            <span>Multi-Dimensional Arrays</span>
+                        </li>
+                        <li class="flex items-center">
+                            <span class="bg-blue-100 text-blue-800 w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium mr-3">6</span>
+                            <span>Performance & Optimization</span>
+                        </li>
+                    </ol>
+                </div>
+                
+                <div class="bg-white rounded-lg shadow-sm border p-6">
+                    <h3 class="text-xl font-semibold mb-4">🛠️ Prerequisites Check</h3>
+                    <div class="space-y-3">
+                        <label class="flex items-center">
+                            <input type="checkbox" class="mr-3 rounded border-gray-300">
+                            <span>MIPS procedure calls (Week 7)</span>
+                        </label>
+                        <label class="flex items-center">
+                            <input type="checkbox" class="mr-3 rounded border-gray-300">
+                            <span>Basic arithmetic instructions</span>
+                        </label>
+                        <label class="flex items-center">
+                            <input type="checkbox" class="mr-3 rounded border-gray-300">
+                            <span>Binary/hexadecimal numbers</span>
+                        </label>
+                        <label class="flex items-center">
+                            <input type="checkbox" class="mr-3 rounded border-gray-300">
+                            <span>MARS environment navigation</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="memory-model-panel" class="tab-panel hidden" role="tabpanel" aria-labelledby="memory-model">
+            <h2 class="text-3xl font-bold mb-6">🧠 Memory Model Foundation</h2>
+            <p class="text-lg text-gray-700 mb-6">Understanding how MIPS organizes memory is the first step to mastering data manipulation. This section explores the key memory segments—Text, Data, and Stack—and the concept of endianness. Knowing where your data is stored and how it's arranged is crucial for preventing bugs and writing effective programs.</p>
+            
+            <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-6 mb-8">
+                <h3 class="text-xl font-semibold mb-4">🔍 Memory Detective Activity</h3>
+                <p class="mb-4">Explore this MIPS program in MARS and answer the questions below:</p>
+                <div class="code-block mb-4">.data
+mystery_data: .word 0x12345678, 0x87654321, 0xDEADBEEF
+.text
+main:
+    la $t0, mystery_data
+    lw $t1, 0($t0)
+    lw $t2, 4($t0)
+    lw $t3, 8($t0)</div>
+                
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium mb-2">What address did <code class="bg-gray-100 px-1 rounded">la $t0, mystery_data</code> load?</label>
+                        <input type="text" class="interactive-input w-full max-w-md" placeholder="0x????????" data-answer="0x10010000">
+                        <div class="feedback mt-2 p-2 rounded hidden"></div>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium mb-2">Why does <code class="bg-gray-100 px-1 rounded">lw $t2, 4($t0)</code> access the second word instead of <code class="bg-gray-100 px-1 rounded">lw $t2, 1($t0)</code>?</label>
+                        <select class="interactive-input w-full max-w-md" data-answer="word-size">
+                            <option value="">Select an answer...</option>
+                            <option value="word-size">Each word is 4 bytes, so we need offset of 4</option>
+                            <option value="indexing">MIPS uses 1-based indexing</option>
+                            <option value="alignment">Memory alignment requires even offsets</option>
+                        </select>
+                        <div class="feedback mt-2 p-2 rounded hidden"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="grid md:grid-cols-2 gap-8">
+                <div class="bg-white rounded-lg shadow-sm border p-6">
+                    <h3 class="text-xl font-semibold mb-4">📍 Memory Segments</h3>
+                    <div class="space-y-4">
+                        <div class="border-l-4 border-blue-500 pl-4">
+                            <h4 class="font-medium">Text Segment</h4>
+                            <p class="text-sm text-gray-600">Start: <span class="memory-address">0x00400000</span></p>
+                            <p class="text-sm">Program instructions</p>
+                        </div>
+                        <div class="border-l-4 border-green-500 pl-4">
+                            <h4 class="font-medium">Data Segment</h4>
+                            <p class="text-sm text-gray-600">Start: <span class="memory-address">0x10010000</span></p>
+                            <p class="text-sm">Global variables (.data section)</p>
+                        </div>
+                        <div class="border-l-4 border-purple-500 pl-4">
+                            <h4 class="font-medium">Stack Segment</h4>
+                            <p class="text-sm text-gray-600">Start: <span class="memory-address">0x7ffffffc</span> (grows down)</p>
+                            <p class="text-sm">Local variables, procedure calls</p>
+                        </div>
+                        <div class="border-l-4 border-orange-500 pl-4">
+                            <h4 class="font-medium">Heap Segment</h4>
+                            <p class="text-sm text-gray-600">Dynamic allocation</p>
+                            <p class="text-sm">Malloc/free operations</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-lg shadow-sm border p-6">
+                    <h3 class="text-xl font-semibold mb-4">🔄 Endianness Explorer</h3>
+                    <p class="text-sm text-gray-600 mb-4">MIPS uses big-endian byte ordering. Test your understanding:</p>
+                    <div class="code-block mb-4">.data
+test_word: .word 0x12345678
+.text
+main:
+    lb $t0, 0(test_word)  # Byte 0
+    lb $t1, 1(test_word)  # Byte 1
+    lb $t2, 2(test_word)  # Byte 2
+    lb $t3, 3(test_word)  # Byte 3</div>
+                    
+                    <div class="space-y-2">
+                        <div class="flex items-center space-x-4">
+                            <span class="w-16 text-sm">$t0 =</span>
+                            <input type="text" class="interactive-input flex-1" placeholder="0x??" data-answer="0x12">
+                        </div>
+                        <div class="flex items-center space-x-4">
+                            <span class="w-16 text-sm">$t1 =</span>
+                            <input type="text" class="interactive-input flex-1" placeholder="0x??" data-answer="0x34">
+                        </div>
+                        <div class="flex items-center space-x-4">
+                            <span class="w-16 text-sm">$t2 =</span>
+                            <input type="text" class="interactive-input flex-1" placeholder="0x??" data-answer="0x56">
+                        </div>
+                        <div class="flex items-center space-x-4">
+                            <span class="w-16 text-sm">$t3 =</span>
+                            <input type="text" class="interactive-input flex-1" placeholder="0x??" data-answer="0x78">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="load-store-panel" class="tab-panel hidden" role="tabpanel" aria-labelledby="load-store">
+            <h2 class="text-3xl font-bold mb-6">🔧 Load/Store Mastery Workshop</h2>
+            <p class="text-lg text-gray-700 mb-6">MIPS is a "load/store" architecture, which means data must be moved from memory into registers before it can be used in calculations. The `lw` (load word) and `sw` (store word) instructions are the essential bridge between your program's data in memory and the CPU's registers. Mastering this pattern is the most fundamental skill in MIPS programming.</p>
+            
+            <div class="bg-green-50 border border-green-200 rounded-lg p-6 mb-8">
+                <h3 class="text-xl font-semibold mb-4">🎯 Level 1: Basic Load/Store Pattern</h3>
+                <p class="mb-4">Complete the missing offsets to load each number:</p>
+                <div class="code-block mb-4">.data
+numbers: .word 10, 20, 30
+.text
+main:
+    la $s0, numbers
+    lw $t0, ___($s0)    # Load 10
+    lw $t1, ___($s0)    # Load 20  
+    lw $t2, ___($s0)    # Load 30</div>
+                
+                <div class="grid md:grid-cols-3 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium mb-2">Load 10 (first element):</label>
+                        <input type="text" class="interactive-input w-full" placeholder="offset" data-answer="0">
+                        <div class="feedback mt-1 p-2 rounded hidden text-sm"></div>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-2">Load 20 (second element):</label>
+                        <input type="text" class="interactive-input w-full" placeholder="offset" data-answer="4">
+                        <div class="feedback mt-1 p-2 rounded hidden text-sm"></div>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-2">Load 30 (third element):</label>
+                        <input type="text" class="interactive-input w-full" placeholder="offset" data-answer="8">
+                        <div class="feedback mt-1 p-2 rounded hidden text-sm"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-white rounded-lg shadow-sm border p-6 mb-8">
+                <h3 class="text-xl font-semibold mb-4">📊 Level 2: Understanding Data Types</h3>
+                <div class="overflow-x-auto">
+                    <table class="w-full border-collapse border border-gray-300">
+                        <thead>
+                            <tr class="bg-gray-50">
+                                <th class="border border-gray-300 px-4 py-2 text-left">Instruction</th>
+                                <th class="border border-gray-300 px-4 py-2 text-left">Data Loaded</th>
+                                <th class="border border-gray-300 px-4 py-2 text-left">Sign Extension</th>
+                                <th class="border border-gray-300 px-4 py-2 text-left">Use Case</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="border border-gray-300 px-4 py-2"><code>lw</code></td>
+                                <td class="border border-gray-300 px-4 py-2">4 bytes</td>
+                                <td class="border border-gray-300 px-4 py-2">N/A</td>
+                                <td class="border border-gray-300 px-4 py-2">Integers, addresses</td>
+                            </tr>
+                            <tr>
+                                <td class="border border-gray-300 px-4 py-2"><code>lh</code></td>
+                                <td class="border border-gray-300 px-4 py-2">2 bytes</td>
+                                <td class="border border-gray-300 px-4 py-2">Yes</td>
+                                <td class="border border-gray-300 px-4 py-2">Signed short</td>
+                            </tr>
+                            <tr>
+                                <td class="border border-gray-300 px-4 py-2"><code>lhu</code></td>
+                                <td class="border border-gray-300 px-4 py-2">2 bytes</td>
+                                <td class="border border-gray-300 px-4 py-2">No</td>
+                                <td class="border border-gray-300 px-4 py-2">Unsigned short</td>
+                            </tr>
+                            <tr>
+                                <td class="border border-gray-300 px-4 py-2"><code>lb</code></td>
+                                <td class="border border-gray-300 px-4 py-2">1 byte</td>
+                                <td class="border border-gray-300 px-4 py-2">Yes</td>
+                                <td class="border border-gray-300 px-4 py-2">Signed char</td>
+                            </tr>
+                            <tr>
+                                <td class="border border-gray-300 px-4 py-2"><code>lbu</code></td>
+                                <td class="border border-gray-300 px-4 py-2">1 byte</td>
+                                <td class="border border-gray-300 px-4 py-2">No</td>
+                                <td class="border border-gray-300 px-4 py-2">Unsigned char, ASCII</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <div class="bg-blue-50 border border-blue-200 rounded-lg p-6">
+                <h3 class="text-xl font-semibold mb-4">🏆 Level 3: Store Operations Challenge</h3>
+                <p class="mb-4">Write MIPS code to store the pattern: 1, 4, 9, 16, 25 (squares) into memory:</p>
+                <div class="code-block mb-4">.data
+destination: .space 20    # 5 words of space
+.text
+main:
+    la $s0, destination
+    # Your code here - store each square</div>
+                
+                <textarea class="interactive-input w-full h-32 resize-none" 
+                          placeholder="Write your MIPS assembly code here...&#10;Example:&#10;li $t0, 1&#10;sw $t0, 0($s0)&#10;li $t1, 4&#10;sw $t1, 4($s0)&#10;# Continue pattern..."></textarea>
+                
+                <button class="mt-4 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition-colors" 
+                        onclick="checkStoreChallenge()">
+                    Check Solution
+                </button>
+                <div id="store-feedback" class="feedback mt-2 p-2 rounded hidden"></div>
+            </div>
+        </section>
+
+        <section id="addressing-panel" class="tab-panel hidden" role="tabpanel" aria-labelledby="addressing">
+            <h2 class="text-3xl font-bold mb-6">🔍 Addressing Modes Deep Dive</h2>
+            <p class="text-lg text-gray-700 mb-6">How does the processor find the exact byte it needs in a vast sea of memory? Through addressing modes. The most common mode in MIPS, base plus offset addressing (`offset($register)`), is the key to working with arrays and other data structures. This section will solidify your ability to calculate the effective memory addresses used by load and store instructions.</p>
+            
+            <div class="bg-purple-50 border border-purple-200 rounded-lg p-6 mb-8">
+                <h3 class="text-xl font-semibold mb-4">🧮 Interactive Address Calculator</h3>
+                <p class="mb-4">Given: Base register <code class="bg-gray-100 px-1 rounded">$s0 = 0x10010010</code></p>
+                
+                <div class="overflow-x-auto">
+                    <table class="w-full border-collapse border border-gray-300">
+                        <thead>
+                            <tr class="bg-gray-50">
+                                <th class="border border-gray-300 px-4 py-2 text-left">Instruction</th>
+                                <th class="border border-gray-300 px-4 py-2 text-left">Offset</th>
+                                <th class="border border-gray-300 px-4 py-2 text-left">Effective Address</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="border border-gray-300 px-4 py-2"><code>lw $t0, 0($s0)</code></td>
+                                <td class="border border-gray-300 px-4 py-2">0</td>
+                                <td class="border border-gray-300 px-4 py-2">
+                                    <input type="text" class="interactive-input w-full" placeholder="0x????????" data-answer="0x10010010">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="border border-gray-300 px-4 py-2"><code>lw $t0, -4($s0)</code></td>
+                                <td class="border border-gray-300 px-4 py-2">-4</td>
+                                <td class="border border-gray-300 px-4 py-2">
+                                    <input type="text" class="interactive-input w-full" placeholder="0x????????" data-answer="0x1001000c">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="border border-gray-300 px-4 py-2"><code>lw $t0, 12($s0)</code></td>
+                                <td class="border border-gray-300 px-4 py-2">12</td>
+                                <td class="border border-gray-300 px-4 py-2">
+                                    <input type="text" class="interactive-input w-full" placeholder="0x????????" data-answer="0x1001001c">
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <button class="mt-4 bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700 transition-colors" 
+                        onclick="checkAddressing()">
+                    Check Addresses
+                </button>
+                <div id="addressing-feedback" class="feedback mt-2 p-2 rounded hidden"></div>
+            </div>
+            
+            <div class="bg-red-50 border border-red-200 rounded-lg p-6">
+                <h3 class="text-xl font-semibold mb-4">🐛 Debug the Addressing Errors</h3>
+                <p class="mb-4">This code has bugs. What did the programmer intend, and how do we fix it?</p>
+                <div class="code-block mb-4">.data
+array: .word 1, 2, 3, 4, 5
+.text
+main:
+    la $t0, array
+    lw $t1, 1($t0)     # BUG: What's wrong?
+    lw $t2, 2($t0)     # BUG: What's wrong?</div>
+                
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium mb-2">What did the programmer intend?</label>
+                        <select class="interactive-input w-full max-w-md" data-answer="access-elements">
+                            <option value="">Select an answer...</option>
+                            <option value="access-elements">Access array[1] and array[2]</option>
+                            <option value="load-bytes">Load individual bytes</option>
+                            <option value="increment">Increment memory addresses</option>
+                        </select>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium mb-2">What's the correct way to access array[1]?</label>
+                        <input type="text" class="interactive-input w-full max-w-md" placeholder="lw $t1, ___($t0)" data-answer="4">
+                        <div class="feedback mt-2 p-2 rounded hidden"></div>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium mb-2">What's the general rule for word array access?</label>
+                        <textarea class="interactive-input w-full h-20 resize-none" 
+                                  placeholder="Explain the indexing rule..."></textarea>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="arrays-panel" class="tab-panel hidden" role="tabpanel" aria-labelledby="arrays">
+            <h2 class="text-3xl font-bold mb-6">📋 Array Algorithms Workshop</h2>
+            <p class="text-lg text-gray-700 mb-6">Arrays are one of the most common data structures. In this section, we'll combine our knowledge of memory, load/store instructions, and addressing to implement common array algorithms. Translating high-level loops and index-based access (e.g., `array[i]`) into MIPS assembly is a critical skill for any assembly language programmer.</p>
+            
+            <div class="bg-green-50 border border-green-200 rounded-lg p-6 mb-8">
+                <h3 class="text-xl font-semibold mb-4">🎯 Stage 1: Array Traversal Patterns</h3>
+                <p class="mb-4">Master the fundamental pattern for sequential array access:</p>
+                <div class="code-block mb-4">.data
+arr: .word 10, 20, 30, 40, 50
+size: .word 5
+.text
+traverse_sequential:
+    la $s0, arr         # Base address
+    lw $s1, size        # Array size
+    li $t0, 0           # Index
+    
+loop:
+    beq $t0, $s1, done  # Check bounds
+    sll $t1, $t0, 2     # Index * 4
+    add $t2, $s0, $t1   # Calculate address
+    lw $t3, 0($t2)      # Load element
+    
+    # Process element in $t3 here
+    
+    addi $t0, $t0, 1    # Increment index
+    j loop
+done:</div>
+                
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium mb-2">Why do we use <code class="bg-gray-100 px-1 rounded">sll $t1, $t0, 2</code>?</label>
+                        <select class="interactive-input w-full max-w-md" data-answer="multiply-by-4">
+                            <option value="">Select an answer...</option>
+                            <option value="multiply-by-4">Multiply index by 4 (word size)</option>
+                            <option value="divide-by-4">Divide index by 4</option>
+                            <option value="shift-bits">Shift bits for efficiency</option>
+                        </select>
+                        <div class="feedback mt-2 p-2 rounded hidden"></div>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium mb-2">What does <code class="bg-gray-100 px-1 rounded">add $t2, $s0, $t1</code> calculate?</label>
+                        <input type="text" class="interactive-input w-full max-w-md" placeholder="Effective address of..." data-answer="array[i]">
+                        <div class="feedback mt-2 p-2 rounded hidden"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="grid md:grid-cols-2 gap-8">
+                <div class="bg-white rounded-lg shadow-sm border p-6">
+                    <h3 class="text-xl font-semibold mb-4">🧮 Array Sum Calculator</h3>
+                    <p class="text-sm text-gray-600 mb-4">Complete this function to calculate array sum:</p>
+                    <div class="code-block mb-4"># Input: $a0 = array base address, $a1 = size
+# Output: $v0 = sum
+array_sum:
+    li $v0, 0           # Initialize sum
+    li $t0, 0           # Initialize index
+    
+sum_loop:
+    beq $t0, $a1, sum_done
+    sll $t1, $t0, 2     # Calculate offset
+    add $t2, $a0, $t1   # Calculate address
+    lw $t3, 0($t2)      # Load element
+    
+    # What instruction goes here?
+    _____ $v0, $v0, $t3  # Add to sum
+    
+    addi $t0, $t0, 1    # Increment index
+    j sum_loop
+    
+sum_done:
+    jr $ra</div>
+                    
+                    <label class="block text-sm font-medium mb-2">What instruction adds the element to the sum?</label>
+                    <input type="text" class="interactive-input w-full" placeholder="Instruction" data-answer="add">
+                    <div class="feedback mt-2 p-2 rounded hidden"></div>
+                </div>
+                
+                <div class="bg-white rounded-lg shadow-sm border p-6">
+                    <h3 class="text-xl font-semibold mb-4">🔍 Min/Max Finder</h3>
+                    <p class="text-sm text-gray-600 mb-4">Challenge: Find both min and max in one pass!</p>
+                    <div class="code-block mb-4"># Input: $a0 = array base, $a1 = size
+# Output: $v0 = min, $v1 = max
+find_min_max:
+    lw $v0, 0($a0)      # Initialize min
+    lw $v1, 0($a0)      # Initialize max
+    li $t0, 1           # Start from index 1
+    
+minmax_loop:
+    beq $t0, $a1, minmax_done
+    sll $t1, $t0, 2
+    add $t2, $a0, $t1
+    lw $t3, 0($t2)
+    
+    # Compare with current min
+    blt $t3, $v0, update_min
+    # Compare with current max  
+    bgt $t3, $v1, update_max
+    j continue_loop
+    
+update_min:
+    move $v0, $t3
+    j continue_loop
+    
+update_max:
+    move $v1, $t3
+    
+continue_loop:
+    addi $t0, $t0, 1
+    j minmax_loop
+    
+minmax_done:
+    jr $ra</div>
+                    
+                    <button class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition-colors">
+                        Test Algorithm
+                    </button>
+                </div>
+            </div>
+            
+            <div class="bg-blue-50 border border-blue-200 rounded-lg p-6 mt-8">
+                <h3 class="text-xl font-semibold mb-4">🔄 Real-World Application: Grade Processing</h3>
+                <p class="mb-4">Implement a grade processing system similar to real gradebook software:</p>
+                <div class="code-block mb-4">.data
+grades: .word 85, 92, 78, 96, 88, 71, 89, 93
+num_grades: .word 8
+grade_sum: .word 0
+average: .word 0
+above_avg_count: .word 0
+
+.text
+# Task 1: Calculate total and average
+# Task 2: Count grades above average
+# Task 3: Find highest and lowest grades</div>
+                
+                <div class="space-y-4">
+                    <label class="block text-sm font-medium mb-2">Step 1: Calculate the sum of all grades</label>
+                    <textarea class="interactive-input w-full h-24 resize-none" 
+                              placeholder="Write MIPS code to sum the grades array..."></textarea>
+                    
+                    <label class="block text-sm font-medium mb-2">Step 2: How do you calculate the average?</label>
+                    <input type="text" class="interactive-input w-full max-w-md" placeholder="sum / count" data-answer="div">
+                    
+                    <label class="block text-sm font-medium mb-2">Step 3: Count grades above average</label>
+                    <textarea class="interactive-input w-full h-24 resize-none" 
+                              placeholder="Write pseudocode for counting above-average grades..."></textarea>
+                </div>
+            </div>
+        </section>
+
+        <section id="advanced-panel" class="tab-panel hidden" role="tabpanel" aria-labelledby="advanced">
+            <h2 class="text-3xl font-bold mb-6">🚀 Advanced Topics & Optimization</h2>
+            <p class="text-lg text-gray-700 mb-6">Now that you've mastered the fundamentals, it's time to explore more complex applications and performance considerations. This section covers multi-dimensional arrays, C-style string manipulation (which are just arrays of characters), and the performance implications of memory access patterns. Understanding these topics is key to writing sophisticated and efficient MIPS programs.</p>
+            
+            <div class="grid md:grid-cols-2 gap-8 mb-8">
+                <div class="bg-white rounded-lg shadow-sm border p-6">
+                    <h3 class="text-xl font-semibold mb-4">🏗️ 2D Array Address Calculation</h3>
+                    <p class="text-sm text-gray-600 mb-4">Row-major order formula:</p>
+                    <div class="bg-gray-100 p-4 rounded-lg mb-4">
+                        <code>Address = base + (row × cols + col) × element_size</code>
+                    </div>
+                    
+                    <p class="mb-4">Given a 3×4 matrix starting at 0x10010000:</p>
+                    <div class="space-y-3">
+                        <div class="flex items-center space-x-4">
+                            <span class="w-20 text-sm">matrix[1][2] =</span>
+                            <input type="text" class="interactive-input flex-1" placeholder="0x????????" data-answer="0x10010018">
+                        </div>
+                        <div class="flex items-center space-x-4">
+                            <span class="w-20 text-sm">matrix[0][3] =</span>
+                            <input type="text" class="interactive-input flex-1" placeholder="0x????????" data-answer="0x1001000c">
+                        </div>
+                        <div class="flex items-center space-x-4">
+                            <span class="w-20 text-sm">matrix[2][1] =</span>
+                            <input type="text" class="interactive-input flex-1" placeholder="0x????????" data-answer="0x10010024">
+                        </div>
+                    </div>
+                    
+                    <button class="mt-4 bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700 transition-colors" 
+                            onclick="check2DAddresses()">
+                        Check Calculations
+                    </button>
+                    <div id="matrix-feedback" class="feedback mt-2 p-2 rounded hidden"></div>
+                </div>
+                
+                <div class="bg-white rounded-lg shadow-sm border p-6">
+                    <h3 class="text-xl font-semibold mb-4">🎯 String Processing Challenge</h3>
+                    <p class="text-sm text-gray-600 mb-4">Implement basic string operations:</p>
+                    <div class="code-block mb-4">.data
+message: .asciiz "Hello, MIPS World!"
+target_char: .byte 'l'
+count: .word 0
+
+.text
+# Count occurrences of target_char in message</div>
+                    
+                    <div class="space-y-4">
+                        <label class="block text-sm font-medium mb-2">How do you load a single character?</label>
+                        <select class="interactive-input w-full" data-answer="lbu">
+                            <option value="">Select instruction...</option>
+                            <option value="lw">lw (load word)</option>
+                            <option value="lbu">lbu (load byte unsigned)</option>
+                            <option value="lb">lb (load byte)</option>
+                        </select>
+                        
+                        <label class="block text-sm font-medium mb-2">How do you detect the end of a string?</label>
+                        <input type="text" class="interactive-input w-full" placeholder="Compare with..." data-answer="null">
+                        
+                        <label class="block text-sm font-medium mb-2">Write the character counting loop:</label>
+                        <textarea class="interactive-input w-full h-32 resize-none" 
+                                  placeholder="count_loop:&#10;    # Load character&#10;    # Check for null terminator&#10;    # Compare with target&#10;    # Increment count if match&#10;    # Move to next character&#10;    # Repeat"></textarea>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-6 mb-8">
+                <h3 class="text-xl font-semibold mb-4">⚡ Performance Optimization Lab</h3>
+                <p class="mb-4">Compare cache-friendly vs. cache-unfriendly access patterns:</p>
+                
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div>
+                        <h4 class="font-semibold mb-2 text-green-600">✅ Cache-Friendly (Row-Major)</h4>
+                        <div class="code-block text-sm">for (i = 0; i < ROWS; i++) {
+    for (j = 0; j < COLS; j++) {
+        matrix[i][j] = value;
+    }
+}</div>
+                        <p class="text-sm text-gray-600 mt-2">Accesses consecutive memory locations</p>
+                    </div>
+                    
+                    <div>
+                        <h4 class="font-semibold mb-2 text-red-600">❌ Cache-Unfriendly (Column-Major)</h4>
+                        <div class="code-block text-sm">for (j = 0; j < COLS; j++) {
+    for (i = 0; i < ROWS; i++) {
+        matrix[i][j] = value;
+    }
+}</div>
+                        <p class="text-sm text-gray-600 mt-2">Jumps around in memory</p>
+                    </div>
+                </div>
+                
+                <div class="mt-6">
+                    <label class="block text-sm font-medium mb-2">Why is spatial locality important for performance?</label>
+                    <textarea class="interactive-input w-full h-20 resize-none" 
+                              placeholder="Explain how cache lines and spatial locality affect performance..."></textarea>
+                </div>
+            </div>
+            
+            <div class="bg-red-50 border border-red-200 rounded-lg p-6">
+                <h3 class="text-xl font-semibold mb-4">🐛 Common Pitfalls & Debugging</h3>
+                <div class="space-y-6">
+                    <div>
+                        <h4 class="font-semibold mb-2">Error 1: Off-by-One in Array Bounds</h4>
+                        <div class="code-block mb-2"># BUGGY CODE
+li $t0, 0           # index
+li $t1, 5           # array size
+loop:
+    bgt $t0, $t1, done   # BUG: Should be bge
+    # Process array[t0]
+    addi $t0, $t0, 1
+    j loop</div>
+                        <label class="block text-sm font-medium mb-1">What's the fix?</label>
+                        <input type="text" class="interactive-input w-full max-w-md" placeholder="Change bgt to..." data-answer="bge">
+                    </div>
+                    
+                    <div>
+                        <h4 class="font-semibold mb-2">Error 2: Forgetting Word Size Scaling</h4>
+                        <div class="code-block mb-2"># BUGGY CODE
+li $t0, 2           # Want array[2]
+lw $t1, $t0(array)  # BUG: Missing scaling</div>
+                        <label class="block text-sm font-medium mb-1">What should it be?</label>
+                        <input type="text" class="interactive-input w-full max-w-md" placeholder="lw $t1, ___" data-answer="8">
+                    </div>
+                    
+                    <div>
+                        <h4 class="font-semibold mb-2">Error 3: Alignment Violations</h4>
+                        <p class="text-sm mb-2">What happens if you try <code>lw $t0, 1($s0)</code> where $s0 is word-aligned?</p>
+                        <select class="interactive-input w-full max-w-md" data-answer="exception">
+                            <option value="">Select outcome...</option>
+                            <option value="works-fine">Works perfectly</option>
+                            <option value="exception">Alignment exception</option>
+                            <option value="wrong-data">Loads wrong data</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <div class="bg-gradient-to-r from-blue-50 to-purple-50 border border-blue-200 rounded-lg p-6 mt-8">
+            <h2 class="text-2xl font-bold mb-4">📈 Week 8 Assessment Preparation</h2>
+            <div class="grid md:grid-cols-2 gap-6">
+                <div>
+                    <h3 class="text-lg font-semibold mb-3">🎯 Key Skills for Midterm</h3>
+                    <ul class="space-y-2 text-sm">
+                        <li class="flex items-start">
+                            <span class="text-green-500 mr-2 mt-1">✓</span>
+                            <span>Calculate memory addresses given base + offset</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-green-500 mr-2 mt-1">✓</span>
+                            <span>Translate C/Java array code to MIPS assembly</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-green-500 mr-2 mt-1">✓</span>
+                            <span>Debug common memory access errors</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-green-500 mr-2 mt-1">✓</span>
+                            <span>Implement basic array algorithms (sum, search, sort)</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-green-500 mr-2 mt-1">✓</span>
+                            <span>Understand memory segment organization</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-semibold mb-3">🔗 Connections to Future Topics</h3>
+                    <ul class="space-y-2 text-sm">
+                        <li class="flex items-start">
+                            <span class="text-blue-500 mr-2 mt-1">→</span>
+                            <span>Memory as fundamental CPU component (Week 9)</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-blue-500 mr-2 mt-1">→</span>
+                            <span>Load/store unit in CPU datapath design</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-blue-500 mr-2 mt-1">→</span>
+                            <span>Memory hierarchy concepts (cache, main memory)</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-blue-500 mr-2 mt-1">→</span>
+                            <span>Hardware-software interface understanding</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="mt-6 text-center">
+                <button class="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-3 rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all" 
+                        onclick="window.print()">
+                    📄 Save Progress as PDF
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Tab functionality
+            const tabButtons = document.querySelectorAll('.tab-button');
+            const tabPanels = document.querySelectorAll('.tab-panel');
+            let completedSections = new Set();
+            
+            tabButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const targetTab = button.getAttribute('data-tab');
+                    
+                    // Update button states
+                    tabButtons.forEach(btn => {
+                        btn.classList.remove('active');
+                        btn.setAttribute('aria-selected', 'false');
+                    });
+                    button.classList.add('active');
+                    button.setAttribute('aria-selected', 'true');
+                    
+                    // Update panel visibility
+                    tabPanels.forEach(panel => {
+                        panel.classList.add('hidden');
+                    });
+                    document.getElementById(`${targetTab}-panel`).classList.remove('hidden');
+                });
+            });
+            
+            // Interactive input validation
+            const inputs = document.querySelectorAll('.interactive-input');
+            
+            inputs.forEach(input => {
+                input.addEventListener('input', () => {
+                    const userAnswer = input.value.toLowerCase().trim();
+                    const correctAnswer = input.getAttribute('data-answer');
+                    const feedbackElement = input.parentElement.querySelector('.feedback');
+                    
+                    if (correctAnswer && feedbackElement) {
+                        if (userAnswer === correctAnswer.toLowerCase()) {
+                            feedbackElement.className = 'feedback mt-2 p-2 rounded feedback-correct';
+                            feedbackElement.textContent = '✅ Correct! Great job!';
+                            feedbackElement.classList.remove('hidden');
+                            markSectionProgress();
+                        } else if (userAnswer.length > 0) {
+                            feedbackElement.className = 'feedback mt-2 p-2 rounded feedback-incorrect';
+                            feedbackElement.textContent = '❌ Not quite right. Try again!';
+                            feedbackElement.classList.remove('hidden');
+                        } else {
+                            feedbackElement.classList.add('hidden');
+                        }
+                    }
+                });
+                
+                // Handle select elements
+                if (input.tagName === 'SELECT') {
+                    input.addEventListener('change', () => {
+                        const userAnswer = input.value;
+                        const correctAnswer = input.getAttribute('data-answer');
+                        const feedbackElement = input.parentElement.querySelector('.feedback');
+                        
+                        if (correctAnswer && feedbackElement) {
+                            if (userAnswer === correctAnswer) {
+                                feedbackElement.className = 'feedback mt-2 p-2 rounded feedback-correct';
+                                feedbackElement.textContent = '✅ Excellent understanding!';
+                                feedbackElement.classList.remove('hidden');
+                                markSectionProgress();
+                            } else if (userAnswer !== '') {
+                                feedbackElement.className = 'feedback mt-2 p-2 rounded feedback-incorrect';
+                                feedbackElement.textContent = '❌ Incorrect. Think about the concept again.';
+                                feedbackElement.classList.remove('hidden');
+                            }
+                        }
+                    });
+                }
+            });
+            
+            function markSectionProgress() {
+                const activePanel = document.querySelector('.tab-panel:not(.hidden)');
+                if (activePanel) {
+                    completedSections.add(activePanel.id);
+                    updateProgressBar();
+                }
+            }
+            
+            function updateProgressBar() {
+                const totalSections = tabPanels.length;
+                const progress = (completedSections.size / totalSections) * 100;
+                document.getElementById('progress-bar').style.width = `${progress}%`;
+                document.getElementById('progress-text').textContent = `${Math.round(progress)}% Complete`;
+            }
+            
+            // Store challenge checker
+            window.checkStoreChallenge = () => {
+                const textarea = document.querySelector('#store-feedback').previousElementSibling.previousElementSibling;
+                const code = textarea.value.toLowerCase();
+                const feedback = document.getElementById('store-feedback');
+                
+                const hasCorrectPattern = 
+                    code.includes('li $t0, 1') && code.includes('sw $t0, 0($s0)') ||
+                    code.includes('li $t1, 4') && code.includes('sw $t1, 4($s0)') ||
+                    code.includes('25') && code.includes('16($s0)');
+                
+                if (hasCorrectPattern) {
+                    feedback.className = 'feedback mt-2 p-2 rounded feedback-correct';
+                    feedback.textContent = '✅ Great! You understand the pattern of storing consecutive words.';
+                } else {
+                    feedback.className = 'feedback mt-2 p-2 rounded feedback-incorrect';
+                    feedback.textContent = '❌ Make sure to load each square value and store at proper word offsets (0, 4, 8, 12, 16).';
+                }
+                feedback.classList.remove('hidden');
+            };
+            
+            // Address calculation checker
+            window.checkAddressing = () => {
+                const inputs = document.querySelectorAll('#addressing-panel .interactive-input');
+                const feedback = document.getElementById('addressing-feedback');
+                let allCorrect = true;
+                
+                inputs.forEach(input => {
+                    const userAnswer = input.value.toLowerCase();
+                    const correctAnswer = input.getAttribute('data-answer');
+                    if (userAnswer !== correctAnswer) {
+                        allCorrect = false;
+                    }
+                });
+                
+                if (allCorrect) {
+                    feedback.className = 'feedback mt-2 p-2 rounded feedback-correct';
+                    feedback.textContent = '✅ Perfect! You master address calculation with base + offset.';
+                } else {
+                    feedback.className = 'feedback mt-2 p-2 rounded feedback-incorrect';
+                    feedback.textContent = '❌ Check your hex arithmetic. Remember: base + offset = effective address.';
+                }
+                feedback.classList.remove('hidden');
+            };
+            
+            // 2D array address checker
+            window.check2DAddresses = () => {
+                const inputs = document.querySelectorAll('#matrix-feedback').parentElement.querySelectorAll('.interactive-input');
+                const feedback = document.getElementById('matrix-feedback');
+                let allCorrect = true;
+                
+                // Check matrix[1][2] = base + (1*4 + 2)*4 = 0x10010000 + 24 = 0x10010018
+                // Check matrix[0][3] = base + (0*4 + 3)*4 = 0x10010000 + 12 = 0x1001000C  
+                // Check matrix[2][1] = base + (2*4 + 1)*4 = 0x10010000 + 36 = 0x10010024
+                
+                inputs.forEach(input => {
+                    const userAnswer = input.value.toLowerCase();
+                    const correctAnswer = input.getAttribute('data-answer');
+                    if (userAnswer !== correctAnswer) {
+                        allCorrect = false;
+                    }
+                });
+                
+                if (allCorrect) {
+                    feedback.className = 'feedback mt-2 p-2 rounded feedback-correct';
+                    feedback.textContent = '✅ Outstanding! You master 2D array address calculations.';
+                } else {
+                    feedback.className = 'feedback mt-2 p-2 rounded feedback-incorrect';
+                    feedback.textContent = '❌ Remember: base + (row × cols + col) × element_size. For 3×4 matrix with 4-byte words.';
+                }
+                feedback.classList.remove('hidden');
+                markSectionProgress();
+            };
+            
+            // Keyboard navigation
+            document.addEventListener('keydown', (e) => {
+                if (e.ctrlKey && e.key >= '1' && e.key <= '6') {
+                    e.preventDefault();
+                    const tabIndex = parseInt(e.key) - 1;
+                    if (tabButtons[tabIndex]) {
+                        tabButtons[tabIndex].click();
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
