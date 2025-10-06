@@ -5,9 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Week 8: MIPS Memory & Arrays - Interactive Learning Experience</title>
     
+    <!-- CDN Links -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    
+    <!-- Meta Comments -->
+    <!-- Chosen Palette: Scholarly Neutrals with education-focused accent colors -->
+    <!-- Application Structure Plan: Tabbed interface with 6 learning modules, each containing interactive exercises, code examples, and practice activities -->
+    <!-- Visualization & Content Choices: Progressive complexity with hands-on MIPS assembly examples, memory visualization tools, and immediate feedback for learning reinforcement -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
     
     <style>
         body {
@@ -111,6 +118,7 @@
     </header>
 
     <main id="main-content" class="max-w-6xl mx-auto p-4 md:p-8">
+        <!-- Navigation Tabs -->
         <nav class="mb-8" role="tablist">
             <div class="flex flex-wrap gap-2 border-b border-gray-200">
                 <button class="tab-button px-4 py-3 font-medium rounded-t-lg active" 
@@ -137,9 +145,16 @@
                         data-tab="advanced" role="tab" aria-selected="false" aria-controls="advanced-panel">
                     🚀 Advanced
                 </button>
+                <button class="tab-button px-4 py-3 font-medium rounded-t-lg" 
+                        data-tab="recursion" role="tab" aria-selected="false" aria-controls="recursion-panel">
+                    🔄 Recursion
+                </button>
             </div>
         </nav>
 
+        <!-- Tab Panels -->
+        
+        <!-- Overview Panel -->
         <section id="overview-panel" class="tab-panel" role="tabpanel" aria-labelledby="overview">
             <div class="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-8">
                 <h2 class="text-2xl font-bold mb-4">🎯 Learning Objectives</h2>
@@ -208,6 +223,7 @@
             </div>
         </section>
 
+        <!-- Memory Model Panel -->
         <section id="memory-model-panel" class="tab-panel hidden" role="tabpanel" aria-labelledby="memory-model">
             <h2 class="text-3xl font-bold mb-6">🧠 Memory Model Foundation</h2>
             <p class="text-lg text-gray-700 mb-6">Understanding how MIPS organizes memory is the first step to mastering data manipulation. This section explores the key memory segments—Text, Data, and Stack—and the concept of endianness. Knowing where your data is stored and how it's arranged is crucial for preventing bugs and writing effective programs.</p>
@@ -339,6 +355,7 @@ main:
             </div>
         </section>
 
+        <!-- Load/Store Panel -->
         <section id="load-store-panel" class="tab-panel hidden" role="tabpanel" aria-labelledby="load-store">
             <h2 class="text-3xl font-bold mb-6">🔧 Load/Store Mastery Workshop</h2>
             <p class="text-lg text-gray-700 mb-6">MIPS is a "load/store" architecture, which means data must be moved from memory into registers before it can be used in calculations. The `lw` (load word) and `sw` (store word) instructions are the essential bridge between your program's data in memory and the CPU's registers. Mastering this pattern is the most fundamental skill in MIPS programming.</p>
@@ -371,6 +388,16 @@ main:
                         <input type="text" class="interactive-input w-full" placeholder="offset" data-answer="8">
                         <div class="feedback mt-1 p-2 rounded hidden text-sm"></div>
                     </div>
+                </div>
+                <div class="mt-6 bg-gray-50 p-4 rounded-lg border">
+                    <h4 class="font-semibold mb-2">💡 Pro Tip: Implicit Zero Offset & Assembler Shorthand</h4>
+                    <p class="text-sm text-gray-700">You've noticed that multiple syntaxes work for a zero-offset load. This is the assembler helping you out!</p>
+                    <ul class="text-sm text-gray-700 list-disc list-inside space-y-2 mt-2">
+                        <li><code class="bg-gray-200 px-1 rounded">lw $t0, 0($s0)</code>: This is the <strong>canonical</strong> MIPS format. It's the clearest and what the hardware expects.</li>
+                        <li><code class="bg-gray-200 px-1 rounded">lw $t0, ($s0)</code>: This is a <strong>standard shorthand</strong>. The assembler sees the parentheses and assumes an offset of 0.</li>
+                        <li><code class="bg-gray-200 px-1 rounded">lw $t0, $s0</code>: This is a <strong>MARS-specific pseudo-instruction</strong>. The assembler interprets this as "dereference the pointer in `$s0`". It's convenient, but less portable. Be careful not to confuse it with <code class="bg-gray-200 px-1 rounded">move $t0, $s0</code>, which copies the address itself!</li>
+                    </ul>
+                     <p class="text-sm text-gray-700 mt-2"><strong>Recommendation:</strong> Stick to the <code class="bg-gray-200 px-1 rounded">0($s0)</code> format for maximum clarity and portability.</p>
                 </div>
             </div>
             
@@ -420,6 +447,19 @@ main:
                         </tbody>
                     </table>
                 </div>
+                 <div class="mt-6 bg-gray-50 p-4 rounded-lg border">
+                    <h4 class="font-semibold mb-2">Signed vs. Unsigned: What's the Difference?</h4>
+                    <p class="text-sm text-gray-700 mb-2">
+                        <strong>char (1 byte) / short (2 bytes):</strong> These data types are smaller than a full 32-bit word.
+                    </p>
+                    <ul class="text-sm text-gray-700 list-disc list-inside space-y-1">
+                        <li>A <strong>signed</strong> type uses its most significant bit (MSB) to represent the sign (0 for positive, 1 for negative). A signed char can represent values from -128 to 127.</li>
+                        <li>An <strong>unsigned</strong> type uses all its bits to represent the magnitude of the number. An unsigned char can represent values from 0 to 255.</li>
+                    </ul>
+                    <p class="text-sm text-gray-700 mt-3">
+                        <strong>Why is this important?</strong> When you load a smaller type into a 32-bit register (e.g., using `lb` or `lh`), the processor needs to know how to fill the remaining bits. The `lbu` and `lhu` instructions fill the upper bits with zeros (zero-extension), which is correct for unsigned numbers. The `lb` and `lh` instructions perform "sign extension," copying the sign bit to the upper bits to preserve the value of a negative number. Choosing the wrong instruction can lead to major bugs!
+                    </p>
+                </div>
             </div>
             
             <div class="bg-blue-50 border border-blue-200 rounded-lg p-6">
@@ -443,6 +483,7 @@ main:
             </div>
         </section>
 
+        <!-- Addressing Panel -->
         <section id="addressing-panel" class="tab-panel hidden" role="tabpanel" aria-labelledby="addressing">
             <h2 class="text-3xl font-bold mb-6">🔍 Addressing Modes Deep Dive</h2>
             <p class="text-lg text-gray-700 mb-6">How does the processor find the exact byte it needs in a vast sea of memory? Through addressing modes. The most common mode in MIPS, base plus offset addressing (`offset($register)`), is the key to working with arrays and other data structures. This section will solidify your ability to calculate the effective memory addresses used by load and store instructions.</p>
@@ -530,6 +571,7 @@ main:
             </div>
         </section>
 
+        <!-- Arrays Panel -->
         <section id="arrays-panel" class="tab-panel hidden" role="tabpanel" aria-labelledby="arrays">
             <h2 class="text-3xl font-bold mb-6">📋 Array Algorithms Workshop</h2>
             <p class="text-lg text-gray-700 mb-6">Arrays are one of the most common data structures. In this section, we'll combine our knowledge of memory, load/store instructions, and addressing to implement common array algorithms. Translating high-level loops and index-based access (e.g., `array[i]`) into MIPS assembly is a critical skill for any assembly language programmer.</p>
@@ -680,6 +722,7 @@ above_avg_count: .word 0
             </div>
         </section>
 
+        <!-- Advanced Panel -->
         <section id="advanced-panel" class="tab-panel hidden" role="tabpanel" aria-labelledby="advanced">
             <h2 class="text-3xl font-bold mb-6">🚀 Advanced Topics & Optimization</h2>
             <p class="text-lg text-gray-700 mb-6">Now that you've mastered the fundamentals, it's time to explore more complex applications and performance considerations. This section covers multi-dimensional arrays, C-style string manipulation (which are just arrays of characters), and the performance implications of memory access patterns. Understanding these topics is key to writing sophisticated and efficient MIPS programs.</p>
@@ -818,6 +861,110 @@ lw $t1, $t0(array)  # BUG: Missing scaling</div>
             </div>
         </section>
 
+        <!-- Recursion Panel -->
+        <section id="recursion-panel" class="tab-panel hidden" role="tabpanel" aria-labelledby="recursion">
+            <h2 class="text-3xl font-bold mb-6">🔄 Recursion in MIPS</h2>
+            <p class="text-lg text-gray-700 mb-6">
+                Recursion is a powerful programming technique where a function calls itself to solve a problem. In MIPS, this requires careful management of the stack. Because a recursive call is just like any other function call, we must follow the standard procedure call convention: save the return address (`$ra`) and any caller-saved registers (`$s0-$s7`) that we modify onto the stack before making the recursive call (`jal`). After the call returns, we must restore those values from the stack.
+            </p>
+
+            <div class="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-8">
+                <h3 class="text-xl font-semibold mb-4">🧩 Interactive Factorial Example</h3>
+                <p class="mb-4">Complete the MIPS code for a recursive factorial function. Remember: factorial(n) = n * factorial(n-1), and the base case is factorial(0) = 1.</p>
+                <div class="code-block mb-4"># Input: $a0 = n
+# Output: $v0 = n!
+factorial:
+    # --- Stack Frame Setup ---
+    addi $sp, $sp, -8       # Make space for 2 items
+    ___________________     # Save return address
+    sw $a0, 4($sp)          # Save current n
+    
+    # --- Base Case ---
+    slti $t0, $a0, 1        # if (n < 1), then t0 = 1
+    beq $t0, $zero, recursive_step
+    
+    # if we are in the base case (n=0 or n=1):
+    li $v0, 1               # Return 1
+    addi $sp, $sp, 8        # Deallocate stack frame
+    jr $ra                  # Return to caller
+    
+recursive_step:
+    # --- Recursive Call ---
+    addi $a0, $a0, -1       # n = n - 1
+    ___________________     # Call factorial(n-1)
+    
+    # --- Post-Recursion ---
+    lw $a0, 4($sp)          # Restore original n
+    ___________________     # Restore return address
+    addi $sp, $sp, 8        # Deallocate stack frame
+    
+    mul $v0, $a0, $v0       # result = n * factorial(n-1)
+    
+    jr $ra                  # Return final result</div>
+                
+                <div class="space-y-4 mt-4">
+                    <div>
+                        <label class="block text-sm font-medium mb-2">1. What instruction saves the return address?</label>
+                        <input type="text" id="fact_q1" class="interactive-input w-full max-w-md" placeholder="instruction..." data-answer="sw $ra, 0($sp)">
+                    </div>
+                     <div>
+                        <label class="block text-sm font-medium mb-2">2. What instruction makes the recursive call?</label>
+                        <input type="text" id="fact_q2" class="interactive-input w-full max-w-md" placeholder="instruction..." data-answer="jal factorial">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-2">3. What instruction restores the return address?</label>
+                        <input type="text" id="fact_q3" class="interactive-input w-full max-w-md" placeholder="instruction..." data-answer="lw $ra, 0($sp)">
+                    </div>
+                </div>
+                <button class="mt-4 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition-colors" 
+                        onclick="checkFactorialCode()">
+                    Check Factorial Code
+                </button>
+                <div id="factorial-feedback" class="feedback mt-2 p-2 rounded hidden"></div>
+            </div>
+
+            <div class="bg-green-50 border border-green-200 rounded-lg p-6">
+                <h3 class="text-xl font-semibold mb-4">🏆 Challenge: Recursive Fibonacci</h3>
+                <p class="mb-4">The Fibonacci sequence is defined as F(n) = F(n-1) + F(n-2), with base cases F(0)=0 and F(1)=1. This requires two recursive calls! Think about how you would implement this in MIPS and answer the questions below.</p>
+                <div class="code-block mb-4"># High-level logic
+fib(n):
+  if (n <= 1) return n
+  
+  val1 = fib(n-1)
+  val2 = fib(n-2)
+  
+  return val1 + val2</div>
+
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium mb-2">After the first recursive call `jal fib` returns, the value of `$a0` has changed. What register must you save to the stack (besides `$ra`) so you can calculate `n-2` for the second call?</label>
+                        <select id="fib_q1" class="interactive-input w-full max-w-md" data-answer="$a0">
+                            <option value="">Select a register...</option>
+                            <option value="$v0">$v0 (Return value)</option>
+                            <option value="$a0">$a0 (Argument n)</option>
+                            <option value="$t0">$t0 (Temporary register)</option>
+                            <option value="$sp">$sp (Stack pointer)</option>
+                        </select>
+                    </div>
+                     <div>
+                        <label class="block text-sm font-medium mb-2">After the first call `fib(n-1)` returns, its result is in `$v0`. You need to save this result before making the second call to `fib(n-2)`. What is the best place to save it?</label>
+                        <select id="fib_q2" class="interactive-input w-full max-w-md" data-answer="stack">
+                            <option value="">Select a location...</option>
+                             <option value="stack">On the stack</option>
+                            <option value="register-s0">In a saved register ($s0)</option>
+                            <option value="register-t0">In a temporary register ($t0)</option>
+                        </select>
+                    </div>
+                </div>
+                 <button class="mt-4 bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition-colors" 
+                        onclick="checkFibonacciLogic()">
+                    Check Fibonacci Logic
+                </button>
+                <div id="fibonacci-feedback" class="feedback mt-2 p-2 rounded hidden"></div>
+            </div>
+        </section>
+
+        <!-- Assessment Summary -->
         <div class="bg-gradient-to-r from-blue-50 to-purple-50 border border-blue-200 rounded-lg p-6 mt-8">
             <h2 class="text-2xl font-bold mb-4">📈 Week 8 Assessment Preparation</h2>
             <div class="grid md:grid-cols-2 gap-6">
@@ -869,13 +1016,6 @@ lw $t1, $t0(array)  # BUG: Missing scaling</div>
                     </ul>
                 </div>
             </div>
-            
-            <div class="mt-6 text-center">
-                <button class="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-3 rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all" 
-                        onclick="window.print()">
-                    📄 Save Progress as PDF
-                </button>
-            </div>
         </div>
     </main>
 
@@ -916,7 +1056,7 @@ lw $t1, $t0(array)  # BUG: Missing scaling</div>
                     const feedbackElement = input.parentElement.querySelector('.feedback');
                     
                     if (correctAnswer && feedbackElement) {
-                        if (userAnswer === correctAnswer.toLowerCase()) {
+                        if (userAnswer === correctAnswer.toLowerCase().trim()) {
                             feedbackElement.className = 'feedback mt-2 p-2 rounded feedback-correct';
                             feedbackElement.textContent = '✅ Correct! Great job!';
                             feedbackElement.classList.remove('hidden');
@@ -964,7 +1104,7 @@ lw $t1, $t0(array)  # BUG: Missing scaling</div>
             
             function updateProgressBar() {
                 const totalSections = tabPanels.length;
-                const progress = (completedSections.size / totalSections) * 100;
+                const progress = totalSections > 0 ? (completedSections.size / totalSections) * 100 : 0;
                 document.getElementById('progress-bar').style.width = `${progress}%`;
                 document.getElementById('progress-text').textContent = `${Math.round(progress)}% Complete`;
             }
@@ -976,8 +1116,8 @@ lw $t1, $t0(array)  # BUG: Missing scaling</div>
                 const feedback = document.getElementById('store-feedback');
                 
                 const hasCorrectPattern = 
-                    code.includes('li $t0, 1') && code.includes('sw $t0, 0($s0)') ||
-                    code.includes('li $t1, 4') && code.includes('sw $t1, 4($s0)') ||
+                    code.includes('li $t0, 1') && code.includes('sw $t0, 0($s0)') &&
+                    code.includes('li $t1, 4') && code.includes('sw $t1, 4($s0)') &&
                     code.includes('25') && code.includes('16($s0)');
                 
                 if (hasCorrectPattern) {
@@ -997,7 +1137,7 @@ lw $t1, $t0(array)  # BUG: Missing scaling</div>
                 let allCorrect = true;
                 
                 inputs.forEach(input => {
-                    const userAnswer = input.value.toLowerCase();
+                    const userAnswer = input.value.toLowerCase().trim();
                     const correctAnswer = input.getAttribute('data-answer');
                     if (userAnswer !== correctAnswer) {
                         allCorrect = false;
@@ -1020,12 +1160,8 @@ lw $t1, $t0(array)  # BUG: Missing scaling</div>
                 const feedback = document.getElementById('matrix-feedback');
                 let allCorrect = true;
                 
-                // Check matrix[1][2] = base + (1*4 + 2)*4 = 0x10010000 + 24 = 0x10010018
-                // Check matrix[0][3] = base + (0*4 + 3)*4 = 0x10010000 + 12 = 0x1001000C  
-                // Check matrix[2][1] = base + (2*4 + 1)*4 = 0x10010000 + 36 = 0x10010024
-                
                 inputs.forEach(input => {
-                    const userAnswer = input.value.toLowerCase();
+                    const userAnswer = input.value.toLowerCase().trim();
                     const correctAnswer = input.getAttribute('data-answer');
                     if (userAnswer !== correctAnswer) {
                         allCorrect = false;
@@ -1043,9 +1179,58 @@ lw $t1, $t0(array)  # BUG: Missing scaling</div>
                 markSectionProgress();
             };
             
+             // Factorial code checker
+            window.checkFactorialCode = () => {
+                const q1 = document.getElementById('fact_q1').value.toLowerCase().trim().replace(/\s+/g, ' ');
+                const q2 = document.getElementById('fact_q2').value.toLowerCase().trim().replace(/\s+/g, ' ');
+                const q3 = document.getElementById('fact_q3').value.toLowerCase().trim().replace(/\s+/g, ' ');
+                const feedback = document.getElementById('factorial-feedback');
+
+                const ans1 = "sw $ra, 0($sp)";
+                const ans2 = "jal factorial";
+                const ans3 = "lw $ra, 0($sp)";
+                
+                if (q1 === ans1 && q2 === ans2 && q3 === ans3) {
+                    feedback.className = 'feedback mt-2 p-2 rounded feedback-correct';
+                    feedback.textContent = '✅ Perfect! You correctly identified all the key steps for MIPS recursion.';
+                    markSectionProgress();
+                } else {
+                    let errorMsg = "❌ Not quite. Check your answers:\n";
+                    if (q1 !== ans1) errorMsg += "\n- Review how to save the return address to the stack.";
+                    if (q2 !== ans2) errorMsg += "\n- Remember which instruction performs a function call.";
+                    if (q3 !== ans3) errorMsg += "\n- Don't forget to restore the return address before jumping back.";
+                    feedback.className = 'feedback mt-2 p-2 rounded feedback-incorrect';
+                    feedback.textContent = errorMsg;
+                }
+                feedback.classList.remove('hidden');
+            };
+
+            // Fibonacci logic checker
+            window.checkFibonacciLogic = () => {
+                const q1 = document.getElementById('fib_q1').value;
+                const q2 = document.getElementById('fib_q2').value;
+                const feedback = document.getElementById('fibonacci-feedback');
+
+                const ans1 = "$a0";
+                const ans2 = "stack";
+
+                if (q1 === ans1 && q2 === ans2) {
+                    feedback.className = 'feedback mt-2 p-2 rounded feedback-correct';
+                    feedback.textContent = '✅ Exactly right! You must save the original `n` ($a0) to calculate `n-2` later, and you must save the first result on the stack because the second recursive call will overwrite `$v0`.';
+                    markSectionProgress();
+                } else {
+                    let errorMsg = "❌ Let's rethink the logic:\n";
+                     if (q1 !== ans1) errorMsg += "\n- The argument register `$a0` is clobbered by the first recursive call, so the original value of `n` must be saved to be used for the second call.";
+                     if (q2 !== ans2) errorMsg += "\n- Saving the first result in a temporary register (`$t0`) is risky because the nested function call might use it. Saving to the stack is the safest and standard approach.";
+                    feedback.className = 'feedback mt-2 p-2 rounded feedback-incorrect';
+                    feedback.textContent = errorMsg;
+                }
+                feedback.classList.remove('hidden');
+            };
+            
             // Keyboard navigation
             document.addEventListener('keydown', (e) => {
-                if (e.ctrlKey && e.key >= '1' && e.key <= '6') {
+                if (e.ctrlKey && e.key >= '1' && e.key <= '7') {
                     e.preventDefault();
                     const tabIndex = parseInt(e.key) - 1;
                     if (tabButtons[tabIndex]) {
@@ -1057,3 +1242,4 @@ lw $t1, $t0(array)  # BUG: Missing scaling</div>
     </script>
 </body>
 </html>
+
