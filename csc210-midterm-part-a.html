@@ -9,7 +9,7 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
 
     <style>
@@ -18,28 +18,30 @@
             background-color: #FDFBF8;
             font-family: 'Inter', sans-serif;
             color: #383838;
-            font-size: 16px; /* Explicit base font size */
+            font-size: 16px;
         }
 
-        /* Using Tailwind's @apply for custom classes based on the spec */
+        /* Using Tailwind's @apply for a clear visual hierarchy */
         @layer base {
             h1 {
-                @apply text-4xl md:text-5xl font-bold;
+                /* Largest, boldest, darkest */
+                @apply text-4xl md:text-5xl font-extrabold text-[#1C1C1C];
             }
             h2 {
-                /* Increased size and spacing */
-                @apply text-3xl font-bold mt-12 mb-6 pb-3 border-b-2 border-[#EADDD7];
+                /* Large, bold, dark, with a prominent border */
+                @apply text-3xl font-bold mt-12 mb-6 pb-3 text-[#1C1C1C] border-b-2 border-[#EADDD7];
             }
             h3 {
-                 /* Increased size and spacing */
-                @apply text-2xl font-semibold mt-8 mb-4;
+                /* Medium, semi-bold, slightly lighter color */
+                @apply text-2xl font-semibold mt-8 mb-4 text-gray-800;
             }
             h4 {
-                 /* Increased size and spacing */
-                @apply text-xl font-semibold mt-6 mb-3;
+                /* Smallest heading, semi-bold, distinct from paragraph */
+                @apply text-lg font-semibold mt-6 mb-2 text-gray-700;
             }
             p {
-                @apply mb-4 leading-relaxed; /* Added line-height for readability */
+                /* Base text style for contrast */
+                @apply mb-4 leading-relaxed font-normal;
             }
             code, .code-font {
                 font-family: 'Fira Code', monospace;
@@ -103,7 +105,7 @@
     <main class="max-w-[800px] mx-auto p-4 md:p-8">
         
         <header class="flex justify-between items-center mb-8 no-print">
-            <h1 class="text-gray-800">CSC210 Midterm Exam</h1>
+            <h1>CSC210 Midterm Exam</h1>
             <button onclick="window.print()" class="submit-btn">Save as PDF</button>
         </header>
 
