@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSC210 Midterm Part B: 8-bit ALU Overview</title>
+    
+    <!-- Chosen Palette: Scholarly Neutrals -->
+    <!-- Application Structure Plan: This assignment provides comprehensive instructions for building an 8-bit ALU in Logisim 2.7.1. It includes reference links to all circuit component pages, opcode specifications, integration requirements, testing guidelines, and submission instructions. Students use checkboxes to track their progress through required circuits and reference sections. -->
+    <!-- Visualization & Content Choices: Interactive checkboxes for progress tracking through circuit components, clearly formatted opcode reference table, linked circuit instruction pages, highlighted submission requirements, and organized sections for circuit building, integration, and testing phases. Color-coded info boxes distinguish between instructions, requirements, and helpful tips. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Inter and Fira Code -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #FDFBF8;
+            color: #383838;
+        }
+        
+        h1 {
+            font-size: 1.875rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+        
+        h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #EADDD7;
+        }
+        
+        h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+        }
+        
+        .worksheet-input {
+            font-family: 'Fira Code', monospace;
+            border: 1px solid #D1C7BF;
+            background-color: #FFFFFF;
+            padding: 0.5rem;
+            border-radius: 0.375rem;
+            width: 100%;
+            margin-top: 0.5rem;
+        }
+        
+        .worksheet-input:focus {
+            outline: none;
+            border-color: #4A90E2;
+            box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.5);
+        }
+        
+        .submit-btn {
+            background-color: #4A90E2;
+            color: white;
+            font-weight: 600;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            border: none;
+            cursor: pointer;
+            margin-top: 1rem;
+        }
+        
+        .submit-btn:hover {
+            background-color: #357ABD;
+        }
+        
+        .check-btn {
+            background-color: #EADDD7;
+            font-weight: 600;
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+            border: none;
+            cursor: pointer;
+            margin-top: 0.5rem;
+        }
+        
+        .check-btn:hover {
+            background-color: #D1C7BF;
+        }
+        
+        .code-block {
+            background-color: #f4f4f4;
+            border: 1px solid #ddd;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            white-space: pre-wrap;
+            font-family: 'Fira Code', monospace;
+            margin-top: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        textarea.worksheet-input {
+            min-height: 100px;
+            resize: vertical;
+        }
+        
+        .circuit-card {
+            background-color: #FFFFFF;
+            border: 1px solid #EADDD7;
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            margin-top: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .checkbox-item {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 0.75rem;
+        }
+        
+        .checkbox-item input[type="checkbox"] {
+            width: 1.25rem;
+            height: 1.25rem;
+            margin-right: 0.75rem;
+            margin-top: 0.25rem;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+        
+        .info-box {
+            background-color: #EEF7FF;
+            border-left: 4px solid #4A90E2;
+            padding: 1rem;
+            margin-top: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 0.25rem;
+        }
+        
+        .warning-box {
+            background-color: #FFF3CD;
+            border-left: 4px solid #FFC107;
+            padding: 1rem;
+            margin-top: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 0.25rem;
+        }
+        
+        .success-box {
+            background-color: #D4EDDA;
+            border-left: 4px solid #28a745;
+            padding: 1rem;
+            margin-top: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 0.25rem;
+        }
+        
+        .opcode-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .opcode-table th,
+        .opcode-table td {
+            border: 1px solid #D1C7BF;
+            padding: 0.75rem;
+            text-align: left;
+        }
+        
+        .opcode-table th {
+            background-color: #EADDD7;
+            font-weight: 600;
+        }
+        
+        .opcode-table td:first-child {
+            font-family: 'Fira Code', monospace;
+            font-weight: 600;
+            text-align: center;
+        }
+        
+        a {
+            color: #4A90E2;
+            text-decoration: underline;
+        }
+        
+        a:hover {
+            color: #357ABD;
+        }
+        
+        @media (min-width: 768px) {
+            h1 {
+                font-size: 2.25rem;
+            }
+        }
+        
+        @media print {
+            body {
+                background-color: white;
+            }
+            .submit-btn, .check-btn, .no-print {
+                display: none;
+            }
+            .circuit-card {
+                page-break-inside: avoid;
+            }
+        }
+    </style>
+</head>
+<body class="antialiased">
+    <a href="#main-content" class="sr-only focus:not-sr-only">Skip to main content</a>
+    
+    <main id="main-content" class="max-w-4xl mx-auto p-4 md:p-8">
+        <header class="mb-8">
+            <h1>CSC210 - Computer Organization and Architecture</h1>
+            <h2 style="margin-top: 0; border-bottom: none;">Midterm Exam - Part B: Building an 8-bit ALU</h2>
+            <div class="info-box">
+                <p><strong>Objective:</strong> Build a complete 8-bit Arithmetic Logic Unit (ALU) in Logisim 2.7.1 that integrates all the circuit components from the course. Your ALU will perform seven operations controlled by a 3-bit opcode.</p>
+                <p style="margin-top: 0.5rem;"><strong>Submission:</strong> Upload your completed <code>.circ</code> file to Canvas.</p>
+            </div>
+        </header>
+        
+        <section>
+            <h2>Overview: What is an ALU?</h2>
+            <p>An Arithmetic Logic Unit (ALU) is the computational core of a CPU. It performs arithmetic operations (like addition) and logical operations (like AND, OR, NOT) on binary data. Your 8-bit ALU will:</p>
+            <ul style="list-style-type: disc; margin-left: 2rem; margin-top: 0.5rem;">
+                <li>Accept two 8-bit inputs (A and B)</li>
+                <li>Accept a 3-bit control signal (opcode) to select the operation</li>
+                <li>Produce an 8-bit output based on the selected operation</li>
+                <li>Integrate all the circuits you've built throughout this unit</li>
+            </ul>
+        </section>
+        
+        <section>
+            <h2>Step 1: Build Required Circuit Components</h2>
+            <p>Before assembling your ALU, you must build each of the individual circuit components. Follow the detailed instructions on each page below:</p>
+            
+            <div class="circuit-card">
+                <h3>Required Circuits</h3>
+                <p style="margin-bottom: 1rem;">Check off each circuit as you complete it. Click the links to view detailed instructions.</p>
+                
+                <div class="checkbox-item">
+                    <input type="checkbox" id="circuit-alu-summary" aria-label="Reviewed ALU Summary page">
+                    <label for="circuit-alu-summary">
+                        <strong>ALU Summary</strong> - Overall architecture and design guidelines<br>
+                        <a href="https://mendocino.instructure.com/courses/19705/pages/circuits-alu-summary" target="_blank">View Instructions</a>
+                    </label>
+                </div>
+                
+                <div class="checkbox-item">
+                    <input type="checkbox" id="circuit-adder" aria-label="Completed Adder circuit">
+                    <label for="circuit-adder">
+                        <strong>Adder Circuit</strong> - 8-bit adder with carry (Opcode: 000)<br>
+                        <a href="https://mendocino.instructure.com/courses/19705/pages/circuits-adder" target="_blank">View Instructions</a>
+                    </label>
+                </div>
+                
+                <div class="checkbox-item">
+                    <input type="checkbox" id="circuit-shift" aria-label="Completed Shift circuits">
+                    <label for="circuit-shift">
+                        <strong>Shift Left/Shift Right</strong> - Bit shifting operations (Opcodes: 001, 010)<br>
+                        <a href="https://mendocino.instructure.com/courses/19705/pages/circuits-shift-left-slash-shift-right" target="_blank">View Instructions</a>
+                    </label>
+                </div>
+                
+                <div class="checkbox-item">
+                    <input type="checkbox" id="circuit-logic" aria-label="Completed AND OR NOT circuits">
+                    <label for="circuit-logic">
+                        <strong>AND, OR, NOT Functions</strong> - Basic logical operations (Opcodes: 011, 100, 101)<br>
+                        <a href="https://mendocino.instructure.com/courses/19705/pages/circuits-and-or-not-functions" target="_blank">View Instructions</a>
+                    </label>
+                </div>
+                
+                <div class="checkbox-item">
+                    <input type="checkbox" id="circuit-xor" aria-label="Completed XOR Comparator circuit">
+                    <label for="circuit-xor">
+                        <strong>XOR Comparator</strong> - Equality testing (Opcode: 110)<br>
+                        <a href="https://mendocino.instructure.com/courses/19705/pages/circuits-xor-comparator" target="_blank">View Instructions</a>
+                    </label>
+                </div>
+                
+                <div class="checkbox-item">
+                    <input type="checkbox" id="circuit-zero" aria-label="Completed Zero Function circuit">
+                    <label for="circuit-zero">
+                        <strong>Zero Function</strong> - Zero detection (optional status flag)<br>
+                        <a href="https://mendocino.instructure.com/courses/19705/pages/circuits-zero-function" target="_blank">View Instructions</a>
+                    </label>
+                </div>
+            </div>
+            
+            <div class="warning-box">
+                <strong>Important:</strong> Each circuit should be built and tested individually before integration. Make sure each component works correctly with test inputs before proceeding to the next step.
+            </div>
+        </section>
+        
+        <section>
+            <h2>Step 2: ALU Opcode Specification</h2>
+            <p>Your ALU uses a 3-bit opcode to select which operation to perform. The opcode mapping is as follows:</p>
+            
+            <table class="opcode-table">
+                <thead>
+                    <tr>
+                        <th>Opcode</th>
+                        <th>Operation</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>000</td>
+                        <td>Adder</td>
+                        <td>Performs 8-bit addition: Output = A + B</td>
+                    </tr>
+                    <tr>
+                        <td>001</td>
+                        <td>Shift Right</td>
+                        <td>Shifts input A right by 1 bit</td>
+                    </tr>
+                    <tr>
+                        <td>010</td>
+                        <td>Shift Left</td>
+                        <td>Shifts input A left by 1 bit</td>
+                    </tr>
+                    <tr>
+                        <td>011</td>
+                        <td>NOT</td>
+                        <td>Bitwise NOT of input A: Output = ~A</td>
+                    </tr>
+                    <tr>
+                        <td>100</td>
+                        <td>AND</td>
+                        <td>Bitwise AND: Output = A AND B</td>
+                    </tr>
+                    <tr>
+                        <td>101</td>
+                        <td>OR</td>
+                        <td>Bitwise OR: Output = A OR B</td>
+                    </tr>
+                    <tr>
+                        <td>110</td>
+                        <td>XOR</td>
+                        <td>Bitwise XOR: Output = A XOR B</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <div class="info-box">
+                <strong>Note:</strong> Opcode 111 is unused. Your ALU design should handle this case appropriately (e.g., output all zeros or default to a specific operation).
+            </div>
+        </section>
+        
+        <section>
+            <h2>Step 3: Integrate Circuits into the ALU</h2>
+            
+            <div class="circuit-card">
+                <h3>Integration Architecture</h3>
+                <p>To build your complete ALU, you need to:</p>
+                
+                <ol style="list-style-type: decimal; margin-left: 2rem; margin-top: 1rem;">
+                    <li style="margin-bottom: 0.75rem;"><strong>Create Input Pins:</strong> Two 8-bit input pins (A and B) and one 3-bit input pin (Opcode)</li>
+                    <li style="margin-bottom: 0.75rem;"><strong>Connect All Circuit Components:</strong> Wire both inputs A and B to all circuits that need them</li>
+                    <li style="margin-bottom: 0.75rem;"><strong>Add a Multiplexer:</strong> Use an 8:1 multiplexer (8-bits wide) to select which circuit's output to send to the ALU output</li>
+                    <li style="margin-bottom: 0.75rem;"><strong>Connect the Multiplexer:</strong> Wire each circuit's output to the appropriate multiplexer input based on the opcode table above</li>
+                    <li style="margin-bottom: 0.75rem;"><strong>Connect Opcode to Selector:</strong> Wire the 3-bit opcode input to the multiplexer's selector input</li>
+                    <li style="margin-bottom: 0.75rem;"><strong>Create Output Pin:</strong> Create an 8-bit output pin connected to the multiplexer output</li>
+                </ol>
+                
+                <div class="checkbox-item" style="margin-top: 1rem;">
+                    <input type="checkbox" id="step-inputs" aria-label="Created input pins">
+                    <label for="step-inputs">Created 8-bit input pins A and B, and 3-bit Opcode input</label>
+                </div>
+                
+                <div class="checkbox-item">
+                    <input type="checkbox" id="step-circuits" aria-label="All circuits connected">
+                    <label for="step-circuits">All seven circuit components are wired to inputs</label>
+                </div>
+                
+                <div class="checkbox-item">
+                    <input type="checkbox" id="step-mux" aria-label="Multiplexer added">
+                    <label for="step-mux">8:1 multiplexer (8-bits wide) added and configured</label>
+                </div>
+                
+                <div class="checkbox-item">
+                    <input type="checkbox" id="step-connections" aria-label="Multiplexer connections complete">
+                    <label for="step-connections">All circuit outputs connected to correct multiplexer inputs</label>
+                </div>
+                
+                <div class="checkbox-item">
+                    <input type="checkbox" id="step-selector" aria-label="Opcode connected to selector">
+                    <label for="step-selector">Opcode input connected to multiplexer selector</label>
+                </div>
+                
+                <div class="checkbox-item">
+                    <input type="checkbox" id="step-output" aria-label="Output pin created">
+                    <label for="step-output">8-bit output pin created and connected</label>
+                </div>
+            </div>
+            
+            <div class="warning-box">
+                <strong>Tip:</strong> Use splitters in Logisim to separate multi-bit wires when needed. Keep your circuit organized with clear wire routing and labels for inputs and outputs.
+            </div>
+        </section>
+        
+        <section>
+            <h2>Step 4: Test Your ALU</h2>
+            <p>Thorough testing is essential to ensure your ALU works correctly. Test each operation systematically:</p>
+            
+            <div class="circuit-card">
+                <h3>Testing Checklist</h3>
+                
+                <div class="checkbox-item">
+                    <input type="checkbox" id="test-adder" aria-label="Tested Adder operation">
+                    <label for="test-adder">
+                        <strong>Test Adder (000):</strong> Try various combinations like 00000001 + 00000001 = 00000010, and test overflow cases
+                    </label>
+                </div>
+                
+                <div class="checkbox-item">
+                    <input type="checkbox" id="test-shift-right" aria-label="Tested Shift Right operation">
+                    <label for="test-shift-right">
+                        <strong>Test Shift Right (001):</strong> Verify 10101010 shifts to 01010101
+                    </label>
+                </div>
+                
+                <div class="checkbox-item">
+                    <input type="checkbox" id="test-shift-left" aria-label="Tested Shift Left operation">
+                    <label for="test-shift-left">
+                        <strong>Test Shift Left (010):</strong> Verify 10101010 shifts to 01010100
+                    </label>
+                </div>
+                
+                <div class="checkbox-item">
+                    <input type="checkbox" id="test-not" aria-label="Tested NOT operation">
+                    <label for="test-not">
+                        <strong>Test NOT (011):</strong> Verify 11110000 becomes 00001111
+                    </label>
+                </div>
+                
+                <div class="checkbox-item">
+                    <input type="checkbox" id="test-and" aria-label="Tested AND operation">
+                    <label for="test-and">
+                        <strong>Test AND (100):</strong> Verify 11110000 AND 10101010 = 10100000
+                    </label>
+                </div>
+                
+                <div class="checkbox-item">
+                    <input type="checkbox" id="test-or" aria-label="Tested OR operation">
+                    <label for="test-or">
+                        <strong>Test OR (101):</strong> Verify 11110000 OR 10101010 = 11111010
+                    </label>
+                </div>
+                
+                <div class="checkbox-item">
+                    <input type="checkbox" id="test-xor" aria-label="Tested XOR operation">
+                    <label for="test-xor">
+                        <strong>Test XOR (110):</strong> Verify 11110000 XOR 10101010 = 01011010
+                    </label>
+                </div>
+                
+                <div class="checkbox-item">
+                    <input type="checkbox" id="test-edge" aria-label="Tested edge cases">
+                    <label for="test-edge">
+                        <strong>Test Edge Cases:</strong> All zeros (00000000), all ones (11111111), and alternating patterns
+                    </label>
+                </div>
+            </div>
+            
+            <div class="success-box">
+                <strong>Verification:</strong> For each test, manually calculate the expected output and verify it matches your ALU's actual output in Logisim. Document any discrepancies and fix them before submission.
+            </div>
+        </section>
+        
+        <section>
+            <h2>Step 5: Final Checks and Submission</h2>
+            
+            <div class="circuit-card">
+                <h3>Pre-Submission Checklist</h3>
+                
+                <div class="checkbox-item">
+                    <input type="checkbox" id="final-labels" aria-label="All inputs and outputs labeled">
+                    <label for="final-labels">All input and output pins are clearly labeled</label>
+                </div>
+                
+                <div class="checkbox-item">
+                    <input type="checkbox" id="final-organized" aria-label="Circuit is organized">
+                    <label for="final-organized">Circuit is neatly organized with minimal wire crossings</label>
+                </div>
+                
+                <div class="checkbox-item">
+                    <input type="checkbox" id="final-tested" aria-label="All operations tested">
+                    <label for="final-tested">All seven operations have been tested and verified</label>
+                </div>
+                
+                <div class="checkbox-item">
+                    <input type="checkbox" id="final-opcode" aria-label="Opcode mapping correct">
+                    <label for="final-opcode">Opcode mapping matches the specification table exactly</label>
+                </div>
+                
+                <div class="checkbox-item">
+                    <input type="checkbox" id="final-filename" aria-label="File named correctly">
+                    <label for="final-filename">File is named appropriately (e.g., LastName_FirstName_ALU.circ)</label>
+                </div>
+            </div>
+            
+            <div class="info-box">
+                <h3 style="margin-top: 0;">Submission Instructions</h3>
+                <ol style="list-style-type: decimal; margin-left: 2rem; margin-top: 0.5rem;">
+                    <li>Save your completed ALU circuit in Logisim 2.7.1</li>
+                    <li>Name your file: <code>LastName_FirstName_ALU.circ</code></li>
+                    <li>Upload the <code>.circ</code> file to Canvas</li>
+                    <li>Do NOT submit a PDF or screenshot - only the <code>.circ</code> file will be accepted</li>
+                </ol>
+            </div>
+            
+            <div class="warning-box">
+                <strong>Grading Criteria:</strong>
+                <ul style="list-style-type: disc; margin-left: 2rem; margin-top: 0.5rem;">
+                    <li>All seven operations implemented correctly (70%)</li>
+                    <li>Correct opcode mapping (15%)</li>
+                    <li>Circuit organization and clarity (10%)</li>
+                    <li>Proper labeling of inputs and outputs (5%)</li>
+                </ul>
+            </div>
+        </section>
+        
+        <section>
+            <h2>Additional Resources</h2>
+            <div class="circuit-card">
+                <p><strong>Need Help?</strong></p>
+                <ul style="list-style-type: disc; margin-left: 2rem; margin-top: 0.5rem;">
+                    <li>Review the <a href="https://mendocino.instructure.com/courses/19705/pages/circuits-alu-summary" target="_blank">ALU Summary page</a> for architecture guidance</li>
+                    <li>Consult office hours if you encounter issues with circuit integration</li>
+                    <li>Test each component individually before assuming there's a problem with integration</li>
+                    <li>Use Logisim's "Poke" tool to manually set inputs and verify outputs</li>
+                </ul>
+            </div>
+        </section>
+        
+        <footer class="mt-8 pt-4 border-t border-gray-300 text-sm text-gray-600 no-print">
+            <p>CSC210 - Computer Organization and Architecture | Midterm Part B</p>
+            <p style="margin-top: 0.5rem;">This page can be saved as PDF for your reference using the button below.</p>
+            <button class="submit-btn" onclick="window.print()" aria-label="Save page as PDF">Save Page as PDF</button>
+        </footer>
+    </main>
+    
+    <script>
+        // Save checkbox states to localStorage
+        document.addEventListener('DOMContentLoaded', function() {
+            const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+            
+            // Load saved states
+            checkboxes.forEach(checkbox => {
+                const savedState = localStorage.getItem(checkbox.id);
+                if (savedState !== null) {
+                    checkbox.checked = savedState === 'true';
+                }
+            });
+            
+            // Save state on change
+            checkboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', function() {
+                    localStorage.setItem(checkbox.id, checkbox.checked);
+                });
+            });
+        });
+    </script>
+</body>
+</html>
