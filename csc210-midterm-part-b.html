@@ -406,70 +406,296 @@
         
         <section>
             <h2>Step 4: Test Your ALU</h2>
-            <p>Thorough testing is essential to ensure your ALU works correctly. Test each operation systematically:</p>
+            <p>Thorough testing is essential to ensure your ALU works correctly. Use the test cases below to verify all operations and flags work properly.</p>
+            
+            <div class="info-box">
+                <strong>Flag Definitions:</strong>
+                <ul style="list-style-type: disc; margin-left: 2rem; margin-top: 0.5rem;">
+                    <li><strong>Is Even:</strong> Result's LSB (least significant bit) is 0</li>
+                    <li><strong>Is Larger:</strong> A &gt; B (comparison of inputs)</li>
+                    <li><strong>Cout:</strong> Carry out flag (1 if addition overflows, or bit shifted out for shift operations)</li>
+                    <li><strong>Zero:</strong> Result is 00000000</li>
+                </ul>
+            </div>
             
             <div class="circuit-card">
-                <h3>Testing Checklist</h3>
+                <h3>Test Case 1</h3>
+                <p><strong>Inputs:</strong> A = 00001111 (15 decimal), B = 00110011 (51 decimal)</p>
+                <p><strong>Is Larger Flag:</strong> 0 (A is not larger than B)</p>
                 
-                <div class="checkbox-item">
-                    <input type="checkbox" id="test-adder" aria-label="Tested Adder operation">
-                    <label for="test-adder">
-                        <strong>Test Adder (000):</strong> Try various combinations like 00000001 + 00000001 = 00000010, and test overflow cases
-                    </label>
+                <table class="opcode-table" style="margin-top: 1rem;">
+                    <thead>
+                        <tr>
+                            <th>Opcode</th>
+                            <th>Operation</th>
+                            <th>Result (Binary)</th>
+                            <th>Result (Decimal)</th>
+                            <th>Is Even</th>
+                            <th>Cout</th>
+                            <th>Zero</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>000</td>
+                            <td>Adder</td>
+                            <td>01000010</td>
+                            <td>66</td>
+                            <td>1</td>
+                            <td>0</td>
+                            <td>0</td>
+                        </tr>
+                        <tr>
+                            <td>001</td>
+                            <td>Shift Right</td>
+                            <td>00000111</td>
+                            <td>7</td>
+                            <td>0</td>
+                            <td>0</td>
+                            <td>0</td>
+                        </tr>
+                        <tr>
+                            <td>010</td>
+                            <td>Shift Left</td>
+                            <td>00011110</td>
+                            <td>30</td>
+                            <td>1</td>
+                            <td>0</td>
+                            <td>0</td>
+                        </tr>
+                        <tr>
+                            <td>011</td>
+                            <td>NOT</td>
+                            <td>11110000</td>
+                            <td>240</td>
+                            <td>1</td>
+                            <td>0</td>
+                            <td>0</td>
+                        </tr>
+                        <tr>
+                            <td>100</td>
+                            <td>AND</td>
+                            <td>00000011</td>
+                            <td>3</td>
+                            <td>0</td>
+                            <td>0</td>
+                            <td>0</td>
+                        </tr>
+                        <tr>
+                            <td>101</td>
+                            <td>OR</td>
+                            <td>00111111</td>
+                            <td>63</td>
+                            <td>0</td>
+                            <td>0</td>
+                            <td>0</td>
+                        </tr>
+                        <tr>
+                            <td>110</td>
+                            <td>XOR</td>
+                            <td>00111100</td>
+                            <td>60</td>
+                            <td>1</td>
+                            <td>0</td>
+                            <td>0</td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <div class="checkbox-item" style="margin-top: 1rem;">
+                    <input type="checkbox" id="test-case1" aria-label="Completed Test Case 1">
+                    <label for="test-case1">Test Case 1 verified - all operations match expected results</label>
                 </div>
+            </div>
+            
+            <div class="circuit-card">
+                <h3>Test Case 2</h3>
+                <p><strong>Inputs:</strong> A = 11111111 (255 decimal), B = 00000001 (1 decimal)</p>
+                <p><strong>Is Larger Flag:</strong> 1 (A is larger than B)</p>
                 
-                <div class="checkbox-item">
-                    <input type="checkbox" id="test-shift-right" aria-label="Tested Shift Right operation">
-                    <label for="test-shift-right">
-                        <strong>Test Shift Right (001):</strong> Verify 10101010 shifts to 01010101
-                    </label>
+                <table class="opcode-table" style="margin-top: 1rem;">
+                    <thead>
+                        <tr>
+                            <th>Opcode</th>
+                            <th>Operation</th>
+                            <th>Result (Binary)</th>
+                            <th>Result (Decimal)</th>
+                            <th>Is Even</th>
+                            <th>Cout</th>
+                            <th>Zero</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>000</td>
+                            <td>Adder</td>
+                            <td>00000000</td>
+                            <td>0</td>
+                            <td>1</td>
+                            <td>1</td>
+                            <td>1</td>
+                        </tr>
+                        <tr>
+                            <td>001</td>
+                            <td>Shift Right</td>
+                            <td>01111111</td>
+                            <td>127</td>
+                            <td>0</td>
+                            <td>1</td>
+                            <td>0</td>
+                        </tr>
+                        <tr>
+                            <td>010</td>
+                            <td>Shift Left</td>
+                            <td>11111110</td>
+                            <td>254</td>
+                            <td>1</td>
+                            <td>1</td>
+                            <td>0</td>
+                        </tr>
+                        <tr>
+                            <td>011</td>
+                            <td>NOT</td>
+                            <td>00000000</td>
+                            <td>0</td>
+                            <td>1</td>
+                            <td>0</td>
+                            <td>1</td>
+                        </tr>
+                        <tr>
+                            <td>100</td>
+                            <td>AND</td>
+                            <td>00000001</td>
+                            <td>1</td>
+                            <td>0</td>
+                            <td>0</td>
+                            <td>0</td>
+                        </tr>
+                        <tr>
+                            <td>101</td>
+                            <td>OR</td>
+                            <td>11111111</td>
+                            <td>255</td>
+                            <td>0</td>
+                            <td>0</td>
+                            <td>0</td>
+                        </tr>
+                        <tr>
+                            <td>110</td>
+                            <td>XOR</td>
+                            <td>11111110</td>
+                            <td>254</td>
+                            <td>1</td>
+                            <td>0</td>
+                            <td>0</td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <div class="checkbox-item" style="margin-top: 1rem;">
+                    <input type="checkbox" id="test-case2" aria-label="Completed Test Case 2">
+                    <label for="test-case2">Test Case 2 verified - includes overflow and zero conditions</label>
                 </div>
+            </div>
+            
+            <div class="circuit-card">
+                <h3>Test Case 3</h3>
+                <p><strong>Inputs:</strong> A = 10101010 (170 decimal), B = 01010101 (85 decimal)</p>
+                <p><strong>Is Larger Flag:</strong> 1 (A is larger than B)</p>
                 
-                <div class="checkbox-item">
-                    <input type="checkbox" id="test-shift-left" aria-label="Tested Shift Left operation">
-                    <label for="test-shift-left">
-                        <strong>Test Shift Left (010):</strong> Verify 10101010 shifts to 01010100
-                    </label>
-                </div>
+                <table class="opcode-table" style="margin-top: 1rem;">
+                    <thead>
+                        <tr>
+                            <th>Opcode</th>
+                            <th>Operation</th>
+                            <th>Result (Binary)</th>
+                            <th>Result (Decimal)</th>
+                            <th>Is Even</th>
+                            <th>Cout</th>
+                            <th>Zero</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>000</td>
+                            <td>Adder</td>
+                            <td>11111111</td>
+                            <td>255</td>
+                            <td>0</td>
+                            <td>0</td>
+                            <td>0</td>
+                        </tr>
+                        <tr>
+                            <td>001</td>
+                            <td>Shift Right</td>
+                            <td>01010101</td>
+                            <td>85</td>
+                            <td>0</td>
+                            <td>0</td>
+                            <td>0</td>
+                        </tr>
+                        <tr>
+                            <td>010</td>
+                            <td>Shift Left</td>
+                            <td>01010100</td>
+                            <td>84</td>
+                            <td>1</td>
+                            <td>1</td>
+                            <td>0</td>
+                        </tr>
+                        <tr>
+                            <td>011</td>
+                            <td>NOT</td>
+                            <td>01010101</td>
+                            <td>85</td>
+                            <td>0</td>
+                            <td>0</td>
+                            <td>0</td>
+                        </tr>
+                        <tr>
+                            <td>100</td>
+                            <td>AND</td>
+                            <td>00000000</td>
+                            <td>0</td>
+                            <td>1</td>
+                            <td>0</td>
+                            <td>1</td>
+                        </tr>
+                        <tr>
+                            <td>101</td>
+                            <td>OR</td>
+                            <td>11111111</td>
+                            <td>255</td>
+                            <td>0</td>
+                            <td>0</td>
+                            <td>0</td>
+                        </tr>
+                        <tr>
+                            <td>110</td>
+                            <td>XOR</td>
+                            <td>11111111</td>
+                            <td>255</td>
+                            <td>0</td>
+                            <td>0</td>
+                            <td>0</td>
+                        </tr>
+                    </tbody>
+                </table>
                 
-                <div class="checkbox-item">
-                    <input type="checkbox" id="test-not" aria-label="Tested NOT operation">
-                    <label for="test-not">
-                        <strong>Test NOT (011):</strong> Verify 11110000 becomes 00001111
-                    </label>
-                </div>
-                
-                <div class="checkbox-item">
-                    <input type="checkbox" id="test-and" aria-label="Tested AND operation">
-                    <label for="test-and">
-                        <strong>Test AND (100):</strong> Verify 11110000 AND 10101010 = 10100000
-                    </label>
-                </div>
-                
-                <div class="checkbox-item">
-                    <input type="checkbox" id="test-or" aria-label="Tested OR operation">
-                    <label for="test-or">
-                        <strong>Test OR (101):</strong> Verify 11110000 OR 10101010 = 11111010
-                    </label>
-                </div>
-                
-                <div class="checkbox-item">
-                    <input type="checkbox" id="test-xor" aria-label="Tested XOR operation">
-                    <label for="test-xor">
-                        <strong>Test XOR (110):</strong> Verify 11110000 XOR 10101010 = 01011010
-                    </label>
-                </div>
-                
-                <div class="checkbox-item">
-                    <input type="checkbox" id="test-edge" aria-label="Tested edge cases">
-                    <label for="test-edge">
-                        <strong>Test Edge Cases:</strong> All zeros (00000000), all ones (11111111), and alternating patterns
-                    </label>
+                <div class="checkbox-item" style="margin-top: 1rem;">
+                    <input type="checkbox" id="test-case3" aria-label="Completed Test Case 3">
+                    <label for="test-case3">Test Case 3 verified - alternating bit patterns tested</label>
                 </div>
             </div>
             
             <div class="success-box">
-                <strong>Verification:</strong> For each test, manually calculate the expected output and verify it matches your ALU's actual output in Logisim. Document any discrepancies and fix them before submission.
+                <strong>Verification Instructions:</strong>
+                <ol style="list-style-type: decimal; margin-left: 2rem; margin-top: 0.5rem;">
+                    <li>For each test case, set the A and B inputs in Logisim to the specified values</li>
+                    <li>Cycle through each opcode (000 through 110) and verify the output matches the table</li>
+                    <li>Check all flag values if your ALU implementation includes them</li>
+                    <li>Document any discrepancies and debug before proceeding</li>
+                </ol>
             </div>
         </section>
         
