@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Week 9: CPU Architecture Overview</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #FDFBF8;
+            color: #383838;
+        }
+        h1, h2, h3 {
+            font-weight: 700;
+        }
+        code, pre {
+            font-family: 'Fira Code', monospace;
+        }
+        .prose {
+            max-width: 65ch;
+        }
+        /* Accessibility: Visible-on-focus "Skip to Content" link */
+        .skip-link {
+            position: absolute;
+            top: -40px;
+            left: 0;
+            background: #EADDD7;
+            color: #383838;
+            padding: 8px;
+            z-index: 100;
+            transition: top 0.3s;
+        }
+        .skip-link:focus {
+            top: 0;
+        }
+        /* Custom styles for interactive components */
+        .cpu-diagram-bg {
+            background-color: #f7f5f2;
+            border: 1px dashed #dcd8d3;
+            border-radius: 8px;
+        }
+        .draggable-label {
+            cursor: grab;
+            user-select: none;
+            touch-action: none;
+            border: 1px solid #dcd8d3;
+            background-color: white;
+            padding: 4px 8px;
+            border-radius: 6px;
+        }
+        .drop-zone {
+            border: 2px dashed #EADDD7;
+            background-color: rgba(234, 221, 215, 0.2);
+            transition: background-color 0.2s;
+        }
+        .drop-zone.over {
+            background-color: #EADDD7;
+        }
+        .drop-zone.correct {
+            border-style: solid;
+            border-color: #5cb85c;
+            background-color: #dff0d8;
+        }
+        .simulation-btn {
+            background-color: #F0EBE8;
+            border: 1px solid #EADDD7;
+            transition: all 0.2s;
+        }
+        .simulation-btn:hover {
+            background-color: #EADDD7;
+        }
+        .simulation-btn.selected {
+            background-color: #EADDD7;
+            border-color: #c9b7ae;
+            font-weight: 600;
+        }
+        .simulation-btn:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(234, 221, 215, 0.7);
+        }
+        .feedback-correct {
+            color: #2b642b;
+            background-color: #dff0d8;
+            border-left: 4px solid #5cb85c;
+        }
+        .feedback-incorrect {
+            color: #a94442;
+            background-color: #f2dede;
+            border-left: 4px solid #d9534f;
+        }
+    </style>
+</head>
+<body class="antialiased">
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+
+    <header class="text-center p-4 md:p-8 border-b border-[#F0EBE8]">
+        <h1 class="text-4xl font-bold">CPU Architecture Overview</h1>
+        <p class="text-lg mt-2">Week 9: The Von Neumann Model, Datapath, and Fetch-Decode-Execute Cycle</p>
+    </header>
+
+    <main id="main-content" class="container mx-auto p-4 md:p-8">
+        
+        <section class="mb-12 prose">
+            <h2 class="text-2xl">Start Here: Your Guide for the Week</h2>
+            <p>Welcome to Week 9! This guide will walk you through the fundamental concepts of how a CPU works. We'll explore the blueprint for modern computers, identify the core components, and trace the lifecycle of a single instruction.</p>
+            <p>By the end of this module, you will be able to:</p>
+            <ul>
+                <li>Explain the Von Neumann model and the relationship between the CPU, memory, and bus.</li>
+                <li>Label and describe the roles of key CPU components like the PC, IR, MAR, ALU, and control unit.</li>
+                <li>Trace the fetch-decode-execute cycle for a simple instruction.</li>
+                <li>Relate these concepts to how high-level instructions like <code>lw</code> and <code>sw</code> in MIPS operate.</li>
+            </ul>
+        </section>
+
+        <hr class="my-8 border-[#F0EBE8]">
+
+        <section class="mb-12">
+            <h2 class="text-3xl font-bold text-center mb-8">Core Concepts</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="prose">
+                    <h3>The Von Neumann Model</h3>
+                    <p>A computer based on the Von Neumann model executes a "stored program" by repeatedly fetching an instruction from memory, decoding it, and then executing it. A key feature is that both program instructions and the data they operate on are stored in the same main memory. The CPU, memory, and I/O devices are connected via a shared data path, or bus.</p>
+                </div>
+                <div class="prose">
+                    <h3>Processor Components</h3>
+                    <p>The core datapath includes several key parts:</p>
+                    <ul>
+                        <li><strong>Program Counter (PC):</strong> Holds the memory address of the *next* instruction to be fetched.</li>
+                        <li><strong>Instruction Register (IR):</strong> Holds the instruction that is *currently* being decoded and executed.</li>
+                        <li><strong>Memory Address Register (MAR):</strong> Holds the memory address for the current memory access (read or write).</li>
+                        <li><strong>Register File:</strong> A small, fast set of storage locations for temporary data.</li>
+                        <li><strong>ALU (Arithmetic Logic Unit):</strong> Performs calculations like addition, subtraction, and logical operations.</li>
+                        <li><strong>Control Unit:</strong> Generates control signals that orchestrate the entire process.</li>
+                    </ul>
+                </div>
+                <div class="prose">
+                    <h3>The Single-Bus Datapath</h3>
+                    <p>To move data between components, we use a bus. A single-bus datapath is simple but requires careful sequencing to avoid conflicts. The fundamental rule is: **only one component can drive (write to) the bus at a time.** The Control Unit uses signals to enable or disable outputs, ensuring this rule is followed.</p>
+                </div>
+                <div class="prose">
+                    <h3>The Fetch-Decode-Execute Cycle</h3>
+                    <p>This is the fundamental operation cycle of a computer. For every instruction, the CPU:</p>
+                    <ol>
+                        <li><strong>Fetch:</strong> The control unit orchestrates getting the next instruction from memory. This involves the PC providing the address to the MAR, memory putting the instruction on the bus, and the IR loading it. The PC is then incremented.</li>
+                        <li><strong>Decode:</strong> The control unit interprets the opcode (the part of the instruction that specifies the operation) in the IR.</li>
+                        <li><strong>Execute:</strong> The control unit asserts the correct signals to carry out the instruction, which might involve the ALU, register file, and memory.</li>
+                    </ol>
+                </div>
+            </div>
+        </section>
+        
+        <hr class="my-8 border-[#F0EBE8]">
+        
+        <section class="mb-12">
+            <h2 class="text-3xl font-bold text-center mb-8">Interactive Activities</h2>
+
+            <div class="mb-12">
+                <h3 class="text-2xl font-bold mb-4">Activity 1: Label the CPU Diagram</h3>
+                <p class="prose mb-4">Drag the labels from the list onto the correct empty boxes in the CPU datapath diagram below.</p>
+                <div class="flex flex-col lg:flex-row gap-8 items-start">
+                    <div id="labels-container" class="flex flex-wrap gap-2 p-4 bg-white border rounded-lg lg:w-1/4">
+                        </div>
+                    <div id="diagram-container" class="relative cpu-diagram-bg p-8 w-full lg:w-3/4">
+                        <svg viewBox="0 0 400 300" class="w-full h-auto">
+                            <path d="M50 150 L100 150" stroke="#383838" stroke-width="2" fill="none" />
+                            <path d="M125 70 L125 140" stroke="#383838" stroke-width="2" fill="none" />
+                            <path d="M150 150 L250 150" stroke="#383838" stroke-width="2" fill="none" />
+                            <path d="M275 70 L275 140" stroke="#383838" stroke-width="2" fill="none" />
+                            <path d="M300 150 L350 150" stroke="#383838" stroke-width="2" fill="none" />
+                            <path d="M200 150 L200 220" stroke="#383838" stroke-width="2" fill="none" />
+                            <text x="190" y="275" font-family="Inter" font-size="12" fill="#383838">Bus</text>
+                            
+                            <rect id="dz-pc" x="25" y="40" width="50" height="30" class="drop-zone-rect" />
+                            <rect id="dz-mar" x="100" y="40" width="50" height="30" class="drop-zone-rect" />
+                            <rect id="dz-ram" x="175" y="40" width="50" height="30" class="drop-zone-rect" />
+                            <rect id="dz-ir" x="250" y="40" width="50" height="30" class="drop-zone-rect" />
+                            <rect id="dz-cu" x="325" y="40" width="50" height="30" class="drop-zone-rect" />
+                            <rect id="dz-alu" x="175" y="220" width="50" height="30" class="drop-zone-rect" />
+                        </svg>
+                        <div id="drop-zone-pc" data-label="PC" class="drop-zone absolute w-[50px] h-[30px] top-[75px] left-[65px]"></div>
+                        <div id="drop-zone-mar" data-label="MAR" class="drop-zone absolute w-[50px] h-[30px] top-[75px] left-[140px]"></div>
+                        <div id="drop-zone-ram" data-label="RAM" class="drop-zone absolute w-[50px] h-[30px] top-[75px] left-[215px]"></div>
+                        <div id="drop-zone-ir" data-label="IR" class="drop-zone absolute w-[50px] h-[30px] top-[75px] left-[290px]"></div>
+                        <div id="drop-zone-cu" data-label="Control Unit" class="drop-zone absolute w-[50px] h-[30px] top-[75px] left-[365px]"></div>
+                        <div id="drop-zone-alu" data-label="ALU" class="drop-zone absolute w-[50px] h-[30px] top-[255px] left-[215px]"></div>
+                        <div id="diagram-feedback" class="text-center mt-4 font-semibold"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <h3 class="text-2xl font-bold mb-4">Activity 2: Be the Control Unit</h3>
+                <p class="prose mb-4">Step through the <strong>fetch</strong> cycle for an instruction. At each step, select the correct bus source, target register(s), and memory operation to successfully load the instruction from memory into the IR. Assume <strong>PC = 0x20</strong> and memory at that address, <strong>Mem[0x20]</strong>, contains the instruction <strong>0x9A</strong>.</p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 p-6 border rounded-lg bg-white">
+                    <div>
+                        <h4 class="font-bold text-lg mb-2">CPU State</h4>
+                        <div class="grid grid-cols-2 gap-2 text-sm">
+                            <div class="font-semibold">PC:</div><code id="state-pc">0x20</code>
+                            <div class="font-semibold">MAR:</div><code id="state-mar">0x00</code>
+                            <div class="font-semibold">IR:</div><code id="state-ir">0x00</code>
+                            <div class="font-semibold">Bus Value:</div><code id="state-bus">--</code>
+                        </div>
+                        <div id="simulation-step-title" class="mt-4 font-bold text-lg">Step 1 of 4</div>
+                        <p id="simulation-step-desc" class="mt-1 text-sm">Place the instruction's address onto the bus.</p>
+                    </div>
+                    <div id="simulation-controls">
+                        <div>
+                            <p class="font-semibold mb-2">1. Select Bus Source:</p>
+                            <div class="flex flex-wrap gap-2">
+                                <button class="simulation-btn px-3 py-1 rounded" data-sim-group="source" data-sim-value="PC">PC</button>
+                                <button class="simulation-btn px-3 py-1 rounded" data-sim-group="source" data-sim-value="RAM">RAM</button>
+                                <button class="simulation-btn px-3 py-1 rounded" data-sim-group="source" data-sim-value="ALU">ALU</button>
+                                <button class="simulation-btn px-3 py-1 rounded" data-sim-group="source" data-sim-value="none">None</button>
+                            </div>
+                        </div>
+                        <div class="mt-4">
+                            <p class="font-semibold mb-2">2. Select Target(s) to Load/Set:</p>
+                            <div class="flex flex-wrap gap-2">
+                                <button class="simulation-btn px-3 py-1 rounded" data-sim-group="target" data-sim-value="MAR">MAR</button>
+                                <button class="simulation-btn px-3 py-1 rounded" data-sim-group="target" data-sim-value="IR">IR</button>
+                                <button class="simulation-btn px-3 py-1 rounded" data-sim-group="target" data-sim-value="PC">PC</button>
+                                <button class="simulation-btn px-3 py-1 rounded" data-sim-group="target" data-sim-value="none">None</button>
+                            </div>
+                        </div>
+                        <div class="mt-4">
+                            <p class="font-semibold mb-2">3. Select Memory Operation:</p>
+                            <div class="flex flex-wrap gap-2">
+                                <button class="simulation-btn px-3 py-1 rounded" data-sim-group="mem" data-sim-value="read">Read</button>
+                                <button class="simulation-btn px-3 py-1 rounded" data-sim-group="mem" data-sim-value="write">Write</button>
+                                <button class="simulation-btn px-3 py-1 rounded" data-sim-group="mem" data-sim-value="none">None</button>
+                            </div>
+                        </div>
+                        <div class="mt-6 flex gap-4">
+                            <button id="submit-step-btn" class="px-4 py-2 rounded-lg text-white font-semibold" style="background-color: #383838;">Submit Step</button>
+                            <button id="reset-sim-btn" class="px-4 py-2 rounded-lg">Reset</button>
+                        </div>
+                        <div id="simulation-feedback" class="mt-4 p-3 rounded text-sm"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <hr class="my-8 border-[#F0EBE8]">
+
+        <section class="mb-12">
+            <h2 class="text-3xl font-bold text-center mb-8">Your Turn: Practical Application</h2>
+            <div class="prose max-w-none grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div>
+                    <h3 class="text-xl font-bold">Logisim Lab: Build a RAM Module</h3>
+                    <p>The next step is to build and test a 256-byte RAM module in Logisim. This reinforces how the MAR, data bus, and control signals (WE/OE) work together. Your goal is to create a subsystem where you can reliably write a byte to a specific address and read it back without causing bus contention.</p>
+                    <p><strong>Key Questions to Consider:</strong></p>
+                    <ul>
+                        <li>What problem does the MAR solve by holding the address stable for memory?</li>
+                        <li>What breaks if RAM's Output Enable (OE) and a register's output are enabled at the same time?</li>
+                    </ul>
+                </div>
+                 <div>
+                    <h3 class="text-xl font-bold">MIPS Micro-Lab in MARS</h3>
+                    <p>Connect theory to practice by observing a MIPS program in the MARS simulator. Single-step through the following code and watch how the register and memory values change.</p>
+                    <pre class="bg-[#F0EBE8] p-4 rounded-lg"><code>addi $t0, $zero, 0x12  # t0 = 0x12
+lw   $t1, 0($t0)      # t1 = Mem[0x12]
+sw   $t1, 1($t0)      # Mem[0x13] = t1</code></pre>
+                    <p>This directly relates to our simplified CPU: the <code>lw</code> (load word) operation is like fetching data from RAM into a register, and <code>sw</code> (store word) is the reverse.</p>
+                </div>
+            </div>
+        </section>
+
+        <hr class="my-8 border-[#F0EBE8]">
+        
+        <section id="mastery-quiz" class="mb-12">
+            <h2 class="text-3xl font-bold text-center mb-8">Mastery Quiz</h2>
+            <div class="prose max-w-full space-y-8">
+                <div>
+                    <p class="font-semibold">1. In the Von Neumann architecture, where are program instructions and data stored?</p>
+                    <div class="space-y-2" id="q1-options">
+                        <label class="block"><input type="radio" name="q1" value="a"> In separate memory modules for speed.</label>
+                        <label class="block"><input type="radio" name="q1" value="b"> In the same shared main memory.</label>
+                        <label class="block"><input type="radio" name="q1" value="c"> Temporarily in the ALU.</label>
+                    </div>
+                    <div id="q1-feedback" class="mt-2 p-2 rounded text-sm"></div>
+                </div>
+                <div>
+                    <p class="font-semibold">2. Which component holds the address of the <em>next</em> instruction to be fetched?</p>
+                    <div class="space-y-2" id="q2-options">
+                        <label class="block"><input type="radio" name="q2" value="a"> Instruction Register (IR)</label>
+                        <label class="block"><input type="radio" name="q2" value="b"> Memory Address Register (MAR)</label>
+                        <label class="block"><input type="radio" name="q2" value="c"> Program Counter (PC)</label>
+                    </div>
+                    <div id="q2-feedback" class="mt-2 p-2 rounded text-sm"></div>
+                </div>
+                <div>
+                    <p class="font-semibold">3. A CPU has a 60 MHz clock and takes 6 steps (clock cycles) per instruction. What is its performance in MIPS (Millions of Instructions Per Second)?</p>
+                    <div class="space-y-2" id="q3-options">
+                        <label class="block"><input type="radio" name="q3" value="a"> 10 MIPS</label>
+                        <label class="block"><input type="radio" name="q3" value="b"> 60 MIPS</label>
+                        <label class="block"><input type="radio" name="q3" value="c"> 360 MIPS</label>
+                    </div>
+                    <div id="q3-feedback" class="mt-2 p-2 rounded text-sm"></div>
+                </div>
+                 <button id="check-quiz-btn" class="px-6 py-2 rounded-lg text-white font-semibold" style="background-color: #383838;">Check Answers</button>
+            </div>
+        </section>
+        
+        <hr class="my-8 border-[#F0EBE8]">
+
+        <section>
+            <h2 class="text-3xl font-bold text-center mb-8">Glossary</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div><strong class="block">Bus:</strong> A shared communication path that transfers data between components inside a computer.</div>
+                <div><strong class="block">Control Signals:</strong> Electronic signals used by the Control Unit to orchestrate operations, such as enabling a register to write to the bus.</div>
+                <div><strong class="block">IR (Instruction Register):</strong> The register that holds the machine code of the instruction currently being executed.</div>
+                <div><strong class="block">Load/Store:</strong> The operations of moving data from memory into a register (load) or from a register into memory (store).</div>
+                <div><strong class="block">MAR (Memory Address Register):</strong> A register that holds the memory address of the data or instruction to be fetched from or written to memory.</div>
+                <div><strong class="block">Opcode:</strong> The portion of a machine language instruction that specifies the operation to be performed.</div>
+                <div><strong class="block">Operand:</strong> The part of an instruction that specifies the data to be manipulated or operated on.</div>
+                <div><strong class="block">PC (Program Counter):</strong> A register that holds the memory address of the next instruction to be executed.</div>
+            </div>
+        </section>
+
+    </main>
+    
+    <footer class="text-center p-8 mt-8 border-t border-[#F0EBE8]">
+        <p>End of Week 9 Interactive Learning Guide.</p>
+    </footer>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        
+        // --- Activity 1: Diagram Labeling ---
+        const labels = ["PC", "MAR", "RAM", "IR", "Control Unit", "ALU"];
+        const labelsContainer = document.getElementById('labels-container');
+        const dropZones = document.querySelectorAll('.drop-zone');
+        const diagramFeedback = document.getElementById('diagram-feedback');
+
+        // Populate labels
+        labels.sort(() => Math.random() - 0.5); // Shuffle
+        labels.forEach(label => {
+            const el = document.createElement('div');
+            el.textContent = label;
+            el.id = `label-${label.replace(' ', '-')}`;
+            el.className = 'draggable-label';
+            el.draggable = true;
+            labelsContainer.appendChild(el);
+        });
+
+        document.querySelectorAll('.draggable-label').forEach(label => {
+            label.addEventListener('dragstart', (e) => {
+                e.dataTransfer.setData('text/plain', e.target.id);
+                e.target.style.opacity = '0.5';
+            });
+            label.addEventListener('dragend', (e) => {
+                e.target.style.opacity = '1';
+            });
+        });
+
+        dropZones.forEach(zone => {
+            zone.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                zone.classList.add('over');
+            });
+            zone.addEventListener('dragleave', () => {
+                zone.classList.remove('over');
+            });
+            zone.addEventListener('drop', (e) => {
+                e.preventDefault();
+                zone.classList.remove('over');
+                const id = e.dataTransfer.getData('text');
+                const draggableElement = document.getElementById(id);
+                if (draggableElement) {
+                    // Prevent dropping on a zone that already has a label
+                    if (zone.children.length === 0) {
+                        zone.appendChild(draggableElement);
+                        draggableElement.style.cursor = 'default';
+                        checkDiagramCompletion();
+                    }
+                }
+            });
+        });
+        
+        function checkDiagramCompletion() {
+            let correctCount = 0;
+            dropZones.forEach(zone => {
+                if (zone.children.length > 0) {
+                    const droppedLabel = zone.children[0].textContent;
+                    if (zone.dataset.label === droppedLabel) {
+                        zone.classList.add('correct');
+                        correctCount++;
+                    } else {
+                        zone.classList.remove('correct');
+                    }
+                }
+            });
+            if (correctCount === labels.length) {
+                diagramFeedback.textContent = 'Excellent! All components are correctly labeled.';
+                diagramFeedback.style.color = '#2b642b';
+            }
+        }
+        
+        // --- Activity 2: "Be the Control Unit" Simulation ---
+        const simState = {
+            step: 1,
+            pc: 0x20,
+            mar: 0x00,
+            ir: 0x00,
+            bus: '--',
+            mem: { 0x20: 0x9A }
+        };
+        
+        const fetchCycleSteps = [
+            { // Step 1: PC -> Bus -> MAR
+                description: "Place the instruction's address onto the bus and load it into the MAR.",
+                correct: { source: 'PC', target: 'MAR', mem: 'none' },
+                updateState: (s) => { s.bus = s.pc; s.mar = s.pc; }
+            },
+            { // Step 2: RAM -> Bus (using MAR address)
+                description: "Read from memory. The address in MAR is used to put the instruction from RAM onto the bus.",
+                correct: { source: 'RAM', target: 'none', mem: 'read' },
+                updateState: (s) => { s.bus = s.mem[s.mar]; }
+            },
+            { // Step 3: Bus -> IR
+                description: "Load the instruction from the bus into the Instruction Register (IR).",
+                correct: { source: 'none', target: 'IR', mem: 'none' },
+                updateState: (s) => { s.ir = s.bus; s.bus = '--'; }
+            },
+            { // Step 4: Increment PC
+                description: "Increment the Program Counter (PC) to point to the next instruction.",
+                correct: { source: 'none', target: 'PC', mem: 'none' },
+                updateState: (s) => { s.pc += 1; }
+            }
+        ];
+        
+        const stateElements = {
+            pc: document.getElementById('state-pc'),
+            mar: document.getElementById('state-mar'),
+            ir: document.getElementById('state-ir'),
+            bus: document.getElementById('state-bus')
+        };
+        const simStepTitle = document.getElementById('simulation-step-title');
+        const simStepDesc = document.getElementById('simulation-step-desc');
+        const simFeedback = document.getElementById('simulation-feedback');
+        const submitBtn = document.getElementById('submit-step-btn');
+        const resetBtn = document.getElementById('reset-sim-btn');
+        
+        function updateSimUI() {
+            Object.keys(stateElements).forEach(key => {
+                const value = simState[key];
+                stateElements[key].textContent = typeof value === 'number' ? `0x${value.toString(16).toUpperCase()}` : value;
+            });
+            
+            if (simState.step <= fetchCycleSteps.length) {
+                const currentStep = fetchCycleSteps[simState.step - 1];
+                simStepTitle.textContent = `Step ${simState.step} of ${fetchCycleSteps.length}`;
+                simStepDesc.textContent = currentStep.description;
+                simFeedback.textContent = '';
+                simFeedback.className = 'mt-4 p-3 rounded text-sm';
+                submitBtn.disabled = false;
+            } else {
+                simStepTitle.textContent = 'Fetch Cycle Complete!';
+                simStepDesc.textContent = 'The instruction 0x9A is now in the IR, and the PC is ready for the next cycle.';
+                simFeedback.textContent = 'Well done!';
+                simFeedback.className = 'mt-4 p-3 rounded text-sm feedback-correct';
+                submitBtn.disabled = true;
+            }
+        }
+        
+        document.querySelectorAll('.simulation-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const group = btn.dataset.simGroup;
+                // For single-select groups
+                if (group === 'source' || group === 'mem') {
+                    document.querySelectorAll(`.simulation-btn[data-sim-group="${group}"]`).forEach(b => b.classList.remove('selected'));
+                }
+                btn.classList.toggle('selected');
+            });
+        });
+        
+        submitBtn.addEventListener('click', () => {
+            const currentStepDef = fetchCycleSteps[simState.step - 1];
+            if (!currentStepDef) return;
+
+            const selections = { source: '', target: '', mem: '' };
+            const selectedSource = document.querySelector('.simulation-btn[data-sim-group="source"].selected');
+            const selectedTargets = Array.from(document.querySelectorAll('.simulation-btn[data-sim-group="target"].selected')).map(b => b.dataset.simValue).sort().join(',');
+            const selectedMem = document.querySelector('.simulation-btn[data-sim-group="mem"].selected');
+
+            const userChoice = {
+                source: selectedSource ? selectedSource.dataset.simValue : 'none',
+                target: selectedTargets.length > 0 ? selectedTargets : 'none',
+                mem: selectedMem ? selectedMem.dataset.simValue : 'none'
+            };
+            
+            // Special handling for PC increment logic
+            if(simState.step === 4 && userChoice.target === 'PC') {
+                userChoice.source = 'none';
+                userChoice.mem = 'none';
+            }
+            
+            if (userChoice.source === currentStepDef.correct.source && 
+                userChoice.target === currentStepDef.correct.target && 
+                userChoice.mem === currentStepDef.correct.mem) {
+                
+                simFeedback.textContent = 'Correct! The state has been updated for the next step.';
+                simFeedback.className = 'mt-4 p-3 rounded text-sm feedback-correct';
+                currentStepDef.updateState(simState);
+                simState.step++;
+                
+                // Delay UI update slightly for feedback to be read
+                setTimeout(() => {
+                    updateSimUI();
+                    // Clear selections
+                     document.querySelectorAll('.simulation-btn.selected').forEach(b => b.classList.remove('selected'));
+                }, 1200);
+
+            } else {
+                 simFeedback.textContent = 'Not quite. Re-check the datapath rules for this step. For example, can you read from RAM and PC at the same time?';
+                 simFeedback.className = 'mt-4 p-3 rounded text-sm feedback-incorrect';
+            }
+        });
+        
+        resetBtn.addEventListener('click', () => {
+            simState.step = 1;
+            simState.pc = 0x20;
+            simState.mar = 0x00;
+            simState.ir = 0x00;
+            simState.bus = '--';
+            document.querySelectorAll('.simulation-btn.selected').forEach(b => b.classList.remove('selected'));
+            updateSimUI();
+        });
+
+        // --- Mastery Quiz ---
+        const quizAnswers = { q1: 'b', q2: 'c', q3: 'a' };
+
+        document.getElementById('check-quiz-btn').addEventListener('click', () => {
+            Object.keys(quizAnswers).forEach(qid => {
+                const feedbackEl = document.getElementById(`${qid}-feedback`);
+                const selected = document.querySelector(`input[name="${qid}"]:checked`);
+                
+                if (selected) {
+                    if (selected.value === quizAnswers[qid]) {
+                        feedbackEl.textContent = 'Correct!';
+                        feedbackEl.className = 'mt-2 p-2 rounded text-sm feedback-correct';
+                    } else {
+                        feedbackEl.textContent = 'Incorrect. Please review the concepts.';
+                        feedbackEl.className = 'mt-2 p-2 rounded text-sm feedback-incorrect';
+                    }
+                } else {
+                    feedbackEl.textContent = 'Please select an answer.';
+                    feedbackEl.className = 'mt-2 p-2 rounded text-sm feedback-incorrect';
+                }
+            });
+        });
+        
+        // Initial UI setup
+        updateSimUI();
+
+    });
+    </script>
+</body>
+</html>
