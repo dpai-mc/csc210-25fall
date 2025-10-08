@@ -229,8 +229,21 @@ Maximum value: 25</code></pre>
             <hr class="my-12 border-gray-200">
 
             <article class="problem" id="problem4">
-                <h3>Problem 4: Debug Memory Errors (10 points)</h3>
-                <p>Fix the following buggy program that attempts to find the sum of positive numbers in an array. This program has 4 memory-related errors. Find and fix them all! Comment each error, explain why it's wrong, and provide the correct code.</p>
+                <h3>Problem 4: Debug Coding Errors (10 points)</h3>
+                <p>Fix the following buggy program that attempts to find the sum of positive numbers in an array. This program contains <strong>3 coding errors that cause 4 distinct problems</strong> with program behavior. Find and fix them all! Comment each error, explain why it's wrong, and provide the correct code.</p>
+                
+                <h4>Hint about error categories:</h4>
+                <ul class="list-disc list-inside space-y-1">
+                    <li>One error relates to array traversal</li>
+                    <li>One error relates to loop control flow</li>
+                    <li>One error relates to output/syscall handling</li>
+                </ul>
+                
+                <h4>Expected Behavior:</h4>
+                <p>The program should sum all positive numbers in the array and print the result. For the given array [-3, 12, -7, 8, 15, -2, 9], the output should be: <strong>44</strong></p>
+                
+                <h4>Current Behavior:</h4>
+                <p>The program produces incorrect output or doesn't process all elements.</p>
                 
                 <div class="code-block code-font">
                     <pre>
@@ -254,20 +267,23 @@ add_positive:
     add $t2, $t2, $t3
     
 next:
-    # ERROR 1: Wrong increment
+    # ERROR 1: ???
+    # What's missing here for proper array traversal?
     # FIX: 
     
     addi $t1, $t1, -1
-    # ERROR 2: Off-by-one error
-    # FIX: 
     
-    # ERROR 3: Wrong addressing
+    # ERROR 2: ???
+    # What's needed to control the loop properly?
     # FIX: 
     
     # Print result
     li $v0, 1
-    # ERROR 4: Should use $t2 or load correctly
+    
+    # ERROR 3: ???
+    # What's required before calling this syscall?
     # FIX: 
+    
     syscall
     
     li $v0, 10
