@@ -23,51 +23,92 @@
             color: #383838;
         }
         
+        header {
+            margin-bottom: 3rem !important;
+        }
+        
         h1 {
-            font-size: 3.75rem;
-            font-weight: 900;
-            margin-bottom: 1rem;
-            color: #1a1a1a;
+            font-size: 3.75rem !important;
+            font-weight: 900 !important;
+            margin-bottom: 1rem !important;
+            color: #1a1a1a !important;
+            line-height: 1.2 !important;
         }
         
         h2 {
-            font-size: 2.25rem;
-            font-weight: 700;
-            margin-top: 2rem;
-            margin-bottom: 1rem;
-            padding-bottom: 0.5rem;
-            border-bottom: 2px solid #EADDD7;
-            color: #2d2d2d;
+            font-size: 2.25rem !important;
+            font-weight: 700 !important;
+            margin-top: 3rem !important;
+            margin-bottom: 1.5rem !important;
+            padding-bottom: 0.5rem !important;
+            border-bottom: 2px solid #EADDD7 !important;
+            color: #2d2d2d !important;
+            line-height: 1.3 !important;
         }
         
         h3 {
-            font-size: 1.875rem;
-            font-weight: 700;
-            margin-top: 1.5rem;
-            margin-bottom: 0.75rem;
-            color: #383838;
+            font-size: 1.875rem !important;
+            font-weight: 700 !important;
+            margin-top: 2rem !important;
+            margin-bottom: 1rem !important;
+            color: #383838 !important;
+            line-height: 1.4 !important;
         }
         
         h4 {
-            font-size: 1.25rem;
-            font-weight: 600;
-            margin-top: 1rem;
-            margin-bottom: 0.5rem;
-            color: #383838;
+            font-size: 1.25rem !important;
+            font-weight: 600 !important;
+            margin-top: 1.5rem !important;
+            margin-bottom: 0.75rem !important;
+            color: #383838 !important;
+            line-height: 1.4 !important;
         }
         
         h5 {
-            font-size: 1.125rem;
-            font-weight: 500;
-            margin-top: 0.75rem;
-            margin-bottom: 0.5rem;
-            color: #383838;
+            font-size: 1.125rem !important;
+            font-weight: 500 !important;
+            margin-top: 1rem !important;
+            margin-bottom: 0.5rem !important;
+            color: #383838 !important;
+            line-height: 1.5 !important;
         }
         
         p {
-            font-size: 1rem;
-            font-weight: 400;
-            color: #383838;
+            font-size: 1rem !important;
+            font-weight: 400 !important;
+            color: #383838 !important;
+            line-height: 1.6 !important;
+            margin-bottom: 1rem !important;
+        }
+        
+        section {
+            margin-bottom: 3rem !important;
+        }
+        
+        ul, ol {
+            margin-bottom: 1rem !important;
+        }
+        
+        li {
+            margin-bottom: 0.5rem !important;
+        }
+        
+        .info-box, .warning-box, .success-box {
+            margin-top: 1.5rem !important;
+            margin-bottom: 1.5rem !important;
+        }
+        
+        .info-box p, .warning-box p, .success-box p {
+            margin-bottom: 0.5rem !important;
+        }
+        
+        .info-box p:last-child, .warning-box p:last-child, .success-box p:last-child {
+            margin-bottom: 0 !important;
+        }
+        
+        .circuit-card {
+            margin-top: 1.5rem !important;
+            margin-bottom: 1.5rem !important;
         }
         
         .worksheet-input {
@@ -143,7 +184,7 @@
         .checkbox-item {
             display: flex;
             align-items: flex-start;
-            margin-bottom: 0.75rem;
+            margin-bottom: 1rem !important;
         }
         
         .checkbox-item input[type="checkbox"] {
@@ -185,8 +226,8 @@
         .opcode-table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 1rem;
-            margin-bottom: 1rem;
+            margin-top: 1.5rem !important;
+            margin-bottom: 1.5rem !important;
         }
         
         .opcode-table th,
@@ -235,13 +276,13 @@
         
         @media (min-width: 768px) {
             h1 {
-                font-size: 4.5rem;
+                font-size: 4.5rem !important;
             }
             h2 {
-                font-size: 2.5rem;
+                font-size: 2.5rem !important;
             }
             h3 {
-                font-size: 2rem;
+                font-size: 2rem !important;
             }
         }
         
@@ -264,7 +305,7 @@
     <main id="main-content" class="max-w-4xl mx-auto p-4 md:p-8">
         <header class="mb-8">
             <h1>CSC210 Midterm Exam</h1>
-            <h2 style="margin-top: 0; border-bottom: none;">Part B: Building an 8-bit ALU (50%)</h2>
+            <h2 style="margin-top: 0 !important; border-bottom: none !important;">Part B: Building an 8-bit ALU (50%)</h2>
             <div class="info-box">
                 <p><strong>Objective:</strong> Build a complete 8-bit Arithmetic Logic Unit (ALU) in Logisim 2.7.1 that integrates all the circuit components from the course. Your ALU will perform seven operations controlled by a 3-bit opcode.</p>
                 <p style="margin-top: 0.5rem;"><strong>Submission:</strong> Upload your completed <code>.circ</code> file to Canvas.</p>
@@ -485,7 +526,7 @@
                 <p><strong>Inputs:</strong> A = 00001111 (15 decimal), B = 00110011 (51 decimal)</p>
                 <p><strong>Is Larger Flag:</strong> 0 (A is not larger than B)</p>
                 
-                <table class="opcode-table" style="margin-top: 1rem;">
+                <table class="opcode-table" style="margin-top: 1.5rem !important;">
                     <thead>
                         <tr>
                             <th>Opcode</th>
@@ -575,7 +616,7 @@
                 <p><strong>Inputs:</strong> A = 11111111 (255 decimal), B = 00000001 (1 decimal)</p>
                 <p><strong>Is Larger Flag:</strong> 1 (A is larger than B)</p>
                 
-                <table class="opcode-table" style="margin-top: 1rem;">
+                <table class="opcode-table" style="margin-top: 1.5rem !important;">
                     <thead>
                         <tr>
                             <th>Opcode</th>
@@ -665,7 +706,7 @@
                 <p><strong>Inputs:</strong> A = 10101010 (170 decimal), B = 01010101 (85 decimal)</p>
                 <p><strong>Is Larger Flag:</strong> 1 (A is larger than B)</p>
                 
-                <table class="opcode-table" style="margin-top: 1rem;">
+                <table class="opcode-table" style="margin-top: 1.5rem !important;">
                     <thead>
                         <tr>
                             <th>Opcode</th>
@@ -794,7 +835,7 @@
             </div>
             
             <div class="info-box">
-                <h3 style="margin-top: 0;">Submission Instructions</h3>
+                <h3 style="margin-top: 0 !important;">Submission Instructions</h3>
                 <ol style="list-style-type: decimal; margin-left: 2rem; margin-top: 0.5rem;">
                     <li>Save your completed ALU circuit in Logisim 2.7.1</li>
                     <li>Name your file: <code>LastName_FirstName_ALU.circ</code></li>
