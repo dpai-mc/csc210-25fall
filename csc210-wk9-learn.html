@@ -3,563 +3,791 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Week 9: CPU Architecture Overview</title>
-    
+    <title>Week 9: CPU Architecture Overview - CSC210</title>
+    <!-- Load Tailwind CSS for utility classes -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Fira+Code&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-    
     <style>
+        /* CRITICAL: Enforce Light Theme Mandate & Base Typography */
+        :root {
+            /* Light theme colors */
+            --color-primary: #3b82f6; /* Blue 500 */
+            --color-secondary: #10b981; /* Emerald 500 */
+            --color-background: #f9fafb; /* Gray 50 */
+            --color-card-bg: #ffffff;
+            --color-text: #1f2937; /* Gray 800 */
+            --color-border: #e5e7eb; /* Gray 200 */
+        }
+
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #FDFBF8;
-            color: #383838;
+            background-color: var(--color-background);
+            color: var(--color-text);
+            /* Ensure no default dark mode styling leaks through */
+            color-scheme: light;
         }
-        h1, h2, h3 {
-            font-weight: 700;
+
+        /* Focus State for Accessibility (Mandatory) */
+        button:focus, a:focus, input:focus, select:focus, [tabindex]:focus {
+            outline: 2px solid var(--color-primary);
+            outline-offset: 3px;
         }
-        code, pre {
-            font-family: 'Fira Code', monospace;
+
+        /* General Card Styling */
+        .card {
+            background-color: var(--color-card-bg);
+            border: 1px solid var(--color-border);
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.06);
         }
-        .prose {
-            max-width: 65ch;
+
+        /* --- CSS-Only Diagramming Mandate --- */
+
+        /* Von Neumann Diagram Layout */
+        #von-neumann-diagram {
+            display: grid;
+            grid-template-areas:
+                "input control output"
+                "memory control alu"
+                "memory control data_bus";
+            grid-template-columns: 1fr 1fr 1fr;
+            grid-template-rows: auto auto 1fr;
+            gap: 1.5rem;
+            padding: 2rem;
+            background: #f0f4f8; /* Light blue background for the diagram area */
+            border-radius: 0.75rem;
         }
-        /* Accessibility: Visible-on-focus "Skip to Content" link */
-        .skip-link {
-            position: absolute;
-            top: -40px;
-            left: 0;
-            background: #EADDD7;
-            color: #383838;
-            padding: 8px;
-            z-index: 100;
-            transition: top 0.3s;
-        }
-        .skip-link:focus {
-            top: 0;
-        }
-        /* Custom styles for interactive components */
-        .cpu-diagram-bg {
-            background-color: #f7f5f2;
-            border: 1px dashed #dcd8d3;
-            border-radius: 8px;
-        }
-        .draggable-label {
-            cursor: grab;
-            user-select: none;
-            touch-action: none;
-            border: 1px solid #dcd8d3;
-            background-color: white;
-            padding: 4px 8px;
-            border-radius: 6px;
-        }
-        .drop-zone {
-            border: 2px dashed #EADDD7;
-            background-color: rgba(234, 221, 215, 0.2);
-            transition: background-color 0.2s;
-        }
-        .drop-zone.over {
-            background-color: #EADDD7;
-        }
-        .drop-zone.correct {
-            border-style: solid;
-            border-color: #5cb85c;
-            background-color: #dff0d8;
-        }
-        .simulation-btn {
-            background-color: #F0EBE8;
-            border: 1px solid #EADDD7;
-            transition: all 0.2s;
-        }
-        .simulation-btn:hover {
-            background-color: #EADDD7;
-        }
-        .simulation-btn.selected {
-            background-color: #EADDD7;
-            border-color: #c9b7ae;
+
+        .vn-component {
+            padding: 1rem;
+            border: 3px solid var(--color-primary);
+            background-color: #ffffff;
+            border-radius: 0.5rem;
+            text-align: center;
             font-weight: 600;
+            position: relative;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
         }
-        .simulation-btn:focus {
-            outline: none;
-            box-shadow: 0 0 0 3px rgba(234, 221, 215, 0.7);
+
+        /* Specific Grid Areas for VN Components */
+        #vn-input { grid-area: input; }
+        #vn-output { grid-area: output; }
+        #vn-memory { grid-area: memory; border-color: #f59e0b; } /* Orange */
+        #vn-control { grid-area: control; border-color: var(--color-secondary); } /* Green */
+        #vn-alu { grid-area: alu; border-color: #ef4444; } /* Red */
+        #vn-data-bus {
+            grid-area: data_bus;
+            border-top: 2px dashed #94a3b8; /* Slate */
+            text-align: center;
+            padding-top: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #475569;
         }
-        .feedback-correct {
-            color: #2b642b;
-            background-color: #dff0d8;
-            border-left: 4px solid #5cb85c;
+        /* End Von Neumann Diagram */
+
+
+        /* CPU Datapath Diagram Layout (Grid/Flex mix for complexity) */
+        #datapath-diagram {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            padding: 1rem;
+            background: #f0f4f8;
+            border-radius: 0.75rem;
+            overflow-x: auto; /* Handle overflow on small screens */
         }
-        .feedback-incorrect {
-            color: #a94442;
-            background-color: #f2dede;
-            border-left: 4px solid #d9534f;
+
+        .datapath-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
         }
+
+        .reg-block, .alu-block, .cu-block {
+            min-width: 60px;
+            padding: 0.5rem 0.75rem;
+            border: 2px solid #1e40af; /* Darker blue */
+            background-color: #eff6ff; /* Lightest blue */
+            border-radius: 0.375rem;
+            text-align: center;
+            font-size: 0.875rem;
+            font-weight: 700;
+            transition: all 0.3s ease;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .reg-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            align-items: flex-start;
+        }
+
+        .datapath-bus {
+            height: 4px;
+            background-color: #4b5563; /* Gray Bus */
+            margin: 0.5rem 0;
+            position: relative;
+        }
+        .datapath-bus::after {
+            content: "Data Bus / Address Bus";
+            position: absolute;
+            top: -1.5rem;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.75rem;
+            color: #4b5563;
+        }
+        
+        .datapath-label {
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: #475569;
+            text-align: center;
+            margin-top: -0.5rem;
+        }
+
+        /* FDE Tracer highlighting */
+        .tracer-active {
+            border-color: var(--color-secondary) !important;
+            box-shadow: 0 0 10px var(--color-secondary) !important;
+            background-color: #d1fae5 !important;
+            transform: scale(1.05);
+        }
+        .tracer-bus-active {
+            background-color: var(--color-primary) !important;
+            box-shadow: 0 0 10px var(--color-primary);
+        }
+
+        /* Custom Arrow for Data Flow (Simple CSS Triangle) */
+        .arrow-right {
+            width: 0;
+            height: 0;
+            border-top: 6px solid transparent;
+            border-bottom: 6px solid transparent;
+            border-left: 6px solid #4b5563;
+        }
+
+        /* Mobile Adjustments for Datapath */
+        @media (max-width: 768px) {
+            .datapath-row {
+                flex-direction: column;
+                gap: 0.5rem;
+                align-items: stretch;
+            }
+            .reg-group {
+                flex-direction: row;
+                justify-content: space-around;
+            }
+        }
+
     </style>
 </head>
-<body class="antialiased">
-    <a href="#main-content" class="skip-link">Skip to main content</a>
+<body class="p-4 md:p-8">
 
-    <header class="text-center p-4 md:p-8 border-b border-[#F0EBE8]">
-        <h1 class="text-4xl font-bold">CPU Architecture Overview</h1>
-        <p class="text-lg mt-2">Week 9: The Von Neumann Model, Datapath, and Fetch-Decode-Execute Cycle</p>
+    <header class="mb-8">
+        <h1 class="text-4xl font-extrabold text-gray-900 mb-2">CSC210: Week 9 - CPU Architecture Overview</h1>
+        <p class="text-xl text-indigo-600 font-medium">The Big Reveal: How Your Programs Run on Hardware</p>
     </header>
 
-    <main id="main-content" class="container mx-auto p-4 md:p-8">
-        
-        <section class="mb-12 prose">
-            <h2 class="text-2xl">Start Here: Your Guide for the Week</h2>
-            <p>Welcome to Week 9! This guide will walk you through the fundamental concepts of how a CPU works. We'll explore the blueprint for modern computers, identify the core components, and trace the lifecycle of a single instruction.</p>
-            <p>By the end of this module, you will be able to:</p>
-            <ul>
-                <li>Explain the Von Neumann model and the relationship between the CPU, memory, and bus.</li>
-                <li>Label and describe the roles of key CPU components like the PC, IR, MAR, ALU, and control unit.</li>
-                <li>Trace the fetch-decode-execute cycle for a simple instruction.</li>
-                <li>Relate these concepts to how high-level instructions like <code>lw</code> and <code>sw</code> in MIPS operate.</li>
+    <main class="max-w-7xl mx-auto space-y-12">
+
+        <!-- 2.0 Foundational Concept Explanation -->
+        <section class="card p-6 space-y-4">
+            <h2 class="text-3xl font-bold text-gray-800">Welcome to Week 9: The Big Reveal</h2>
+            <p>Welcome to the pivotal week where everything comes together! You've spent weeks building digital logic components—registers, ALUs, and RAM modules. You've written assembly language programs for the MIPS architecture. Now, we finally connect the dots. This module shows you how your components come together to form the Central Processing Unit (CPU) and how the code you wrote actually executes on that hardware.</p>
+            <p class="text-lg font-semibold text-indigo-700">Get ready for the "aha!" moment.</p>
+
+            <h3 class="text-2xl font-bold text-gray-800 pt-4">Von Neumann Architecture: The Blueprint</h3>
+            <p>Before any of your code can run, the computer must be structured in a specific way. Nearly every modern computer follows the **Von Neumann Architecture**, a concept defined in 1945. It's revolutionary because it introduces the idea of the **Stored Program Concept**—that both the instructions (code) and the data they operate on are stored together in the same memory space (RAM).</p>
+            <p>This single memory space is a core tenet of the Von Neumann model. It simplifies the hardware design by using a single set of buses (wires) to shuttle both data and instructions between the CPU and memory. This is sometimes called the Von Neumann bottleneck, but it’s what makes the entire computer system cohesive.</p>
+            
+            <!-- Von Neumann Diagram (CSS-only) -->
+            <div id="von-neumann-diagram" class="mt-8 mb-8">
+                <div id="vn-input" class="vn-component">Input Devices</div>
+                <div id="vn-output" class="vn-component">Output Devices</div>
+                <div id="vn-memory" class="vn-component">Memory Unit (RAM)</div>
+                <div id="vn-control" class="vn-component">Central Processing Unit (CPU)<br/>(Control Unit + ALU)</div>
+                <div id="vn-alu" class="vn-component">Arithmetic Logic Unit (ALU)</div>
+                <div id="vn-data-bus">Instructions and Data Travel on the Same Bus (Von Neumann Bottleneck)</div>
+            </div>
+
+            <p>The Von Neumann architecture defines five essential, connected components that make up any functional computer system:</p>
+            <ul class="list-disc list-inside space-y-2 pl-4 text-gray-700">
+                <li><span class="font-semibold text-red-600">Arithmetic Logic Unit (ALU)</span>: Performs all computational and logical operations (like the ALU you built in Week 4!).</li>
+                <li><span class="font-semibold text-emerald-600">Control Unit (CU)</span>: Directs the flow of data, tells the ALU what to do, and manages the FDE cycle.</li>
+                <li><span class="font-semibold text-amber-600">Memory Unit (RAM)</span>: Stores both instructions and data for the currently running program.</li>
+                <li><span class="font-semibold text-blue-600">Input Devices</span>: Allows users or systems to send data into the computer (e.g., keyboard, mouse).</li>
+                <li><span class="font-semibold text-blue-600">Output Devices</span>: Allows the computer to display or send results out (e.g., monitor, printer).</li>
             </ul>
         </section>
 
-        <hr class="my-8 border-[#F0EBE8]">
-
-        <section class="mb-12">
-            <h2 class="text-3xl font-bold text-center mb-8">Core Concepts</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div class="prose">
-                    <h3>The Von Neumann Model</h3>
-                    <p>A computer based on the Von Neumann model executes a "stored program" by repeatedly fetching an instruction from memory, decoding it, and then executing it. A key feature is that both program instructions and the data they operate on are stored in the same main memory. The CPU, memory, and I/O devices are connected via a shared data path, or bus.</p>
-                </div>
-                <div class="prose">
-                    <h3>Processor Components</h3>
-                    <p>The core datapath includes several key parts:</p>
-                    <ul>
-                        <li><strong>Program Counter (PC):</strong> Holds the memory address of the *next* instruction to be fetched.</li>
-                        <li><strong>Instruction Register (IR):</strong> Holds the instruction that is *currently* being decoded and executed.</li>
-                        <li><strong>Memory Address Register (MAR):</strong> Holds the memory address for the current memory access (read or write).</li>
-                        <li><strong>Register File:</strong> A small, fast set of storage locations for temporary data.</li>
-                        <li><strong>ALU (Arithmetic Logic Unit):</strong> Performs calculations like addition, subtraction, and logical operations.</li>
-                        <li><strong>Control Unit:</strong> Generates control signals that orchestrate the entire process.</li>
-                    </ul>
-                </div>
-                <div class="prose">
-                    <h3>The Single-Bus Datapath</h3>
-                    <p>To move data between components, we use a bus. A single-bus datapath is simple but requires careful sequencing to avoid conflicts. The fundamental rule is: **only one component can drive (write to) the bus at a time.** The Control Unit uses signals to enable or disable outputs, ensuring this rule is followed.</p>
-                </div>
-                <div class="prose">
-                    <h3>The Fetch-Decode-Execute Cycle</h3>
-                    <p>This is the fundamental operation cycle of a computer. For every instruction, the CPU:</p>
-                    <ol>
-                        <li><strong>Fetch:</strong> The control unit orchestrates getting the next instruction from memory. This involves the PC providing the address to the MAR, memory putting the instruction on the bus, and the IR loading it. The PC is then incremented.</li>
-                        <li><strong>Decode:</strong> The control unit interprets the opcode (the part of the instruction that specifies the operation) in the IR.</li>
-                        <li><strong>Execute:</strong> The control unit asserts the correct signals to carry out the instruction, which might involve the ALU, register file, and memory.</li>
-                    </ol>
-                </div>
+        <!-- Interactive Activity 1: Von Neumann Quiz -->
+        <section id="quiz-vn" class="card p-6 space-y-4 bg-indigo-50">
+            <h3 class="text-2xl font-bold text-indigo-800">Activity 1: Von Neumann Concept Check</h3>
+            <p class="text-indigo-700">Test your understanding of the five core components.</p>
+            
+            <div id="quiz-vn-questions" class="space-y-4">
+                <!-- Quiz questions will be dynamically generated/managed by JS -->
             </div>
+
+            <button id="quiz-vn-submit" class="w-full py-3 bg-indigo-600 text-white font-bold rounded-lg shadow-md hover:bg-indigo-700 transition duration-150">
+                Submit Quiz
+            </button>
+
+            <div id="quiz-vn-feedback" class="pt-4 text-center font-bold text-lg hidden"></div>
         </section>
-        
-        <hr class="my-8 border-[#F0EBE8]">
-        
-        <section class="mb-12">
-            <h2 class="text-3xl font-bold text-center mb-8">Interactive Activities</h2>
 
-            <div class="mb-12">
-                <h3 class="text-2xl font-bold mb-4">Activity 1: Label the CPU Diagram</h3>
-                <p class="prose mb-4">Drag the labels from the list onto the correct empty boxes in the CPU datapath diagram below.</p>
-                <div class="flex flex-col lg:flex-row gap-8 items-start">
-                    <div id="labels-container" class="flex flex-wrap gap-2 p-4 bg-white border rounded-lg lg:w-1/4">
-                        </div>
-                    <div id="diagram-container" class="relative cpu-diagram-bg p-8 w-full lg:w-3/4">
-                        <svg viewBox="0 0 400 300" class="w-full h-auto">
-                            <path d="M50 150 L100 150" stroke="#383838" stroke-width="2" fill="none" />
-                            <path d="M125 70 L125 140" stroke="#383838" stroke-width="2" fill="none" />
-                            <path d="M150 150 L250 150" stroke="#383838" stroke-width="2" fill="none" />
-                            <path d="M275 70 L275 140" stroke="#383838" stroke-width="2" fill="none" />
-                            <path d="M300 150 L350 150" stroke="#383838" stroke-width="2" fill="none" />
-                            <path d="M200 150 L200 220" stroke="#383838" stroke-width="2" fill="none" />
-                            <text x="190" y="275" font-family="Inter" font-size="12" fill="#383838">Bus</text>
-                            
-                            <rect id="dz-pc" x="25" y="40" width="50" height="30" class="drop-zone-rect" />
-                            <rect id="dz-mar" x="100" y="40" width="50" height="30" class="drop-zone-rect" />
-                            <rect id="dz-ram" x="175" y="40" width="50" height="30" class="drop-zone-rect" />
-                            <rect id="dz-ir" x="250" y="40" width="50" height="30" class="drop-zone-rect" />
-                            <rect id="dz-cu" x="325" y="40" width="50" height="30" class="drop-zone-rect" />
-                            <rect id="dz-alu" x="175" y="220" width="50" height="30" class="drop-zone-rect" />
-                        </svg>
-                        <div id="drop-zone-pc" data-label="PC" class="drop-zone absolute w-[50px] h-[30px] top-[75px] left-[65px]"></div>
-                        <div id="drop-zone-mar" data-label="MAR" class="drop-zone absolute w-[50px] h-[30px] top-[75px] left-[140px]"></div>
-                        <div id="drop-zone-ram" data-label="RAM" class="drop-zone absolute w-[50px] h-[30px] top-[75px] left-[215px]"></div>
-                        <div id="drop-zone-ir" data-label="IR" class="drop-zone absolute w-[50px] h-[30px] top-[75px] left-[290px]"></div>
-                        <div id="drop-zone-cu" data-label="Control Unit" class="drop-zone absolute w-[50px] h-[30px] top-[75px] left-[365px]"></div>
-                        <div id="drop-zone-alu" data-label="ALU" class="drop-zone absolute w-[50px] h-[30px] top-[255px] left-[215px]"></div>
-                        <div id="diagram-feedback" class="text-center mt-4 font-semibold"></div>
+
+        <!-- 3.0 Key Sub-Topic Detail -->
+        <section class="card p-6 space-y-4">
+            <h2 class="text-3xl font-bold text-gray-800">The Central Processing Unit (CPU)</h2>
+            <p>The CPU is the "brain" of the computer—the combination of the **ALU** and the **Control Unit (CU)**. Everything you’ve been building over the course has been leading up to this point. The CPU’s job is simple: fetch instructions, decode what they mean, and execute them.</p>
+            
+            <h3 class="text-2xl font-bold text-gray-800 pt-4">The CPU's Internal Datapath & Registers</h3>
+            <p>Inside the CPU, the datapath is the system of buses (wires) that moves data between the internal components. These components are primarily high-speed memory locations called **Registers**. Registers are what you built in Week 2 and Week 3, now scaled up to hold 32-bit or 64-bit values. They are the fastest form of storage and are the CPU's direct workspace.</p>
+            <p>The MIPS assembly code you wrote operates almost entirely on these registers. When you write an instruction like `ADD R1, R2, R3`, you are telling the hardware to move the data from R2 and R3 into the ALU, perform the addition, and store the result back into R1.</p>
+            
+            <!-- CPU Datapath Diagram (CSS-only) -->
+            <div id="datapath-diagram" class="mt-8 mb-8">
+                
+                <!-- Top Row: CU and Core Registers -->
+                <div class="datapath-row">
+                    <div class="reg-block" id="reg-pc">PC (Program Counter)</div>
+                    <div class="reg-block" id="reg-mar">MAR (Memory Address Register)</div>
+                    <div class="cu-block bg-emerald-100 border-emerald-700 flex-1 text-center font-extrabold text-emerald-800">
+                        Control Unit (CU)
+                    </div>
+                    <div class="reg-block" id="reg-ir">IR (Instruction Register)</div>
+                    <div class="reg-block" id="reg-flags">FLAGS</div>
+                </div>
+
+                <!-- Main Data Bus (Visual representation of connection) -->
+                <div class="datapath-bus w-full"></div>
+
+                <!-- Middle Row: ALU and General Purpose Registers -->
+                <div class="datapath-row">
+                    <div class="reg-group">
+                        <div class="reg-block" id="reg-r0">R0</div>
+                        <div class="reg-block" id="reg-r1">R1</div>
+                        <div class="reg-block" id="reg-r2">R2</div>
+                        <div class="reg-block" id="reg-r3">R3</div>
+                        <span class="datapath-label">GPRs (General Purpose Registers)</span>
+                    </div>
+
+                    <div class="alu-block bg-red-100 border-red-700 flex-1 text-center font-extrabold text-red-800 py-6">
+                        <p>Arithmetic Logic Unit (ALU)</p>
+                        <p class="font-normal text-sm">(Performs ADD, SUB, AND, OR)</p>
+                    </div>
+
+                    <div class="reg-group items-end">
+                        <div class="reg-block" id="reg-acc">ACC (Accumulator)</div>
+                        <div class="reg-block" id="reg-tmp">TMP (Temporary)</div>
+                        <span class="datapath-label">Special Purpose Registers</span>
                     </div>
                 </div>
+
             </div>
 
-            <div>
-                <h3 class="text-2xl font-bold mb-4">Activity 2: Be the Control Unit</h3>
-                <p class="prose mb-4">Step through the <strong>fetch</strong> cycle for an instruction. At each step, select the correct bus source, target register(s), and memory operation to successfully load the instruction from memory into the IR. Assume <strong>PC = 0x20</strong> and memory at that address, <strong>Mem[0x20]</strong>, contains the instruction <strong>0x9A</strong>.</p>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 p-6 border rounded-lg bg-white">
-                    <div>
-                        <h4 class="font-bold text-lg mb-2">CPU State</h4>
-                        <div class="grid grid-cols-2 gap-2 text-sm">
-                            <div class="font-semibold">PC:</div><code id="state-pc">0x20</code>
-                            <div class="font-semibold">MAR:</div><code id="state-mar">0x00</code>
-                            <div class="font-semibold">IR:</div><code id="state-ir">0x00</code>
-                            <div class="font-semibold">Bus Value:</div><code id="state-bus">--</code>
-                        </div>
-                        <div id="simulation-step-title" class="mt-4 font-bold text-lg">Step 1 of 4</div>
-                        <p id="simulation-step-desc" class="mt-1 text-sm">Place the instruction's address onto the bus.</p>
-                    </div>
-                    <div id="simulation-controls">
-                        <div>
-                            <p class="font-semibold mb-2">1. Select Bus Source:</p>
-                            <div class="flex flex-wrap gap-2">
-                                <button class="simulation-btn px-3 py-1 rounded" data-sim-group="source" data-sim-value="PC">PC</button>
-                                <button class="simulation-btn px-3 py-1 rounded" data-sim-group="source" data-sim-value="RAM">RAM</button>
-                                <button class="simulation-btn px-3 py-1 rounded" data-sim-group="source" data-sim-value="ALU">ALU</button>
-                                <button class="simulation-btn px-3 py-1 rounded" data-sim-group="source" data-sim-value="none">None</button>
-                            </div>
-                        </div>
-                        <div class="mt-4">
-                            <p class="font-semibold mb-2">2. Select Target(s) to Load/Set:</p>
-                            <div class="flex flex-wrap gap-2">
-                                <button class="simulation-btn px-3 py-1 rounded" data-sim-group="target" data-sim-value="MAR">MAR</button>
-                                <button class="simulation-btn px-3 py-1 rounded" data-sim-group="target" data-sim-value="IR">IR</button>
-                                <button class="simulation-btn px-3 py-1 rounded" data-sim-group="target" data-sim-value="PC">PC</button>
-                                <button class="simulation-btn px-3 py-1 rounded" data-sim-group="target" data-sim-value="none">None</button>
-                            </div>
-                        </div>
-                        <div class="mt-4">
-                            <p class="font-semibold mb-2">3. Select Memory Operation:</p>
-                            <div class="flex flex-wrap gap-2">
-                                <button class="simulation-btn px-3 py-1 rounded" data-sim-group="mem" data-sim-value="read">Read</button>
-                                <button class="simulation-btn px-3 py-1 rounded" data-sim-group="mem" data-sim-value="write">Write</button>
-                                <button class="simulation-btn px-3 py-1 rounded" data-sim-group="mem" data-sim-value="none">None</button>
-                            </div>
-                        </div>
-                        <div class="mt-6 flex gap-4">
-                            <button id="submit-step-btn" class="px-4 py-2 rounded-lg text-white font-semibold" style="background-color: #383838;">Submit Step</button>
-                            <button id="reset-sim-btn" class="px-4 py-2 rounded-lg">Reset</button>
-                        </div>
-                        <div id="simulation-feedback" class="mt-4 p-3 rounded text-sm"></div>
-                    </div>
-                </div>
+            <p class="pt-4">The registers fall into two major categories:</p>
+            <ul class="list-disc list-inside space-y-2 pl-4 text-gray-700">
+                <li>**General Purpose Registers (GPRs):** These are the `R0, R1, R2, R3...` that your MIPS code directly uses to hold variables and computation results.</li>
+                <li>**Special Purpose Registers (SPRs):** These are dedicated registers that the Control Unit uses to manage the CPU's internal operations and the FDE cycle.</li>
+            </ul>
+
+            <h4 class="text-xl font-semibold text-gray-800 pt-4">Key Special Purpose Registers Explained</h4>
+            <div class="space-y-3 pl-4">
+                <p><span class="font-bold text-red-600">PC (Program Counter):</span> Always holds the **memory address** of the *next* instruction to be executed. It is updated during the Fetch stage.</p>
+                <p><span class="font-bold text-red-600">IR (Instruction Register):</span> Stores the **actual instruction (binary)** that was just fetched from memory, so the Control Unit can decode it.</p>
+                <p><span class="font-bold text-red-600">MAR (Memory Address Register):</span> Temporarily holds the address of a data or instruction location in RAM that the CPU wants to access.</p>
+                <p><span class="font-bold text-red-600">ACC (Accumulator):</span> A general-purpose register used by the ALU to temporarily store the results of calculations before they are written back to a GPR or memory.</p>
+                <p><span class="font-bold text-red-600">TMP (Temporary):</span> Used by the Control Unit to hold intermediate values during complex operations.</p>
+                <p><span class="font-bold text-red-600">FLAGS:</span> Holds single bits that indicate the result of the last operation (e.g., whether the result was zero, negative, or caused an overflow). Used for conditional jumps/branches.</p>
             </div>
         </section>
 
-        <hr class="my-8 border-[#F0EBE8]">
+        <!-- Interactive Activity 2: Register Matching -->
+        <section id="activity-registers" class="card p-6 space-y-4 bg-yellow-50">
+            <h3 class="text-2xl font-bold text-yellow-800">Activity 2: Match the Register Function</h3>
+            <p class="text-yellow-700">Click a register name and then click its correct description.</p>
+            
+            <div id="register-match-container" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Register Choices -->
+                <div id="register-choices" class="space-y-3 p-4 border-2 border-yellow-300 rounded-lg bg-white">
+                    <h4 class="font-bold text-lg mb-2">Registers (Click to Select)</h4>
+                    <button data-type="register" data-id="PC" class="reg-choice bg-yellow-100 hover:bg-yellow-200 p-2 rounded-md w-full text-left transition duration-150">PC</button>
+                    <button data-type="register" data-id="IR" class="reg-choice bg-yellow-100 hover:bg-yellow-200 p-2 rounded-md w-full text-left transition duration-150">IR</button>
+                    <button data-type="register" data-id="ACC" class="reg-choice bg-yellow-100 hover:bg-yellow-200 p-2 rounded-md w-full text-left transition duration-150">ACC</button>
+                    <button data-type="register" data-id="MAR" class="reg-choice bg-yellow-100 hover:bg-yellow-200 p-2 rounded-md w-full text-left transition duration-150">MAR</button>
+                </div>
+                
+                <!-- Description Choices -->
+                <div id="description-choices" class="space-y-3 p-4 border-2 border-yellow-300 rounded-lg bg-white">
+                    <h4 class="font-bold text-lg mb-2">Functions (Click to Match)</h4>
+                    <button data-type="description" data-id="IR" class="desc-choice bg-gray-100 hover:bg-gray-200 p-2 rounded-md w-full text-left transition duration-150">Stores the binary instruction fetched from memory.</button>
+                    <button data-type="description" data-id="MAR" class="desc-choice bg-gray-100 hover:bg-gray-200 p-2 rounded-md w-full text-left transition duration-150">Holds the address of the memory location to be read or written.</button>
+                    <button data-type="description" data-id="ACC" class="desc-choice bg-gray-100 hover:bg-gray-200 p-2 rounded-md w-full text-left transition duration-150">Temporarily stores the result of the last calculation performed by the ALU.</button>
+                    <button data-type="description" data-id="PC" class="desc-choice bg-gray-100 hover:bg-gray-200 p-2 rounded-md w-full text-left transition duration-150">Holds the memory address of the next instruction in the program sequence.</button>
+                </div>
+            </div>
 
-        <section class="mb-12">
-            <h2 class="text-3xl font-bold text-center mb-8">Your Turn: Practical Application</h2>
-            <div class="prose max-w-none grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div>
-                    <h3 class="text-xl font-bold">Logisim Lab: Build a RAM Module</h3>
-                    <p>The next step is to build and test a 256-byte RAM module in Logisim. This reinforces how the MAR, data bus, and control signals (WE/OE) work together. Your goal is to create a subsystem where you can reliably write a byte to a specific address and read it back without causing bus contention.</p>
-                    <p><strong>Key Questions to Consider:</strong></p>
-                    <ul>
-                        <li>What problem does the MAR solve by holding the address stable for memory?</li>
-                        <li>What breaks if RAM's Output Enable (OE) and a register's output are enabled at the same time?</li>
-                    </ul>
-                </div>
-                 <div>
-                    <h3 class="text-xl font-bold">MIPS Micro-Lab in MARS</h3>
-                    <p>Connect theory to practice by observing a MIPS program in the MARS simulator. Single-step through the following code and watch how the register and memory values change.</p>
-                    <pre class="bg-[#F0EBE8] p-4 rounded-lg"><code>addi $t0, $zero, 0x12  # t0 = 0x12
-lw   $t1, 0($t0)      # t1 = Mem[0x12]
-sw   $t1, 1($t0)      # Mem[0x13] = t1</code></pre>
-                    <p>This directly relates to our simplified CPU: the <code>lw</code> (load word) operation is like fetching data from RAM into a register, and <code>sw</code> (store word) is the reverse.</p>
-                </div>
+            <div id="register-match-message" class="pt-4 text-center font-bold text-lg hidden"></div>
+
+        </section>
+
+
+        <!-- 3.1 The Fetch-Decode-Execute Cycle (FDE) -->
+        <section class="card p-6 space-y-4">
+            <h2 class="text-3xl font-bold text-gray-800">The Fetch-Decode-Execute Cycle (FDE)</h2>
+            <p>The FDE cycle is the engine of the CPU. It is a continuous loop managed by the Control Unit that executes every instruction of your program, one after the other. It is the fundamental mechanism that brings the Von Neumann architecture to life.</p>
+            
+            <div class="space-y-4 pt-2">
+                <h4 class="text-xl font-semibold text-gray-800">1. Fetch</h4>
+                <p>The Control Unit looks at the **PC** to get the address of the next instruction. This address is copied to the **MAR**. The CU then instructs the RAM to retrieve the data at that address. The instruction is loaded from memory into the **IR**. Finally, the **PC** is incremented to point to the *next* instruction.</p>
+                
+                <h4 class="text-xl font-semibold text-gray-800">2. Decode</h4>
+                <p>The binary code stored in the **IR** is now interpreted by the Control Unit. It determines: **a)** what operation to perform (e.g., ADD, SUB, LOAD), and **b)** which registers or memory locations are involved (the operands).</p>
+                
+                <h4 class="text-xl font-semibold text-gray-800">3. Execute</h4>
+                <p>Based on the decoded instruction, the Control Unit sends control signals to the datapath components (ALU, registers, buses). This is where the actual work happens. For an ADD operation, data is moved to the ALU, the operation is performed, and the result is stored back into a designated register (or memory).</p>
             </div>
         </section>
 
-        <hr class="my-8 border-[#F0EBE8]">
-        
-        <section id="mastery-quiz" class="mb-12">
-            <h2 class="text-3xl font-bold text-center mb-8">Mastery Quiz</h2>
-            <div class="prose max-w-full space-y-8">
-                <div>
-                    <p class="font-semibold">1. In the Von Neumann architecture, where are program instructions and data stored?</p>
-                    <div class="space-y-2" id="q1-options">
-                        <label class="block"><input type="radio" name="q1" value="a"> In separate memory modules for speed.</label>
-                        <label class="block"><input type="radio" name="q1" value="b"> In the same shared main memory.</label>
-                        <label class="block"><input type="radio" name="q1" value="c"> Temporarily in the ALU.</label>
-                    </div>
-                    <div id="q1-feedback" class="mt-2 p-2 rounded text-sm"></div>
-                </div>
-                <div>
-                    <p class="font-semibold">2. Which component holds the address of the <em>next</em> instruction to be fetched?</p>
-                    <div class="space-y-2" id="q2-options">
-                        <label class="block"><input type="radio" name="q2" value="a"> Instruction Register (IR)</label>
-                        <label class="block"><input type="radio" name="q2" value="b"> Memory Address Register (MAR)</label>
-                        <label class="block"><input type="radio" name="q2" value="c"> Program Counter (PC)</label>
-                    </div>
-                    <div id="q2-feedback" class="mt-2 p-2 rounded text-sm"></div>
-                </div>
-                <div>
-                    <p class="font-semibold">3. A CPU has a 60 MHz clock and takes 6 steps (clock cycles) per instruction. What is its performance in MIPS (Millions of Instructions Per Second)?</p>
-                    <div class="space-y-2" id="q3-options">
-                        <label class="block"><input type="radio" name="q3" value="a"> 10 MIPS</label>
-                        <label class="block"><input type="radio" name="q3" value="b"> 60 MIPS</label>
-                        <label class="block"><input type="radio" name="q3" value="c"> 360 MIPS</label>
-                    </div>
-                    <div id="q3-feedback" class="mt-2 p-2 rounded text-sm"></div>
-                </div>
-                 <button id="check-quiz-btn" class="px-6 py-2 rounded-lg text-white font-semibold" style="background-color: #383838;">Check Answers</button>
-            </div>
-        </section>
-        
-        <hr class="my-8 border-[#F0EBE8]">
+        <!-- Interactive Activity 3: FDE Cycle Tracer -->
+        <section id="tracer-fde" class="card p-6 space-y-4 bg-green-50">
+            <h3 class="text-2xl font-bold text-green-800">Activity 3: FDE Cycle Tracer</h3>
+            <p class="text-green-700">Watch the datapath execute the MIPS instruction: <code id="tracer-instruction" class="bg-green-200 p-1 rounded font-mono font-bold">ADD R1, R2, R3</code></p>
+            <p class="text-sm italic text-green-600">Simulated Register State: R2=<span id="tracer-r2">10</span>, R3=<span id="tracer-r3">5</span></p>
 
-        <section>
-            <h2 class="text-3xl font-bold text-center mb-8">Glossary</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <div><strong class="block">Bus:</strong> A shared communication path that transfers data between components inside a computer.</div>
-                <div><strong class="block">Control Signals:</strong> Electronic signals used by the Control Unit to orchestrate operations, such as enabling a register to write to the bus.</div>
-                <div><strong class="block">IR (Instruction Register):</strong> The register that holds the machine code of the instruction currently being executed.</div>
-                <div><strong class="block">Load/Store:</strong> The operations of moving data from memory into a register (load) or from a register into memory (store).</div>
-                <div><strong class="block">MAR (Memory Address Register):</strong> A register that holds the memory address of the data or instruction to be fetched from or written to memory.</div>
-                <div><strong class="block">Opcode:</strong> The portion of a machine language instruction that specifies the operation to be performed.</div>
-                <div><strong class="block">Operand:</strong> The part of an instruction that specifies the data to be manipulated or operated on.</div>
-                <div><strong class="block">PC (Program Counter):</strong> A register that holds the memory address of the next instruction to be executed.</div>
+            <div class="flex justify-between items-center bg-green-100 p-3 rounded-lg border border-green-300">
+                <p class="font-semibold">Current Step: <span id="tracer-step-name" class="text-lg text-green-800">Ready to Start (Fetch)</span></p>
+                <button id="tracer-next-button" class="py-2 px-4 bg-green-600 text-white font-bold rounded-lg shadow-md hover:bg-green-700 transition duration-150">
+                    Start (Step 1/10)
+                </button>
+            </div>
+            
+            <div id="tracer-log" class="text-sm h-16 overflow-y-auto bg-white p-2 border rounded-lg font-mono">Log: Ready to begin tracing...</div>
+
+            <!-- Datapath Diagram for TRACER (Re-using elements from the main diagram) -->
+            <div id="tracer-datapath-diagram" class="mt-4 mb-4">
+                
+                <!-- A simplified tracer view focusing on PC, MAR, IR, R2, R3, ALU, R1 -->
+                <div class="flex justify-around items-center gap-4 p-4 border border-green-400 rounded-lg bg-white shadow-inner">
+                    <div class="flex flex-col items-center">
+                        <div class="reg-block" id="tracer-pc">PC: 0x1000</div>
+                        <div class="datapath-label">Address</div>
+                    </div>
+                    <div class="arrow-right"></div>
+                    <div class="flex flex-col items-center">
+                        <div class="reg-block" id="tracer-mar">MAR: 0x0</div>
+                        <div class="datapath-label">Address</div>
+                    </div>
+                    <div class="arrow-right"></div>
+                    <div class="flex flex-col items-center">
+                        <div class="reg-block" id="tracer-ir">IR: 0x0</div>
+                        <div class="datapath-label">Instruction</div>
+                    </div>
+                </div>
+                
+                <div class="datapath-bus w-full my-4" id="tracer-bus"></div> <!-- Main Bus for Data Flow -->
+
+                <div class="flex justify-around items-center gap-4 p-4 border border-green-400 rounded-lg bg-white shadow-inner">
+                    <!-- R2 & R3 Source -->
+                    <div class="flex flex-col items-center">
+                        <div class="reg-block" id="tracer-r2-val">R2: 10</div>
+                        <div class="reg-block" id="tracer-r3-val">R3: 5</div>
+                        <div class="datapath-label">Source Operands</div>
+                    </div>
+
+                    <div class="alu-block bg-red-100 border-red-700 py-4 px-8 font-extrabold text-red-800">
+                        ALU
+                    </div>
+
+                    <!-- R1 Destination -->
+                    <div class="flex flex-col items-center">
+                        <div class="reg-block" id="tracer-r1-val">R1: 0</div>
+                        <div class="datapath-label">Destination Result</div>
+                    </div>
+                </div>
+
+                <div class="flex justify-center mt-4">
+                    <div class="cu-block bg-emerald-100 border-emerald-700 px-6 py-2 text-center font-extrabold text-emerald-800">
+                        Control Unit (CU) Signals
+                    </div>
+                </div>
+
             </div>
         </section>
 
     </main>
     
-    <footer class="text-center p-8 mt-8 border-t border-[#F0EBE8]">
-        <p>End of Week 9 Interactive Learning Guide.</p>
-    </footer>
-
     <script>
-    document.addEventListener('DOMContentLoaded', () => {
-        
-        // --- Activity 1: Diagram Labeling ---
-        const labels = ["PC", "MAR", "RAM", "IR", "Control Unit", "ALU"];
-        const labelsContainer = document.getElementById('labels-container');
-        const dropZones = document.querySelectorAll('.drop-zone');
-        const diagramFeedback = document.getElementById('diagram-feedback');
-
-        // Populate labels
-        labels.sort(() => Math.random() - 0.5); // Shuffle
-        labels.forEach(label => {
-            const el = document.createElement('div');
-            el.textContent = label;
-            el.id = `label-${label.replace(' ', '-')}`;
-            el.className = 'draggable-label';
-            el.draggable = true;
-            labelsContainer.appendChild(el);
-        });
-
-        document.querySelectorAll('.draggable-label').forEach(label => {
-            label.addEventListener('dragstart', (e) => {
-                e.dataTransfer.setData('text/plain', e.target.id);
-                e.target.style.opacity = '0.5';
-            });
-            label.addEventListener('dragend', (e) => {
-                e.target.style.opacity = '1';
-            });
-        });
-
-        dropZones.forEach(zone => {
-            zone.addEventListener('dragover', (e) => {
-                e.preventDefault();
-                zone.classList.add('over');
-            });
-            zone.addEventListener('dragleave', () => {
-                zone.classList.remove('over');
-            });
-            zone.addEventListener('drop', (e) => {
-                e.preventDefault();
-                zone.classList.remove('over');
-                const id = e.dataTransfer.getData('text');
-                const draggableElement = document.getElementById(id);
-                if (draggableElement) {
-                    // Prevent dropping on a zone that already has a label
-                    if (zone.children.length === 0) {
-                        zone.appendChild(draggableElement);
-                        draggableElement.style.cursor = 'default';
-                        checkDiagramCompletion();
-                    }
-                }
-            });
-        });
-        
-        function checkDiagramCompletion() {
-            let correctCount = 0;
-            dropZones.forEach(zone => {
-                if (zone.children.length > 0) {
-                    const droppedLabel = zone.children[0].textContent;
-                    if (zone.dataset.label === droppedLabel) {
-                        zone.classList.add('correct');
-                        correctCount++;
-                    } else {
-                        zone.classList.remove('correct');
-                    }
-                }
-            });
-            if (correctCount === labels.length) {
-                diagramFeedback.textContent = 'Excellent! All components are correctly labeled.';
-                diagramFeedback.style.color = '#2b642b';
-            }
-        }
-        
-        // --- Activity 2: "Be the Control Unit" Simulation ---
-        const simState = {
-            step: 1,
-            pc: 0x20,
-            mar: 0x00,
-            ir: 0x00,
-            bus: '--',
-            mem: { 0x20: 0x9A }
-        };
-        
-        const fetchCycleSteps = [
-            { // Step 1: PC -> Bus -> MAR
-                description: "Place the instruction's address onto the bus and load it into the MAR.",
-                correct: { source: 'PC', target: 'MAR', mem: 'none' },
-                updateState: (s) => { s.bus = s.pc; s.mar = s.pc; }
-            },
-            { // Step 2: RAM -> Bus (using MAR address)
-                description: "Read from memory. The address in MAR is used to put the instruction from RAM onto the bus.",
-                correct: { source: 'RAM', target: 'none', mem: 'read' },
-                updateState: (s) => { s.bus = s.mem[s.mar]; }
-            },
-            { // Step 3: Bus -> IR
-                description: "Load the instruction from the bus into the Instruction Register (IR).",
-                correct: { source: 'none', target: 'IR', mem: 'none' },
-                updateState: (s) => { s.ir = s.bus; s.bus = '--'; }
-            },
-            { // Step 4: Increment PC
-                description: "Increment the Program Counter (PC) to point to the next instruction.",
-                correct: { source: 'none', target: 'PC', mem: 'none' },
-                updateState: (s) => { s.pc += 1; }
-            }
-        ];
-        
-        const stateElements = {
-            pc: document.getElementById('state-pc'),
-            mar: document.getElementById('state-mar'),
-            ir: document.getElementById('state-ir'),
-            bus: document.getElementById('state-bus')
-        };
-        const simStepTitle = document.getElementById('simulation-step-title');
-        const simStepDesc = document.getElementById('simulation-step-desc');
-        const simFeedback = document.getElementById('simulation-feedback');
-        const submitBtn = document.getElementById('submit-step-btn');
-        const resetBtn = document.getElementById('reset-sim-btn');
-        
-        function updateSimUI() {
-            Object.keys(stateElements).forEach(key => {
-                const value = simState[key];
-                stateElements[key].textContent = typeof value === 'number' ? `0x${value.toString(16).toUpperCase()}` : value;
-            });
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- 1. Global State Management (No localStorage/sessionStorage) ---
             
-            if (simState.step <= fetchCycleSteps.length) {
-                const currentStep = fetchCycleSteps[simState.step - 1];
-                simStepTitle.textContent = `Step ${simState.step} of ${fetchCycleSteps.length}`;
-                simStepDesc.textContent = currentStep.description;
-                simFeedback.textContent = '';
-                simFeedback.className = 'mt-4 p-3 rounded text-sm';
-                submitBtn.disabled = false;
-            } else {
-                simStepTitle.textContent = 'Fetch Cycle Complete!';
-                simStepDesc.textContent = 'The instruction 0x9A is now in the IR, and the PC is ready for the next cycle.';
-                simFeedback.textContent = 'Well done!';
-                simFeedback.className = 'mt-4 p-3 rounded text-sm feedback-correct';
-                submitBtn.disabled = true;
-            }
-        }
-        
-        document.querySelectorAll('.simulation-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                const group = btn.dataset.simGroup;
-                // For single-select groups
-                if (group === 'source' || group === 'mem') {
-                    document.querySelectorAll(`.simulation-btn[data-sim-group="${group}"]`).forEach(b => b.classList.remove('selected'));
+            const state = {
+                quizVNCorect: 0,
+                quizVNTotal: 4,
+                matchSelectedRegister: null,
+                matchSelectedDescription: null,
+                matchCorrectCount: 0,
+                matchTotalPairs: 4,
+                matchCompletedPairs: {}, // { 'PC': true, ... }
+                
+                // FDE Tracer State
+                tracer: {
+                    step: 0,
+                    instruction: 'ADD R1, R2, R3',
+                    initialPC: 0x1000,
+                    PC: 0x1000,
+                    MAR: 0x0,
+                    IR: 0x0, // Simulated binary for ADD R1, R2, R3
+                    R1: 0,
+                    R2: 10,
+                    R3: 5,
+                    result: 15,
                 }
-                btn.classList.toggle('selected');
-            });
-        });
-        
-        submitBtn.addEventListener('click', () => {
-            const currentStepDef = fetchCycleSteps[simState.step - 1];
-            if (!currentStepDef) return;
-
-            const selections = { source: '', target: '', mem: '' };
-            const selectedSource = document.querySelector('.simulation-btn[data-sim-group="source"].selected');
-            const selectedTargets = Array.from(document.querySelectorAll('.simulation-btn[data-sim-group="target"].selected')).map(b => b.dataset.simValue).sort().join(',');
-            const selectedMem = document.querySelector('.simulation-btn[data-sim-group="mem"].selected');
-
-            const userChoice = {
-                source: selectedSource ? selectedSource.dataset.simValue : 'none',
-                target: selectedTargets.length > 0 ? selectedTargets : 'none',
-                mem: selectedMem ? selectedMem.dataset.simValue : 'none'
             };
-            
-            // Special handling for PC increment logic
-            if(simState.step === 4 && userChoice.target === 'PC') {
-                userChoice.source = 'none';
-                userChoice.mem = 'none';
+
+            // Elements references for the FDE Tracer
+            const $pc = document.getElementById('tracer-pc');
+            const $mar = document.getElementById('tracer-mar');
+            const $ir = document.getElementById('tracer-ir');
+            const $r1 = document.getElementById('tracer-r1-val');
+            const $r2 = document.getElementById('tracer-r2-val');
+            const $r3 = document.getElementById('tracer-r3-val');
+            const $bus = document.getElementById('tracer-bus');
+            const $log = document.getElementById('tracer-log');
+            const $nextButton = document.getElementById('tracer-next-button');
+            const $stepName = document.getElementById('tracer-step-name');
+
+            // List of tracer blocks to easily reset highlighting
+            const tracerBlocks = [
+                $pc, $mar, $ir, $r1, $r2, $r3, $bus,
+                document.querySelector('.alu-block')
+            ];
+
+            // --- Utility Functions ---
+
+            function log(message) {
+                const now = new Date().toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' });
+                $log.innerHTML += `<div>[${now}] ${message}</div>`;
+                $log.scrollTop = $log.scrollHeight; // Auto-scroll
             }
-            
-            if (userChoice.source === currentStepDef.correct.source && 
-                userChoice.target === currentStepDef.correct.target && 
-                userChoice.mem === currentStepDef.correct.mem) {
-                
-                simFeedback.textContent = 'Correct! The state has been updated for the next step.';
-                simFeedback.className = 'mt-4 p-3 rounded text-sm feedback-correct';
-                currentStepDef.updateState(simState);
-                simState.step++;
-                
-                // Delay UI update slightly for feedback to be read
-                setTimeout(() => {
-                    updateSimUI();
-                    // Clear selections
-                     document.querySelectorAll('.simulation-btn.selected').forEach(b => b.classList.remove('selected'));
-                }, 1200);
 
-            } else {
-                 simFeedback.textContent = 'Not quite. Re-check the datapath rules for this step. For example, can you read from RAM and PC at the same time?';
-                 simFeedback.className = 'mt-4 p-3 rounded text-sm feedback-incorrect';
+            function resetTracerHighlights() {
+                tracerBlocks.forEach(el => el.classList.remove('tracer-active', 'tracer-bus-active'));
             }
-        });
-        
-        resetBtn.addEventListener('click', () => {
-            simState.step = 1;
-            simState.pc = 0x20;
-            simState.mar = 0x00;
-            simState.ir = 0x00;
-            simState.bus = '--';
-            document.querySelectorAll('.simulation-btn.selected').forEach(b => b.classList.remove('selected'));
-            updateSimUI();
-        });
 
-        // --- Mastery Quiz ---
-        const quizAnswers = { q1: 'b', q2: 'c', q3: 'a' };
-
-        document.getElementById('check-quiz-btn').addEventListener('click', () => {
-            Object.keys(quizAnswers).forEach(qid => {
-                const feedbackEl = document.getElementById(`${qid}-feedback`);
-                const selected = document.querySelector(`input[name="${qid}"]:checked`);
-                
-                if (selected) {
-                    if (selected.value === quizAnswers[qid]) {
-                        feedbackEl.textContent = 'Correct!';
-                        feedbackEl.className = 'mt-2 p-2 rounded text-sm feedback-correct';
-                    } else {
-                        feedbackEl.textContent = 'Incorrect. Please review the concepts.';
-                        feedbackEl.className = 'mt-2 p-2 rounded text-sm feedback-incorrect';
-                    }
-                } else {
-                    feedbackEl.textContent = 'Please select an answer.';
-                    feedbackEl.className = 'mt-2 p-2 rounded text-sm feedback-incorrect';
+            // --- 2. Activity 1: Von Neumann Quiz Logic ---
+            
+            const vonNeumannQuiz = [
+                {
+                    q: "Which component is responsible for holding the instruction that was just fetched?",
+                    a: "Control Unit",
+                    options: ["Arithmetic Logic Unit (ALU)", "Memory Unit (RAM)", "Input Devices", "Control Unit"]
+                },
+                {
+                    q: "The 'Stored Program Concept' means both data and instructions reside in the:",
+                    a: "Memory Unit (RAM)",
+                    options: ["Control Unit", "Arithmetic Logic Unit (ALU)", "Memory Unit (RAM)", "Output Devices"]
+                },
+                {
+                    q: "Which component is directly responsible for performing a logical comparison (e.g., Greater Than)?",
+                    a: "Arithmetic Logic Unit (ALU)",
+                    options: ["Input Devices", "Arithmetic Logic Unit (ALU)", "Control Unit", "Program Counter (PC)"]
+                },
+                {
+                    q: "What is the primary drawback of having a single bus for both instructions and data?",
+                    a: "Von Neumann bottleneck",
+                    options: ["Increased power consumption", "Reduced instruction set", "Von Neumann bottleneck", "Slower clock speed"]
                 }
-            });
-        });
-        
-        // Initial UI setup
-        updateSimUI();
+            ];
 
-    });
+            const $quizContainer = document.getElementById('quiz-vn-questions');
+            const $quizFeedback = document.getElementById('quiz-vn-feedback');
+            const $quizSubmit = document.getElementById('quiz-vn-submit');
+
+            // Render Quiz Questions
+            vonNeumannQuiz.forEach((q, index) => {
+                const qDiv = document.createElement('div');
+                qDiv.className = 'p-4 border border-gray-200 rounded-lg bg-white';
+                qDiv.innerHTML = `<p class="font-semibold mb-2">${index + 1}. ${q.q}</p>`;
+                
+                q.options.forEach(option => {
+                    const inputId = `q${index}-opt-${option.replace(/\s/g, '-')}`;
+                    const optDiv = document.createElement('div');
+                    optDiv.className = 'flex items-center space-x-2';
+                    optDiv.innerHTML = `
+                        <input type="radio" id="${inputId}" name="q${index}" value="${option}" class="text-indigo-600 focus:ring-indigo-500">
+                        <label for="${inputId}" class="text-gray-700">${option}</label>
+                    `;
+                    qDiv.appendChild(optDiv);
+                });
+                $quizContainer.appendChild(qDiv);
+            });
+
+            // Handle Quiz Submission
+            $quizSubmit.addEventListener('click', () => {
+                let score = 0;
+                let allAnswered = true;
+                
+                vonNeumannQuiz.forEach((q, index) => {
+                    const selector = `input[name="q${index}"]:checked`;
+                    const selected = document.querySelector(selector);
+                    
+                    // Reset styling for review
+                    const questionDiv = $quizContainer.children[index];
+                    questionDiv.classList.remove('border-green-500', 'border-red-500');
+
+                    if (!selected) {
+                        allAnswered = false;
+                        return;
+                    }
+
+                    if (selected.value === q.a) {
+                        score++;
+                        questionDiv.classList.add('border-green-500');
+                    } else {
+                        questionDiv.classList.add('border-red-500');
+                    }
+                });
+
+                if (!allAnswered) {
+                    $quizFeedback.textContent = "Please answer all questions before submitting.";
+                    $quizFeedback.classList.remove('hidden', 'text-green-600');
+                    $quizFeedback.classList.add('text-red-600');
+                    return;
+                }
+                
+                state.quizVNCorect = score;
+                $quizFeedback.textContent = `Quiz Complete! You scored ${score} out of ${state.quizVNTotal}. Great job!`;
+                $quizFeedback.classList.remove('hidden', 'text-red-600');
+                $quizFeedback.classList.add('text-green-600');
+                $quizSubmit.disabled = true; // Disable after submission
+            });
+
+            // --- 3. Activity 2: Register Matching Logic ---
+
+            const $registerChoices = document.querySelectorAll('[data-type="register"]');
+            const $descriptionChoices = document.querySelectorAll('[data-type="description"]');
+            const $matchMessage = document.getElementById('register-match-message');
+
+            function updateMatchMessage() {
+                if (state.matchCorrectCount === state.matchTotalPairs) {
+                    $matchMessage.textContent = `All ${state.matchTotalPairs} pairs matched correctly!`;
+                    $matchMessage.classList.remove('hidden', 'text-red-600');
+                    $matchMessage.classList.add('text-green-600');
+                } else {
+                    $matchMessage.textContent = `Matched ${state.matchCorrectCount} of ${state.matchTotalPairs} pairs.`;
+                    $matchMessage.classList.remove('hidden', 'text-green-600', 'text-red-600');
+                    $matchMessage.classList.add('text-indigo-600');
+                }
+            }
+            updateMatchMessage();
+
+            function handleMatchClick(event) {
+                const el = event.target;
+                const type = el.getAttribute('data-type');
+                const id = el.getAttribute('data-id');
+
+                // If already completed, ignore
+                if (state.matchCompletedPairs[id]) return;
+
+                if (type === 'register') {
+                    // Deselect previous register
+                    if (state.matchSelectedRegister) {
+                        state.matchSelectedRegister.classList.remove('ring-4', 'ring-yellow-500', 'ring-offset-2');
+                    }
+                    // Select new register
+                    state.matchSelectedRegister = el;
+                    el.classList.add('ring-4', 'ring-yellow-500', 'ring-offset-2');
+                } else if (type === 'description') {
+                    // Deselect previous description
+                    if (state.matchSelectedDescription) {
+                        state.matchSelectedDescription.classList.remove('ring-4', 'ring-yellow-500', 'ring-offset-2');
+                    }
+                    // Select new description
+                    state.matchSelectedDescription = el;
+                    el.classList.add('ring-4', 'ring-yellow-500', 'ring-offset-2');
+                }
+
+                // Check for match attempt
+                if (state.matchSelectedRegister && state.matchSelectedDescription) {
+                    const regId = state.matchSelectedRegister.getAttribute('data-id');
+                    const descId = state.matchSelectedDescription.getAttribute('data-id');
+                    
+                    if (regId === descId) {
+                        // Correct Match!
+                        state.matchCorrectCount++;
+                        state.matchCompletedPairs[regId] = true;
+
+                        state.matchSelectedRegister.disabled = true;
+                        state.matchSelectedDescription.disabled = true;
+
+                        state.matchSelectedRegister.classList.remove('ring-4', 'ring-yellow-500', 'bg-yellow-100');
+                        state.matchSelectedRegister.classList.add('bg-green-100', 'text-green-800', 'font-bold');
+                        
+                        state.matchSelectedDescription.classList.remove('ring-4', 'ring-yellow-500', 'bg-gray-100');
+                        state.matchSelectedDescription.classList.add('bg-green-100', 'text-green-800', 'font-bold');
+
+                        // Reset selections
+                        state.matchSelectedRegister = null;
+                        state.matchSelectedDescription = null;
+
+                    } else {
+                        // Incorrect Match!
+                        $matchMessage.textContent = "Incorrect match. Try again!";
+                        $matchMessage.classList.remove('hidden', 'text-green-600', 'text-indigo-600');
+                        $matchMessage.classList.add('text-red-600');
+
+                        // Flash red briefly
+                        state.matchSelectedRegister.classList.add('bg-red-200');
+                        state.matchSelectedDescription.classList.add('bg-red-200');
+
+                        setTimeout(() => {
+                            state.matchSelectedRegister.classList.remove('ring-4', 'ring-yellow-500', 'bg-red-200');
+                            state.matchSelectedDescription.classList.remove('ring-4', 'ring-yellow-500', 'bg-red-200');
+                            state.matchSelectedRegister = null;
+                            state.matchSelectedDescription = null;
+                            updateMatchMessage(); // Reset message
+                        }, 500);
+                    }
+                    updateMatchMessage();
+                }
+            }
+
+            $registerChoices.forEach(btn => btn.addEventListener('click', handleMatchClick));
+            $descriptionChoices.forEach(btn => btn.addEventListener('click', handleMatchClick));
+
+            // --- 4. Activity 3: FDE Cycle Tracer Logic ---
+
+            // The FDE steps for ADD R1, R2, R3 (simulated)
+            const fdeSteps = [
+                // 1. FETCH
+                { 
+                    name: "Fetch 1: PC -> MAR", 
+                    desc: "The address of the next instruction (from PC) is moved to the MAR.",
+                    updates: [{ el: $mar, val: `0x${state.tracer.initialPC.toString(16)}` }],
+                    highlight: [$pc, $mar, $bus],
+                },
+                {
+                    name: "Fetch 2: MEM -> IR",
+                    desc: "The instruction is fetched from memory (using MAR) and loaded into the IR.",
+                    updates: [{ el: $ir, val: "0x2048 (ADD R1, R2, R3)" }],
+                    highlight: [$ir, $bus],
+                },
+                {
+                    name: "Fetch 3: PC + 4",
+                    desc: "The PC is incremented to point to the next instruction.",
+                    updates: [{ el: $pc, val: `0x${(state.tracer.initialPC + 4).toString(16)}` }],
+                    highlight: [$pc],
+                },
+                // 2. DECODE
+                {
+                    name: "Decode 1: IR -> CU",
+                    desc: "The Control Unit decodes the instruction in the IR: an ADD operation involving registers R1, R2, and R3.",
+                    updates: [],
+                    highlight: [$ir, document.querySelector('.cu-block')],
+                },
+                // 3. EXECUTE
+                {
+                    name: "Execute 1: R2, R3 -> ALU",
+                    desc: "Control Unit opens the buses to send data from source registers R2 and R3 to the ALU.",
+                    updates: [],
+                    highlight: [$r2, $r3, document.querySelector('.alu-block'), $bus],
+                },
+                {
+                    name: "Execute 2: ALU Operation",
+                    desc: `The ALU performs the addition: ${state.tracer.R2} + ${state.tracer.R3} = ${state.tracer.result}.`,
+                    updates: [],
+                    highlight: [document.querySelector('.alu-block')],
+                },
+                {
+                    name: "Execute 3: Result -> R1",
+                    desc: "The result is moved from the ALU back through the bus and stored in the destination register R1.",
+                    updates: [{ el: $r1, val: `R1: ${state.tracer.result}` }],
+                    highlight: [$r1, document.querySelector('.alu-block'), $bus],
+                },
+                // 4. NEXT CYCLE (Wrap Up)
+                {
+                    name: "Cycle Complete",
+                    desc: "The FDE cycle is complete. The PC is ready for the next instruction.",
+                    updates: [],
+                    highlight: [],
+                }
+            ];
+
+            function updateTracerUI() {
+                // Update PC/MAR/IR text
+                $pc.textContent = $pc.textContent.split(': ')[0] + `: 0x${state.tracer.PC.toString(16)}`;
+                $mar.textContent = $mar.textContent.split(': ')[0] + `: 0x${state.tracer.MAR.toString(16)}`;
+                $ir.textContent = $ir.textContent.split(': ')[0] + `: ${state.tracer.IR}`;
+                
+                // Update GPR text
+                $r1.textContent = `R1: ${state.tracer.R1}`;
+                $r2.textContent = `R2: ${state.tracer.R2}`;
+                $r3.textContent = `R3: ${state.tracer.R3}`;
+            }
+
+            function handleTracerNext() {
+                const step = fdeSteps[state.tracer.step];
+                
+                if (!step) {
+                    $stepName.textContent = "Tracing Finished!";
+                    $nextButton.textContent = "Restart Tracer";
+                    state.tracer.step = 0;
+                    
+                    // Reset all values to initial state for restart
+                    state.tracer.PC = state.tracer.initialPC;
+                    state.tracer.MAR = 0x0;
+                    state.tracer.IR = 0x0;
+                    state.tracer.R1 = 0;
+                    
+                    resetTracerHighlights();
+                    updateTracerUI();
+                    $log.innerHTML = 'Log: Ready to begin tracing...';
+                    return;
+                }
+
+                resetTracerHighlights();
+                
+                $stepName.textContent = `${step.name}`;
+                log(step.desc);
+
+                // 1. Apply visual highlights
+                step.highlight.forEach(el => {
+                    if (el === $bus) {
+                        el.classList.add('tracer-bus-active');
+                    } else if (el) {
+                        el.classList.add('tracer-active');
+                    }
+                });
+
+                // 2. Apply state/text updates
+                step.updates.forEach(update => {
+                    update.el.textContent = update.val;
+                    // Update internal state
+                    if (update.el === $pc) state.tracer.PC = state.tracer.initialPC + 4;
+                    if (update.el === $mar) state.tracer.MAR = state.tracer.initialPC;
+                    if (update.el === $ir) state.tracer.IR = '0x2048'; // Simulated instruction
+                    if (update.el === $r1) state.tracer.R1 = state.tracer.result;
+                });
+                
+                // 3. Increment step counter
+                state.tracer.step++;
+                if (state.tracer.step < fdeSteps.length) {
+                    $nextButton.textContent = `Next Step (${state.tracer.step + 1}/${fdeSteps.length})`;
+                } else {
+                    $nextButton.textContent = "Finish Cycle";
+                }
+            }
+            
+            // Initial tracer setup
+            updateTracerUI(); 
+            $nextButton.addEventListener('click', handleTracerNext);
+        });
     </script>
 </body>
 </html>
