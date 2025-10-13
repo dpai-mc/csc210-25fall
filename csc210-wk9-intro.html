@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Updated Title for CSC210 Week 9 -->
+    <title>CSC210 - Week 9: Computer Architecture Overview</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            background-color: #FDFBF8;
+            color: #383838;
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .code-font {
+            font-family: 'Fira Code', monospace;
+        }
+        
+        /* Style for the currently active transcript line */
+        .active-transcript-line {
+            background-color: #F0EBE8;
+            font-weight: 600;
+            color: #000;
+            border-left: 4px solid #4a5568; /* Darker accent for active line */
+        }
+
+        /* Skip link style (Accessibility requirement) */
+        .skip-link {
+            position: absolute;
+            top: -40px;
+            left: 0;
+            background: #383838;
+            color: #FDFBF8;
+            padding: 8px;
+            z-index: 100;
+            transition: top 0.3s;
+        }
+
+        .skip-link:focus {
+            top: 0;
+        }
+
+        /* Custom scrollbar for transcript */
+        #transcript-container::-webkit-scrollbar {
+            width: 8px;
+        }
+        #transcript-container::-webkit-scrollbar-thumb {
+            background-color: #cccccc;
+            border-radius: 10px;
+        }
+        #transcript-container::-webkit-scrollbar-thumb:hover {
+            background-color: #a0a0a0;
+        }
+    </style>
+</head>
+<body class="p-4 sm:p-8">
+    <a href="#main-content" class="skip-link rounded-br-md">Skip to main content</a>
+    
+    <div id="main-content" class="max-w-7xl mx-auto">
+        <header class="mb-8">
+            <h1 class="text-3xl sm:text-4xl font-extrabold text-gray-800 mb-2">CSC210 - Week 9: Computer Architecture Overview</h1>
+            <p class="text-lg text-gray-600">Welcome to Week 9! This session introduces the fundamental concepts of computer architecture, focusing on the **Von Neumann model** and the crucial **fetch-decode-execute cycle**.</p>
+        </header>
+
+        <main class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <!-- Video Player Section - Used 'aspect-video' for responsive 16:9 ratio -->
+            <section class="lg:sticky lg:top-8 self-start">
+                <h2 class="text-2xl font-semibold mb-4 text-gray-700">Video Lecture: Von Neumann Architecture and the CPU Cycle</h2>
+                <!-- Video Embed with the new ID and settings -->
+                <div class="aspect-video w-full rounded-xl overflow-hidden shadow-2xl">
+                    <iframe id="youtube-player"
+                            width="100%" height="auto"
+                            src="https://www.youtube.com/embed/-XOImDiwJ2M?si=2xerzaMujnW1L_TE&enablejsapi=1" 
+                            title="YouTube video player"
+                            frameborder="0" 
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                            allowfullscreen
+                            class="w-full h-full"></iframe>
+                </div>
+                <p class="mt-4 text-sm text-gray-500">Video ID: <span class="code-font">-XOImDiwJ2M</span></p>
+            </section>
+
+            <!-- Interactive Transcript Section (Updated for ADA compliance) -->
+            <section>
+                <h2 class="text-2xl font-semibold mb-4 text-gray-700">Video Transcript</h2>
+                <div id="transcript-container" class="h-96 overflow-y-scroll bg-white p-4 rounded-xl shadow-inner border border-gray-200">
+                    <p class="text-center text-gray-400">Loading transcript...</p>
+                    <!-- Transcript lines will be injected here -->
+                </div>
+                <p class="mt-4 text-sm text-gray-600">Click any line in the transcript or use the **Enter/Space** keys when focused to jump to that moment in the video.</p>
+            </section>
+        </main>
+    </div>
+
+    <script type="text/javascript">
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- Configuration ---
+            const videoId = '-XOImDiwJ2M'; // New video ID for Computer Architecture
+            let player;
+            let timeUpdater;
+            let parsedTranscript = [];
+
+            // New transcript content for CSC210 Week 9
+            const transcriptData = `1
+00:00:00,000 --> 00:00:06,320
+Aloha and welcome to week 9. So this week we're going to talk about the CPU
+
+2
+00:00:06,320 --> 00:00:14,560
+architecture and so what we're going to cover three basic concepts this week one
+
+3
+00:00:14,560 --> 00:00:20,400
+is the von Neumann architecture and then we'll talk about CPUs and registers and
+
+4
+00:00:20,400 --> 00:00:27,200
+then the last will be the fetch decode execute cycle okay so von Neumann
+
+5
+00:00:27,200 --> 00:00:34,500
+basically describes like the major components of CPU how it works you know
+
+6
+00:00:34,500 --> 00:00:41,000
+of a computer and how it works in a very broad term so it's a very top-level idea
+
+7
+00:00:41,000 --> 00:00:45,880
+of how a computer should operate okay and that's what do you want to get out
+
+8
+00:00:45,880 --> 00:00:52,900
+of the von Neumann architecture is basically five major components and if
+
+9
+00:00:52,900 --> 00:00:58,080
+you read your textbook it'll talk about the first one is the memory and the
+
+10
+00:00:58,080 --> 00:01:03,800
+second is the arithmetic and logic unit the third is the control unit and the
+
+11
+00:01:03,800 --> 00:01:10,240
+fourth is the input and output system okay the fourth and the fifth of the input
+
+12
+00:01:10,240 --> 00:01:16,240
+and the output system okay so that's five major components of the von Neumann
+
+13
+00:01:16,240 --> 00:01:21,380
+architecture and so what you need to know about that is the major components and
+
+14
+00:01:21,380 --> 00:01:25,040
+what their functions are okay so that's the von Neumann architecture.
+
+15
+00:01:25,040 --> 00:01:31,440
+The second part is the CPU and registers. I'm not going to talk too much about
+
+16
+00:01:31,440 --> 00:01:35,920
+registers here because we've covered it for the last couple of weeks.
+
+17
+00:01:35,920 --> 00:01:40,240
+We've covered what the register is and how it's used.
+
+18
+00:01:40,240 --> 00:01:45,200
+It's basically a small storage unit on the CPU where all the operations
+
+19
+00:01:45,200 --> 00:01:50,440
+and all the data is stored to be operated on.
+
+20
+00:01:50,440 --> 00:01:53,400
+Okay so that's the registers. We've talked about that.
+
+21
+00:01:53,400 --> 00:01:59,680
+And the last part is the fetch decode execute cycle.
+
+22
+00:01:59,680 --> 00:02:02,780
+This is probably the most important part of this week.
+
+23
+00:02:02,780 --> 00:02:11,040
+And basically it's the cycle of how the computer runs an instruction.
+
+24
+00:02:11,040 --> 00:02:15,000
+And so there's three major steps. The first is fetch.
+
+25
+00:02:15,000 --> 00:02:19,200
+Fetch is the part where the control unit goes to the memory
+
+26
+00:02:19,200 --> 00:02:24,340
+and pulls the next instruction into the CPU.
+
+27
+00:02:24,340 --> 00:02:30,760
+Okay and that's the part where the control unit tells the memory okay I need
+
+28
+00:02:30,760 --> 00:02:34,480
+this instruction and the memory gives it to the control unit.
+
+29
+00:02:34,480 --> 00:02:39,000
+The second part is decode. Decode is the part where the control unit
+
+30
+00:02:39,000 --> 00:02:44,700
+translates the instruction into what it needs to do.
+
+31
+00:02:44,700 --> 00:02:48,960
+So if it's an add instruction it tells the arithmetic and logic unit to
+
+32
+00:02:48,960 --> 00:02:51,780
+add two numbers together.
+
+33
+00:02:51,780 --> 00:02:56,380
+Okay and that's where the arithmetic and logic unit is involved.
+
+34
+00:02:56,380 --> 00:03:00,160
+And the last part is execute. Execute is the part where the
+
+35
+00:03:00,160 --> 00:03:06,300
+the instruction is actually performed and the result is stored back into the
+
+36
+00:03:06,300 --> 00:03:10,240
+memory or into a register on the CPU.
+
+37
+00:03:10,240 --> 00:03:14,460
+Okay so those are the three major steps of the fetch decode execute
+
+38
+00:03:14,460 --> 00:03:19,860
+cycle. And what you need to know about that is the three major steps and what
+
+39
+00:03:19,860 --> 00:03:22,260
+they do and what components are involved.
+
+40
+00:03:22,260 --> 00:03:28,400
+Okay and so that's the three major concepts for this week. Von Neumann
+
+41
+00:03:28,400 --> 00:03:32,800
+architecture, CPU and registers and fetch decode execute cycle.
+
+42
+00:03:32,800 --> 00:03:37,840
+The reading assignments are listed right here in your course content
+
+43
+00:03:37,840 --> 00:03:42,200
+page and I'm going to update this video
+
+44
+00:03:42,200 --> 00:03:46,600
+to reflect the proper video okay so I'll make sure that works
+
+45
+00:03:46,600 --> 00:03:52,060
+and the last part of this week is assignments.
+
+46
+00:03:52,060 --> 00:03:56,420
+There's no new assignment this week because you're still working on your midterm
+
+47
+00:03:56,420 --> 00:04:00,520
+so please complete your midterms and work on the lab assignment for next week.
+
+48
+00:04:00,520 --> 00:04:02,680
+Okay and that's the end of this week.
+
+49
+00:04:02,680 --> 00:04:05,080
+I hope you have a great week and thank you.`;
+
+            // --- Utility Functions ---
+
+            // Converts time string (HH:MM:SS,ms) to seconds
+            function timeToSeconds(timeStr) {
+                if (!timeStr) return 0;
+                const parts = timeStr.replace(',', '.').split(':');
+                const hours = parseInt(parts[0]) || 0;
+                const minutes = parseInt(parts[1]) || 0;
+                const seconds = parseFloat(parts[2]) || 0;
+                return hours * 3600 + minutes * 60 + seconds;
+            }
+
+            // Parses SRT data into an array of objects
+            function parseSrt(srtText) {
+                const lines = srtText.trim().split('\n');
+                const cues = [];
+                let currentCue = null;
+
+                for (const line of lines) {
+                    if (line.match(/^\d+$/)) {
+                        // Start of a new cue (sequence number)
+                        if (currentCue) {
+                            cues.push(currentCue);
+                        }
+                        currentCue = { number: parseInt(line), text: [] };
+                    } else if (line.includes('-->') && currentCue) {
+                        // Timestamps
+                        const [startTimeStr, endTimeStr] = line.split(' --> ');
+                        currentCue.start = timeToSeconds(startTimeStr.trim());
+                        currentCue.end = timeToSeconds(endTimeStr.trim());
+                    } else if (line.trim() !== '' && currentCue) {
+                        // Dialogue text
+                        currentCue.text.push(line.trim());
+                    }
+                }
+                // Push the last cue
+                if (currentCue) {
+                    cues.push(currentCue);
+                }
+
+                // Join text array into a single string
+                return cues.map(cue => ({
+                    ...cue,
+                    text: cue.text.join(' ')
+                }));
+            }
+
+            // Populates the transcript container - updated for ADA compliance
+            function populateTranscript() {
+                const container = document.getElementById('transcript-container');
+                container.innerHTML = '';
+
+                parsedTranscript.forEach((cue, index) => {
+                    // Use a div with role="button" and tabindex="0" for keyboard focus/interaction
+                    const lineElement = document.createElement('div');
+                    lineElement.className = 'transcript-line p-2 cursor-pointer hover:bg-gray-100 rounded-lg text-base focus:outline-none focus:ring-2 focus:ring-gray-400';
+                    lineElement.dataset.start = cue.start;
+                    lineElement.dataset.end = cue.end;
+                    lineElement.dataset.index = index;
+                    lineElement.textContent = cue.text;
+                    
+                    // ADA: Role and Tabindex for making it keyboard focusable
+                    lineElement.setAttribute('role', 'button');
+                    lineElement.setAttribute('tabindex', '0');
+                    lineElement.setAttribute('aria-label', `Jump to ${Math.floor(cue.start)} seconds: ${cue.text.substring(0, 50)}...`);
+
+                    const seekToTime = () => {
+                        if (player && player.seekTo) {
+                            player.seekTo(cue.start, true);
+                            player.playVideo();
+                        }
+                    };
+
+                    lineElement.addEventListener('click', seekToTime);
+                    
+                    // ADA: Handle Enter and Space keys
+                    lineElement.addEventListener('keydown', (event) => {
+                        if (event.key === 'Enter' || event.key === ' ') {
+                            event.preventDefault(); // Prevent default scroll for spacebar
+                            seekToTime();
+                        }
+                    });
+
+                    container.appendChild(lineElement);
+                });
+            }
+
+            // Highlights the current line and scrolls it into view
+            function highlightCurrentLine() {
+                if (!player || !player.getCurrentTime) return;
+
+                const currentTime = player.getCurrentTime();
+                const lines = document.querySelectorAll('.transcript-line');
+                let foundActive = false;
+
+                lines.forEach(line => {
+                    const start = parseFloat(line.dataset.start);
+                    const end = parseFloat(line.dataset.end);
+
+                    if (currentTime >= start && currentTime < end) {
+                        if (!line.classList.contains('active-transcript-line')) {
+                            // Deactivate previous active line
+                            document.querySelector('.active-transcript-line')?.classList.remove('active-transcript-line');
+                            // Activate current line
+                            line.classList.add('active-transcript-line');
+                            
+                            // Scroll line into view if it's not already visible
+                            const container = document.getElementById('transcript-container');
+                            const containerRect = container.getBoundingClientRect();
+                            const lineRect = line.getBoundingClientRect();
+
+                            // Only scroll if the line is partially or completely outside the view
+                            if (lineRect.top < containerRect.top || lineRect.bottom > containerRect.bottom) {
+                                line.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                            }
+                        }
+                        foundActive = true;
+                    } else {
+                        line.classList.remove('active-transcript-line');
+                    }
+                });
+
+                // If playback stops, clear highlighting after the last line's duration
+                if (!foundActive && player.getPlayerState() !== YT.PlayerState.PLAYING) {
+                     document.querySelector('.active-transcript-line')?.classList.remove('active-transcript-line');
+                }
+            }
+
+
+            // --- YouTube Player API Functions ---
+            window.onYouTubeIframeAPIReady = function() {
+                player = new YT.Player('youtube-player', {
+                    videoId: videoId,
+                    events: {
+                        'onReady': onPlayerReady,
+                        'onStateChange': onPlayerStateChange
+                    }
+                });
+            };
+
+            function onPlayerReady(event) {
+                console.log('YouTube player is ready.');
+            }
+
+            function onPlayerStateChange(event) {
+                clearInterval(timeUpdater); // Clear any existing interval
+                if (event.data === YT.PlayerState.PLAYING) {
+                    timeUpdater = setInterval(highlightCurrentLine, 300);
+                }
+            }
+            
+            // --- Initialization ---\
+            function initialize() {
+                parsedTranscript = parseSrt(transcriptData);
+                populateTranscript();
+                
+                // Load the YouTube IFrame Player API script if it's not already loaded
+                if (typeof(YT) == 'undefined' || typeof(YT.Player) == 'undefined') {
+                    const tag = document.createElement('script');
+                    tag.src = "https://www.youtube.com/iframe_api";
+                    const firstScriptTag = document.getElementsByTagName('script')[0];
+                    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+                } else {
+                    onYouTubeIframeAPIReady();
+                }
+                
+                console.log('Introduction page initialized.');
+            }
+
+            initialize();
+        });
+    </script>
+</body>
+</html>
