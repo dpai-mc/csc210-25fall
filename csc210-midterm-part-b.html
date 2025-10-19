@@ -451,7 +451,7 @@
             </table>
             
             <div class="info-box">
-                <strong>Note:</strong> Opcode 111 is unused and its corresponding multiplexer input pin should be left disconnected for this assignment. In a real-world design, when we have unused opcodes like this, we would design the circuit to handle this case appropriately (e.g., output all zeros, trigger an error flag, or default to a specific safe operation).
+                <strong>Note:</strong> Opcode 111 is unused and its corresponding <strike>multiplexor input</strike> decoder output pin should be left disconnected for this assignment. In a real-world design, when we have unused opcodes like this, we would design the circuit to handle this case appropriately (e.g., output all zeros, trigger an error flag, or default to a specific safe operation).
             </div>
         </section>
         
@@ -465,10 +465,12 @@
                 <ol style="list-style-type: decimal; margin-left: 2rem; margin-top: 1rem;">
                     <li style="margin-bottom: 0.75rem;"><strong>Create Input Pins:</strong> Two 8-bit input pins (A and B) and one 3-bit input pin (Opcode)</li>
                     <li style="margin-bottom: 0.75rem;"><strong>Connect All Circuit Components:</strong> Wire both inputs A and B to all circuits that need them</li>
-                    <li style="margin-bottom: 0.75rem;"><strong>Add a Multiplexer:</strong> Use an 8:1 multiplexer (8-bits wide) to select which circuit's output to send to the ALU output</li>
-                    <li style="margin-bottom: 0.75rem;"><strong>Connect the Multiplexer:</strong> Wire each circuit's output to the appropriate multiplexer input based on the opcode table above</li>
+                    <li style="margin-bottom: 0.75rem;"><strong>Add a <strike>Multiplexer</strike> decoder:</strong> Use an <strike>8:1 multiplexer (8-bits wide)</strike> 3-to-8 decoder to select which circuit's output to send to the ALU output</li>
+                    <li style="margin-bottom: 0.75rem;"><strong>Connect the <strike>Multiplexer</strike> decoder:</strong> Wire each decoder output to the enable pin on the appropriate 8-bit enable added to each circuit's output (see detailed instructions for diagrams and details)</li>
+                    <strike>
                     <li style="margin-bottom: 0.75rem;"><strong>Connect Opcode to Selector:</strong> Wire the 3-bit opcode input to the multiplexer's selector input</li>
                     <li style="margin-bottom: 0.75rem;"><strong>Create Output Pin:</strong> Create an 8-bit output pin connected to the multiplexer output</li>
+                    </strike>
                 </ol>
                 
                 <div class="checkbox-item" style="margin-top: 1rem;">
@@ -483,22 +485,22 @@
                 
                 <div class="checkbox-item">
                     <input type="checkbox" id="step-mux" aria-label="Multiplexer added">
-                    <label for="step-mux">8:1 multiplexer (8-bits wide) added and configured</label>
+                    <label for="step-mux"><strike>8:1 multiplexer (8-bits wide)</strike> 3-to-8 decoder added and configured</label>
                 </div>
                 
                 <div class="checkbox-item">
                     <input type="checkbox" id="step-connections" aria-label="Multiplexer connections complete">
-                    <label for="step-connections">All circuit outputs connected to correct multiplexer inputs</label>
+                    <label for="step-connections">8-bit Enable circuit added to all circuit outputs <strike>connected to correct multiplexer inputs</strike>. </label>
                 </div>
                 
                 <div class="checkbox-item">
                     <input type="checkbox" id="step-selector" aria-label="Opcode connected to selector">
-                    <label for="step-selector">Opcode input connected to multiplexer selector</label>
+                    <label for="step-selector">Opcode input connected to <strike>multiplexer selector</strike> 3-to-8 decoder.</label>
                 </div>
                 
                 <div class="checkbox-item">
                     <input type="checkbox" id="step-output" aria-label="Output pin created">
-                    <label for="step-output">8-bit output pin created and connected</label>
+                    <label for="step-output"><srike>8-bit output pin created and connected</srike> 3-t0-8 Decoder output pins 0-6 connected to the appropriate 8-bit enable to match the opcode table provided.</label>
                 </div>
             </div>
             
@@ -514,9 +516,9 @@
             <div class="info-box">
                 <strong>Flag Definitions:</strong>
                 <ul style="list-style-type: disc; margin-left: 2rem; margin-top: 0.5rem;">
-                    <li><strong>Is Even:</strong> Result's LSB (least significant bit) is 0</li>
+                    <li><strong>Is Even:</strong> <strike>Result's LSB (least significant bit) is 0</strike> Checks if input A is equal to input B.</li>
                     <li><strong>Is Larger:</strong> A &gt; B (comparison of inputs)</li>
-                    <li><strong>Cout:</strong> Carry out flag (1 if addition overflows, or bit shifted out for shift operations)</li>
+                    <li><strong>Cout:</strong> Carry out flag (1 if addition overflows, or a 1 bit shifted out for shift operations)</li>
                     <li><strong>Zero:</strong> Result is 00000000</li>
                 </ul>
             </div>
