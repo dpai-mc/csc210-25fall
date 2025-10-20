@@ -1,0 +1,1053 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>7-Operation ALU Explorer (Decoder Architecture)</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        // MANDATORY: Configure Tailwind to include the Typography plugin for consistent text/heading styling.
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        'bg-primary': '#FDFBF8', // Light Background
+                        'text-primary': '#1A1A1A', // Dark Text
+                        'accent': '#3b82f6', // Professional Blue
+                        'success': '#10b981', // Green for flags/active
+                        'error': '#ef4444', // Red for errors/X
+                        'warning': '#f59e0b', // Yellow for warnings
+                        'disabled': '#d1d5db', // Gray for disabled elements
+                    }
+                },
+            },
+            plugins: [
+                tailwind.require('@tailwindcss/typography'),
+            ],
+        }
+    </script>
+    <style>
+        /* Essential for ensuring light mode and setting base font */
+        html {
+            font-family: 'Inter', sans-serif;
+            background-color: #FDFBF8; /* Light background */
+            color: #1A1A1A; /* Dark text */
+            scroll-behavior: smooth; /* For skip link */
+        }
+        /* Override Tailwind default dark mode behavior */
+        @media (prefers-color-scheme: dark) {
+            html {
+                background-color: #FDFBF8 !important;
+                color: #1A1A1A !important;
+            }
+        }
+        /* Skip Link Style */
+        .skip-link {
+            position: absolute;
+            top: -40px;
+            left: 0;
+            background: #1A1A1A;
+            color: white;
+            padding: 8px;
+            z-index: 100;
+            transition: top 0.3s;
+        }
+        .skip-link:focus {
+            top: 0;
+        }
+        /* Custom visualization classes */
+        .decoder-line {
+            transition: all 0.2s ease-in-out;
+            @apply border-r-2 border-dashed border-disabled text-text-primary/70;
+        }
+        .decoder-active {
+            @apply border-accent font-bold text-accent;
+        }
+        .unit-box {
+            transition: all 0.2s ease-in-out;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+            @apply bg-white p-2 rounded-lg text-center border-2 border-disabled relative;
+        }
+        .unit-active {
+            @apply bg-accent/10 border-success shadow-lg;
+            animation: pulse-glow 1s infinite alternate;
+        }
+        .connector-line {
+            transition: all 0.2s ease-in-out;
+            @apply border-b border-disabled;
+        }
+        .connector-active {
+            @apply border-success border-solid;
+        }
+        /* Keyframe for subtle pulse effect */
+        @keyframes pulse-glow {
+            from { box-shadow: 0 0 5px rgba(59, 130, 246, 0.5); }
+            to { box-shadow: 0 0 10px rgba(59, 130, 246, 0.8); }
+        }
+        /* Custom scrollbar for mobile tabs */
+        .tab-scroll-container::-webkit-scrollbar {
+            height: 4px;
+        }
+        .tab-scroll-container::-webkit-scrollbar-thumb {
+            background: #d1d5db;
+            border-radius: 2px;
+        }
+        .tab-scroll-container::-webkit-scrollbar-track {
+            background: #f3f4f6;
+        }
+        .prose table {
+            @apply table-auto w-full border-collapse;
+        }
+        .prose th, .prose td {
+            @apply border border-gray-300 p-2;
+        }
+    </style>
+
+    </head>
+<body class="bg-bg-primary text-text-primary">
+    <a id="skip-to-content" href="#main-content" class="skip-link" aria-label="Skip to main content">Skip to Content</a>
+
+    <header class="shadow-md bg-white sticky top-0 z-10">
+        <div class="max-w-7xl mx-auto px-4 py-4 sm:px-6 lg:px-8">
+            <h1 class="text-3xl font-extrabold text-gray-900">7-Operation ALU Explorer (Decoder Architecture)</h1>
+        </div>
+    </header>
+
+    <main id="main-content" class="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8">
+
+        <nav class="mb-6">
+            <div id="tab-list" role="tablist" aria-label="ALU Learning Guide Sections" class="flex flex-row overflow-x-auto tab-scroll-container border-b border-gray-300">
+                <button id="tab-concept" role="tab" aria-selected="true" aria-controls="panel-concept" class="tab-button px-4 py-2 text-lg font-medium border-b-2 border-accent text-accent focus:outline-none focus:ring-2 focus:ring-accent-500 transition-colors duration-150" data-target="panel-concept">
+                    Foundational Concepts
+                </button>
+                <button id="tab-explorer" role="tab" aria-selected="false" aria-controls="panel-explorer" class="tab-button px-4 py-2 text-lg font-medium border-b-2 border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:outline-none focus:ring-2 focus:ring-accent-500 transition-colors duration-150" data-target="panel-explorer">
+                    Interactive Explorer
+                </button>
+                <button id="tab-activities" role="tab" aria-selected="false" aria-controls="panel-activities" class="tab-button px-4 py-2 text-lg font-medium border-b-2 border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:outline-none focus:ring-2 focus:ring-accent-500 transition-colors duration-150" data-target="panel-activities">
+                    Challenges & Quiz
+                </button>
+            </div>
+        </nav>
+
+        <div id="tab-panels" class="space-y-12">
+
+            <section id="panel-concept" role="tabpanel" aria-labelledby="tab-concept" class="tab-panel prose max-w-none p-4 sm:p-6 lg:p-8 bg-white rounded-xl shadow-lg">
+                <h2 class="text-2xl font-bold">Your 7-Operation ALU: The Heart of Computation</h2>
+                <p>Welcome to one of the most important components in your CPU! You built this Arithmetic Logic Unit (ALU) back in Week 6, but now we're going to really understand how it works at the architectural level.</p>
+                
+                <h3>What Does Your ALU Actually Do?</h3>
+                <p>Think of your ALU as a Swiss Army knife with exactly 7 tools. Each tool (operation) does something different, and you select which tool to use by giving the ALU a 3-bit code called an **operation code** or **opcode**. Your ALU takes in two 8-bit numbers (we call them **Input A** and **Input B**), performs the selected operation, and produces an 8-bit result plus some helpful status flags.</p>
+                
+                <h3>The Decoder-Based Architecture</h3>
+                <p>Here's where your ALU design is particularly elegant! Inside your ALU, you have 7 separate functional units all computing their results simultaneously:</p>
+                <ul>
+                    <li>An **Adder** - Does 8-bit addition</li>
+                    <li>A **Shift Right Unit** - Shifts bits to the right</li>
+                    <li>A **Shift Left Unit** - Shifts bits to the left</li>
+                    <li>A **NOT Unit** - Inverts all bits</li>
+                    <li>An **OR Unit** - Performs bitwise OR</li>
+                    <li>An **AND Unit** - Performs bitwise AND</li>
+                    <li>An **XOR Comparator** - Performs XOR and generates comparison flags</li>
+                </ul>
+                <p>All seven units are computing their results at the same time! But here's the clever part: you only see **ONE** result on the output bus. This is accomplished using a **3-to-8 decoder** connected to **enable circuits**.</p>
+                
+                <h3>How the Decoder Control Works</h3>
+                <p>Instead of using a multiplexer to select outputs (which is another valid approach), your design uses a more distributed control mechanism:</p>
+                <h4>The 3-to-8 Decoder:</h4>
+                <ul>
+                    <li>Takes the 3-bit opcode as input</li>
+                    <li>Produces 8 output lines (one for each possible 3-bit combination)</li>
+                    <li>Only **ONE** output line is **HIGH** at any time</li>
+                    <li>The HIGH line corresponds to the binary value of the opcode</li>
+                </ul>
+                <h4>Enable Circuits:</h4>
+                <ul>
+                    <li>Each functional unit has an enable circuit connected to one decoder output line</li>
+                    <li>When the enable signal is **HIGH**, that unit drives its result onto the output bus</li>
+                    <li>When the enable signal is **LOW**, that unit is disconnected (tri-state/high-impedance)</li>
+                    <li>This ensures only one unit drives the bus at any time, preventing conflicts</li>
+                </ul>
+                <p><strong>Example Flow:</strong> Opcode = **101** (binary) → Decoder activates **output line 5** → Enable circuit for **AND unit** goes HIGH → AND unit drives its result (A & B) onto output bus → All other units are disabled (high-impedance) → Result appears at ALU output</p>
+                <div class="my-4 p-3 border-l-4 border-accent bg-accent/10 rounded">
+                    <p class="font-semibold text-accent">Key Insight: Only ONE enable line is HIGH at any time, so only ONE functional unit drives the bus. This is similar to the tri-state bus architecture you learned about in Week 9 with the register file!</p>
+                </div>
+
+                <hr>
+                
+                <h3 class="text-2xl font-bold">Your Complete Operation Table</h3>
+                <p>Here's the definitive guide to your ALU. You'll want to memorize this!</p>
+                <table class="w-full text-sm">
+                    <thead>
+                        <tr>
+                            <th>OpCode</th>
+                            <th>Operation</th>
+                            <th>Decoder Output</th>
+                            <th>What It Does</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>000</td><td>ADD</td><td>Line 0</td><td>Output = A + B</td></tr>
+                        <tr><td>001</td><td>SHR</td><td>Line 1</td><td>Output = A >> 1 (shift right)</td></tr>
+                        <tr><td>010</td><td>SHL</td><td>Line 2</td><td>Output = A << 1 (shift left)</td></tr>
+                        <tr><td>011</td><td>NOT</td><td>Line 3</td><td>Output = ~A (bitwise invert)</td></tr>
+                        <tr><td>100</td><td>OR</td><td>Line 4</td><td>Output = A | B (bitwise OR)</td></tr>
+                        <tr><td>101</td><td>AND</td><td>Line 5</td><td>Output = A & B (bitwise AND)</td></tr>
+                        <tr><td>110</td><td>XOR+CMP</td><td>Line 6</td><td>Output = A ^ B (XOR comparator)</td></tr>
+                        <tr><td>111</td><td>UNUSED</td><td>Line 7</td><td>DON'T USE (no unit connected!)</td></tr>
+                    </tbody>
+                </table>
+                <p class="mt-2 text-sm text-warning font-semibold">Important Note About OpCode 111: The decoder will activate line 7 if you use opcode 111, but there's no functional unit connected to that enable line! This means no unit will drive the output bus, resulting in undefined behavior (floating bus). In your design, it's intentionally unused—so never set the opcode to 111!</p>
+
+                <hr>
+
+                <h3 class="text-2xl font-bold">Understanding the Output Flags</h3>
+                <p>Your ALU doesn't just produce a result—it also tells you important information ABOUT that result through two status flags:</p>
+                
+                <h4>Zero Flag (<code class="font-mono">output == 00000000</code>):</h4>
+                <ul>
+                    <li>Is the result exactly zero? Generated by checking if all 8 output bits are 0.</li>
+                    <li>**Valid for: ALL operations (000-110)**. This is one of the most commonly used flags in any CPU!</li>
+                </ul>
+                
+                <h4>Carry-out/Shift-out Flag (<code class="font-mono">c-out</code>):</h4>
+                <p>This flag serves double duty!</p>
+                <ul>
+                    <li>**For ADD (opcode 000):** The carry-out from bit 7 (most significant bit). Indicates unsigned overflow.</li>
+                    <li>**For SHIFT operations (opcodes 001, 010):** The bit that "falls off" the edge (original bit 0 for SHR, original bit 7 for SHL).</li>
+                    <li>**For other operations (NOT, OR, AND, XOR+CMP):** Typically cleared to 0 or ignored.</li>
+                </ul>
+                
+                <h4>Special XOR Comparator Flags (Opcode 110 Only):</h4>
+                <p>The XOR comparator operation is unique! In addition to performing A XOR B, it also generates two special comparison flags:</p>
+                <ul>
+                    <li>**A > B flag:** Set to 1 if Input A is greater than Input B (unsigned comparison).</li>
+                    <li>**A == B flag:** Set to 1 if Input A equals Input B.</li>
+                </ul>
+
+                <hr>
+
+                <h3 class="text-2xl font-bold">How This Connects to Your CPU</h3>
+                <p>Remember the fetch-decode-execute cycle from Week 9? During the EXECUTE phase, your control unit sends the appropriate 3-bit opcode (one of 000-110) to your ALU. The decoder activates the corresponding enable line, and the enabled functional unit drives its result onto the output bus. The flags (Zero and c-out) update to reflect the result.</p>
+                <div class="my-4 p-3 border-l-4 border-success bg-success/10 rounded">
+                    <p class="font-semibold text-success">Week 9 Connection: Remember how the register file used tri-state buffers to put data on the bus? Your ALU uses the exact same concept! The decoder enables one unit, just like how register selection enabled one register to drive the bus.</p>
+                </div>
+            </section>
+
+            <section id="panel-explorer" role="tabpanel" aria-labelledby="tab-explorer" class="tab-panel hidden space-y-8">
+                <h2 class="text-2xl font-bold mb-4">Interactive ALU Operation Explorer</h2>
+                <div class="prose max-w-none p-4 sm:p-6 lg:p-8 bg-white rounded-xl shadow-lg">
+                    <h3>Getting Started</h3>
+                    <p>Now it's time to get hands-on! The simulator below lets you experiment with your 7-operation ALU in real-time. Here's how to use it effectively:</p>
+                    <ol>
+                        <li><strong>Set Your Inputs:</strong> Use the hexadecimal input fields to set Input A and Input B. Try starting with A = 0x55 and B = 0x33.</li>
+                        <li><strong>Select an Operation:</strong> Click on any of the 7 operation buttons. Notice the **opcode** and **decoder line** change.</li>
+                        <li><strong>Observe the Decoder in Action:</strong> The central visualization shows which decoder output line is **active** and which functional unit is **enabled**.</li>
+                        <li><strong>Observe the Results:</strong> The result and status flags (Zero, c-out, A>B, A==B) are shown immediately.</li>
+                    </ol>
+                    <p class="mt-4 font-semibold text-warning">Warning: **OR** is opcode **100** (line 4) and **AND** is opcode **101** (line 5) in this specific ALU design!</p>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+                    <div class="space-y-6 lg:col-span-1">
+                        <div class="p-6 bg-white rounded-xl shadow-lg space-y-4">
+                            <h3 class="text-xl font-semibold mb-3 border-b pb-2">1. Input Controls</h3>
+                            <div>
+                                <label for="input-a-hex" class="block text-sm font-medium text-gray-700 mb-1">Input A (8-bit Hex: 00-FF)</label>
+                                <input type="text" id="input-a-hex" value="55" maxlength="2" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-lg font-mono focus:ring-accent focus:border-accent" aria-label="Input A in Hexadecimal">
+                                <p class="text-xs mt-1 text-gray-600">Binary: <span id="input-a-bin" class="font-mono">01010101</span> | Decimal: <span id="input-a-dec" class="font-mono">85</span></p>
+                            </div>
+                            <div>
+                                <label for="input-b-hex" class="block text-sm font-medium text-gray-700 mb-1">Input B (8-bit Hex: 00-FF)</label>
+                                <input type="text" id="input-b-hex" value="33" maxlength="2" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-lg font-mono focus:ring-accent focus:border-accent" aria-label="Input B in Hexadecimal">
+                                <p class="text-xs mt-1 text-gray-600">Binary: <span id="input-b-bin" class="font-mono">00110011</span> | Decimal: <span id="input-b-dec" class="font-mono">51</span></p>
+                            </div>
+                            <button id="random-example-btn" class="w-full bg-warning text-white py-2 rounded-lg font-semibold hover:bg-warning/80 transition-colors focus:ring-2 focus:ring-warning focus:ring-offset-2">
+                                Random Example
+                            </button>
+                        </div>
+
+                        <div class="p-6 bg-white rounded-xl shadow-lg">
+                            <h3 class="text-xl font-semibold mb-3 border-b pb-2">2. Operation Selector</h3>
+                            <div id="operation-selector" class="grid grid-cols-2 gap-3">
+                                </div>
+                            <button id="op-111-disabled" disabled title="The decoder activates line 7, but no functional unit is connected. This results in an undefined output (floating bus)." class="w-full mt-4 bg-disabled/50 text-gray-500 py-2 rounded-lg font-semibold cursor-not-allowed">
+                                111: UNUSED (Line 7)
+                            </button>
+                            <p class="mt-2 text-sm text-center text-gray-600">
+                                Press keys **0** through **6** to select an operation.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="p-6 bg-white rounded-xl shadow-lg lg:col-span-2 relative">
+                        <h3 class="text-xl font-semibold mb-4 border-b pb-2 text-center">3. Decoder & Enable Visualization</h3>
+                        <div class="flex flex-col items-center">
+                            <div class="p-2 bg-gray-100 rounded-lg border-2 border-gray-300 shadow-inner">
+                                <p class="text-xs font-semibold text-gray-700">OpCode Input</p>
+                                <div id="opcode-display" class="text-2xl font-mono text-accent font-bold">000</div>
+                            </div>
+                            <div class="h-4 w-0 border-r-2 border-dashed border-gray-500"></div>
+
+                            <div class="relative bg-gray-200 p-4 rounded-lg shadow-xl border-4 border-gray-400 w-3/4 max-w-sm">
+                                <p class="text-sm font-bold text-center">3-to-8 Decoder</p>
+                                <p class="text-xs text-center text-gray-600">Input → OpCode (3 bits)</p>
+                                <div id="decoder-outputs" class="flex flex-col space-y-1 mt-2">
+                                    <div id="line-0" class="decoder-line py-0.5 pr-2 text-xs font-mono" data-line="0">Line 0: ADD</div>
+                                    <div id="line-1" class="decoder-line py-0.5 pr-2 text-xs font-mono" data-line="1">Line 1: SHR</div>
+                                    <div id="line-2" class="decoder-line py-0.5 pr-2 text-xs font-mono" data-line="2">Line 2: SHL</div>
+                                    <div id="line-3" class="decoder-line py-0.5 pr-2 text-xs font-mono" data-line="3">Line 3: NOT</div>
+                                    <div id="line-4" class="decoder-line py-0.5 pr-2 text-xs font-mono" data-line="4">Line 4: OR</div>
+                                    <div id="line-5" class="decoder-line py-0.5 pr-2 text-xs font-mono" data-line="5">Line 5: AND</div>
+                                    <div id="line-6" class="decoder-line py-0.5 pr-2 text-xs font-mono" data-line="6">Line 6: XOR+CMP</div>
+                                    <div id="line-7" class="decoder-line py-0.5 pr-2 text-xs font-mono" data-line="7">Line 7: UNUSED (No Unit)</div>
+                                </div>
+                            </div>
+
+                            <p class="text-sm font-semibold text-success mt-4">
+                                The decoder ensures **ONLY ONE** output line is HIGH.
+                            </p>
+                        </div>
+                        
+                        <div class="mt-6 flex flex-col items-center">
+                            <div class="flex justify-around w-full max-w-lg mb-4 text-sm font-semibold text-gray-700">
+                                <span>Input A [7:0]</span>
+                                <span>Input B [7:0]</span>
+                            </div>
+
+                            <div id="functional-units" class="grid grid-cols-4 sm:grid-cols-7 gap-4 w-full justify-center">
+                                </div>
+
+                            <div class="mt-6 p-1 w-full bg-gray-300 relative">
+                                <span class="absolute -top-6 left-1/2 transform -translate-x-1/2 text-xs font-bold text-gray-700">Tri-State Output Bus</span>
+                                <div id="bus-flow-indicator" class="h-2 bg-disabled w-full transition-colors duration-200"></div>
+                            </div>
+
+                            <div class="h-4 w-0 border-r-2 border-dashed border-gray-500"></div>
+                            <div class="p-2 bg-gray-100 rounded-lg border-2 border-gray-300 shadow-inner">
+                                <p class="text-xs font-semibold text-gray-700">ALU Result Output</p>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="p-6 bg-white rounded-xl shadow-lg mt-6">
+                    <h3 class="text-xl font-semibold mb-4 border-b pb-2">4. ALU Result & Status Flags</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="space-y-3">
+                            <div class="bg-gray-100 p-3 rounded-lg border">
+                                <p class="text-sm font-medium">Hexadecimal Result [7:0]</p>
+                                <p id="result-hex" class="text-4xl font-mono font-bold text-accent">0x88</p>
+                            </div>
+                            <div class="bg-gray-100 p-3 rounded-lg border">
+                                <p class="text-sm font-medium">Binary Result [7:0]</p>
+                                <div class="flex justify-between text-xs font-mono text-gray-500">
+                                    <span>7</span><span>6</span><span>5</span><span>4</span><span>3</span><span>2</span><span>1</span><span>0</span>
+                                </div>
+                                <p id="result-bin" class="text-xl font-mono text-text-primary">10001000</p>
+                            </div>
+                            <div class="bg-gray-100 p-3 rounded-lg border">
+                                <p class="text-sm font-medium">Decimal Result</p>
+                                <p id="result-dec" class="text-2xl font-mono text-text-primary">136</p>
+                            </div>
+                        </div>
+
+                        <div class="space-y-4">
+                            <h4 class="text-lg font-semibold">Main Status Flags</h4>
+                            <div class="flex items-center space-x-4 bg-gray-50 p-3 rounded-lg border">
+                                <div id="flag-zero-icon" class="text-3xl text-success">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
+                                </div>
+                                <p class="text-lg font-medium">Zero Flag</p>
+                                <span id="flag-zero-state" class="ml-auto font-mono font-bold text-gray-700">1</span>
+                            </div>
+                            <div class="flex items-center space-x-4 bg-gray-50 p-3 rounded-lg border">
+                                <div id="flag-cout-icon" class="text-3xl text-error">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                                </div>
+                                <p id="flag-cout-label" class="text-lg font-medium">c-out Flag (Carry-out)</p>
+                                <span id="flag-cout-state" class="ml-auto font-mono font-bold text-gray-700">0</span>
+                            </div>
+
+                            <div id="special-flags-container" class="space-y-3 p-4 bg-accent/10 rounded-lg border-2 border-accent hidden">
+                                <h4 class="text-lg font-semibold text-accent">Special XOR+CMP Flags (OpCode 110 Only)</h4>
+                                <div class="flex items-center space-x-4">
+                                    <div id="flag-agb-icon" class="text-2xl text-success"></div>
+                                    <p class="font-medium">A > B Flag</p>
+                                    <span id="flag-agb-state" class="ml-auto font-mono font-bold text-gray-700">0</span>
+                                </div>
+                                <div class="flex items-center space-x-4">
+                                    <div id="flag-aeb-icon" class="text-2xl text-success"></div>
+                                    <p class="font-medium">A == B Flag</p>
+                                    <span id="flag-aeb-state" class="ml-auto font-mono font-bold text-gray-700">0</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-6 pt-4 border-t">
+                        <p class="text-sm font-semibold">Operation Explanation:</p>
+                        <p id="op-explanation" class="text-gray-700">Adds Input A (0x55) and Input B (0x33) together (8-bit addition). Decoder activates line 0 to enable ADD unit.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="panel-activities" role="tabpanel" aria-labelledby="tab-activities" class="tab-panel hidden space-y-8">
+                <div class="prose max-w-none p-4 sm:p-6 lg:p-8 bg-white rounded-xl shadow-lg">
+                    <h2 class="text-2xl font-bold">Guided Exploration Activities</h2>
+                    <p>Now that you've got the basics, try these guided activities. You will be using the **Interactive Explorer** tab to complete these.</p>
+                    <p><strong>Example:</strong> Activity 3: Understanding Carry-out - Set A = 0xFF, B = 0x01. Use the **ADD** operation (opcode 000). Notice: Zero flag = 1 (result is 0x00), c-out = 1 (overflow!).</p>
+                </div>
+
+                <div class="p-6 bg-white rounded-xl shadow-lg">
+                    <h3 class="text-xl font-semibold mb-4 border-b pb-2">Challenge Mode</h3>
+                    <div id="challenge-list" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        </div>
+                    
+                    <div id="challenge-status" class="mt-6 p-4 border-2 border-dashed border-gray-300 rounded-lg hidden space-y-3">
+                        <h4 class="text-lg font-bold">Active Challenge: <span id="challenge-title" class="text-accent"></span></h4>
+                        <p id="challenge-description"></p>
+                        <p class="text-sm font-semibold text-warning" id="challenge-hint"></p>
+                        <div id="challenge-feedback" class="font-bold text-lg"></div>
+                        <button id="show-solution-btn" class="bg-gray-500 text-white py-1 px-3 rounded-lg text-sm hover:bg-gray-600 transition-colors">
+                            Show Solution
+                        </button>
+                        <div id="solution-details" class="mt-2 p-2 bg-gray-100 rounded-lg font-mono text-sm hidden"></div>
+                    </div>
+                </div>
+
+                <div class="p-6 bg-white rounded-xl shadow-lg">
+                    <h3 class="text-xl font-semibold mb-4 border-b pb-2">Mini-Quiz</h3>
+                    <div id="quiz-container" class="space-y-4">
+                        <p id="quiz-status" class="font-semibold text-gray-700"></p>
+                        <div id="quiz-question-box" class="p-4 border rounded-lg bg-gray-50">
+                            <p id="quiz-question" class="font-medium text-lg"></p>
+                            <div id="quiz-options" class="mt-4 space-y-2">
+                                </div>
+                            <div id="quiz-feedback" class="mt-4 font-bold"></div>
+                        </div>
+                        <div class="flex justify-between">
+                            <button id="quiz-next-btn" class="bg-accent text-white py-2 px-4 rounded-lg font-semibold hover:bg-accent/80 transition-colors focus:ring-2 focus:ring-accent focus:ring-offset-2" aria-label="Next quiz question">
+                                Next Question
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <script>
+        // All JavaScript logic goes here, wrapped in a DOMContentLoaded listener
+        document.addEventListener('DOMContentLoaded', () => {
+
+            // --- JSON Data from Section 4 Integrated into JavaScript ---
+            const aluData = {
+                "activityType": "alu-simulator-decoder",
+                "title": "7-Operation ALU Explorer (Decoder Architecture)",
+                "architectureType": "decoder",
+                "architectureDescription": "This ALU uses a 3-to-8 decoder to control enable circuits on each functional unit. Only one unit drives the output bus at a time.",
+                "operations": [
+                    { "opcode": "000", "decoderLine": 0, "name": "ADD", "symbol": "+", "description": "Adds Input A and Input B together (8-bit addition). Decoder activates line 0 to enable ADD unit.", "inputsUsed": ["A", "B"], "flagsValid": { "zero": true, "cout": true, "coutMeaning": "carry-out (unsigned overflow)" }, "implementation": "result = (inputA + inputB) & 0xFF; cout = (inputA + inputB) > 0xFF", "examples": [{ "A": "0x55", "B": "0x33", "result": "0x88", "zero": false, "cout": false }, { "A": "0xFF", "B": "0x01", "result": "0x00", "zero": true, "cout": true }] },
+                    { "opcode": "001", "decoderLine": 1, "name": "SHR", "symbol": ">>", "description": "Shifts Input A right by 1 bit (bit 0 falls off, bit 7 becomes 0). Decoder activates line 1 to enable SHR unit.", "inputsUsed": ["A"], "flagsValid": { "zero": true, "cout": true, "coutMeaning": "shift-out (original bit 0)" }, "implementation": "cout = inputA & 1; result = inputA >> 1", "examples": [{ "A": "0x55", "B": "0x00", "result": "0x2A", "zero": false, "cout": true }, { "A": "0x01", "B": "0x00", "result": "0x00", "zero": true, "cout": true }] },
+                    { "opcode": "010", "decoderLine": 2, "name": "SHL", "symbol": "<<", "description": "Shifts Input A left by 1 bit (bit 7 falls off, bit 0 becomes 0). Decoder activates line 2 to enable SHL unit.", "inputsUsed": ["A"], "flagsValid": { "zero": true, "cout": true, "coutMeaning": "shift-out (original bit 7)" }, "implementation": "cout = (inputA & 0x80) >> 7; result = (inputA << 1) & 0xFF", "examples": [{ "A": "0x55", "B": "0x00", "result": "0xAA", "zero": false, "cout": false }, { "A": "0x80", "B": "0x00", "result": "0x00", "zero": true, "cout": true }] },
+                    { "opcode": "011", "decoderLine": 3, "name": "NOT", "symbol": "~", "description": "Inverts all bits of Input A (0→1, 1→0). Decoder activates line 3 to enable NOT unit.", "inputsUsed": ["A"], "flagsValid": { "zero": true, "cout": false, "coutMeaning": "not meaningful (cleared)" }, "implementation": "result = (~inputA) & 0xFF; cout = 0", "examples": [{ "A": "0x55", "B": "0x00", "result": "0xAA", "zero": false, "cout": false }, { "A": "0xFF", "B": "0x00", "result": "0x00", "zero": true, "cout": false }] },
+                    { "opcode": "100", "decoderLine": 4, "name": "OR", "symbol": "|", "description": "Bitwise OR of Input A and Input B (either can be 1 for result 1). Decoder activates line 4 to enable OR unit.", "inputsUsed": ["A", "B"], "flagsValid": { "zero": true, "cout": false, "coutMeaning": "not meaningful (cleared)" }, "implementation": "result = inputA | inputB; cout = 0", "examples": [{ "A": "0x55", "B": "0x33", "result": "0x77", "zero": false, "cout": false }, { "A": "0x00", "B": "0x00", "result": "0x00", "zero": true, "cout": false }] },
+                    { "opcode": "101", "decoderLine": 5, "name": "AND", "symbol": "&", "description": "Bitwise AND of Input A and Input B (both must be 1 for result 1). Decoder activates line 5 to enable AND unit.", "inputsUsed": ["A", "B"], "flagsValid": { "zero": true, "cout": false, "coutMeaning": "not meaningful (cleared)" }, "implementation": "result = inputA & inputB; cout = 0", "examples": [{ "A": "0x55", "B": "0x33", "result": "0x11", "zero": false, "cout": false }, { "A": "0xFF", "B": "0x00", "result": "0x00", "zero": true, "cout": false }] },
+                    { "opcode": "110", "decoderLine": 6, "name": "XOR+CMP", "symbol": "^", "description": "XOR comparator: A ^ B with special A>B and A==B comparison flags. Decoder activates line 6 to enable XOR+CMP unit.", "inputsUsed": ["A", "B"], "flagsValid": { "zero": true, "cout": false, "coutMeaning": "not meaningful (cleared)" }, "specialFlags": { "aGreaterB": true, "aEqualsB": true }, "implementation": "result = inputA ^ inputB; cout = 0; aGreaterB = inputA > inputB; aEqualsB = inputA === inputB", "examples": [{ "A": "0x55", "B": "0x33", "result": "0x66", "zero": false, "cout": false, "aGreaterB": true, "aEqualsB": false }, { "A": "0xFF", "B": "0xFF", "result": "0x00", "zero": true, "cout": false, "aGreaterB": false, "aEqualsB": true }] }
+                ],
+                "defaultInputs": { "A": "0x55", "B": "0x33" },
+                "challengeScenarios": [
+                    { "title": "Decoder Line Prediction", "description": "What decoder line is activated for the AND operation?", "hint": "Check the operation table: AND is opcode 101 (binary), which is 5 in decimal...", "solution": { "opcode": "101", "decoderLine": 5, "A": "0xAC", "B": "0xF0", "expectedResult": "0xA0" } },
+                    { "title": "Clear Lower Nibble", "description": "You have 0xAC in Input A. Use an operation and Input B value to clear bits 0-3 while keeping bits 4-7 unchanged. What opcode and B value?", "hint": "Think about which logic operation can selectively zero out bits... AND is decoder line 5!", "solution": { "opcode": "101", "decoderLine": 5, "A": "0xAC", "B": "0xF0", "expectedResult": "0xA0" } },
+                    { "title": "Double the Value", "description": "Multiply the value in Input A by 2 using only one ALU operation (one decoder activation). Set A to 0x05.", "hint": "Think about what happens when you shift bits left... That's decoder line 2!", "solution": { "opcode": "010", "decoderLine": 2, "A": "0x05", "B": "0x00", "expectedResult": "0x0A" } },
+                    { "title": "Equality Test", "description": "Test if A equals B using the XOR comparator. Set both to 0x42 and select the correct operation.", "hint": "Use opcode 110 (XOR+CMP, decoder line 6) and watch the A==B flag...", "solution": { "opcode": "110", "decoderLine": 6, "A": "0x42", "B": "0x42", "expectedResult": "0x00" } },
+                    { "title": "Capture the Lost Bit", "description": "Set A to 0x81. Select the SHR operation and observe which bit falls off in the c-out flag.", "hint": "The c-out flag captures the shift-out bit (original bit 0). Decoder line 1 activates SHR...", "solution": { "opcode": "001", "decoderLine": 1, "A": "0x81", "B": "0x00", "expectedResult": "0x40" } },
+                    { "title": "Detect Overflow", "description": "Add two numbers that cause unsigned overflow (e.g., 0xFF + 0x02) and observe the c-out flag. Decoder line 0 should activate.", "hint": "The c-out flag indicates unsigned overflow for ADD. Use opcode 000.", "solution": { "opcode": "000", "decoderLine": 0, "A": "0xFF", "B": "0x02", "expectedResult": "0x01" } }
+                ],
+                "quizQuestions": [
+                    { "question": "Which decoder line is activated when you want to add two numbers together?", "options": ["Line 0", "Line 1", "Line 4", "Line 7"], "correct": 0, "explanation": "Opcode 000 (ADD) activates decoder line 0, which enables the ADD functional unit." },
+                    { "question": "What is the opcode for bitwise OR, and which decoder line does it activate?", "options": ["100, line 4", "101, line 5", "110, line 6", "011, line 3"], "correct": 0, "explanation": "Opcode 100 is OR, which activates decoder line 4 (binary 100 = decimal 4)." },
+                    { "question": "Why is decoder line 7 not connected to any functional unit?", "options": ["It's reserved for subtraction", "There are only 7 operations, so no unit for opcode 111", "It's used for error detection", "It activates all units simultaneously"], "correct": 1, "explanation": "This ALU has only 7 operations (opcodes 000-110), so decoder line 7 (opcode 111) has no functional unit connected." },
+                    { "question": "What prevents multiple functional units from driving the output bus simultaneously?", "options": ["The multiplexer blocks them", "The 3-to-8 decoder ensures only one enable line is HIGH at a time", "Each unit has its own separate output bus", "The control unit manually disables unused units"], "correct": 1, "explanation": "The 3-to-8 decoder, by design, activates exactly ONE output line for any 3-bit input, ensuring only one functional unit's enable circuit is active." },
+                    { "question": "What does the c-out flag represent during a shift right operation on decoder line 1?", "options": ["The carry from addition", "The original bit 0 that was shifted out", "The original bit 7 that was shifted out", "Always zero"], "correct": 1, "explanation": "During SHR (decoder line 1), the c-out flag captures the bit that falls off the right side (original bit 0)." },
+                    { "question": "What happens inside the ALU when you change the opcode from 000 to 101?", "options": ["Only the selected functional unit starts computing", "All units continue computing, but the decoder switches from line 0 to line 5", "The ADD unit stops and the AND unit starts", "The inputs change automatically"], "correct": 1, "explanation": "ALL functional units compute continuously. The decoder just switches which unit's enable line is active (from line 0 to line 5), controlling which unit drives the output bus." },
+                    { "question": "Which decoder line is activated for the XOR comparator with its special comparison flags?", "options": ["Line 4", "Line 5", "Line 6", "Line 7"], "correct": 2, "explanation": "Opcode 110 (XOR+CMP) activates decoder line 6, enabling the XOR comparator unit which provides XOR result plus A>B and A==B flags." },
+                    { "question": "If decoder lines 0 and 5 were both HIGH simultaneously, what would happen?", "options": ["Both ADD and AND results would appear", "Bus conflict - multiple drivers causing electrical problems", "The multiplexer would choose one", "This is normal operation"], "correct": 1, "explanation": "If multiple enable lines were active, multiple units would drive the bus simultaneously, causing electrical conflicts (bus contention). The 3-to-8 decoder prevents this by design." },
+                    { "question": "How is the decoder architecture in the ALU similar to the register file from Week 9?", "options": ["Both store data", "Both use decoders to enable one source to drive a shared bus", "Both perform arithmetic", "They are not similar at all"], "correct": 1, "explanation": "Both use the same architectural pattern: a decoder selects which component (register or functional unit) can drive a shared bus via enable circuits. It's tri-state bus arbitration!" }
+                ]
+            };
+
+            // --- State Management (SESSION-LEVEL PROGRESS ONLY) ---
+            let inputA = 0x55; // Dec 85
+            let inputB = 0x33; // Dec 51
+            let currentOpcode = '000'; // Default to ADD
+            let quizState = {
+                currentQuestionIndex: 0,
+                correctAnswers: 0,
+                answered: false,
+                quizData: shuffleArray(aluData.quizQuestions)
+            };
+            let currentChallenge = null;
+
+            // --- DOM Element References ---
+            const inputAHexEl = document.getElementById('input-a-hex');
+            const inputBHexEl = document.getElementById('input-b-hex');
+            const inputABinEl = document.getElementById('input-a-bin');
+            const inputADecEl = document.getElementById('input-a-dec');
+            const inputBBinEl = document.getElementById('input-b-bin');
+            const inputBDecEl = document.getElementById('input-b-dec');
+            const opcodeDisplayEl = document.getElementById('opcode-display');
+            const resultHexEl = document.getElementById('result-hex');
+            const resultBinEl = document.getElementById('result-bin');
+            const resultDecEl = document.getElementById('result-dec');
+            const flagZeroIconEl = document.getElementById('flag-zero-icon');
+            const flagZeroStateEl = document.getElementById('flag-zero-state');
+            const flagCoutIconEl = document.getElementById('flag-cout-icon');
+            const flagCoutLabelEl = document.getElementById('flag-cout-label');
+            const flagCoutStateEl = document.getElementById('flag-cout-state');
+            const specialFlagsContainerEl = document.getElementById('special-flags-container');
+            const flagAGBIconEl = document.getElementById('flag-agb-icon');
+            const flagAGBStateEl = document.getElementById('flag-agb-state');
+            const flagAEBIconEl = document.getElementById('flag-aeb-icon');
+            const flagAEBStateEl = document.getElementById('flag-aeb-state');
+            const opExplanationEl = document.getElementById('op-explanation');
+            const busFlowIndicatorEl = document.getElementById('bus-flow-indicator');
+            const functionalUnitsEl = document.getElementById('functional-units');
+            const operationSelectorEl = document.getElementById('operation-selector');
+
+            // --- Helper Functions ---
+
+            /** Converts a decimal number to an 8-bit binary string. */
+            function decToBin(dec) {
+                return dec.toString(2).padStart(8, '0');
+            }
+
+            /** Converts a decimal number to a 2-digit hex string prefixed with '0x'. */
+            function decToHex(dec) {
+                return '0x' + dec.toString(16).toUpperCase().padStart(2, '0');
+            }
+
+            /** Validates and parses hex input to a number (0-255). Returns null on invalid input. */
+            function parseHexInput(inputEl) {
+                const hex = inputEl.value.trim();
+                const isValidHex = /^[0-9A-Fa-f]{1,2}$/.test(hex);
+                if (!isValidHex) {
+                    inputEl.classList.add('border-error');
+                    return null;
+                }
+                inputEl.classList.remove('border-error');
+                return parseInt(hex, 16);
+            }
+
+            /** Sets the icon and state for a flag. */
+            function setFlagDisplay(iconEl, stateEl, isSet, label) {
+                const svgCheck = '<svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>';
+                const svgX = '<svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>';
+
+                iconEl.innerHTML = isSet ? svgCheck : svgX;
+                iconEl.className = isSet ? 'text-3xl text-success' : 'text-3xl text-error';
+                stateEl.textContent = label !== undefined ? String(label) : (isSet ? '1' : '0');
+                stateEl.classList.toggle('text-success', isSet);
+                stateEl.classList.toggle('text-error', !isSet && label === undefined);
+                stateEl.classList.toggle('text-gray-700', label !== undefined);
+            }
+
+            /** Shuffles an array (Fisher-Yates algorithm). */
+            function shuffleArray(array) {
+                for (let i = array.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [array[i], array[j]] = [array[j], array[i]];
+                }
+                return array;
+            }
+
+            // --- ALU Core Logic ---
+
+            /**
+             * Performs the selected ALU operation and calculates result and flags.
+             * @param {number} A Input A (0-255)
+             * @param {number} B Input B (0-255)
+             * @param {string} opcode 3-bit binary opcode
+             * @returns {{result: number, zeroFlag: boolean, coutFlag: number, aGreaterB: boolean|null, aEqualsB: boolean|null}}
+             */
+            function computeALU(A, B, opcode) {
+                const op = aluData.operations.find(o => o.opcode === opcode);
+                if (!op) {
+                    return { result: 0, zeroFlag: false, coutFlag: 0, aGreaterB: null, aEqualsB: null };
+                }
+
+                let result = 0;
+                let cout = 0;
+                let aGreaterB = null;
+                let aEqualsB = null;
+
+                // Use eval for simplified implementation of the core logic, as per the JSON structure
+                // In a production environment, this would be a strict switch case
+                try {
+                    // inputA and inputB are defined for the eval scope
+                    const inputA = A;
+                    const inputB = B;
+
+                    // Execute core implementation, which sets 'result' and 'cout'
+                    eval(op.implementation);
+
+                    // XOR+CMP special flags
+                    if (op.opcode === '110') {
+                        aGreaterB = A > B;
+                        aEqualsB = A === B;
+                    }
+
+                } catch (e) {
+                    console.error("ALU computation error:", e);
+                    // Fallback in case of error
+                    result = 0;
+                    cout = 0;
+                }
+
+                // Ensure result is clamped to 8 bits
+                result = result & 0xFF;
+
+                // Zero Flag is universal
+                const zeroFlag = result === 0;
+
+                return {
+                    result: result,
+                    zeroFlag: zeroFlag,
+                    coutFlag: cout,
+                    aGreaterB: aGreaterB,
+                    aEqualsB: aEqualsB
+                };
+            }
+
+            // --- Visualization Update Functions ---
+
+            /** Updates the visual state of the decoder and functional units. */
+            function updateVisualization(selectedOp) {
+                const selectedLine = selectedOp ? selectedOp.decoderLine : -1;
+                const selectedOpcode = selectedOp ? selectedOp.opcode : '---';
+
+                opcodeDisplayEl.textContent = selectedOpcode;
+                busFlowIndicatorEl.classList.remove('bg-disabled', 'bg-success', 'animate-pulse');
+
+                // 1. Update Decoder Lines and Functional Units
+                aluData.operations.forEach(op => {
+                    const isEnabled = op.decoderLine === selectedLine;
+                    const lineEl = document.getElementById(`line-${op.decoderLine}`);
+                    const unitEl = document.getElementById(`unit-${op.decoderLine}`);
+
+                    if (lineEl) {
+                        lineEl.classList.toggle('decoder-active', isEnabled);
+                        lineEl.classList.toggle('border-success', isEnabled);
+                        lineEl.classList.toggle('border-disabled', !isEnabled);
+                    }
+                    if (unitEl) {
+                        unitEl.classList.toggle('unit-active', isEnabled);
+                        unitEl.classList.toggle('bg-white', !isEnabled);
+                    }
+
+                    // Update button highlight
+                    const opBtn = document.querySelector(`[data-opcode="${op.opcode}"]`);
+                    if (opBtn) {
+                        opBtn.classList.toggle('bg-accent', isEnabled);
+                        opBtn.classList.toggle('text-white', isEnabled);
+                        opBtn.classList.toggle('bg-gray-200', !isEnabled);
+                        opBtn.classList.toggle('text-text-primary', !isEnabled);
+                    }
+                });
+
+                // Line 7 always inactive but present
+                const line7El = document.getElementById('line-7');
+                if (line7El) {
+                    line7El.classList.remove('decoder-active', 'border-success');
+                    line7El.classList.add('border-disabled');
+                }
+
+                // 2. Bus Flow
+                if (selectedOp) {
+                    busFlowIndicatorEl.classList.add('bg-success', 'animate-pulse');
+                    setTimeout(() => busFlowIndicatorEl.classList.remove('animate-pulse'), 500);
+                } else {
+                    busFlowIndicatorEl.classList.add('bg-disabled');
+                }
+            }
+
+            /** Updates all result displays based on computation. */
+            function updateResults(resultData, selectedOp) {
+                const result = resultData.result;
+                const binResult = decToBin(result);
+                const cout = resultData.coutFlag;
+                const zero = resultData.zeroFlag;
+                const op = selectedOp;
+
+                // Main Result Displays
+                resultHexEl.textContent = decToHex(result);
+                resultBinEl.textContent = binResult;
+                resultDecEl.textContent = result;
+
+                // Zero Flag
+                setFlagDisplay(flagZeroIconEl, flagZeroStateEl, zero, zero ? '1' : '0');
+
+                // c-out Flag
+                let coutLabel;
+                let coutState;
+                if (op.flagsValid.cout) {
+                    coutLabel = op.flagsValid.coutMeaning.startsWith('shift-out') ? `Shift-out: (bit ${op.opcode === '001' ? 0 : 7})` : op.flagsValid.coutMeaning;
+                    coutState = cout;
+                } else {
+                    coutLabel = op.flagsValid.coutMeaning;
+                    coutState = '0'; // For 'not meaningful'
+                }
+                flagCoutLabelEl.textContent = `c-out Flag (${coutLabel})`;
+
+                // Determine c-out icon color: green for meaningful true, red for meaningful false/not meaningful
+                const coutMeaningfulAndSet = op.flagsValid.cout && cout === 1;
+                const coutMeaningfulAndClear = op.flagsValid.cout && cout === 0;
+
+                if (coutMeaningfulAndSet) {
+                    setFlagDisplay(flagCoutIconEl, flagCoutStateEl, true, coutState);
+                } else if (coutMeaningfulAndClear) {
+                    setFlagDisplay(flagCoutIconEl, flagCoutStateEl, false, coutState);
+                } else {
+                    // Not meaningful / Always 0 for logic ops
+                    setFlagDisplay(flagCoutIconEl, flagCoutStateEl, false, coutState);
+                    flagCoutIconEl.classList.remove('text-error');
+                    flagCoutIconEl.classList.add('text-gray-400');
+                    flagCoutStateEl.classList.remove('text-error');
+                    flagCoutStateEl.classList.add('text-gray-400');
+                }
+
+                // Special XOR+CMP Flags
+                if (op.opcode === '110') {
+                    specialFlagsContainerEl.classList.remove('hidden');
+                    setFlagDisplay(flagAGBIconEl, flagAGBStateEl, resultData.aGreaterB, resultData.aGreaterB ? '1' : '0');
+                    setFlagDisplay(flagAEBIconEl, flagAEBStateEl, resultData.aEqualsB, resultData.aEqualsB ? '1' : '0');
+                } else {
+                    specialFlagsContainerEl.classList.add('hidden');
+                }
+
+                // Explanation
+                opExplanationEl.textContent = op.description.replace('Input A', `Input A (${decToHex(inputA)})`).replace('Input B', `Input B (${decToHex(inputB)})`);
+            }
+
+            /** Main function to run the simulation based on current state. */
+            function runSimulation() {
+                // 1. Get current operation object
+                const selectedOp = aluData.operations.find(o => o.opcode === currentOpcode);
+
+                // 2. Validate inputs
+                const A = parseHexInput(inputAHexEl);
+                const B = parseHexInput(inputBHexEl);
+                
+                if (A === null || B === null || !selectedOp) {
+                    // Handle invalid state if needed, but parsing handles input validation visually
+                    return;
+                }
+
+                // Update internal state
+                inputA = A;
+                inputB = B;
+                inputABinEl.textContent = decToBin(A);
+                inputADecEl.textContent = A;
+                inputBBinEl.textContent = decToBin(B);
+                inputBDecEl.textContent = B;
+
+                // 3. Compute
+                const resultData = computeALU(A, B, currentOpcode);
+
+                // 4. Update Visualizations
+                updateVisualization(selectedOp);
+                updateResults(resultData, selectedOp);
+
+                // 5. Check Challenge
+                if (currentChallenge) {
+                    checkChallenge(selectedOp, resultData);
+                }
+            }
+
+            // --- Event Handlers & Initialization ---
+
+            /** Populates the Operation Selector buttons. */
+            function setupOperationButtons() {
+                functionalUnitsEl.innerHTML = '';
+                aluData.operations.forEach(op => {
+                    // 1. Create button
+                    const btn = document.createElement('button');
+                    btn.className = `op-button p-3 rounded-xl font-bold transition-all duration-200 border-2 border-transparent focus:ring-2 focus:ring-accent focus:ring-offset-2 ${op.opcode === currentOpcode ? 'bg-accent text-white' : 'bg-gray-200 text-text-primary'}`;
+                    btn.dataset.opcode = op.opcode;
+                    btn.dataset.decoderLine = op.decoderLine;
+                    btn.innerHTML = `<span class="block text-xl">${op.name} (${op.symbol})</span><span class="block text-xs font-mono mt-1">OpCode: ${op.opcode}</span><span class="block text-xs font-mono mt-0.5">Line ${op.decoderLine} ${op.inputsUsed.length === 1 ? '(A only)' : '(A & B)'}</span>`;
+
+                    btn.addEventListener('click', () => {
+                        currentOpcode = op.opcode;
+                        runSimulation();
+                    });
+                    operationSelectorEl.appendChild(btn);
+
+                    // 2. Create Functional Unit Box for Visualization
+                    const unitDiv = document.createElement('div');
+                    unitDiv.id = `unit-${op.decoderLine}`;
+                    unitDiv.className = 'unit-box text-xs';
+                    unitDiv.innerHTML = `<span class="block font-bold">${op.name}</span><span class="block text-xs text-gray-500">Line ${op.decoderLine} Enable</span>`;
+                    functionalUnitsEl.appendChild(unitDiv);
+                });
+            }
+
+            /** Sets up the tabbed navigation functionality. */
+            function setupTabs() {
+                const tabList = document.getElementById('tab-list');
+                const tabs = tabList.querySelectorAll('.tab-button');
+                const panels = document.querySelectorAll('.tab-panel');
+
+                tabs.forEach(tab => {
+                    tab.addEventListener('click', (e) => {
+                        const targetId = e.target.dataset.target;
+
+                        // Reset all tabs to inactive
+                        tabs.forEach(t => {
+                            t.setAttribute('aria-selected', 'false');
+                            t.classList.remove('border-accent', 'text-accent');
+                            t.classList.add('border-transparent', 'text-gray-500');
+                        });
+
+                        // Set clicked tab to active
+                        e.target.setAttribute('aria-selected', 'true');
+                        e.target.classList.add('border-accent', 'text-accent');
+                        e.target.classList.remove('border-transparent', 'text-gray-500');
+
+                        // Hide all panels
+                        panels.forEach(p => p.classList.add('hidden'));
+
+                        // Show target panel
+                        document.getElementById(targetId).classList.remove('hidden');
+                    });
+                });
+            }
+
+            /** Sets up input event listeners. */
+            function setupInputListeners() {
+                const inputHandler = (e) => {
+                    // Force uppercase and limit to hex
+                    e.target.value = e.target.value.toUpperCase().replace(/[^0-9A-F]/g, '');
+                    runSimulation();
+                };
+
+                inputAHexEl.addEventListener('input', inputHandler);
+                inputBHexEl.addEventListener('input', inputHandler);
+            }
+
+            /** Sets up keyboard listeners for quick op selection. */
+            function setupKeyboardListeners() {
+                document.addEventListener('keydown', (e) => {
+                    const key = e.key;
+                    if (key >= '0' && key <= '6') {
+                        const opcode = key.padStart(3, '0');
+                        currentOpcode = opcode;
+                        runSimulation();
+                        // Focus the corresponding button for accessibility feedback
+                        document.querySelector(`[data-opcode="${opcode}"]`)?.focus();
+                        e.preventDefault();
+                    }
+                });
+            }
+
+            /** Sets up Challenge Mode and Quiz. */
+            function setupChallengesAndQuiz() {
+                const challengeListEl = document.getElementById('challenge-list');
+                const challengeStatusEl = document.getElementById('challenge-status');
+                const showSolutionBtn = document.getElementById('show-solution-btn');
+
+                // Challenge Buttons
+                aluData.challengeScenarios.forEach((scenario, index) => {
+                    const btn = document.createElement('button');
+                    btn.className = 'p-3 bg-gray-100 rounded-lg text-left font-medium hover:bg-gray-200 transition-colors focus:ring-2 focus:ring-accent focus:ring-offset-2';
+                    btn.textContent = `Challenge ${index + 1}: ${scenario.title}`;
+                    btn.dataset.challengeIndex = index;
+                    btn.addEventListener('click', () => loadChallenge(scenario));
+                    challengeListEl.appendChild(btn);
+                });
+
+                showSolutionBtn.addEventListener('click', () => {
+                    if (currentChallenge) {
+                        displaySolution(currentChallenge.solution);
+                    }
+                });
+
+                // Quiz Setup
+                document.getElementById('quiz-next-btn').addEventListener('click', loadNextQuestion);
+                loadNextQuestion(); // Load first question
+
+                // Random Example button
+                document.getElementById('random-example-btn').addEventListener('click', () => {
+                    const op = aluData.operations[Math.floor(Math.random() * aluData.operations.length)];
+                    const example = op.examples[Math.floor(Math.random() * op.examples.length)];
+                    
+                    inputAHexEl.value = example.A.replace('0x', '');
+                    inputBHexEl.value = example.B.replace('0x', '');
+                    currentOpcode = op.opcode;
+                    runSimulation();
+                });
+            }
+
+            // --- Challenge Logic ---
+            function loadChallenge(scenario) {
+                currentChallenge = scenario;
+                document.getElementById('challenge-status').classList.remove('hidden');
+                document.getElementById('challenge-title').textContent = scenario.title;
+                document.getElementById('challenge-description').textContent = scenario.description;
+                document.getElementById('challenge-hint').textContent = `Hint: ${scenario.hint}`;
+                document.getElementById('challenge-feedback').textContent = 'Select the correct operation and/or set the correct inputs!';
+                document.getElementById('challenge-feedback').className = 'font-bold text-lg text-warning';
+                document.getElementById('show-solution-btn').classList.remove('hidden');
+                document.getElementById('solution-details').classList.add('hidden');
+
+                // Set inputs for the challenge
+                inputAHexEl.value = scenario.solution.A.replace('0x', '');
+                inputBHexEl.value = scenario.solution.B.replace('0x', '');
+                currentOpcode = '000'; // Reset operation, force user to select
+                runSimulation();
+                
+                // Switch to Explorer tab
+                document.getElementById('tab-explorer').click();
+                document.getElementById('main-content').scrollIntoView();
+            }
+
+            function checkChallenge(selectedOp, resultData) {
+                if (!currentChallenge) return;
+                
+                const solution = currentChallenge.solution;
+                const isCorrectOpcode = selectedOp.opcode === solution.opcode;
+                const isCorrectResult = decToHex(resultData.result) === solution.expectedResult;
+                
+                let feedbackEl = document.getElementById('challenge-feedback');
+                let isComplete = false;
+
+                if (isCorrectOpcode && isCorrectResult) {
+                    feedbackEl.textContent = `✅ Challenge Complete! OpCode ${solution.opcode} enabled line ${solution.decoderLine} and produced ${solution.expectedResult}.`;
+                    feedbackEl.className = 'font-bold text-lg text-success';
+                    isComplete = true;
+                } else if (isCorrectOpcode && !isCorrectResult) {
+                     feedbackEl.textContent = `❌ Incorrect Result! You selected OpCode ${solution.opcode} (Correct), but the result is ${decToHex(resultData.result)}. Check your Input A and Input B values!`;
+                    feedbackEl.className = 'font-bold text-lg text-error';
+                } else if (!isCorrectOpcode && isCorrectResult) {
+                     feedbackEl.textContent = `❌ Incorrect OpCode! You produced the correct result ${solution.expectedResult}, but with the wrong operation (${selectedOp.opcode}).`;
+                    feedbackEl.className = 'font-bold text-lg text-error';
+                } else {
+                    feedbackEl.textContent = `❌ Keep trying! You need OpCode ${solution.opcode} (Line ${solution.decoderLine}) to produce ${solution.expectedResult}.`;
+                    feedbackEl.className = 'font-bold text-lg text-error';
+                }
+
+                if (isComplete) {
+                    document.getElementById('show-solution-btn').classList.add('hidden');
+                }
+            }
+
+            function displaySolution(solution) {
+                const detailsEl = document.getElementById('solution-details');
+                detailsEl.innerHTML = `
+                    <p><strong>Required OpCode:</strong> ${solution.opcode} (Line ${solution.decoderLine})</p>
+                    <p><strong>Required Input A:</strong> ${solution.A}</p>
+                    <p><strong>Required Input B:</strong> ${solution.B}</p>
+                    <p><strong>Expected Result:</strong> ${solution.expectedResult}</p>
+                    <p class="mt-2 text-sm">Now, set the inputs and the operation to see it work!</p>
+                `;
+                detailsEl.classList.remove('hidden');
+
+                // Apply solution to inputs/opcode
+                inputAHexEl.value = solution.A.replace('0x', '');
+                inputBHexEl.value = solution.B.replace('0x', '');
+                currentOpcode = solution.opcode;
+                runSimulation();
+            }
+
+            // --- Quiz Logic ---
+            function loadNextQuestion() {
+                const questions = quizState.quizData;
+                const index = quizState.currentQuestionIndex;
+                const quizQuestionEl = document.getElementById('quiz-question');
+                const quizOptionsEl = document.getElementById('quiz-options');
+                const quizFeedbackEl = document.getElementById('quiz-feedback');
+                const quizStatusEl = document.getElementById('quiz-status');
+
+                quizFeedbackEl.textContent = '';
+                quizStatusEl.textContent = `Question ${index + 1} of ${questions.length} (Score: ${quizState.correctAnswers}/${questions.length})`;
+
+                if (index >= questions.length) {
+                    quizQuestionEl.textContent = "Quiz Complete!";
+                    quizOptionsEl.innerHTML = `<p class="text-xl font-bold text-accent">Final Score: ${quizState.correctAnswers} out of ${questions.length}</p>`;
+                    document.getElementById('quiz-next-btn').textContent = 'Restart Quiz';
+                    document.getElementById('quiz-next-btn').onclick = () => {
+                        quizState.currentQuestionIndex = 0;
+                        quizState.correctAnswers = 0;
+                        quizState.answered = false;
+                        quizState.quizData = shuffleArray(aluData.quizQuestions);
+                        loadNextQuestion();
+                        document.getElementById('quiz-next-btn').textContent = 'Next Question';
+                    };
+                    return;
+                }
+
+                const q = questions[index];
+                quizQuestionEl.textContent = q.question;
+                quizOptionsEl.innerHTML = '';
+                quizState.answered = false;
+
+                q.options.forEach((option, optionIndex) => {
+                    const radioId = `option-${optionIndex}`;
+                    const div = document.createElement('div');
+                    div.className = 'flex items-center p-3 border rounded-lg bg-white cursor-pointer hover:bg-gray-100 transition-colors focus-within:ring-2 focus-within:ring-accent';
+                    div.innerHTML = `
+                        <input type="radio" id="${radioId}" name="quiz-option" value="${optionIndex}" class="h-4 w-4 text-accent border-gray-300 focus:ring-accent" aria-labelledby="label-${radioId}">
+                        <label id="label-${radioId}" for="${radioId}" class="ml-3 block text-base font-medium text-gray-700">${option}</label>
+                    `;
+                    div.querySelector('input').addEventListener('change', () => checkAnswer(optionIndex, q));
+                    quizOptionsEl.appendChild(div);
+                });
+            }
+
+            function checkAnswer(selectedIndex, question) {
+                if (quizState.answered) return;
+                
+                quizState.answered = true;
+                const quizOptionsEl = document.getElementById('quiz-options');
+                const quizFeedbackEl = document.getElementById('quiz-feedback');
+
+                quizOptionsEl.querySelectorAll('input').forEach(input => input.disabled = true);
+
+                if (selectedIndex === question.correct) {
+                    quizState.correctAnswers++;
+                    quizFeedbackEl.innerHTML = `<span class="text-success">✅ Correct!</span> ${question.explanation}`;
+                    document.getElementById(`option-${selectedIndex}`).closest('div').classList.add('bg-success/20', 'border-success');
+                } else {
+                    quizFeedbackEl.innerHTML = `<span class="text-error">❌ Incorrect.</span> ${question.explanation}`;
+                    document.getElementById(`option-${selectedIndex}`).closest('div').classList.add('bg-error/20', 'border-error');
+                    document.getElementById(`option-${question.correct}`).closest('div').classList.add('bg-success/20', 'border-success');
+                }
+
+                document.getElementById('quiz-next-btn').onclick = () => {
+                    quizState.currentQuestionIndex++;
+                    loadNextQuestion();
+                };
+            }
+
+            // --- Initial Setup ---
+            setupTabs();
+            setupOperationButtons();
+            setupInputListeners();
+            setupKeyboardListeners();
+            setupChallengesAndQuiz();
+
+            // Initial state load
+            inputAHexEl.value = aluData.defaultInputs.A.replace('0x', '');
+            inputBHexEl.value = aluData.defaultInputs.B.replace('0x', '');
+            currentOpcode = aluData.operations[0].opcode; // Set to ADD (000)
+            runSimulation();
+        });
+    </script>
+</body>
+</html>
