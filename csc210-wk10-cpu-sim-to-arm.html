@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CPU Architecture Comparison: From Foundations to Modern Power</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .comparison-table {
+            overflow-x: auto;
+        }
+        .comparison-table table {
+            border-collapse: collapse;
+            width: 100%;
+            min-width: 800px;
+        }
+        .comparison-table th {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            color: white;
+            padding: 16px 12px;
+            text-align: left;
+            font-weight: 600;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        .comparison-table td {
+            padding: 14px 12px;
+            border-bottom: 1px solid #e5e7eb;
+            vertical-align: top;
+        }
+        .comparison-table tr:hover {
+            background: #f0f9ff;
+        }
+        .cpu-column-ours {
+            background: #fef3c7;
+        }
+        .cpu-column-mips {
+            background: #dbeafe;
+        }
+        .cpu-column-intel {
+            background: #fce7f3;
+        }
+        .cpu-column-arm {
+            background: #dcfce7;
+        }
+        .highlight-similar {
+            border-left: 4px solid #10b981;
+            padding-left: 8px;
+        }
+        .highlight-different {
+            border-left: 4px solid #f59e0b;
+            padding-left: 8px;
+        }
+        .feature-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.85em;
+            font-weight: 600;
+            margin: 2px;
+        }
+        .badge-foundation {
+            background: #86efac;
+            color: #166534;
+        }
+        .badge-advanced {
+            background: #fcd34d;
+            color: #92400e;
+        }
+        .badge-modern {
+            background: #c7d2fe;
+            color: #3730a3;
+        }
+        .hero-gradient {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .concept-card {
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .concept-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+        .scale-arrow {
+            font-size: 3em;
+            color: #8b5cf6;
+            animation: bounce 2s infinite;
+        }
+        @keyframes bounce {
+            0%, 100% { transform: translateX(0); }
+            50% { transform: translateX(10px); }
+        }
+        .stat-number {
+            font-size: 3em;
+            font-weight: bold;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <div class="max-w-7xl mx-auto px-4 py-8">
+        <!-- Hero Section -->
+        <header class="hero-gradient text-white rounded-2xl shadow-2xl p-12 mb-12 text-center">
+            <h1 class="text-5xl font-bold mb-4">From 8-bit Dreams to Modern Machines</h1>
+            <p class="text-2xl mb-6">Understanding CPU Architecture Across Generations</p>
+            <div class="bg-white bg-opacity-20 rounded-lg p-6 max-w-3xl mx-auto">
+                <p class="text-xl leading-relaxed">
+                    The CPU you're building isn't just a learning exercise—it's the foundation of everything from smartphones to supercomputers. Let's see how the concepts you're mastering scale to power the modern world.
+                </p>
+            </div>
+        </header>
+
+        <!-- The Big Idea -->
+        <section class="bg-white rounded-xl shadow-lg p-8 mb-8">
+            <h2 class="text-4xl font-bold text-gray-900 mb-6 text-center">The Big Idea 💡</h2>
+            <div class="grid md:grid-cols-3 gap-6 mb-8">
+                <div class="concept-card bg-yellow-50 p-6 rounded-lg border-l-4 border-yellow-500">
+                    <div class="text-5xl mb-4 text-center">🏗️</div>
+                    <h3 class="text-xl font-bold mb-3 text-center">Your 8-bit CPU</h3>
+                    <ul class="space-y-2 text-gray-700">
+                        <li>✓ 7 operations</li>
+                        <li>✓ 8-bit data path</li>
+                        <li>✓ 32 bytes RAM</li>
+                        <li>✓ Simple, transparent design</li>
+                    </ul>
+                </div>
+                <div class="flex items-center justify-center">
+                    <div class="scale-arrow">→</div>
+                </div>
+                <div class="concept-card bg-purple-50 p-6 rounded-lg border-l-4 border-purple-500">
+                    <div class="text-5xl mb-4 text-center">🚀</div>
+                    <h3 class="text-xl font-bold mb-3 text-center">Modern CPUs</h3>
+                    <ul class="space-y-2 text-gray-700">
+                        <li>✓ 1000+ instructions</li>
+                        <li>✓ 64-bit data paths</li>
+                        <li>✓ Billions of bytes RAM</li>
+                        <li>✓ Complex, optimized design</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="bg-gradient-to-r from-yellow-100 to-purple-100 rounded-xl p-8 text-center">
+                <p class="text-2xl font-semibold text-gray-800 mb-4">
+                    🎯 Same Core Concepts, Different Scale
+                </p>
+                <p class="text-lg text-gray-700">
+                    Modern CPUs use the exact same fundamental building blocks you're learning: ALU operations, decoders/multiplexors, registers, memory, and control logic. The difference is scale, speed, and optimization—not the underlying principles!
+                </p>
+            </div>
+        </section>
+
+        <!-- Your CPU vs MIPS: Detailed Comparison -->
+        <section class="bg-white rounded-xl shadow-lg p-8 mb-8">
+            <h2 class="text-4xl font-bold text-gray-900 mb-6 border-b-4 border-blue-600 pb-2">Your CPU vs MIPS: A Closer Look</h2>
+            
+            <div class="grid md:grid-cols-2 gap-8 mb-8">
+                <div class="bg-yellow-50 rounded-lg p-6 border-2 border-yellow-400">
+                    <h3 class="text-2xl font-bold text-yellow-900 mb-4 flex items-center">
+                        <span class="text-4xl mr-3">🎓</span>
+                        Your 8-bit Educational CPU
+                    </h3>
+                    <div class="space-y-4">
+                        <div>
+                            <h4 class="font-bold text-lg mb-2">Design Philosophy</h4>
+                            <p class="text-gray-700">Built for <strong>understanding</strong>. Every component is visible and traceable in Logisim. No hidden complexity—just pure foundational concepts.</p>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-lg mb-2">Core Operations</h4>
+                            <ul class="list-disc list-inside text-gray-700 space-y-1">
+                                <li>ADD (arithmetic)</li>
+                                <li>SHR, SHL (shifts)</li>
+                                <li>NOT, AND, OR, XOR (logic)</li>
+                            </ul>
+                            <p class="text-sm text-gray-600 mt-2">These 7 operations teach you the essential ALU functions that exist in every CPU!</p>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-lg mb-2">What You Learn</h4>
+                            <p class="text-gray-700">How instructions flow through the CPU, how the ALU performs computation, how memory addressing works, and how control signals coordinate everything.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-blue-50 rounded-lg p-6 border-2 border-blue-400">
+                    <h3 class="text-2xl font-bold text-blue-900 mb-4 flex items-center">
+                        <span class="text-4xl mr-3">🏭</span>
+                        MIPS (Production CPU)
+                    </h3>
+                    <div class="space-y-4">
+                        <div>
+                            <h4 class="font-bold text-lg mb-2">Design Philosophy</h4>
+                            <p class="text-gray-700">Built for <strong>practical computation</strong>. MIPS (Microprocessor without Interlocked Pipeline Stages) is a RISC architecture used in embedded systems, routers, and game consoles.</p>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-lg mb-2">Core Operations</h4>
+                            <ul class="list-disc list-inside text-gray-700 space-y-1">
+                                <li>47+ instructions (MIPS I)</li>
+                                <li>Arithmetic, logic, shifts (like yours!)</li>
+                                <li>Memory load/store</li>
+                                <li>Branch and jump</li>
+                                <li>Multiply and divide</li>
+                            </ul>
+                            <p class="text-sm text-gray-600 mt-2">Notice the similarities? Your CPU has the same fundamental operation types!</p>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-lg mb-2">What It Adds</h4>
+                            <p class="text-gray-700">32 general-purpose registers, pipelined execution, memory management, and a complete instruction set for real-world programming tasks.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-green-50 border-l-4 border-green-500 p-6 rounded-lg">
+                <h4 class="text-xl font-bold text-green-900 mb-3">🌟 The Bridge Between Them</h4>
+                <p class="text-lg mb-4">
+                    Your CPU → MIPS is not a giant leap—it's a series of logical extensions:
+                </p>
+                <div class="grid md:grid-cols-3 gap-4">
+                    <div class="bg-white p-4 rounded-lg">
+                        <p class="font-bold mb-2">Add More Operations</p>
+                        <p class="text-sm text-gray-600">7 operations → 50+ instructions</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-lg">
+                        <p class="font-bold mb-2">Expand Data Width</p>
+                        <p class="text-sm text-gray-600">8 bits → 32 bits</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-lg">
+                        <p class="font-bold mb-2">Add Registers</p>
+                        <p class="text-sm text-gray-600">Direct memory → 32 registers</p>
+                    </div>
+                </div>
+                <p class="mt-4 text-gray-700">
+                    The ALU decoder you built? MIPS has it. The control logic? MIPS has it (just more of it). The status flags? MIPS has them too. You're learning the real architecture!
+                </p>
+            </div>
+        </section>
+
+        <!-- Comprehensive Comparison Table -->
+        <section class="bg-white rounded-xl shadow-lg p-8 mb-8">
+            <h2 class="text-4xl font-bold text-gray-900 mb-6 border-b-4 border-purple-600 pb-2">Architecture Comparison Table</h2>
+            
+            <div class="mb-6 flex flex-wrap gap-3">
+                <span class="feature-badge badge-foundation">🟢 Foundational Concept</span>
+                <span class="feature-badge badge-advanced">🟡 Intermediate Feature</span>
+                <span class="feature-badge badge-modern">🔵 Modern Enhancement</span>
+            </div>
+
+            <div class="comparison-table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width: 20%;">Feature</th>
+                            <th class="cpu-column-ours" style="width: 20%;">Your 8-bit CPU</th>
+                            <th class="cpu-column-mips" style="width: 20%;">MIPS (32-bit RISC)</th>
+                            <th class="cpu-column-intel" style="width: 20%;">Intel x64</th>
+                            <th class="cpu-column-arm" style="width: 20%;">ARM64 (ARMv8)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="font-bold">
+                                <div>Data Width</div>
+                                <span class="feature-badge badge-foundation">🟢</span>
+                            </td>
+                            <td class="cpu-column-ours">
+                                <div class="text-lg font-bold">8 bits</div>
+                                <div class="text-sm text-gray-600">Values: 0-255</div>
+                            </td>
+                            <td class="cpu-column-mips">
+                                <div class="text-lg font-bold">32 bits</div>
+                                <div class="text-sm text-gray-600">Values: 0 to 4.3 billion</div>
+                            </td>
+                            <td class="cpu-column-intel">
+                                <div class="text-lg font-bold">64 bits</div>
+                                <div class="text-sm text-gray-600">Values: 0 to 18 quintillion</div>
+                            </td>
+                            <td class="cpu-column-arm">
+                                <div class="text-lg font-bold">64 bits</div>
+                                <div class="text-sm text-gray-600">Values: 0 to 18 quintillion</div>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td class="font-bold">
+                                <div>Basic ALU Operations</div>
+                                <span class="feature-badge badge-foundation">🟢</span>
+                            </td>
+                            <td class="cpu-column-ours highlight-similar">
+                                <div class="font-semibold mb-1">7 operations:</div>
+                                <div class="text-sm">ADD, SHR, SHL</div>
+                                <div class="text-sm">NOT, AND, OR, XOR</div>
+                            </td>
+                            <td class="cpu-column-mips highlight-similar">
+                                <div class="font-semibold mb-1">50+ instructions</div>
+                                <div class="text-sm">All your ops + SUB, MUL, DIV</div>
+                                <div class="text-sm">Loads, stores, branches</div>
+                            </td>
+                            <td class="cpu-column-intel highlight-similar">
+                                <div class="font-semibold mb-1">1000+ instructions</div>
+                                <div class="text-sm">All basic ops + vector ops</div>
+                                <div class="text-sm">Encryption, multimedia</div>
+                            </td>
+                            <td class="cpu-column-arm highlight-similar">
+                                <div class="font-semibold mb-1">500+ instructions</div>
+                                <div class="text-sm">All basic ops + SIMD</div>
+                                <div class="text-sm">Crypto, ML acceleration</div>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td class="font-bold">
+                                <div>Instruction Encoding</div>
+                                <span class="feature-badge badge-foundation">🟢</span>
+                            </td>
+                            <td class="cpu-column-ours">
+                                <div class="font-semibold">3-bit opcode</div>
+                                <div class="text-sm text-gray-600">Simple, visible decoding</div>
+                            </td>
+                            <td class="cpu-column-mips">
+                                <div class="font-semibold">32-bit fixed format</div>
+                                <div class="text-sm text-gray-600">3 instruction types (R, I, J)</div>
+                            </td>
+                            <td class="cpu-column-intel">
+                                <div class="font-semibold">Variable length</div>
+                                <div class="text-sm text-gray-600">1 to 15 bytes per instruction</div>
+                            </td>
+                            <td class="cpu-column-arm">
+                                <div class="font-semibold">32-bit fixed format</div>
+                                <div class="text-sm text-gray-600">Multiple encoding schemes</div>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td class="font-bold">
+                                <div>General Registers</div>
+                                <span class="feature-badge badge-advanced">🟡</span>
+                            </td>
+                            <td class="cpu-column-ours highlight-different">
+                                <div class="font-semibold">2 registers</div>
+                                <div class="text-sm text-gray-600">A and B inputs (working registers)</div>
+                            </td>
+                            <td class="cpu-column-mips highlight-different">
+                                <div class="font-semibold">32 registers</div>
+                                <div class="text-sm text-gray-600">$0-$31, each 32 bits</div>
+                            </td>
+                            <td class="cpu-column-intel highlight-different">
+                                <div class="font-semibold">16 registers</div>
+                                <div class="text-sm text-gray-600">RAX-R15, each 64 bits</div>
+                            </td>
+                            <td class="cpu-column-arm highlight-different">
+                                <div class="font-semibold">31 registers</div>
+                                <div class="text-sm text-gray-600">X0-X30, each 64 bits</div>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td class="font-bold">
+                                <div>Memory Capacity</div>
+                                <span class="feature-badge badge-foundation">🟢</span>
+                            </td>
+                            <td class="cpu-column-ours">
+                                <div class="font-semibold">32 bytes</div>
+                                <div class="text-sm text-gray-600">(256 byte address space)</div>
+                            </td>
+                            <td class="cpu-column-mips">
+                                <div class="font-semibold">4 GB addressable</div>
+                                <div class="text-sm text-gray-600">32-bit addressing</div>
+                            </td>
+                            <td class="cpu-column-intel">
+                                <div class="font-semibold">256 TB addressable</div>
+                                <div class="text-sm text-gray-600">48-bit practical addressing</div>
+                            </td>
+                            <td class="cpu-column-arm">
+                                <div class="font-semibold">16 EB addressable</div>
+                                <div class="text-sm text-gray-600">64-bit addressing</div>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td class="font-bold">
+                                <div>Status Flags</div>
+                                <span class="feature-badge badge-foundation">🟢</span>
+                            </td>
+                            <td class="cpu-column-ours highlight-similar">
+                                <div class="font-semibold">4 flags</div>
+                                <div class="text-sm">Zero, A>B, A==B</div>
+                                <div class="text-sm">Carry/Shift-out</div>
+                            </td>
+                            <td class="cpu-column-mips highlight-similar">
+                                <div class="font-semibold">Implicit</div>
+                                <div class="text-sm">No dedicated flags register</div>
+                                <div class="text-sm">Conditions via compare & branch</div>
+                            </td>
+                            <td class="cpu-column-intel highlight-similar">
+                                <div class="font-semibold">FLAGS/RFLAGS register</div>
+                                <div class="text-sm">Carry, Zero, Sign, Overflow</div>
+                                <div class="text-sm">Parity, Direction, Interrupt</div>
+                            </td>
+                            <td class="cpu-column-arm highlight-similar">
+                                <div class="font-semibold">NZCV flags</div>
+                                <div class="text-sm">Negative, Zero</div>
+                                <div class="text-sm">Carry, Overflow</div>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td class="font-bold">
+                                <div>Pipeline Stages</div>
+                                <span class="feature-badge badge-advanced">🟡</span>
+                            </td>
+                            <td class="cpu-column-ours">
+                                <div class="font-semibold">Single cycle</div>
+                                <div class="text-sm text-gray-600">One instruction at a time</div>
+                            </td>
+                            <td class="cpu-column-mips">
+                                <div class="font-semibold">5 stages</div>
+                                <div class="text-sm text-gray-600">IF, ID, EX, MEM, WB</div>
+                            </td>
+                            <td class="cpu-column-intel">
+                                <div class="font-semibold">14-20+ stages</div>
+                                <div class="text-sm text-gray-600">Deeply pipelined</div>
+                            </td>
+                            <td class="cpu-column-arm">
+                                <div class="font-semibold">8-15 stages</div>
+                                <div class="text-sm text-gray-600">Varies by core type</div>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td class="font-bold">
+                                <div>Cache Memory</div>
+                                <span class="feature-badge badge-modern">🔵</span>
+                            </td>
+                            <td class="cpu-column-ours">
+                                <div class="font-semibold">None</div>
+                                <div class="text-sm text-gray-600">Direct RAM access</div>
+                            </td>
+                            <td class="cpu-column-mips">
+                                <div class="font-semibold">L1: 16-32 KB</div>
+                                <div class="text-sm text-gray-600">Split I/D cache</div>
+                            </td>
+                            <td class="cpu-column-intel">
+                                <div class="font-semibold">L1: 32KB + L2: 256KB</div>
+                                <div class="text-sm text-gray-600">L3: Up to 32MB shared</div>
+                            </td>
+                            <td class="cpu-column-arm">
+                                <div class="font-semibold">L1: 64KB + L2: 512KB</div>
+                                <div class="text-sm text-gray-600">L3: Up to 8MB shared</div>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td class="font-bold">
+                                <div>Clock Speed</div>
+                                <span class="feature-badge badge-advanced">🟡</span>
+                            </td>
+                            <td class="cpu-column-ours">
+                                <div class="font-semibold">Manual</div>
+                                <div class="text-sm text-gray-600">Step through at your pace</div>
+                            </td>
+                            <td class="cpu-column-mips">
+                                <div class="font-semibold">100-400 MHz</div>
+                                <div class="text-sm text-gray-600">Typical embedded systems</div>
+                            </td>
+                            <td class="cpu-column-intel">
+                                <div class="font-semibold">3-5 GHz</div>
+                                <div class="text-sm text-gray-600">Up to 5.8 GHz boost</div>
+                            </td>
+                            <td class="cpu-column-arm">
+                                <div class="font-semibold">2-3.5 GHz</div>
+                                <div class="text-sm text-gray-600">Mobile/server variants</div>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td class="font-bold">
+                                <div>Transistor Count</div>
+                                <span class="feature-badge badge-modern">🔵</span>
+                            </td>
+                            <td class="cpu-column-ours">
+                                <div class="font-semibold">~500-1000</div>
+                                <div class="text-sm text-gray-600">Gates in Logisim</div>
+                            </td>
+                            <td class="cpu-column-mips">
+                                <div class="font-semibold">~2.5 million</div>
+                                <div class="text-sm text-gray-600">MIPS R4000 (1991)</div>
+                            </td>
+                            <td class="cpu-column-intel">
+                                <div class="font-semibold">10-20 billion</div>
+                                <div class="text-sm text-gray-600">Modern desktop CPUs</div>
+                            </td>
+                            <td class="cpu-column-arm">
+                                <div class="font-semibold">5-15 billion</div>
+                                <div class="text-sm text-gray-600">Apple M-series, Snapdragon</div>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td class="font-bold">
+                                <div>Power Consumption</div>
+                                <span class="feature-badge badge-modern">🔵</span>
+                            </td>
+                            <td class="cpu-column-ours">
+                                <div class="font-semibold">0 watts</div>
+                                <div class="text-sm text-gray-600">Simulated in software!</div>
+                            </td>
+                            <td class="cpu-column-mips">
+                                <div class="font-semibold">1-5 watts</div>
+                                <div class="text-sm text-gray-600">Embedded/router applications</div>
+                            </td>
+                            <td class="cpu-column-intel">
+                                <div class="font-semibold">65-125 watts</div>
+                                <div class="text-sm text-gray-600">Desktop TDP</div>
+                            </td>
+                            <td class="cpu-column-arm">
+                                <div class="font-semibold">5-30 watts</div>
+                                <div class="text-sm text-gray-600">Mobile to server range</div>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td class="font-bold">
+                                <div>Superscalar Execution</div>
+                                <span class="feature-badge badge-modern">🔵</span>
+                            </td>
+                            <td class="cpu-column-ours">
+                                <div class="font-semibold">No</div>
+                                <div class="text-sm text-gray-600">One instruction at a time</div>
+                            </td>
+                            <td class="cpu-column-mips">
+                                <div class="font-semibold">No</div>
+                                <div class="text-sm text-gray-600">Classic MIPS is scalar</div>
+                            </td>
+                            <td class="cpu-column-intel">
+                                <div class="font-semibold">4-6 wide</div>
+                                <div class="text-sm text-gray-600">Execute multiple instructions/cycle</div>
+                            </td>
+                            <td class="cpu-column-arm">
+                                <div class="font-semibold">3-8 wide</div>
+                                <div class="text-sm text-gray-600">Depends on core design</div>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td class="font-bold">
+                                <div>Branch Prediction</div>
+                                <span class="feature-badge badge-modern">🔵</span>
+                            </td>
+                            <td class="cpu-column-ours">
+                                <div class="font-semibold">N/A</div>
+                                <div class="text-sm text-gray-600">No branching implemented</div>
+                            </td>
+                            <td class="cpu-column-mips">
+                                <div class="font-semibold">Basic</div>
+                                <div class="text-sm text-gray-600">Branch delay slot</div>
+                            </td>
+                            <td class="cpu-column-intel">
+                                <div class="font-semibold">Advanced</div>
+                                <div class="text-sm text-gray-600">Neural prediction, BTB</div>
+                            </td>
+                            <td class="cpu-column-arm">
+                                <div class="font-semibold">Advanced</div>
+                                <div class="text-sm text-gray-600">Statistical prediction</div>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td class="font-bold">
+                                <div>SIMD/Vector Units</div>
+                                <span class="feature-badge badge-modern">🔵</span>
+                            </td>
+                            <td class="cpu-column-ours">
+                                <div class="font-semibold">No</div>
+                                <div class="text-sm text-gray-600">Single operation at a time</div>
+                            </td>
+                            <td class="cpu-column-mips">
+                                <div class="font-semibold">Optional</div>
+                                <div class="text-sm text-gray-600">MIPS SIMD Architecture (MSA)</div>
+                            </td>
+                            <td class="cpu-column-intel">
+                                <div class="font-semibold">AVX-512</div>
+                                <div class="text-sm text-gray-600">512-bit vector operations</div>
+                            </td>
+                            <td class="cpu-column-arm">
+                                <div class="font-semibold">NEON/SVE</div>
+                                <div class="text-sm text-gray-600">128-bit to scalable vectors</div>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td class="font-bold">
+                                <div>Typical Use Cases</div>
+                                <span class="feature-badge badge-foundation">🟢</span>
+                            </td>
+                            <td class="cpu-column-ours">
+                                <div class="font-semibold">Education</div>
+                                <div class="text-sm text-gray-600">Learning computer architecture fundamentals</div>
+                            </td>
+                            <td class="cpu-column-mips">
+                                <div class="font-semibold">Embedded</div>
+                                <div class="text-sm text-gray-600">Routers, IoT, game consoles</div>
+                            </td>
+                            <td class="cpu-column-intel">
+                                <div class="font-semibold">Desktop/Server</div>
+                                <div class="text-sm text-gray-600">PCs, workstations, data centers</div>
+                            </td>
+                            <td class="cpu-column-arm">
+                                <div class="font-semibold">Mobile/Server</div>
+                                <div class="text-sm text-gray-600">Phones, tablets, modern servers</div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- The Mind-Blowing Scale -->
+        <section class="bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl shadow-lg p-8 mb-8">
+            <h2 class="text-4xl font-bold text-gray-900 mb-6 text-center">The Mind-Blowing Scale 🤯</h2>
+            
+            <div class="grid md:grid-cols-3 gap-6 mb-8">
+                <div class="bg-white rounded-lg p-6 text-center shadow-md">
+                    <div class="stat-number">50,000×</div>
+                    <div class="text-sm text-gray-600 mt-2">More operations per second</div>
+                    <div class="text-xs text-gray-500 mt-1">Modern CPU vs your design</div>
+                </div>
+                <div class="bg-white rounded-lg p-6 text-center shadow-md">
+                    <div class="stat-number">137 Million×</div>
+                    <div class="text-sm text-gray-600 mt-2">More memory capacity</div>
+                    <div class="text-xs text-gray-500 mt-1">16GB RAM vs 32 bytes</div>
+                </div>
+                <div class="bg-white rounded-lg p-6 text-center shadow-md">
+                    <div class="stat-number">20 Million×</div>
+                    <div class="text-sm text-gray-600 mt-2">More transistors</div>
+                    <div class="text-xs text-gray-500 mt-1">Modern CPU vs basic design</div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg p-8">
+                <h3 class="text-2xl font-bold mb-4 text-center">But Here's the Amazing Part...</h3>
+                <div class="space-y-4 text-lg">
+                    <div class="flex items-start">
+                        <span class="text-3xl mr-4">🧱</span>
+                        <p><strong>Same Building Blocks:</strong> Modern CPUs use the exact same logic gates (AND, OR, NOT), the same flip-flops for memory, and the same ALU concepts you're learning.</p>
+                    </div>
+                    <div class="flex items-start">
+                        <span class="text-3xl mr-4">🎯</span>
+                        <p><strong>Same Architecture:</strong> Fetch-Decode-Execute cycle? Check. Registers? Check. ALU operations? Check. Memory addressing? Check. You're learning the real fundamentals!</p>
+                    </div>
+                    <div class="flex items-start">
+                        <span class="text-3xl mr-4">📈</span>
+                        <p><strong>Just More Layers:</strong> Modern CPUs add pipelining, caching, prediction, and parallelism—but underneath, it's still logic gates making decisions based on your control signals.</p>
+                    </div>
+                    <div class="flex items-start">
+                        <span class="text-3xl mr-4">🌟</span>
+                        <p><strong>You Could Design One:</strong> With the concepts you're learning, you genuinely understand how modern CPUs work. The difference is engineering scale, not fundamental principles!</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- What You're Really Learning -->
+        <section class="bg-white rounded-xl shadow-lg p-8 mb-8">
+            <h2 class="text-4xl font-bold text-gray-900 mb-6 border-b-4 border-indigo-600 pb-2">What You're Really Learning 🎓</h2>
+            
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="space-y-4">
+                    <h3 class="text-2xl font-bold text-indigo-900">Timeless Concepts</h3>
+                    <div class="space-y-3">
+                        <div class="bg-indigo-50 p-4 rounded-lg">
+                            <h4 class="font-bold mb-2">✓ How Instructions Work</h4>
+                            <p class="text-sm text-gray-700">Every CPU—from 8-bit to 64-bit—decodes instructions and routes them to the right functional units. Your decoder does this!</p>
+                        </div>
+                        <div class="bg-indigo-50 p-4 rounded-lg">
+                            <h4 class="font-bold mb-2">✓ ALU Design Patterns</h4>
+                            <p class="text-sm text-gray-700">Modern CPUs have bigger ALUs with more operations, but the concept of parallel functional units with selection logic is universal.</p>
+                        </div>
+                        <div class="bg-indigo-50 p-4 rounded-lg">
+                            <h4 class="font-bold mb-2">✓ Control Signal Flow</h4>
+                            <p class="text-sm text-gray-700">Understanding how control signals coordinate different parts of the CPU is the key to understanding ANY processor architecture.</p>
+                        </div>
+                        <div class="bg-indigo-50 p-4 rounded-lg">
+                            <h4 class="font-bold mb-2">✓ Data Paths</h4>
+                            <p class="text-sm text-gray-700">How data flows from memory through the ALU and back—this fundamental pattern exists in every CPU ever built.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="space-y-4">
+                    <h3 class="text-2xl font-bold text-purple-900">The Path Forward</h3>
+                    <div class="space-y-3">
+                        <div class="bg-purple-50 p-4 rounded-lg">
+                            <h4 class="font-bold mb-2">→ Add Pipelining</h4>
+                            <p class="text-sm text-gray-700">Break your single-cycle CPU into stages (IF, ID, EX, MEM, WB) and you've got MIPS!</p>
+                        </div>
+                        <div class="bg-purple-50 p-4 rounded-lg">
+                            <h4 class="font-bold mb-2">→ Add Memory Hierarchy</h4>
+                            <p class="text-sm text-gray-700">Put a small, fast cache between RAM and your CPU—now you're approaching modern performance.</p>
+                        </div>
+                        <div class="bg-purple-50 p-4 rounded-lg">
+                            <h4 class="font-bold mb-2">→ Add Multiple Execution Units</h4>
+                            <p class="text-sm text-gray-700">Instead of one ALU, have several running in parallel—welcome to superscalar architecture!</p>
+                        </div>
+                        <div class="bg-purple-50 p-4 rounded-lg">
+                            <h4 class="font-bold mb-2">→ Add Prediction Logic</h4>
+                            <p class="text-sm text-gray-700">Guess which branch to take before you know for sure—now you're thinking like Intel!</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Inspiration Section -->
+        <section class="hero-gradient text-white rounded-2xl shadow-2xl p-12 mb-8 text-center">
+            <h2 class="text-4xl font-bold mb-6">You're Not Just Building a Toy 🚀</h2>
+            <div class="max-w-4xl mx-auto space-y-6 text-xl">
+                <p>
+                    Every Intel engineer started with these same concepts. Every ARM architect learned these fundamentals. Every AMD designer understands the principles you're mastering right now.
+                </p>
+                <p>
+                    The CPU in your phone has <strong>10 billion transistors</strong>, but it still uses the same basic logic gates you're connecting in Logisim. It still has an ALU performing operations. It still decodes instructions. It still uses control signals.
+                </p>
+                <p class="text-2xl font-bold bg-white bg-opacity-20 rounded-lg p-6">
+                    The difference between your CPU and a modern processor isn't <em>kind</em>—it's <em>scale</em>.
+                </p>
+                <p>
+                    And scale is just engineering. The fundamental concepts? Those are what you're learning right now. Master these, and you genuinely understand how computers work—from the ground up to the cloud.
+                </p>
+            </div>
+        </section>
+
+        <!-- Key Takeaways -->
+        <section class="bg-white rounded-xl shadow-lg p-8 mb-8">
+            <h2 class="text-4xl font-bold text-gray-900 mb-6 text-center">Key Takeaways 💡</h2>
+            <div class="grid md:grid-cols-3 gap-6">
+                <div class="bg-green-50 border-2 border-green-500 rounded-lg p-6">
+                    <div class="text-4xl mb-3 text-center">🎯</div>
+                    <h3 class="text-xl font-bold mb-3 text-center">Same Foundation</h3>
+                    <p class="text-gray-700">Your 8-bit CPU and a modern x64 processor share the same fundamental building blocks and architectural concepts.</p>
+                </div>
+                <div class="bg-blue-50 border-2 border-blue-500 rounded-lg p-6">
+                    <div class="text-4xl mb-3 text-center">📈</div>
+                    <h3 class="text-xl font-bold mb-3 text-center">Logical Extensions</h3>
+                    <p class="text-gray-700">Modern CPUs didn't invent new magic—they extended and optimized the core concepts through layers of engineering.</p>
+                </div>
+                <div class="bg-purple-50 border-2 border-purple-500 rounded-lg p-6">
+                    <div class="text-4xl mb-3 text-center">🌟</div>
+                    <h3 class="text-xl font-bold mb-3 text-center">Real Understanding</h3>
+                    <p class="text-gray-700">You're not learning a simplified version—you're learning the ACTUAL fundamentals that every computer architect must understand.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="text-center mt-12 text-gray-500">
+            <p class="text-lg font-semibold mb-2">Keep Building. Keep Learning. You're Understanding the Foundation of the Digital World.</p>
+            <p class="text-sm">CSC210: Computer Organization | From Logic Gates to Modern Processors</p>
+        </footer>
+    </div>
+</body>
+</html>
