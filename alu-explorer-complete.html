@@ -693,6 +693,7 @@
                 
                 <div class="bg-white rounded-xl shadow-lg p-6 mb-6">
                 <p class="text-lg mb-6">
+                <p class="text-lg mb-6">
                     Now it's time to get hands-on! The simulator below lets you experiment with your 7-operation ALU in real-time, and you'll see how the universal flags work for EVERY operation. Here's how to use it effectively:
                 </p>
                 </div>
@@ -747,7 +748,8 @@
         <section class="mb-12" id="simulator">
             <h2 class="text-3xl font-bold text-gray-900 mb-6">🖥️ Interactive ALU Simulator</h2>
             
-            <div class="bg-white border-4 border-blue-500 rounded-xl p-6 shadow-xl">
+                            
+                <div class="bg-white border-4 border-blue-500 rounded-xl p-6 shadow-xl">
                 <!-- Input Controls -->
                 <div class="grid md:grid-cols-3 gap-6 mb-6">
                     <!-- Input A -->
@@ -1026,6 +1028,68 @@
                     // Scroll to top of page
                     window.scrollTo({ top: 0, behavior: 'smooth' });
                 });
+            });
+            
+            // Print button functionality
+            document.getElementById('print-instructions').addEventListener('click', function() {
+                // Create a new window for printing
+                const printWindow = window.open('', '_blank');
+                
+                // Get the instructions content
+                const instructionsContent = document.getElementById('tab-guide').innerHTML;
+                
+                // Create print-friendly HTML
+                printWindow.document.write(`
+                    <!DOCTYPE html>
+                    <html>
+                    <head>
+                        <title>ALU Simulator Instructions</title>
+                        <style>
+                            body {
+                                font-family: Arial, sans-serif;
+                                max-width: 800px;
+                                margin: 20px auto;
+                                padding: 20px;
+                                line-height: 1.6;
+                            }
+                            h2 { color: #16a34a; border-bottom: 3px solid #16a34a; padding-bottom: 10px; }
+                            h3 { color: #059669; margin-top: 20px; }
+                            h4 { color: #047857; }
+                            .step-number {
+                                background: #16a34a;
+                                color: white;
+                                border-radius: 50%;
+                                width: 30px;
+                                height: 30px;
+                                display: inline-flex;
+                                align-items: center;
+                                justify-content: center;
+                                margin-right: 10px;
+                                font-weight: bold;
+                            }
+                            ol { margin-left: 40px; }
+                            li { margin: 10px 0; }
+                            summary { font-weight: bold; color: #059669; cursor: pointer; }
+                            details { margin: 15px 0; padding: 10px; border: 1px solid #d1fae5; border-radius: 5px; }
+                            button { display: none; } /* Hide buttons in print */
+                            @media print {
+                                body { max-width: 100%; }
+                            }
+                        </style>
+                    </head>
+                    <body>
+                        ${instructionsContent}
+                    </body>
+                    </html>
+                `);
+                
+                printWindow.document.close();
+                printWindow.focus();
+                
+                // Wait for content to load, then print
+                setTimeout(() => {
+                    printWindow.print();
+                }, 500);
             });
             
             // State variables
