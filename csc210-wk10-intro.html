@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Updated Title for CSC210 Week 10 -->
+    <title>CSC210 - Week 10: The ALU (Arithmetic Logic Unit)</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            background-color: #FDFBF8;
+            color: #383838;
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .code-font {
+            font-family: 'Fira Code', monospace;
+        }
+        
+        /* Style for the currently active transcript line */
+        .active-transcript-line {
+            background-color: #F0EBE8;
+            font-weight: 600;
+            color: #000;
+            border-left: 4px solid #4a5568; /* Darker accent for active line */
+        }
+
+        /* Skip link style (Accessibility requirement) */
+        .skip-link {
+            position: absolute;
+            top: -40px;
+            left: 0;
+            background: #383838;
+            color: #FDFBF8;
+            padding: 8px;
+            z-index: 100;
+            transition: top 0.3s;
+        }
+
+        .skip-link:focus {
+            top: 0;
+        }
+
+        /* Custom scrollbar for transcript */
+        #transcript-container::-webkit-scrollbar {
+            width: 8px;
+        }
+        #transcript-container::-webkit-scrollbar-thumb {
+            background-color: #cccccc;
+            border-radius: 10px;
+        }
+        #transcript-container::-webkit-scrollbar-thumb:hover {
+            background-color: #a0a0a0;
+        }
+    </style>
+</head>
+<body class="p-4 sm:p-8">
+    <a href="#main-content" class="skip-link rounded-br-md">Skip to main content</a>
+    
+    <div id="main-content" class="max-w-7xl mx-auto">
+        <header class="mb-8">
+            <h1 class="text-3xl sm:text-4xl font-extrabold text-gray-800 mb-2">CSC210 - Week 10: The ALU (Arithmetic Logic Unit)</h1>
+            <p class="text-lg text-gray-600">Aloha! This week, we dive into the core computational component of the CPU: the **Arithmetic Logic Unit (ALU)** . Specifically, we're focusing on the design and function of the **8-bit ALU** you'll need for your upcoming CPU Simulation project. The lecture covers the seven core operations this ALU must perform and how the decoder controls its actions.</p>
+        </header>
+
+        <main class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <!-- Video Player Section - Used 'aspect-video' for responsive 16:9 ratio -->
+            <section class="lg:sticky lg:top-8 self-start">
+                <h2 class="text-2xl font-semibold mb-4 text-gray-700">Video Lecture: Designing the 8-bit ALU</h2>
+                <!-- Video Embed with the new ID and settings -->
+                <div class="aspect-video w-full rounded-xl overflow-hidden shadow-2xl">
+                    <iframe id="youtube-player"
+                            width="100%" height="auto"
+                            src="https://www.youtube.com/embed/-VbDIMu1NM8?si=MntqU41r_mMZBUM7&enablejsapi=1" 
+                            title="YouTube video player"
+                            frameborder="0" 
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                            allowfullscreen
+                            class="w-full h-full"></iframe>
+                </div>
+                <p class="mt-4 text-sm text-gray-500">Video ID: <span class="code-font">-VbDIMu1NM8</span></p>
+            </section>
+
+            <!-- Interactive Transcript Section (Updated for ADA compliance) -->
+            <section>
+                <h2 class="text-2xl font-semibold mb-4 text-gray-700">Video Transcript</h2>
+                <div id="transcript-container" class="h-96 overflow-y-scroll bg-white p-4 rounded-xl shadow-inner border border-gray-200">
+                    <p class="text-center text-gray-400">Loading transcript...</p>
+                    <!-- Transcript lines will be injected here -->
+                </div>
+                <p class="mt-4 text-sm text-gray-600">Click any line in the transcript or use the **Enter/Space** keys when focused to jump to that moment in the video.</p>
+            </section>
+        </main>
+    </div>
+
+    <script type="text/javascript">
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- Configuration ---
+            const videoId = '-VbDIMu1NM8'; // New video ID for ALU lecture
+            let player;
+            let timeUpdater;
+            let parsedTranscript = [];
+
+            // Transcript content for CSC210 Week 10
+            const transcriptData = `1
+00:00:00,000 --> 00:00:08,040
+Aloha and welcome. I just want to talk a little bit about week 10 ALU and registers and primarily
+
+2
+00:00:08,040 --> 00:00:14,860
+the arithmetic logic unit and so what we have if you go through the learning platform for this
+
+3
+00:00:14,860 --> 00:00:23,900
+week what you'll see in here is essentially an arithmetic logic unit that does the seven
+
+4
+00:00:23,900 --> 00:00:33,200
+things that our arithmetic logic unit is going to do for our 8-bit CPU okay so we have the adder
+
+5
+00:00:33,200 --> 00:00:40,460
+the right shift the left shift and on and or and in a bitwise or comparator right then we use a 3
+
+6
+00:00:40,460 --> 00:00:50,660
+to 8 decoder and talk about how the decoder works it functionally works your operations table what's
+
+7
+00:00:50,660 --> 00:00:53,880
+going on we don't use one one one
+
+8
+00:00:53,880 --> 00:00:59,600
+because that will be for another function which will be the not function
+
+9
+00:00:59,600 --> 00:01:05,800
+and the knot can be implemented with the XOR function.
+
+10
+00:01:05,800 --> 00:01:10,200
+Okay, so let's look at the seven instructions. The first one is the AND function,
+
+11
+00:01:10,200 --> 00:01:17,440
+and the second is the OR function and then the third is the ADD function, right.
+
+12
+00:01:17,440 --> 00:01:21,780
+Then we have the SHIFT LEFT, which is the fourth function,
+
+13
+00:01:21,780 --> 00:01:25,780
+and then we have the SHIFT RIGHT, which is the fifth function,
+
+14
+00:01:25,780 --> 00:01:30,440
+and then we have the XOR function, which is the sixth function,
+
+15
+00:01:30,440 --> 00:01:37,300
+and the last one is the Comparator function that we talked about, which is the seventh function.
+
+16
+00:01:37,300 --> 00:01:42,420
+So that's the seven functions that you're going to need to implement.
+
+17
+00:01:42,420 --> 00:01:49,760
+Okay, so you need to look at how to implement these functions. Some of them are simple.
+
+18
+00:01:49,760 --> 00:01:54,740
+Like the AND function is very simple. The OR function is very simple.
+
+19
+00:01:54,740 --> 00:01:59,380
+The ADD function is a little more complex. The SHIFT functions are a little more complex.
+
+20
+00:01:59,380 --> 00:02:04,360
+The XOR function is simple, and the Comparator is simple.
+
+21
+00:02:04,360 --> 00:02:07,320
+Okay, so that's what you need to focus on this week.
+
+22
+00:02:07,320 --> 00:02:11,540
+I'm not going to talk about registers because we've talked about registers
+
+23
+00:02:11,540 --> 00:02:17,260
+quite a bit, so I'm not going to talk about that this week. So that's ALU.
+
+24
+00:02:17,260 --> 00:02:22,860
+The reading assignments are listed right here in your course content
+
+25
+00:02:22,860 --> 00:02:28,420
+page, and then the assignment for this week is the lab.
+
+26
+00:02:28,420 --> 00:02:35,460
+The lab is where you implement the ALU, the 8-bit ALU, in the online platform.
+
+27
+00:02:35,460 --> 00:02:40,280
+Okay, so you need to look at that, and it'll show you how to do it.
+
+28
+00:02:40,280 --> 00:02:45,900
+And if you go through the learning activities, it'll show you how to do all of the things
+
+29
+00:02:45,900 --> 00:02:49,240
+that you need to do to complete the lab.
+
+30
+00:02:49,240 --> 00:02:54,740
+Okay, so the last thing is the challenge problems.
+
+31
+00:02:54,740 --> 00:02:57,280
+I'm going to talk about the challenge problems.
+
+32
+00:02:57,280 --> 00:03:00,740
+If you would like to do the challenge problems, they're listed right here.
+
+33
+00:03:00,740 --> 00:03:06,440
+And you can use that for extra credit to boost your grade.
+
+34
+00:03:06,440 --> 00:03:10,220
+Okay, so that's all for this week. Thank you.`;
+
+            // --- Utility Functions ---
+
+            // Converts time string (HH:MM:SS,ms) to seconds
+            function timeToSeconds(timeStr) {
+                if (!timeStr) return 0;
+                const parts = timeStr.replace(',', '.').split(':');
+                const hours = parseInt(parts[0]) || 0;
+                const minutes = parseInt(parts[1]) || 0;
+                const seconds = parseFloat(parts[2]) || 0;
+                return hours * 3600 + minutes * 60 + seconds;
+            }
+
+            // Parses SRT data into an array of objects
+            function parseSrt(srtText) {
+                const lines = srtText.trim().split('\n');
+                const cues = [];
+                let currentCue = null;
+
+                for (const line of lines) {
+                    if (line.match(/^\d+$/)) {
+                        // Start of a new cue (sequence number)
+                        if (currentCue) {
+                            cues.push(currentCue);
+                        }
+                        currentCue = { number: parseInt(line), text: [] };
+                    } else if (line.includes('-->') && currentCue) {
+                        // Timestamps
+                        const [startTimeStr, endTimeStr] = line.split(' --> ');
+                        currentCue.start = timeToSeconds(startTimeStr.trim());
+                        currentCue.end = timeToSeconds(endTimeStr.trim());
+                    } else if (line.trim() !== '' && currentCue) {
+                        // Dialogue text
+                        currentCue.text.push(line.trim());
+                    }
+                }
+                // Push the last cue
+                if (currentCue) {
+                    cues.push(currentCue);
+                }
+
+                // Join text array into a single string
+                return cues.map(cue => ({
+                    ...cue,
+                    text: cue.text.join(' ')
+                }));
+            }
+
+            // Populates the transcript container - updated for ADA compliance
+            function populateTranscript() {
+                const container = document.getElementById('transcript-container');
+                container.innerHTML = '';
+
+                parsedTranscript.forEach((cue, index) => {
+                    // Use a div with role="button" and tabindex="0" for keyboard focus/interaction
+                    const lineElement = document.createElement('div');
+                    lineElement.className = 'transcript-line p-2 cursor-pointer hover:bg-gray-100 rounded-lg text-base focus:outline-none focus:ring-2 focus:ring-gray-400';
+                    lineElement.dataset.start = cue.start;
+                    lineElement.dataset.end = cue.end;
+                    lineElement.dataset.index = index;
+                    lineElement.textContent = cue.text;
+                    
+                    // ADA: Role and Tabindex for making it keyboard focusable
+                    lineElement.setAttribute('role', 'button');
+                    lineElement.setAttribute('tabindex', '0');
+                    lineElement.setAttribute('aria-label', `Jump to ${Math.floor(cue.start)} seconds: ${cue.text.substring(0, 50)}...`);
+
+                    const seekToTime = () => {
+                        if (player && player.seekTo) {
+                            player.seekTo(cue.start, true);
+                            player.playVideo();
+                        }
+                    };
+
+                    lineElement.addEventListener('click', seekToTime);
+                    
+                    // ADA: Handle Enter and Space keys
+                    lineElement.addEventListener('keydown', (event) => {
+                        if (event.key === 'Enter' || event.key === ' ') {
+                            event.preventDefault(); // Prevent default scroll for spacebar
+                            seekToTime();
+                        }
+                    });
+
+                    container.appendChild(lineElement);
+                });
+            }
+
+            // Highlights the current line and scrolls it into view
+            function highlightCurrentLine() {
+                if (!player || !player.getCurrentTime) return;
+
+                const currentTime = player.getCurrentTime();
+                const lines = document.querySelectorAll('.transcript-line');
+                let foundActive = false;
+
+                lines.forEach(line => {
+                    const start = parseFloat(line.dataset.start);
+                    const end = parseFloat(line.dataset.end);
+
+                    if (currentTime >= start && currentTime < end) {
+                        if (!line.classList.contains('active-transcript-line')) {
+                            // Deactivate previous active line
+                            document.querySelector('.active-transcript-line')?.classList.remove('active-transcript-line');
+                            // Activate current line
+                            line.classList.add('active-transcript-line');
+                            
+                            // Scroll line into view if it's not already visible
+                            const container = document.getElementById('transcript-container');
+                            const containerRect = container.getBoundingClientRect();
+                            const lineRect = line.getBoundingClientRect();
+
+                            // Only scroll if the line is partially or completely outside the view
+                            if (lineRect.top < containerRect.top || lineRect.bottom > containerRect.bottom) {
+                                line.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                            }
+                        }
+                        foundActive = true;
+                    } else {
+                        line.classList.remove('active-transcript-line');
+                    }
+                });
+
+                // If playback stops, clear highlighting after the last line's duration
+                if (!foundActive && player.getPlayerState() !== YT.PlayerState.PLAYING) {
+                     document.querySelector('.active-transcript-line')?.classList.remove('active-transcript-line');
+                }
+            }
+
+
+            // --- YouTube Player API Functions ---
+            window.onYouTubeIframeAPIReady = function() {
+                player = new YT.Player('youtube-player', {
+                    videoId: videoId,
+                    events: {
+                        'onReady': onPlayerReady,
+                        'onStateChange': onPlayerStateChange
+                    }
+                });
+            };
+
+            function onPlayerReady(event) {
+                console.log('YouTube player is ready.');
+            }
+
+            function onPlayerStateChange(event) {
+                clearInterval(timeUpdater); // Clear any existing interval
+                if (event.data === YT.PlayerState.PLAYING) {
+                    timeUpdater = setInterval(highlightCurrentLine, 300);
+                }
+            }
+            
+            // --- Initialization ---\
+            function initialize() {
+                parsedTranscript = parseSrt(transcriptData);
+                populateTranscript();
+                
+                // Load the YouTube IFrame Player API script if it's not already loaded
+                if (typeof(YT) == 'undefined' || typeof(YT.Player) == 'undefined') {
+                    const tag = document.createElement('script');
+                    tag.src = "https://www.youtube.com/iframe_api";
+                    const firstScriptTag = document.getElementsByTagName('script')[0];
+                    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+                } else {
+                    onYouTubeIframeAPIReady();
+                }
+                
+                console.log('Introduction page initialized.');
+            }
+
+            initialize();
+        });
+    </script>
+</body>
+</html>
