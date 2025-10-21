@@ -268,21 +268,53 @@
             </ul>
         </section>
 
-        <!-- Introduction Section -->
-        <section class="mb-12">
-            <h2 class="text-3xl font-bold text-gray-900 mb-6">Your 7-Operation ALU: The Heart of Computation</h2>
-            
-            <div class="prose max-w-none">
-                <p class="text-lg mb-4">
+        <!-- Tab Navigation -->
+        <nav class="mb-8" role="tablist">
+            <div class="flex flex-wrap gap-2 border-b-2 border-gray-300">
+                <button class="tab-button active" data-tab="intro" role="tab" aria-selected="true" aria-controls="tab-intro">
+                    📖 Introduction
+                </button>
+                <button class="tab-button" data-tab="guide" role="tab" aria-selected="false" aria-controls="tab-guide">
+                    📚 How to Use
+                </button>
+                <button class="tab-button" data-tab="simulator" role="tab" aria-selected="false" aria-controls="tab-simulator">
+                    🖥️ Simulator
+                </button>
+                <button class="tab-button" data-tab="practice" role="tab" aria-selected="false" aria-controls="tab-practice">
+                    🎯 Practice
+                </button>
+                <button class="tab-button" data-tab="summary" role="tab" aria-selected="false" aria-controls="tab-summary">
+                    🎓 Summary
+                </button>
+            </div>
+        </nav>
+
+        <!-- Tab Content: Introduction Section -->
+        <div id="tab-intro" class="tab-content active" role="tabpanel"  aria-labelledby="intro">
+            <section class="mb-8">
+                <h2 class="text-3xl font-bold text-gray-900 mb-6 pb-3 border-b-4 border-blue-600">Your 7-Operation ALU: The Heart of Computation</h2>
+                
+                <div class="bg-white rounded-xl shadow-lg p-6 mb-6">
+                    <h3 class="text-2xl font-bold text-gray-800 mb-4 flex items-center">
+                        <span class="bg-blue-600 text-white rounded-full w-10 h-10 flex items-center justify-center mr-3">1</span>
+                        What Does Your ALU Actually Do?
+                    </h3>
+                    <p class="text-lg mb-4">
                     Welcome to one of the most important components in your CPU! You built this Arithmetic Logic Unit (ALU) back in Week 6, but now we're going to really understand how it works at the architectural level.
                 </p>
 
                 <h3 class="text-2xl font-bold text-gray-800 mt-8 mb-4">What Does Your ALU Actually Do?</h3>
                 <p class="mb-4">
-                    Think of your ALU as a Swiss Army knife with exactly 7 tools. Each tool (operation) does something different, and you select which tool to use by giving the ALU a 3-bit code called an <strong>operation code</strong> or <strong>opcode</strong>. Your ALU takes in two 8-bit numbers (we call them <strong>Input A</strong> and <strong>Input B</strong>), performs the selected operation, and produces an 8-bit result plus some helpful status flags.
-                </p>
+                    <p class="text-lg mb-4">
+                        Think of your ALU as a Swiss Army knife with exactly 7 tools. Each tool (operation) does something different, and you select which tool to use by giving the ALU a 3-bit code called an <strong>operation code</strong> or <strong>opcode</strong>. Your ALU takes in two 8-bit numbers (we call them <strong>Input A</strong> and <strong>Input B</strong>), performs the selected operation, and produces an 8-bit result plus some helpful status flags.
+                    </p>
+                </div>
 
-                <h3 class="text-2xl font-bold text-gray-800 mt-8 mb-4">The Decoder-Based Architecture</h3>
+                <div class="bg-white rounded-xl shadow-lg p-6 mb-6">
+                    <h3 class="text-2xl font-bold text-gray-800 mb-4 flex items-center">
+                        <span class="bg-blue-600 text-white rounded-full w-10 h-10 flex items-center justify-center mr-3">2</span>
+                        The Decoder-Based Architecture
+                    </h3>
                 <p class="mb-4">
                     Here's where your ALU design is particularly elegant! Inside your ALU, you have 7 separate functional units all computing their results simultaneously:
                 </p>
@@ -296,10 +328,16 @@
                     <li><strong>An XOR Comparator</strong> - Performs bitwise XOR</li>
                 </ul>
                 <p class="mb-4">
-                    All seven units are computing their results at the same time! But here's the clever part: you only see ONE result on the output bus. This is accomplished using a <strong>3-to-8 decoder</strong> connected to <strong>enable circuits</strong>.
-                </p>
+                    <p class="mb-4">
+                        All seven units are computing their results at the same time! But here's the clever part: you only see ONE result on the output bus. This is accomplished using a <strong>3-to-8 decoder</strong> connected to <strong>enable circuits</strong>.
+                    </p>
+                </div>
 
-                <h3 class="text-2xl font-bold text-gray-800 mt-8 mb-4">How the Decoder Control Works</h3>
+                <div class="bg-white rounded-xl shadow-lg p-6 mb-6">
+                    <h3 class="text-2xl font-bold text-gray-800 mb-4 flex items-center">
+                        <span class="bg-blue-600 text-white rounded-full w-10 h-10 flex items-center justify-center mr-3">3</span>
+                        How the Decoder Control Works
+                    </h3>
                 <p class="mb-4">
                     Instead of using a multiplexer to select outputs (which is another valid approach), your design uses a more distributed control mechanism:
                 </p>
@@ -333,18 +371,23 @@
 → Result appears at ALU output</div>
                 </div>
 
-                <p class="mb-4">This architecture is elegant because:</p>
-                <ul class="list-disc list-inside space-y-2 mb-6 ml-4">
-                    <li><strong>It's modular:</strong> Each unit operates independently</li>
-                    <li><strong>It prevents bus contention:</strong> Only one driver at a time</li>
-                    <li><strong>It's expandable:</strong> Adding operations just means adding decoder outputs and units</li>
-                    <li><strong>It's similar to how register files work</strong> (Week 9 concept!)</li>
-                </ul>
+                    <p class="mb-4">This architecture is elegant because:</p>
+                    <ul class="list-disc list-inside space-y-2 mb-6 ml-4">
+                        <li><strong>It's modular:</strong> Each unit operates independently</li>
+                        <li><strong>It prevents bus contention:</strong> Only one driver at a time</li>
+                        <li><strong>It's expandable:</strong> Adding operations just means adding decoder outputs and units</li>
+                        <li><strong>It's similar to how register files work</strong> (Week 9 concept!)</li>
+                    </ul>
+                </div>
 
-                <h3 class="text-2xl font-bold text-gray-800 mt-8 mb-4">Your Complete Operation Table</h3>
-                <p class="mb-4">Here's the definitive guide to your ALU. You'll want to memorize this!</p>
-                
-                <div class="overflow-x-auto mb-6">
+                <div class="bg-white rounded-xl shadow-lg p-6 mb-6">
+                    <h3 class="text-2xl font-bold text-gray-800 mb-4 flex items-center">
+                        <span class="bg-blue-600 text-white rounded-full w-10 h-10 flex items-center justify-center mr-3">4</span>
+                        Your Complete Operation Table
+                    </h3>
+                    <p class="mb-4">Here's the definitive guide to your ALU. You'll want to memorize this!</p>
+                    
+                    <div class="overflow-x-auto mb-6">
                     <table class="w-full border-2 border-gray-300">
                         <thead class="bg-blue-600 text-white">
                             <tr>
@@ -405,16 +448,21 @@
                             </tr>
                         </tbody>
                     </table>
+                    </div>
+
+                    <div class="bg-red-50 border-2 border-red-300 rounded-lg p-4 mb-6">
+                        <p class="font-bold text-red-800 mb-2">⚠️ Important Note About OpCode 111:</p>
+                        <p class="text-red-700">
+                            The decoder will activate line 7 if you use opcode 111, but there's no functional unit connected to that enable line! This means no unit will drive the output bus, resulting in undefined behavior (floating bus). In well-designed systems, you might connect line 7 to an error detection circuit or simply leave it unused. In your design, it's intentionally unused—so <strong>never set the opcode to 111</strong>!
+                        </p>
+                    </div>
                 </div>
 
-                <div class="bg-red-50 border-2 border-red-300 rounded-lg p-4 mb-6">
-                    <p class="font-bold text-red-800 mb-2">⚠️ Important Note About OpCode 111:</p>
-                    <p class="text-red-700">
-                        The decoder will activate line 7 if you use opcode 111, but there's no functional unit connected to that enable line! This means no unit will drive the output bus, resulting in undefined behavior (floating bus). In well-designed systems, you might connect line 7 to an error detection circuit or simply leave it unused. In your design, it's intentionally unused—so <strong>never set the opcode to 111</strong>!
-                    </p>
-                </div>
-
-                <h3 class="text-2xl font-bold text-gray-800 mt-8 mb-4">Understanding the Output Flags: Universal vs. Operation-Specific</h3>
+                <div class="bg-white rounded-xl shadow-lg p-6 mb-6">
+                    <h3 class="text-2xl font-bold text-gray-800 mb-4 flex items-center">
+                        <span class="bg-blue-600 text-white rounded-full w-10 h-10 flex items-center justify-center mr-3">5</span>
+                        Understanding the Output Flags: Universal vs. Operation-Specific
+                    </h3>
                 <p class="mb-4">
                     Your ALU produces four status flags, but here's the really clever part: <strong>three of them work for ALL operations</strong>! This is a sophisticated design feature that makes your ALU very powerful.
                 </p>
@@ -506,11 +554,16 @@
                         </ul>
                     </div>
                 </div>
+                </div>
 
-                <h3 class="text-2xl font-bold text-gray-800 mt-8 mb-4">Visual Architecture Diagram</h3>
-                <p class="mb-4">Here's how your ALU is organized with the decoder control and flag generation:</p>
-                
-                <div class="code-block text-xs mb-6">                3-bit OpCode [2:0]
+                <div class="bg-white rounded-xl shadow-lg p-6 mb-6">
+                    <h3 class="text-2xl font-bold text-gray-800 mb-4 flex items-center">
+                        <span class="bg-blue-600 text-white rounded-full w-10 h-10 flex items-center justify-center mr-3">6</span>
+                        Visual Architecture Diagram
+                    </h3>
+                    <p class="mb-4">Here's how your ALU is organized with the decoder control and flag generation:</p>
+                    
+                    <div class="code-block text-xs mb-6">                3-bit OpCode [2:0]
                        │
                        ▼
                  ┌───────────┐
@@ -550,13 +603,18 @@
 
    (c-out flag generated by each unit individually)</div>
 
-                <div class="bg-blue-50 border-2 border-blue-300 rounded-lg p-4 mb-6">
-                    <p class="font-bold text-blue-900">
-                        🔍 Key Insight: The comparison logic (A&gt;B, A==B) and zero detection logic are separate from the functional units and decoder. They always run, monitoring inputs and outputs continuously!
-                    </p>
+                    <div class="bg-blue-50 border-2 border-blue-300 rounded-lg p-4 mb-6">
+                        <p class="font-bold text-blue-900">
+                            🔍 Key Insight: The comparison logic (A&gt;B, A==B) and zero detection logic are separate from the functional units and decoder. They always run, monitoring inputs and outputs continuously!
+                        </p>
+                    </div>
                 </div>
 
-                <h3 class="text-2xl font-bold text-gray-800 mt-8 mb-4">Why Universal Comparison Flags are Brilliant Design</h3>
+                <div class="bg-white rounded-xl shadow-lg p-6 mb-6">
+                    <h3 class="text-2xl font-bold text-gray-800 mb-4 flex items-center">
+                        <span class="bg-blue-600 text-white rounded-full w-10 h-10 flex items-center justify-center mr-3">7</span>
+                        Why Universal Comparison Flags are Brilliant Design
+                    </h3>
                 <p class="mb-4">Having A&gt;B and A==B flags active for ALL operations is actually a sophisticated feature:</p>
 
                 <div class="grid md:grid-cols-2 gap-4 mb-6">
