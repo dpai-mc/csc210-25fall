@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multiplexor vs Decoder: Understanding ALU Control</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .signal-line {
+            border-top: 2px solid #3b82f6;
+            position: relative;
+        }
+        .signal-dot {
+            width: 10px;
+            height: 10px;
+            background: #3b82f6;
+            border-radius: 50%;
+            position: absolute;
+            top: -5px;
+        }
+        .component-box {
+            border: 3px solid #1e40af;
+            border-radius: 8px;
+            padding: 20px;
+            background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+        }
+        .truth-table {
+            border-collapse: collapse;
+        }
+        .truth-table th {
+            background: #1e40af;
+            color: white;
+            padding: 8px;
+        }
+        .truth-table td {
+            border: 1px solid #cbd5e1;
+            padding: 8px;
+            text-align: center;
+        }
+        .highlight-active {
+            background: #86efac !important;
+            font-weight: bold;
+        }
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        @media (max-width: 768px) {
+            .comparison-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        .interactive-demo {
+            background: #f8fafc;
+            border: 2px solid #cbd5e1;
+            border-radius: 12px;
+            padding: 24px;
+            margin: 20px 0;
+        }
+        .selector-btn {
+            padding: 10px 20px;
+            margin: 5px;
+            border: 2px solid #3b82f6;
+            border-radius: 8px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .selector-btn:hover {
+            background: #dbeafe;
+        }
+        .selector-btn.active {
+            background: #3b82f6;
+            color: white;
+            font-weight: bold;
+        }
+        .data-flow {
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <div class="max-w-7xl mx-auto px-4 py-8">
+        <!-- Header -->
+        <header class="text-center mb-12">
+            <h1 class="text-5xl font-bold text-gray-900 mb-4">Multiplexors vs Decoders</h1>
+            <p class="text-xl text-gray-600 mb-2">Understanding Two Essential Building Blocks in ALU Design</p>
+            <div class="text-sm text-gray-500">CSC210: Computer Organization</div>
+        </header>
+
+        <!-- Executive Summary -->
+        <section class="bg-white rounded-xl shadow-lg p-8 mb-8">
+            <h2 class="text-3xl font-bold text-gray-900 mb-4 border-b-4 border-blue-600 pb-2">The Big Picture</h2>
+            <p class="text-lg mb-4">
+                In your 7-operation ALU, you need to select which operation's result becomes the ALU output. There are two different approaches to solving this problem:
+            </p>
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="bg-blue-50 p-6 rounded-lg border-l-4 border-blue-600">
+                    <h3 class="text-xl font-bold text-blue-900 mb-2">🔍 3-to-8 Decoder (Our Choice)</h3>
+                    <p class="text-gray-700"><strong>Job:</strong> "Enable one unit to drive the output"</p>
+                    <p class="text-gray-700"><strong>Function:</strong> Activates exactly ONE of the 7 operation units</p>
+                    <p class="text-gray-700"><strong>Think of it as:</strong> A switch that connects one room's output to the main line</p>
+                </div>
+                <div class="bg-green-50 p-6 rounded-lg border-l-4 border-green-600">
+                    <h3 class="text-xl font-bold text-green-900 mb-2">📡 8:1 Multiplexor (Alternative)</h3>
+                    <p class="text-gray-700"><strong>Job:</strong> "Choose which result to output"</p>
+                    <p class="text-gray-700"><strong>Function:</strong> Selects ONE of 8 inputs to send to output</p>
+                    <p class="text-gray-700"><strong>Think of it as:</strong> A gate that lets through only one data stream</p>
+                </div>
+            </div>
+            <div class="mt-6 bg-yellow-50 border-l-4 border-yellow-500 p-4">
+                <p class="text-gray-800"><strong>Key Insight:</strong> Both can solve the same problem using a 3-bit opcode, but they work in opposite ways! The decoder spreads one input to many outputs (controlling which unit drives the bus), while the multiplexor combines many inputs to one output (selecting which data passes through).</p>
+            </div>
+        </section>
+
+        <!-- Deep Dive: 3-to-8 Decoder -->
+        <section class="bg-white rounded-xl shadow-lg p-8 mb-8">
+            <h2 class="text-3xl font-bold text-gray-900 mb-6 border-b-4 border-blue-600 pb-2">3-to-8 Decoder: The Operation Selector</h2>
+            
+            <div class="mb-6">
+                <h3 class="text-2xl font-bold text-gray-800 mb-4">How It Works</h3>
+                <p class="text-lg mb-4">
+                    A 3-to-8 decoder takes a 3-bit binary code (opcode) and activates exactly ONE of 8 output lines. Think of it like a sophisticated light switch with 8 bulbs—turning the dial to any position lights up exactly one bulb.
+                </p>
+                
+                <div class="component-box mb-6">
+                    <h4 class="text-xl font-bold mb-4 text-center">Decoder Block Diagram</h4>
+                    <div class="flex justify-center items-center">
+                        <svg viewBox="0 0 400 300" class="w-full max-w-lg">
+                            <!-- Inputs -->
+                            <text x="10" y="80" font-size="14" fill="#1e40af">OpCode[2]</text>
+                            <line x1="80" y1="75" x2="120" y2="75" stroke="#3b82f6" stroke-width="2"/>
+                            
+                            <text x="10" y="150" font-size="14" fill="#1e40af">OpCode[1]</text>
+                            <line x1="80" y1="145" x2="120" y2="145" stroke="#3b82f6" stroke-width="2"/>
+                            
+                            <text x="10" y="220" font-size="14" fill="#1e40af">OpCode[0]</text>
+                            <line x1="80" y1="215" x2="120" y2="215" stroke="#3b82f6" stroke-width="2"/>
+                            
+                            <!-- Decoder Box -->
+                            <rect x="120" y="50" width="100" height="200" fill="#dbeafe" stroke="#1e40af" stroke-width="3"/>
+                            <text x="130" y="145" font-size="16" font-weight="bold" fill="#1e40af">3-to-8</text>
+                            <text x="130" y="165" font-size="16" font-weight="bold" fill="#1e40af">Decoder</text>
+                            
+                            <!-- Outputs -->
+                            <line x1="220" y1="60" x2="280" y2="60" stroke="#3b82f6" stroke-width="2"/>
+                            <text x="290" y="65" font-size="12" fill="#374151">Y0 (ADD)</text>
+                            
+                            <line x1="220" y1="85" x2="280" y2="85" stroke="#3b82f6" stroke-width="2"/>
+                            <text x="290" y="90" font-size="12" fill="#374151">Y1 (SHR)</text>
+                            
+                            <line x1="220" y1="110" x2="280" y2="110" stroke="#3b82f6" stroke-width="2"/>
+                            <text x="290" y="115" font-size="12" fill="#374151">Y2 (SHL)</text>
+                            
+                            <line x1="220" y1="135" x2="280" y2="135" stroke="#3b82f6" stroke-width="2"/>
+                            <text x="290" y="140" font-size="12" fill="#374151">Y3 (NOT)</text>
+                            
+                            <line x1="220" y1="160" x2="280" y2="160" stroke="#3b82f6" stroke-width="2"/>
+                            <text x="290" y="165" font-size="12" fill="#374151">Y4 (AND)</text>
+                            
+                            <line x1="220" y1="185" x2="280" y2="185" stroke="#3b82f6" stroke-width="2"/>
+                            <text x="290" y="190" font-size="12" fill="#374151">Y5 (OR)</text>
+                            
+                            <line x1="220" y1="210" x2="280" y2="210" stroke="#3b82f6" stroke-width="2"/>
+                            <text x="290" y="215" font-size="12" fill="#374151">Y6 (XOR)</text>
+                            
+                            <line x1="220" y1="235" x2="280" y2="235" stroke="#3b82f6" stroke-width="2"/>
+                            <text x="290" y="240" font-size="12" fill="#374151">Y7 (unused)</text>
+                        </svg>
+                    </div>
+                </div>
+
+                <h4 class="text-xl font-bold mb-3">Decoder Truth Table</h4>
+                <p class="mb-4">Notice how exactly ONE output is HIGH (1) for each input combination:</p>
+                <div class="overflow-x-auto">
+                    <table class="truth-table w-full">
+                        <thead>
+                            <tr>
+                                <th>Op[2]</th>
+                                <th>Op[1]</th>
+                                <th>Op[0]</th>
+                                <th>Operation</th>
+                                <th>Y0</th>
+                                <th>Y1</th>
+                                <th>Y2</th>
+                                <th>Y3</th>
+                                <th>Y4</th>
+                                <th>Y5</th>
+                                <th>Y6</th>
+                                <th>Y7</th>
+                            </tr>
+                        </thead>
+                        <tbody id="decoderTable">
+                            <tr>
+                                <td>0</td><td>0</td><td>0</td><td>ADD</td>
+                                <td class="highlight-active">1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td>
+                            </tr>
+                            <tr>
+                                <td>0</td><td>0</td><td>1</td><td>SHR</td>
+                                <td>0</td><td class="highlight-active">1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td>
+                            </tr>
+                            <tr>
+                                <td>0</td><td>1</td><td>0</td><td>SHL</td>
+                                <td>0</td><td>0</td><td class="highlight-active">1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td>
+                            </tr>
+                            <tr>
+                                <td>0</td><td>1</td><td>1</td><td>NOT</td>
+                                <td>0</td><td>0</td><td>0</td><td class="highlight-active">1</td><td>0</td><td>0</td><td>0</td><td>0</td>
+                            </tr>
+                            <tr>
+                                <td>1</td><td>0</td><td>0</td><td>AND</td>
+                                <td>0</td><td>0</td><td>0</td><td>0</td><td class="highlight-active">1</td><td>0</td><td>0</td><td>0</td>
+                            </tr>
+                            <tr>
+                                <td>1</td><td>0</td><td>1</td><td>OR</td>
+                                <td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td class="highlight-active">1</td><td>0</td><td>0</td>
+                            </tr>
+                            <tr>
+                                <td>1</td><td>1</td><td>0</td><td>XOR</td>
+                                <td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td class="highlight-active">1</td><td>0</td>
+                            </tr>
+                            <tr>
+                                <td>1</td><td>1</td><td>1</td><td>Unused</td>
+                                <td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td class="highlight-active">1</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="bg-blue-50 border-l-4 border-blue-600 p-4 my-6">
+                <h4 class="font-bold text-lg mb-2">🔑 Key Decoder Characteristics</h4>
+                <ul class="list-disc list-inside space-y-2">
+                    <li><strong>ONE input becomes MANY outputs:</strong> 3 bits → 8 lines</li>
+                    <li><strong>Exactly one output HIGH:</strong> All others are LOW</li>
+                    <li><strong>Enable signal:</strong> Each Y output enables its corresponding functional unit</li>
+                    <li><strong>Direction:</strong> Expands signals (few → many)</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Deep Dive: 8:1 Multiplexor -->
+        <section class="bg-white rounded-xl shadow-lg p-8 mb-8">
+            <h2 class="text-3xl font-bold text-gray-900 mb-6 border-b-4 border-green-600 pb-2">8:1 Multiplexor: The Output Selector</h2>
+            
+            <div class="mb-6">
+                <h3 class="text-2xl font-bold text-gray-800 mb-4">How It Works</h3>
+                <p class="text-lg mb-4">
+                    An 8:1 multiplexor (MUX) takes 8 different input lines and uses a 3-bit select code to choose which ONE of those inputs passes through to the output. Think of it like a railroad switch that directs one train (data) from eight different tracks onto a single main line.
+                </p>
+                
+                <div class="component-box mb-6">
+                    <h4 class="text-xl font-bold mb-4 text-center">Multiplexor Block Diagram</h4>
+                    <div class="flex justify-center items-center">
+                        <svg viewBox="0 0 400 320" class="w-full max-w-lg">
+                            <!-- Inputs from left -->
+                            <text x="10" y="45" font-size="12" fill="#374151">I0 (ADD result)</text>
+                            <line x1="120" y1="40" x2="160" y2="70" stroke="#3b82f6" stroke-width="2"/>
+                            
+                            <text x="10" y="70" font-size="12" fill="#374151">I1 (SHR result)</text>
+                            <line x1="120" y1="65" x2="160" y2="90" stroke="#3b82f6" stroke-width="2"/>
+                            
+                            <text x="10" y="95" font-size="12" fill="#374151">I2 (SHL result)</text>
+                            <line x1="120" y1="90" x2="160" y2="110" stroke="#3b82f6" stroke-width="2"/>
+                            
+                            <text x="10" y="120" font-size="12" fill="#374151">I3 (NOT result)</text>
+                            <line x1="120" y1="115" x2="160" y2="130" stroke="#3b82f6" stroke-width="2"/>
+                            
+                            <text x="10" y="145" font-size="12" fill="#374151">I4 (AND result)</text>
+                            <line x1="120" y1="140" x2="160" y2="150" stroke="#3b82f6" stroke-width="2"/>
+                            
+                            <text x="10" y="170" font-size="12" fill="#374151">I5 (OR result)</text>
+                            <line x1="120" y1="165" x2="160" y2="170" stroke="#3b82f6" stroke-width="2"/>
+                            
+                            <text x="10" y="195" font-size="12" fill="#374151">I6 (XOR result)</text>
+                            <line x1="120" y1="190" x2="160" y2="190" stroke="#3b82f6" stroke-width="2"/>
+                            
+                            <text x="10" y="220" font-size="12" fill="#374151">I7 (unused)</text>
+                            <line x1="120" y1="215" x2="160" y2="210" stroke="#3b82f6" stroke-width="2"/>
+                            
+                            <!-- MUX trapezoid -->
+                            <polygon points="160,60 160,220 280,190 280,90" fill="#d1fae5" stroke="#059669" stroke-width="3"/>
+                            <text x="190" y="145" font-size="16" font-weight="bold" fill="#059669">8:1</text>
+                            <text x="190" y="165" font-size="16" font-weight="bold" fill="#059669">MUX</text>
+                            
+                            <!-- Output -->
+                            <line x1="280" y1="140" x2="350" y2="140" stroke="#059669" stroke-width="3"/>
+                            <text x="280" y="130" font-size="14" font-weight="bold" fill="#059669">ALU Output</text>
+                            
+                            <!-- Select lines from bottom -->
+                            <text x="180" y="255" font-size="12" fill="#1e40af">Select[2:0]</text>
+                            <line x1="220" y1="240" x2="220" y2="220" stroke="#3b82f6" stroke-width="2"/>
+                            <text x="230" y="235" font-size="11" fill="#6b7280">(same opcode)</text>
+                        </svg>
+                    </div>
+                </div>
+
+                <h4 class="text-xl font-bold mb-3">Multiplexor Selection Table</h4>
+                <p class="mb-4">The select code determines which input appears at the output:</p>
+                <div class="overflow-x-auto">
+                    <table class="truth-table w-full">
+                        <thead>
+                            <tr>
+                                <th>S[2]</th>
+                                <th>S[1]</th>
+                                <th>S[0]</th>
+                                <th>Operation</th>
+                                <th>Selected Input</th>
+                                <th>Output Value</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>0</td><td>0</td><td>0</td><td>ADD</td>
+                                <td class="highlight-active">I0</td><td>ADD result</td>
+                            </tr>
+                            <tr>
+                                <td>0</td><td>0</td><td>1</td><td>SHR</td>
+                                <td class="highlight-active">I1</td><td>SHR result</td>
+                            </tr>
+                            <tr>
+                                <td>0</td><td>1</td><td>0</td><td>SHL</td>
+                                <td class="highlight-active">I2</td><td>SHL result</td>
+                            </tr>
+                            <tr>
+                                <td>0</td><td>1</td><td>1</td><td>NOT</td>
+                                <td class="highlight-active">I3</td><td>NOT result</td>
+                            </tr>
+                            <tr>
+                                <td>1</td><td>0</td><td>0</td><td>AND</td>
+                                <td class="highlight-active">I4</td><td>AND result</td>
+                            </tr>
+                            <tr>
+                                <td>1</td><td>0</td><td>1</td><td>OR</td>
+                                <td class="highlight-active">I5</td><td>OR result</td>
+                            </tr>
+                            <tr>
+                                <td>1</td><td>1</td><td>0</td><td>XOR</td>
+                                <td class="highlight-active">I6</td><td>XOR result</td>
+                            </tr>
+                            <tr>
+                                <td>1</td><td>1</td><td>1</td><td>Unused</td>
+                                <td class="highlight-active">I7</td><td>0 (or don't care)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="bg-green-50 border-l-4 border-green-600 p-4 my-6">
+                <h4 class="font-bold text-lg mb-2">🔑 Key Multiplexor Characteristics</h4>
+                <ul class="list-disc list-inside space-y-2">
+                    <li><strong>MANY inputs become ONE output:</strong> 8 lines → 1 result</li>
+                    <li><strong>Passes selected data through:</strong> Output = chosen input value</li>
+                    <li><strong>Data routing:</strong> Connects one source to the destination</li>
+                    <li><strong>Direction:</strong> Consolidates signals (many → one)</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Side-by-Side Comparison -->
+        <section class="bg-white rounded-xl shadow-lg p-8 mb-8">
+            <h2 class="text-3xl font-bold text-gray-900 mb-6 border-b-4 border-purple-600 pb-2">Side-by-Side Comparison</h2>
+            
+            <div class="comparison-grid mb-6">
+                <div class="bg-blue-50 p-6 rounded-lg">
+                    <h3 class="text-2xl font-bold text-blue-900 mb-4 text-center">3-to-8 Decoder</h3>
+                    <table class="w-full text-left">
+                        <tr class="border-b-2 border-blue-200">
+                            <td class="py-2 font-semibold">Purpose:</td>
+                            <td class="py-2">Enable control</td>
+                        </tr>
+                        <tr class="border-b-2 border-blue-200">
+                            <td class="py-2 font-semibold">Inputs:</td>
+                            <td class="py-2">3 bits (opcode)</td>
+                        </tr>
+                        <tr class="border-b-2 border-blue-200">
+                            <td class="py-2 font-semibold">Outputs:</td>
+                            <td class="py-2">8 enable lines</td>
+                        </tr>
+                        <tr class="border-b-2 border-blue-200">
+                            <td class="py-2 font-semibold">Direction:</td>
+                            <td class="py-2">One to Many (1→8)</td>
+                        </tr>
+                        <tr class="border-b-2 border-blue-200">
+                            <td class="py-2 font-semibold">Output Type:</td>
+                            <td class="py-2">Control signals (0 or 1)</td>
+                        </tr>
+                        <tr class="border-b-2 border-blue-200">
+                            <td class="py-2 font-semibold">Active Outputs:</td>
+                            <td class="py-2">Exactly ONE is HIGH</td>
+                        </tr>
+                        <tr>
+                            <td class="py-2 font-semibold">ALU Use:</td>
+                            <td class="py-2">Enables one unit to drive bus</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div class="bg-green-50 p-6 rounded-lg">
+                    <h3 class="text-2xl font-bold text-green-900 mb-4 text-center">8:1 Multiplexor</h3>
+                    <table class="w-full text-left">
+                        <tr class="border-b-2 border-green-200">
+                            <td class="py-2 font-semibold">Purpose:</td>
+                            <td class="py-2">Data selection</td>
+                        </tr>
+                        <tr class="border-b-2 border-green-200">
+                            <td class="py-2 font-semibold">Inputs:</td>
+                            <td class="py-2">8 data lines + 3 select bits</td>
+                        </tr>
+                        <tr class="border-b-2 border-green-200">
+                            <td class="py-2 font-semibold">Outputs:</td>
+                            <td class="py-2">1 data output</td>
+                        </tr>
+                        <tr class="border-b-2 border-green-200">
+                            <td class="py-2 font-semibold">Direction:</td>
+                            <td class="py-2">Many to One (8→1)</td>
+                        </tr>
+                        <tr class="border-b-2 border-green-200">
+                            <td class="py-2 font-semibold">Output Type:</td>
+                            <td class="py-2">Data values (8-bit result)</td>
+                        </tr>
+                        <tr class="border-b-2 border-green-200">
+                            <td class="py-2 font-semibold">Active Outputs:</td>
+                            <td class="py-2">Always ONE output active</td>
+                        </tr>
+                        <tr>
+                            <td class="py-2 font-semibold">ALU Use:</td>
+                            <td class="py-2">Routes selected result to output</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            <div class="bg-purple-50 border-l-4 border-purple-600 p-6">
+                <h4 class="font-bold text-xl mb-3">⚖️ The Essential Difference</h4>
+                <p class="text-lg mb-3">
+                    <strong>Decoder approach (what we use):</strong> Takes a code and says "YOU are the chosen one!" to enable exactly one unit to drive the output bus.
+                </p>
+                <p class="text-lg">
+                    <strong>Multiplexor approach (alternative design):</strong> Takes a code and says "I'm listening to YOU!" to pass through exactly one unit's result to the output.
+                </p>
+                <p class="text-lg mt-3 font-semibold text-purple-900">
+                    Both solve the same problem—selecting one operation's result—but use opposite strategies!
+                </p>
+            </div>
+        </section>
+
+        <!-- Interactive Demo -->
+        <section class="bg-white rounded-xl shadow-lg p-8 mb-8">
+            <h2 class="text-3xl font-bold text-gray-900 mb-6 border-b-4 border-indigo-600 pb-2">Interactive Demonstration</h2>
+            
+            <div class="interactive-demo">
+                <h3 class="text-xl font-bold mb-4">Try It: Select an Operation</h3>
+                <p class="mb-4">Click an operation to see how both the decoder and multiplexor respond to the same opcode:</p>
+                
+                <div class="flex flex-wrap justify-center mb-6">
+                    <button class="selector-btn active" onclick="selectOperation(0, 'ADD')">000 - ADD</button>
+                    <button class="selector-btn" onclick="selectOperation(1, 'SHR')">001 - SHR</button>
+                    <button class="selector-btn" onclick="selectOperation(2, 'SHL')">010 - SHL</button>
+                    <button class="selector-btn" onclick="selectOperation(3, 'NOT')">011 - NOT</button>
+                    <button class="selector-btn" onclick="selectOperation(4, 'AND')">100 - AND</button>
+                    <button class="selector-btn" onclick="selectOperation(5, 'OR')">101 - OR</button>
+                    <button class="selector-btn" onclick="selectOperation(6, 'XOR')">110 - XOR</button>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div class="bg-blue-100 p-4 rounded-lg">
+                        <h4 class="font-bold mb-3 text-center">Decoder Output</h4>
+                        <div class="space-y-2 font-mono text-sm">
+                            <div id="dec0" class="p-2 bg-white rounded">Y0 (ADD): <span class="font-bold text-green-600">1</span></div>
+                            <div id="dec1" class="p-2 bg-gray-100 rounded">Y1 (SHR): 0</div>
+                            <div id="dec2" class="p-2 bg-gray-100 rounded">Y2 (SHL): 0</div>
+                            <div id="dec3" class="p-2 bg-gray-100 rounded">Y3 (NOT): 0</div>
+                            <div id="dec4" class="p-2 bg-gray-100 rounded">Y4 (AND): 0</div>
+                            <div id="dec5" class="p-2 bg-gray-100 rounded">Y5 (OR): 0</div>
+                            <div id="dec6" class="p-2 bg-gray-100 rounded">Y6 (XOR): 0</div>
+                        </div>
+                        <p class="mt-3 text-center text-sm"><strong id="decoderAction">ADD unit is ENABLED</strong></p>
+                    </div>
+
+                    <div class="bg-green-100 p-4 rounded-lg">
+                        <h4 class="font-bold mb-3 text-center">Multiplexor Output</h4>
+                        <div class="space-y-2 font-mono text-sm">
+                            <div id="mux0" class="p-2 bg-white rounded">I0: <span class="font-bold text-green-600">A + B → OUTPUT</span></div>
+                            <div id="mux1" class="p-2 bg-gray-100 rounded text-gray-400">I1: A >> 1</div>
+                            <div id="mux2" class="p-2 bg-gray-100 rounded text-gray-400">I2: A << 1</div>
+                            <div id="mux3" class="p-2 bg-gray-100 rounded text-gray-400">I3: ~A</div>
+                            <div id="mux4" class="p-2 bg-gray-100 rounded text-gray-400">I4: A & B</div>
+                            <div id="mux5" class="p-2 bg-gray-100 rounded text-gray-400">I5: A | B</div>
+                            <div id="mux6" class="p-2 bg-gray-100 rounded text-gray-400">I6: A ^ B</div>
+                        </div>
+                        <p class="mt-3 text-center text-sm"><strong id="muxAction">Passing ADD result to output</strong></p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ALU Design Choice -->
+        <section class="bg-white rounded-xl shadow-lg p-8 mb-8">
+            <h2 class="text-3xl font-bold text-gray-900 mb-6 border-b-4 border-red-600 pb-2">Our ALU Design: Using the Decoder Approach</h2>
+            
+            <div class="bg-gradient-to-r from-blue-50 to-blue-100 p-6 rounded-lg mb-6">
+                <h3 class="text-2xl font-bold mb-4">How Our Decoder-Based ALU Works</h3>
+                <ol class="space-y-4 text-lg">
+                    <li class="flex items-start">
+                        <span class="bg-blue-600 text-white rounded-full w-8 h-8 flex items-center justify-center mr-3 flex-shrink-0 font-bold">1</span>
+                        <div>
+                            <strong>Opcode arrives:</strong> A 3-bit code (like 100 for AND) enters the ALU
+                        </div>
+                    </li>
+                    <li class="flex items-start">
+                        <span class="bg-blue-600 text-white rounded-full w-8 h-8 flex items-center justify-center mr-3 flex-shrink-0 font-bold">2</span>
+                        <div>
+                            <strong>All units compute simultaneously:</strong> All 7 functional units perform their operations in parallel
+                        </div>
+                    </li>
+                    <li class="flex items-start">
+                        <span class="bg-blue-600 text-white rounded-full w-8 h-8 flex items-center justify-center mr-3 flex-shrink-0 font-bold">3</span>
+                        <div>
+                            <strong>Decoder enables one output:</strong> The 3-to-8 decoder activates exactly ONE enable signal (Y4 for AND), allowing only that unit's result to drive the output bus
+                        </div>
+                    </li>
+                    <li class="flex items-start">
+                        <span class="bg-blue-600 text-white rounded-full w-8 h-8 flex items-center justify-center mr-3 flex-shrink-0 font-bold">4</span>
+                        <div>
+                            <strong>Selected result appears:</strong> The AND unit's enable is high, so its output (A & B) drives the ALU result bus
+                        </div>
+                    </li>
+                </ol>
+            </div>
+
+            <div class="component-box mb-6">
+                <h4 class="text-xl font-bold mb-4 text-center">Our Decoder-Based ALU Architecture</h4>
+                <div class="text-center">
+                    <pre class="text-left inline-block bg-white p-4 rounded border-2 border-gray-300 text-sm">
+                OpCode[2:0]
+                     │
+                     ▼
+            ┌───────────────┐
+            │   3-to-8      │
+            │   DECODER     │
+            └───────────────┘
+                     │
+             Enables │ (one at a time)
+                     │
+        ┌────────────┴────────────┐
+        │                         │
+    Y0 ─┼→ ADD unit ──────────────┼───┐
+    Y1 ─┼→ SHR unit ──────────────┼───┤
+    Y2 ─┼→ SHL unit ──────────────┼───┤
+    Y3 ─┼→ NOT unit ──────────────┼───┼──→ ALU Result[7:0]
+    Y4 ─┼→ AND unit ──────────────┼───┤   (shared bus)
+    Y5 ─┼→ OR unit  ──────────────┼───┤
+    Y6 ─┼→ XOR unit ──────────────┼───┘
+    Y7 ─┼→ (unused) ───────────────────
+        │                         │
+        └─────────────────────────┘
+                    </pre>
+                </div>
+            </div>
+
+            <div class="bg-yellow-50 border-l-4 border-yellow-500 p-6 mb-6">
+                <h4 class="font-bold text-xl mb-3">💡 Why the Decoder Approach Works Well</h4>
+                <p class="mb-3">
+                    <strong>Prevents bus contention:</strong> Only one functional unit is electrically connected to the output bus at any time, preventing multiple units from conflicting.
+                </p>
+                <p class="mb-3">
+                    <strong>Simple and direct:</strong> Each unit's output goes straight to the result bus when enabled—no additional routing needed.
+                </p>
+                <p>
+                    <strong>Natural tri-state behavior:</strong> Disabled units don't drive the bus, leaving it for the enabled unit to control.
+                </p>
+            </div>
+
+            <div class="bg-green-50 border-l-4 border-green-600 p-6">
+                <h4 class="font-bold text-xl mb-3">🔄 Could We Use a Multiplexor Instead?</h4>
+                <p class="mb-3">
+                    <strong>Yes!</strong> A multiplexor-based design is a valid alternative. Instead of using decoder enables to control which unit drives the bus, all units would compute their results, and an 8:1 MUX would select which result to pass through to the output.
+                </p>
+                <p class="mb-3">
+                    <strong>The challenge:</strong> Some operations (like shifts) produce additional outputs such as carry-out or shift-out bits. With a decoder, each unit can have its own separate flag outputs. With a multiplexor, you'd need additional MUXs to select the correct flag bits for each operation, adding complexity.
+                </p>
+                <p>
+                    <strong>Our choice:</strong> We use the decoder approach because it provides clean enable control and makes handling operation-specific flags more straightforward.
+                </p>
+            </div>
+        </section>
+
+        <!-- Design Insights -->
+        <section class="bg-white rounded-xl shadow-lg p-8 mb-8">
+            <h2 class="text-3xl font-bold text-gray-900 mb-6 border-b-4 border-orange-600 pb-2">Design Insights & Trade-offs</h2>
+            
+            <div class="space-y-6">
+                <div class="bg-orange-50 p-6 rounded-lg">
+                    <h3 class="text-xl font-bold mb-3">🎯 Why 8 Options and not 7?</h3>
+                    <p class="mb-2">
+                        You only need 7 operations, so why design for 8? Because 2³ = 8, meaning 3 select bits naturally give you 8 possible selections. Creating a custom 7-option design would be non-standard and more complex. The eighth option simply goes unused (opcode 111), which is simpler than trying to compress to exactly 7.
+                    </p>
+                </div>
+
+                <div class="bg-orange-50 p-6 rounded-lg">
+                    <h3 class="text-xl font-bold mb-3">⚡ Simultaneous Operation</h3>
+                    <p class="mb-2">
+                        A beautiful aspect of this design: ALL 7 functional units compute their results simultaneously (in parallel). There's no waiting or sequential processing. Whether you use a decoder or a multiplexor, you're simply controlling which result you see. This parallel architecture is why ALUs can be so fast!
+                    </p>
+                </div>
+
+                <div class="bg-orange-50 p-6 rounded-lg">
+                    <h3 class="text-xl font-bold mb-3">⚖️ Decoder vs MUX: The Trade-offs</h3>
+                    <p class="mb-3"><strong>Decoder Advantages:</strong></p>
+                    <ul class="list-disc list-inside mb-3 space-y-1">
+                        <li>Direct enable control—simpler bus architecture</li>
+                        <li>Easier to handle operation-specific flags (carry-out, shift-out)</li>
+                        <li>Natural tri-state behavior for bus sharing</li>
+                    </ul>
+                    <p class="mb-3"><strong>Multiplexor Advantages:</strong></p>
+                    <ul class="list-disc list-inside space-y-1">
+                        <li>No bus contention concerns—MUX handles isolation</li>
+                        <li>All outputs remain isolated until selected</li>
+                        <li>Can be easier to test individual units</li>
+                    </ul>
+                    <p class="mt-3"><strong>The reality:</strong> Both work! The choice often comes down to which approach fits better with other design constraints in your system.</p>
+                </div>
+
+                <div class="bg-orange-50 p-6 rounded-lg">
+                    <h3 class="text-xl font-bold mb-3">🏗️ Scalability</h3>
+                    <p class="mb-2">
+                        Want to add more operations? You'd need a 4-to-16 decoder (or 16:1 MUX) using 4-bit opcodes. Want fewer operations? You could use a 2-to-4 decoder (or 4:1 MUX) with 2-bit opcodes. The pattern scales predictably: n select bits → 2ⁿ options. This works the same way whether you choose the decoder or multiplexor approach!
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Summary -->
+        <section class="bg-gradient-to-r from-blue-600 to-green-600 text-white rounded-xl shadow-lg p-8">
+            <h2 class="text-3xl font-bold mb-6">Key Takeaways</h2>
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="bg-white bg-opacity-20 p-6 rounded-lg">
+                    <h3 class="text-xl font-bold mb-3">📊 Conceptual Contrast</h3>
+                    <ul class="space-y-2">
+                        <li>✓ Decoder: code → enables (1→many)</li>
+                        <li>✓ Multiplexor: code → selects data (many→1)</li>
+                        <li>✓ Opposite data flow directions</li>
+                        <li>✓ Same control input (opcode)</li>
+                    </ul>
+                </div>
+                <div class="bg-white bg-opacity-20 p-6 rounded-lg">
+                    <h3 class="text-xl font-bold mb-3">🔧 Design Alternatives</h3>
+                    <ul class="space-y-2">
+                        <li>✓ Both can implement ALU selection</li>
+                        <li>✓ Decoder: enables unit outputs</li>
+                        <li>✓ MUX: routes unit results</li>
+                        <li>✓ We chose decoder for our ALU</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="mt-6 text-center">
+                <p class="text-xl font-semibold">
+                    Understanding both approaches gives you the foundation to design efficient digital systems! 🎓
+                </p>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="text-center mt-12 text-gray-500 text-sm">
+            <p>CSC210: Computer Organization | Interactive Learning Module</p>
+            <p class="mt-2">Understanding Digital Logic Through Active Exploration</p>
+        </footer>
+    </div>
+
+    <script>
+        const operations = ['ADD', 'SHR', 'SHL', 'NOT', 'AND', 'OR', 'XOR'];
+        const actions = [
+            'A + B',
+            'A >> 1',
+            'A << 1',
+            '~A',
+            'A & B',
+            'A | B',
+            'A ^ B'
+        ];
+
+        function selectOperation(index, opName) {
+            // Update button states
+            const buttons = document.querySelectorAll('.selector-btn');
+            buttons.forEach((btn, i) => {
+                btn.classList.toggle('active', i === index);
+            });
+
+            // Update decoder outputs
+            for (let i = 0; i < 7; i++) {
+                const elem = document.getElementById(`dec${i}`);
+                if (i === index) {
+                    elem.classList.add('bg-white');
+                    elem.classList.remove('bg-gray-100');
+                    elem.innerHTML = `Y${i} (${operations[i]}): <span class="font-bold text-green-600">1</span>`;
+                } else {
+                    elem.classList.remove('bg-white');
+                    elem.classList.add('bg-gray-100');
+                    elem.innerHTML = `Y${i} (${operations[i]}): 0`;
+                }
+            }
+
+            // Update multiplexor outputs
+            for (let i = 0; i < 7; i++) {
+                const elem = document.getElementById(`mux${i}`);
+                if (i === index) {
+                    elem.classList.add('bg-white');
+                    elem.classList.remove('bg-gray-100', 'text-gray-400');
+                    elem.innerHTML = `I${i}: <span class="font-bold text-green-600">${actions[i]} → OUTPUT</span>`;
+                } else {
+                    elem.classList.remove('bg-white');
+                    elem.classList.add('bg-gray-100', 'text-gray-400');
+                    elem.innerHTML = `I${i}: ${actions[i]}`;
+                }
+            }
+
+            // Update action descriptions
+            document.getElementById('decoderAction').textContent = `${opName} unit is ENABLED`;
+            document.getElementById('muxAction').textContent = `Passing ${opName} result to output`;
+        }
+    </script>
+</body>
+</html>
