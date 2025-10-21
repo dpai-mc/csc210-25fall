@@ -156,11 +156,13 @@
             padding: 1.5rem;
             margin: 1rem 0;
             transition: all 0.3s ease;
+            background: linear-gradient(to right, #fffbeb, white);
         }
         
         .challenge-card:hover {
-            border-color: #2563eb;
-            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+            border-color: #f59e0b;
+            box-shadow: 0 6px 16px rgba(245, 158, 11, 0.2);
+            transform: translateY(-2px);
         }
         
         /* Quiz styling */
@@ -190,25 +192,70 @@
         
         /* Tabs */
         .tab-button {
-            padding: 0.75rem 1.5rem;
-            border: none;
-            background: #f3f4f6;
+            padding: 1rem 1.5rem;
+            border: 2px solid #e5e7eb;
+            background: white;
             cursor: pointer;
-            transition: all 0.2s ease;
+            transition: all 0.3s ease;
             border-radius: 0.5rem 0.5rem 0 0;
+            font-weight: 600;
+            font-size: 1rem;
+        }
+        
+        .tab-button:hover {
+            background: #eff6ff;
+            border-color: #2563eb;
+            transform: translateY(-2px);
         }
         
         .tab-button.active {
             background: #2563eb;
             color: white;
+            border-color: #1d4ed8;
+            box-shadow: 0 4px 6px rgba(37, 99, 235, 0.3);
         }
         
         .tab-content {
             display: none;
+            animation: fadeIn 0.3s ease-in;
+            padding: 2rem;
+            border-radius: 0.5rem;
+            min-height: 400px;
         }
         
         .tab-content.active {
             display: block;
+        }
+        
+        #tab-intro {
+            background: linear-gradient(to bottom, #eff6ff, #ffffff);
+        }
+        
+        #tab-guide {
+            background: linear-gradient(to bottom, #f0fdf4, #ffffff);
+        }
+        
+        #tab-simulator {
+            background: linear-gradient(to bottom, #faf5ff, #ffffff);
+        }
+        
+        #tab-practice {
+            background: linear-gradient(to bottom, #fffbeb, #ffffff);
+        }
+        
+        #tab-summary {
+            background: linear-gradient(to bottom, #eef2ff, #ffffff);
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
         
         /* Responsive hex input */
@@ -615,9 +662,9 @@
                         <span class="bg-blue-600 text-white rounded-full w-10 h-10 flex items-center justify-center mr-3">7</span>
                         Why Universal Comparison Flags are Brilliant Design
                     </h3>
-                <p class="mb-4">Having A&gt;B and A==B flags active for ALL operations is actually a sophisticated feature:</p>
+                    <p class="mb-4">Having A&gt;B and A==B flags active for ALL operations is actually a sophisticated feature:</p>
 
-                <div class="grid md:grid-cols-2 gap-4 mb-6">
+                    <div class="grid md:grid-cols-2 gap-4 mb-6">
                     <div class="bg-green-50 border-2 border-green-300 rounded-lg p-4">
                         <h5 class="font-bold text-green-800 mb-2">Advantage 1: Flexible Conditional Logic</h5>
                         <p class="text-sm text-gray-800">You can perform ANY operation and simultaneously test the relationship between inputs. Get the result AND comparison in ONE operation!</p>
@@ -633,19 +680,24 @@
                     <div class="bg-green-50 border-2 border-green-300 rounded-lg p-4">
                         <h5 class="font-bold text-green-800 mb-2">Advantage 4: Consistent Architecture</h5>
                         <p class="text-sm text-gray-800">Software doesn't need to know which operations support comparison—they ALL do! This simplifies compiler design and assembly programming.</p>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </section>
+            </section>
+        </div>
 
-        <!-- How to Use Section -->
-        <section class="mb-12">
-            <h2 class="text-3xl font-bold text-gray-900 mb-6">Using the Interactive ALU Operation Explorer</h2>
-            
-            <div class="prose max-w-none">
+        <!-- Tab Content: How to Use Section -->
+        <div id="tab-guide" class="tab-content" role="tabpanel" aria-labelledby="guide">
+            <section class="mb-8">
+                <h2 class="text-3xl font-bold text-gray-900 mb-6 pb-3 border-b-4 border-green-600">Using the Interactive ALU Operation Explorer</h2>
+                
+                <div class="bg-white rounded-xl shadow-lg p-6 mb-6">
                 <p class="text-lg mb-6">
                     Now it's time to get hands-on! The simulator below lets you experiment with your 7-operation ALU in real-time, and you'll see how the universal flags work for EVERY operation. Here's how to use it effectively:
                 </p>
+                </div>
+
+                <div class="bg-white rounded-xl shadow-lg p-6 mb-6">
 
                 <div class="bg-blue-50 border-2 border-blue-300 rounded-lg p-6 mb-6">
                     <h3 class="text-xl font-bold text-blue-900 mb-4">Getting Started</h3>
@@ -895,18 +947,21 @@
                         </ol>
                     </div>
                 </details>
-            </div>
-        </section>
+                </div>
+            </section>
+        </div>
 
-        <!-- Challenges Section -->
-        <section class="mb-12">
-            <h2 class="text-3xl font-bold text-gray-900 mb-6">🎯 Challenge Problems</h2>
+        <!-- Tab Content: Practice (Challenges & Quiz) -->
+        <div id="tab-practice" class="tab-content" role="tabpanel" aria-labelledby="practice">
+            <!-- Challenges Section -->
+            <section class="mb-12">
+                <h2 class="text-3xl font-bold text-gray-900 mb-6 pb-3 border-b-4 border-amber-600">🎯 Challenge Problems</h2>
             <div id="challenges-container" class="space-y-4"></div>
         </section>
 
-        <!-- Quiz Section -->
-        <section class="mb-12">
-            <h2 class="text-3xl font-bold text-gray-900 mb-6">✅ Knowledge Check Quiz</h2>
+            <!-- Quiz Section -->
+            <section class="mb-12">
+                <h2 class="text-3xl font-bold text-gray-900 mb-6 pb-3 border-b-4 border-green-600">✅ Knowledge Check Quiz</h2>
             <div id="quiz-container"></div>
             <div id="quiz-score" class="hidden mt-4 p-4 bg-green-100 border-2 border-green-400 rounded-lg">
                 <p class="text-lg font-bold text-green-800">Score: <span id="score-display">0</span>/9</p>
@@ -932,9 +987,10 @@
                 <div class="bg-purple-50 border-2 border-purple-400 rounded-lg p-4">
                     <h3 class="font-bold text-purple-900 mb-2">🔄 Comparison Independence</h3>
                     <p class="text-sm">Comparison flags work even for single-input operations (NOT, shifts) because they monitor inputs separately.</p>
+                                    </div>
                 </div>
-            </div>
-        </section>
+            </section>
+        </div>
 
         <!-- Footer -->
         <footer class="border-t-2 border-gray-300 pt-8 text-center text-gray-600">
@@ -945,6 +1001,33 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            // Tab switching functionality
+            const tabButtons = document.querySelectorAll('.tab-button');
+            const tabContents = document.querySelectorAll('.tab-content');
+            
+            tabButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const targetTab = this.dataset.tab;
+                    
+                    // Remove active class from all buttons and contents
+                    tabButtons.forEach(btn => {
+                        btn.classList.remove('active');
+                        btn.setAttribute('aria-selected', 'false');
+                    });
+                    tabContents.forEach(content => {
+                        content.classList.remove('active');
+                    });
+                    
+                    // Add active class to clicked button and corresponding content
+                    this.classList.add('active');
+                    this.setAttribute('aria-selected', 'true');
+                    document.getElementById(`tab-${targetTab}`).classList.add('active');
+                    
+                    // Scroll to top of page
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                });
+            });
+            
             // State variables
             let currentOp = '000';
             let inputA = 0x55;
@@ -1205,11 +1288,14 @@
                 const card = document.createElement('div');
                 card.className = 'challenge-card';
                 card.innerHTML = `
-                    <h3 class="font-bold text-lg text-blue-800 mb-2">Challenge ${idx + 1}: ${challenge.title}</h3>
-                    <p class="text-gray-700 mb-2">${challenge.desc}</p>
-                    <details class="mt-2">
-                        <summary class="text-sm text-blue-600 cursor-pointer font-semibold">💡 Show Hint</summary>
-                        <p class="text-sm text-gray-600 mt-2">${challenge.hint}</p>
+                    <h3 class="font-bold text-lg text-amber-800 mb-2 flex items-center">
+                        <span class="bg-amber-600 text-white rounded-full w-8 h-8 flex items-center justify-center mr-3 text-sm">${idx + 1}</span>
+                        ${challenge.title}
+                    </h3>
+                    <p class="text-gray-700 mb-2 ml-11">${challenge.desc}</p>
+                    <details class="mt-2 ml-11">
+                        <summary class="text-sm text-amber-700 cursor-pointer font-semibold hover:text-amber-900">💡 Show Hint</summary>
+                        <p class="text-sm text-gray-600 mt-2 bg-amber-50 p-3 rounded">${challenge.hint}</p>
                     </details>
                 `;
                 challengesContainer.appendChild(card);
@@ -1219,18 +1305,21 @@
             const quizContainer = document.getElementById('quiz-container');
             quizQuestions.forEach((q, idx) => {
                 const qDiv = document.createElement('div');
-                qDiv.className = 'bg-white border-2 border-gray-300 rounded-lg p-4 mb-4';
+                qDiv.className = 'bg-white border-2 border-gray-300 rounded-lg p-4 mb-4 hover:shadow-md transition-shadow';
                 qDiv.innerHTML = `
-                    <p class="font-bold text-gray-800 mb-3">${idx + 1}. ${q.q}</p>
-                    <div class="space-y-2" data-question="${idx}">
+                    <p class="font-bold text-gray-800 mb-3 flex items-start">
+                        <span class="bg-green-600 text-white rounded-full w-8 h-8 flex items-center justify-center mr-3 text-sm flex-shrink-0">${idx + 1}</span>
+                        <span>${q.q}</span>
+                    </p>
+                    <div class="space-y-2 ml-11" data-question="${idx}">
                         ${q.opts.map((opt, optIdx) => `
                             <div class="quiz-option" data-option="${optIdx}">
                                 ${opt}
                             </div>
                         `).join('')}
                     </div>
-                    <div class="hidden mt-3 p-3 bg-blue-50 border-2 border-blue-300 rounded" data-explanation="${idx}">
-                        <p class="text-sm text-gray-700"><strong>Explanation:</strong> ${q.exp}</p>
+                    <div class="hidden mt-3 p-3 bg-green-50 border-2 border-green-300 rounded ml-11" data-explanation="${idx}">
+                        <p class="text-sm text-gray-700"><strong>✓ Explanation:</strong> ${q.exp}</p>
                     </div>
                 `;
                 quizContainer.appendChild(qDiv);
