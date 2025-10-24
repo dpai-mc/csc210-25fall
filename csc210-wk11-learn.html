@@ -1,0 +1,1963 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Week 11: Control Unit - Interactive Lesson</title>
+    <style>
+        /* ============================================
+           GLOBAL STYLES & RESET
+           ============================================ */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-blue: #3b82f6;
+            --primary-green: #22c55e;
+            --warning-yellow: #f59e0b;
+            --error-red: #ef4444;
+            --bg-light: #f8f9fa;
+            --bg-section: #ffffff;
+            --border-color: #e9ecef;
+            --text-primary: #1f2937;
+            --text-secondary: #6b7280;
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
+            --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+            --radius-sm: 6px;
+            --radius-md: 10px;
+            --radius-lg: 14px;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--text-primary);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 2rem 1rem;
+        }
+
+        /* ============================================
+           CONTAINER & LAYOUT
+           ============================================ */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: var(--bg-light);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-lg);
+            overflow: hidden;
+        }
+
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2.5rem 2rem;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        header p {
+            font-size: 1.1rem;
+            opacity: 0.95;
+        }
+
+        main {
+            padding: 2rem;
+        }
+
+        /* ============================================
+           CONTENT SECTIONS
+           ============================================ */
+        .content-section {
+            background: var(--bg-section);
+            border-radius: var(--radius-md);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .content-section h2 {
+            color: var(--primary-blue);
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 3px solid var(--primary-blue);
+        }
+
+        .content-section h3 {
+            color: var(--text-primary);
+            font-size: 1.4rem;
+            margin-top: 1.5rem;
+            margin-bottom: 0.8rem;
+        }
+
+        .content-section h4 {
+            color: var(--text-primary);
+            font-size: 1.2rem;
+            margin-top: 1.2rem;
+            margin-bottom: 0.6rem;
+        }
+
+        .content-section p {
+            margin-bottom: 1rem;
+            line-height: 1.7;
+            color: var(--text-primary);
+        }
+
+        .content-section ul,
+        .content-section ol {
+            margin-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .content-section li {
+            margin-bottom: 0.5rem;
+            line-height: 1.6;
+        }
+
+        .content-section strong {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        .highlight-box {
+            background: linear-gradient(135deg, #e0e7ff 0%, #dbeafe 100%);
+            border-left: 4px solid var(--primary-blue);
+            padding: 1rem 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: var(--radius-sm);
+        }
+
+        .key-insight {
+            background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+            border-left: 4px solid var(--primary-green);
+            padding: 1rem 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: var(--radius-sm);
+        }
+
+        /* ============================================
+           INTERACTIVE ACTIVITY SECTION
+           ============================================ */
+        .activity-container {
+            background: var(--bg-section);
+            border-radius: var(--radius-md);
+            padding: 2rem;
+            box-shadow: var(--shadow-md);
+        }
+
+        .activity-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .activity-header h2 {
+            color: var(--primary-blue);
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .activity-controls {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .instruction-selector {
+            background: white;
+            padding: 1.5rem;
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .instruction-selector label {
+            display: block;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+            font-size: 1rem;
+        }
+
+        .instruction-selector select {
+            width: 100%;
+            padding: 0.75rem;
+            font-size: 1rem;
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .instruction-selector select:hover {
+            border-color: var(--primary-blue);
+        }
+
+        .instruction-selector select:focus {
+            outline: none;
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .progress-display {
+            background: white;
+            padding: 1.5rem;
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .progress-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .cycle-info h3 {
+            color: var(--primary-blue);
+            font-size: 1.3rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .cycle-info p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        .progress-bar-container {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            background: var(--border-color);
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 0.5rem;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary-blue), var(--primary-green));
+            transition: width 0.5s ease;
+            border-radius: 10px;
+        }
+
+        .cycle-goal-panel {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            border-left: 4px solid var(--warning-yellow);
+            padding: 1.5rem;
+            border-radius: var(--radius-md);
+            margin: 1.5rem 0;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .cycle-goal-panel h3 {
+            color: var(--text-primary);
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .cycle-goal-panel p {
+            color: var(--text-primary);
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+
+        /* ============================================
+           CONTROL SIGNALS SECTION
+           ============================================ */
+        .signals-container {
+            background: white;
+            padding: 2rem;
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-sm);
+            margin: 2rem 0;
+        }
+
+        .signals-container h3 {
+            color: var(--text-primary);
+            font-size: 1.4rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .signal-categories {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .signal-category {
+            background: var(--bg-light);
+            padding: 1.25rem;
+            border-radius: var(--radius-md);
+            border: 2px solid var(--border-color);
+        }
+
+        .signal-category h4 {
+            color: var(--primary-blue);
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .signal-checkbox-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .signal-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: var(--radius-sm);
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .signal-checkbox:hover {
+            background: white;
+        }
+
+        .signal-checkbox input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            accent-color: var(--primary-blue);
+        }
+
+        .signal-checkbox label {
+            cursor: pointer;
+            font-size: 0.95rem;
+            color: var(--text-primary);
+            flex: 1;
+            user-select: none;
+        }
+
+        .signal-checkbox .info-icon {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            cursor: help;
+            width: 18px;
+            height: 18px;
+            border: 1px solid var(--text-secondary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        /* Signal Status Indicators */
+        .signal-checkbox.correct {
+            background: rgba(34, 197, 94, 0.1);
+            border-left: 3px solid var(--primary-green);
+        }
+
+        .signal-checkbox.missing {
+            background: rgba(245, 158, 11, 0.1);
+            border-left: 3px solid var(--warning-yellow);
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        .signal-checkbox.incorrect {
+            background: rgba(239, 68, 68, 0.1);
+            border-left: 3px solid var(--error-red);
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        /* Tooltip */
+        .tooltip {
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--text-primary);
+            color: white;
+            padding: 0.5rem 0.75rem;
+            border-radius: var(--radius-sm);
+            font-size: 0.85rem;
+            white-space: nowrap;
+            z-index: 1000;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+            margin-bottom: 5px;
+        }
+
+        .tooltip::after {
+            content: '';
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            border: 5px solid transparent;
+            border-top-color: var(--text-primary);
+        }
+
+        .signal-checkbox:hover .tooltip {
+            opacity: 1;
+        }
+
+        /* ============================================
+           BUTTONS
+           ============================================ */
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin: 2rem 0;
+        }
+
+        .btn {
+            padding: 0.85rem 1.75rem;
+            font-size: 1rem;
+            font-weight: 600;
+            border: none;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow-sm);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn:active:not(:disabled) {
+            transform: translateY(0);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-blue), #2563eb);
+            color: white;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, var(--primary-green), #16a34a);
+            color: white;
+        }
+
+        .btn-success:hover:not(:disabled) {
+            background: linear-gradient(135deg, #16a34a, #15803d);
+        }
+
+        .btn-secondary {
+            background: var(--border-color);
+            color: var(--text-primary);
+        }
+
+        .btn-secondary:hover:not(:disabled) {
+            background: #d1d5db;
+        }
+
+        .btn-reset {
+            background: linear-gradient(135deg, #f97316, #ea580c);
+            color: white;
+        }
+
+        .btn-reset:hover:not(:disabled) {
+            background: linear-gradient(135deg, #ea580c, #c2410c);
+        }
+
+        /* ============================================
+           FEEDBACK PANEL
+           ============================================ */
+        .feedback-panel {
+            background: white;
+            padding: 1.5rem;
+            border-radius: var(--radius-md);
+            margin: 2rem 0;
+            box-shadow: var(--shadow-md);
+            display: none;
+        }
+
+        .feedback-panel.show {
+            display: block;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .feedback-header {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .feedback-header.success {
+            color: var(--primary-green);
+        }
+
+        .feedback-header.warning {
+            color: var(--warning-yellow);
+        }
+
+        .feedback-header.error {
+            color: var(--error-red);
+        }
+
+        .feedback-content {
+            font-size: 1rem;
+            line-height: 1.6;
+            color: var(--text-primary);
+        }
+
+        .feedback-list {
+            margin: 1rem 0;
+            padding-left: 1.5rem;
+        }
+
+        .feedback-list li {
+            margin-bottom: 0.75rem;
+            line-height: 1.5;
+        }
+
+        .feedback-list .correct-signal {
+            color: var(--primary-green);
+            font-weight: 600;
+        }
+
+        .feedback-list .missing-signal {
+            color: var(--warning-yellow);
+            font-weight: 600;
+        }
+
+        .feedback-list .incorrect-signal {
+            color: var(--error-red);
+            font-weight: 600;
+        }
+
+        .explanation-box {
+            background: var(--bg-light);
+            padding: 1rem;
+            border-radius: var(--radius-sm);
+            margin-top: 1rem;
+            border-left: 4px solid var(--primary-blue);
+        }
+
+        /* ============================================
+           DATAPATH VISUALIZATION
+           ============================================ */
+        .datapath-container {
+            background: white;
+            padding: 2rem;
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-sm);
+            margin: 2rem 0;
+        }
+
+        .datapath-container h3 {
+            color: var(--text-primary);
+            font-size: 1.4rem;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .datapath-svg {
+            width: 100%;
+            max-width: 800px;
+            height: auto;
+            margin: 0 auto;
+            display: block;
+        }
+
+        /* SVG Component Styles */
+        .component {
+            transition: all 0.3s ease;
+        }
+
+        .component.active {
+            filter: drop-shadow(0 0 8px rgba(59, 130, 246, 0.6));
+        }
+
+        .component rect {
+            stroke: var(--text-primary);
+            stroke-width: 2;
+            fill: white;
+        }
+
+        .component.active rect {
+            fill: #dbeafe;
+            stroke: var(--primary-blue);
+            stroke-width: 3;
+        }
+
+        .component text {
+            font-size: 12px;
+            font-weight: 600;
+            fill: var(--text-primary);
+            pointer-events: none;
+        }
+
+        .bus-line {
+            stroke: var(--text-secondary);
+            stroke-width: 2;
+            fill: none;
+        }
+
+        .bus-line.active {
+            stroke: var(--primary-blue);
+            stroke-width: 3;
+            animation: flow 1.5s linear infinite;
+        }
+
+        @keyframes flow {
+            0% { stroke-dashoffset: 0; }
+            100% { stroke-dashoffset: 20; }
+        }
+
+        .arrow {
+            fill: var(--text-secondary);
+        }
+
+        .arrow.active {
+            fill: var(--primary-blue);
+        }
+
+        /* ============================================
+           COMPLETION MESSAGE
+           ============================================ */
+        .completion-message {
+            background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+            border: 3px solid var(--primary-green);
+            padding: 2rem;
+            border-radius: var(--radius-lg);
+            text-align: center;
+            margin: 2rem 0;
+            display: none;
+            animation: celebrate 0.6s ease;
+        }
+
+        .completion-message.show {
+            display: block;
+        }
+
+        @keyframes celebrate {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .completion-message h2 {
+            color: var(--primary-green);
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .completion-message p {
+            font-size: 1.2rem;
+            color: var(--text-primary);
+            margin-bottom: 1.5rem;
+        }
+
+        /* ============================================
+           RESPONSIVE DESIGN
+           ============================================ */
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem 0.5rem;
+            }
+
+            header h1 {
+                font-size: 1.8rem;
+            }
+
+            header p {
+                font-size: 1rem;
+            }
+
+            main {
+                padding: 1rem;
+            }
+
+            .content-section {
+                padding: 1.5rem;
+            }
+
+            .content-section h2 {
+                font-size: 1.5rem;
+            }
+
+            .signal-categories {
+                grid-template-columns: 1fr;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .progress-info {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .datapath-svg {
+                max-width: 100%;
+            }
+        }
+
+        /* ============================================
+           UTILITY CLASSES
+           ============================================ */
+        .hidden {
+            display: none !important;
+        }
+
+        .mt-1 { margin-top: 0.5rem; }
+        .mt-2 { margin-top: 1rem; }
+        .mt-3 { margin-top: 1.5rem; }
+        .mb-1 { margin-bottom: 0.5rem; }
+        .mb-2 { margin-bottom: 1rem; }
+        .mb-3 { margin-bottom: 1.5rem; }
+
+        .text-center { text-align: center; }
+        .text-bold { font-weight: 600; }
+
+        /* Loading Animation */
+        .loading {
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .spinner {
+            border: 4px solid var(--border-color);
+            border-top: 4px solid var(--primary-blue);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header>
+            <h1>⚡ Week 11: Control Unit Interactive Lesson</h1>
+            <p>Master Control Signals Through Hands-On Practice</p>
+        </header>
+
+        <!-- Main Content -->
+        <main>
+            <!-- Section 1: Foundational Concepts -->
+            <section class="content-section">
+                <h2>Understanding Control Signals: The CPU's Nervous System</h2>
+                
+                <p>Welcome to the heart of computer engineering! You've spent weeks building individual components—the ALU, registers, memory. Now we're creating the <strong>control unit</strong>, the component that orchestrates everything else. Think of it as the conductor of an orchestra, telling each instrument exactly when to play.</p>
+
+                <h3>What Are Control Signals?</h3>
+                
+                <p>Control signals are binary (high/low) outputs from the control unit that tell each component what to do. Every wire carrying a control signal is asking a simple yes/no question:</p>
+
+                <ul>
+                    <li><strong>REG_WRITE:</strong> Should the register file save data right now?</li>
+                    <li><strong>MEM_READ:</strong> Should memory place data on the bus?</li>
+                    <li><strong>ALU_OP:</strong> What operation should the ALU perform?</li>
+                    <li><strong>PC_INC:</strong> Should the program counter increment?</li>
+                </ul>
+
+                <p>When you execute an instruction like <code>ADD R3, R1, R2</code>, your control unit must generate a precise sequence of these signals across multiple clock cycles to make it happen.</p>
+
+                <h3>The Four-Phase Instruction Cycle</h3>
+
+                <p>Every instruction, no matter how simple, moves through four distinct phases. Your control unit manages this journey:</p>
+
+                <div class="highlight-box">
+                    <h4>Phase 1: FETCH (Getting the instruction from memory)</h4>
+                    <ul>
+                        <li>The control unit must output the program counter (PC) to the address bus</li>
+                        <li>Activate memory to read</li>
+                        <li>Load the instruction into the instruction register (IR)</li>
+                        <li>Increment the PC for the next instruction</li>
+                    </ul>
+                </div>
+
+                <div class="key-insight">
+                    <strong>Key insight:</strong> During fetch, the control unit doesn't yet know what instruction it's fetching! The same signals work for every instruction.
+                </div>
+
+                <div class="highlight-box">
+                    <h4>Phase 2: DECODE (Understanding what the instruction means)</h4>
+                    <ul>
+                        <li>The control unit examines the opcode field of the IR</li>
+                        <li>Internal decoders activate to determine instruction type</li>
+                        <li>Register addresses and immediate values are extracted</li>
+                        <li>The control unit prepares the appropriate execution sequence</li>
+                    </ul>
+                </div>
+
+                <div class="key-insight">
+                    <strong>Key insight:</strong> Decoding is mostly combinational logic - the opcode bits directly determine which execution path to follow.
+                </div>
+
+                <div class="highlight-box">
+                    <h4>Phase 3: EXECUTE (Performing the operation)</h4>
+                    <ul>
+                        <li>This phase varies dramatically by instruction type</li>
+                        <li>The control unit generates instruction-specific signals</li>
+                        <li>Data moves through the datapath according to the operation</li>
+                        <li>The ALU performs computations, or memory is accessed</li>
+                    </ul>
+                </div>
+
+                <div class="key-insight">
+                    <strong>Key insight:</strong> An ADD instruction requires different signals than a LOAD instruction. This is where control unit design gets interesting!
+                </div>
+
+                <div class="highlight-box">
+                    <h4>Phase 4: WRITEBACK (Storing the result)</h4>
+                    <ul>
+                        <li>Results are written to the destination register or memory</li>
+                        <li>Status flags (zero, carry, overflow) may be updated</li>
+                        <li>The control unit returns to FETCH for the next instruction</li>
+                    </ul>
+                </div>
+
+                <div class="key-insight">
+                    <strong>Key insight:</strong> Some instructions combine execute and writeback into fewer cycles for efficiency.
+                </div>
+
+                <h3>A Concrete Example: Executing <code>ADD R3, R1, R2</code></h3>
+
+                <p>Let's trace this instruction completely. In MIPS, this means: R3 = R1 + R2</p>
+
+                <div class="highlight-box">
+                    <h4>Cycle 1 (FETCH):</h4>
+                    <p><strong>Active signals:</strong> <code>PC_OUT</code>, <code>MAR_LOAD</code>, <code>MEM_READ</code>, <code>IR_LOAD</code>, <code>PC_INC</code></p>
+                    <p><strong>What happens:</strong> PC goes to memory address register (MAR), memory reads instruction to data bus, instruction loads into IR, PC increments to point to next instruction</p>
+                </div>
+
+                <div class="highlight-box">
+                    <h4>Cycle 2 (DECODE):</h4>
+                    <p><strong>Active signals:</strong> Internal opcode decoder enable</p>
+                    <p><strong>What happens:</strong> Opcode bits (000000 for R-type) feed to decoder, register addresses R1, R2, R3 are extracted, control unit prepares ADD execution sequence</p>
+                </div>
+
+                <div class="highlight-box">
+                    <h4>Cycle 3 (EXECUTE - Step 1):</h4>
+                    <p><strong>Active signals:</strong> <code>R1_OUT</code>, <code>ALU_A_LOAD</code></p>
+                    <p><strong>What happens:</strong> R1's contents appear on the bus, ALU's A input register captures this value</p>
+                </div>
+
+                <div class="highlight-box">
+                    <h4>Cycle 4 (EXECUTE - Step 2):</h4>
+                    <p><strong>Active signals:</strong> <code>R2_OUT</code>, <code>ALU_B_LOAD</code>, <code>ALU_OP=ADD</code></p>
+                    <p><strong>What happens:</strong> R2's contents appear on the bus, ALU's B input register captures this value, ALU performs addition</p>
+                </div>
+
+                <div class="highlight-box">
+                    <h4>Cycle 5 (WRITEBACK):</h4>
+                    <p><strong>Active signals:</strong> <code>ALU_OUT</code>, <code>R3_LOAD</code></p>
+                    <p><strong>What happens:</strong> ALU result appears on the bus, R3 loads the result</p>
+                </div>
+
+                <p><strong>Total:</strong> 5 clock cycles for this instruction.</p>
+
+                <h3>Why This Matters</h3>
+
+                <p>Understanding control signals at this level means you understand how software becomes hardware action. When you write <code>int sum = a + b;</code> in C, or even just think "the computer adds two numbers," you're describing a process that requires dozens of precisely-timed electrical signals.</p>
+
+                <p>The control unit is where the magic happens—where bits become computation, where data becomes results, where a machine becomes a <em>computer</em>.</p>
+
+                <p>In this interactive activity, you'll practice identifying which control signals are needed at each step of instruction execution. This skill is essential for designing your own control unit in the upcoming assignments.</p>
+            </section>
+
+            <!-- Section 2: Activity Walkthrough -->
+            <section class="content-section">
+                <h2>Interactive Control Signal Tracer</h2>
+
+                <h3>What You'll Do:</h3>
+
+                <p>In this activity, you'll step through the execution of different MIPS instructions, one clock cycle at a time. For each cycle, you'll select which control signals should be active. Get it right, and you'll see the datapath spring to life as data flows through the system. Make a mistake, and we'll help you understand why those signals would cause problems.</p>
+
+                <h3>How It Works:</h3>
+
+                <ol>
+                    <li><strong>Choose an instruction</strong> from the provided list (ADD, LOAD, STORE, etc.)</li>
+                    <li><strong>Step through clock cycles</strong> starting with FETCH</li>
+                    <li><strong>For each cycle:</strong>
+                        <ul>
+                            <li>Read what needs to happen this cycle</li>
+                            <li>Select the control signals you think should be active</li>
+                            <li>Click "Check" to see if you're correct</li>
+                        </ul>
+                    </li>
+                    <li><strong>Get immediate feedback:</strong>
+                        <ul>
+                            <li>Correct selections show in green with an explanation</li>
+                            <li>Missing signals are highlighted with hints</li>
+                            <li>Incorrect signals show why they would cause problems</li>
+                        </ul>
+                    </li>
+                    <li><strong>Watch the datapath animation</strong> showing data flowing through components</li>
+                </ol>
+
+                <h3>Understanding the Interface:</h3>
+
+                <p>You'll see several sections on screen:</p>
+
+                <ul>
+                    <li><strong>Current Instruction:</strong> The instruction you're executing (e.g., "ADD R3, R1, R2")</li>
+                    <li><strong>Current Cycle:</strong> Which phase you're in (Cycle 1: FETCH, Cycle 2: DECODE, etc.)</li>
+                    <li><strong>Cycle Goal:</strong> What needs to happen this cycle (e.g., "Read instruction from memory into IR")</li>
+                    <li><strong>Control Signal Checkboxes:</strong> All possible signals you can activate</li>
+                    <li><strong>Datapath Diagram:</strong> Visual representation of your CPU showing active components</li>
+                </ul>
+
+                <h3>Signal Categories:</h3>
+
+                <p>Signals are grouped by component to help you think systematically:</p>
+
+                <ul>
+                    <li><strong>Bus Control:</strong> Who drives the bus? (PC_OUT, R1_OUT, ALU_OUT, etc.)</li>
+                    <li><strong>Register Control:</strong> What gets loaded? (IR_LOAD, MAR_LOAD, R3_LOAD, etc.)</li>
+                    <li><strong>Memory Control:</strong> Is memory active? (MEM_READ, MEM_WRITE)</li>
+                    <li><strong>ALU Control:</strong> What operation? (ALU_OP: ADD, SUB, AND, etc.)</li>
+                    <li><strong>PC Control:</strong> Does PC change? (PC_INC, PC_LOAD)</li>
+                </ul>
+
+                <h3>Strategy Tips:</h3>
+
+                <ol>
+                    <li><strong>Start with the goal:</strong> Read what needs to happen, then work backwards to figure out which signals achieve that</li>
+                    <li><strong>Think about data flow:</strong> Where is the data now? Where does it need to go? Which components must be active to make that happen?</li>
+                    <li><strong>Remember bus rules:</strong> Only ONE source can drive the bus at a time</li>
+                    <li><strong>Consider timing:</strong> Source must output before destination loads (but in our simplified model, this happens within one cycle)</li>
+                    <li><strong>Check for conflicts:</strong> Make sure you're not trying to read and write memory simultaneously, or load contradictory values</li>
+                </ol>
+
+                <h3>Common Mistakes to Avoid:</h3>
+
+                <ul>
+                    <li><strong>Bus contention:</strong> Activating multiple X_OUT signals simultaneously</li>
+                    <li><strong>Forgetting the load signal:</strong> Outputting data to the bus but not telling anything to capture it</li>
+                    <li><strong>Wrong ALU operation:</strong> Setting ALU_OP to ADD when you meant SUB</li>
+                    <li><strong>Skipping PC_INC during fetch:</strong> Then your program counter never advances!</li>
+                    <li><strong>Loading before outputting:</strong> You need to put data on the bus first</li>
+                </ul>
+
+                <h3>Example Walkthrough - LOAD Instruction:</h3>
+
+                <p>Let's trace <code>LOAD R1, [100]</code> (Load the value from memory address 100 into R1)</p>
+
+                <div class="highlight-box">
+                    <h4>Cycle 1 (FETCH):</h4> 
+                    <p>Just like every instruction</p>
+                    <p><strong>Goal:</strong> "Read next instruction from memory into IR"</p>
+                    <p><strong>Signals needed:</strong> PC_OUT, MAR_LOAD, MEM_READ, IR_LOAD, PC_INC</p>
+                    <p><strong>Why:</strong> PC tells memory where instruction is, memory reads it, IR captures it, PC moves to next</p>
+                </div>
+
+                <div class="highlight-box">
+                    <h4>Cycle 2 (DECODE):</h4>
+                    <p>Identify this is a LOAD instruction</p>
+                    <p><strong>Goal:</strong> "Decode instruction opcode and extract immediate value (address 100)"</p>
+                    <p><strong>Signals needed:</strong> IR_OPCODE_DECODE (internal)</p>
+                    <p><strong>Why:</strong> Opcode decoder recognizes this is LOAD, prepares memory access sequence</p>
+                </div>
+
+                <div class="highlight-box">
+                    <h4>Cycle 3 (EXECUTE - Memory Access):</h4>
+                    <p><strong>Goal:</strong> "Read value from memory address 100"</p>
+                    <p><strong>Signals needed:</strong> IR_IMM_OUT, MAR_LOAD, MEM_READ, R1_LOAD</p>
+                    <p><strong>Why:</strong> IR outputs the immediate value (100) to bus, MAR captures it as memory address, memory reads that location, R1 loads the value</p>
+                </div>
+
+                <p><strong>Done!</strong> This LOAD takes 3 cycles.</p>
+
+                <h3>Your Turn:</h3>
+
+                <p>Try each instruction in the activity. Start with the simple ones (ADD, SUB) to get comfortable, then try memory instructions (LOAD, STORE), and finally try branch instructions which have different behavior.</p>
+
+                <p>Remember: The goal isn't to memorize which signals go with which instruction. The goal is to <em>understand</em> why each signal is needed, so you can design control logic that generates them automatically.</p>
+
+                <p>Good luck! You're building the brain of your CPU. 🧠⚡</p>
+            </section>
+
+            <!-- Interactive Activity Interface -->
+            <div class="activity-container" id="activityInterface">
+                <div class="activity-header">
+                    <h2>🎮 Control Signal Tracer Activity</h2>
+                    <p>Step through instruction execution and master control signals!</p>
+                </div>
+
+                <!-- Instruction Selector -->
+                <div class="activity-controls">
+                    <div class="instruction-selector">
+                        <label for="instructionSelect">Select an Instruction to Trace:</label>
+                        <select id="instructionSelect">
+                            <option value="">-- Choose an instruction --</option>
+                            <option value="add_r3_r1_r2">ADD R3, R1, R2 - Add two registers</option>
+                            <option value="load_r1_100">LOAD R1, [100] - Load from memory</option>
+                            <option value="store_r2_200">STORE R2, [200] - Store to memory</option>
+                            <option value="sub_r5_r4_r3">SUB R5, R4, R3 - Subtract registers</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Progress Display -->
+                <div class="progress-display hidden" id="progressDisplay">
+                    <div class="progress-info">
+                        <div class="cycle-info">
+                            <h3 id="currentCycleTitle">Cycle 1 of 5</h3>
+                            <p id="currentPhase">Phase: FETCH</p>
+                        </div>
+                        <div class="progress-bar-container">
+                            <div class="progress-bar">
+                                <div class="progress-bar-fill" id="progressBarFill" style="width: 20%;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Cycle Goal Panel -->
+                <div class="cycle-goal-panel hidden" id="cycleGoalPanel">
+                    <h3>🎯 Cycle Goal:</h3>
+                    <p id="cycleGoalText"></p>
+                </div>
+
+                <!-- Control Signals Section -->
+                <div class="signals-container hidden" id="signalsContainer">
+                    <h3>Select Control Signals for This Cycle:</h3>
+                    <div class="signal-categories" id="signalCategories">
+                        <!-- Signal checkboxes will be dynamically generated here -->
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="button-group hidden" id="actionButtons">
+                    <button class="btn btn-primary" id="checkAnswerBtn">
+                        ✓ Check Answer
+                    </button>
+                    <button class="btn btn-secondary" id="prevCycleBtn" disabled>
+                        ← Previous Cycle
+                    </button>
+                    <button class="btn btn-success" id="nextCycleBtn" disabled>
+                        Next Cycle →
+                    </button>
+                    <button class="btn btn-reset" id="resetBtn">
+                        ↻ Reset Activity
+                    </button>
+                </div>
+
+                <!-- Feedback Panel -->
+                <div class="feedback-panel" id="feedbackPanel">
+                    <!-- Feedback content will be dynamically generated -->
+                </div>
+
+                <!-- Datapath Visualization -->
+                <div class="datapath-container hidden" id="datapathContainer">
+                    <h3>CPU Datapath Visualization</h3>
+                    <svg class="datapath-svg" viewBox="0 0 800 400" id="datapathSvg">
+                        <!-- Datapath components will be drawn here by JavaScript -->
+                    </svg>
+                </div>
+
+                <!-- Completion Message -->
+                <div class="completion-message" id="completionMessage">
+                    <h2>🎉 Congratulations!</h2>
+                    <p id="completionText"></p>
+                    <button class="btn btn-primary" onclick="location.reload()">Try Another Instruction</button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- JavaScript will be added in Part 2 -->
+    <script>
+        // ============================================
+// PART 2: COMPLETE JAVASCRIPT CODE
+// ============================================
+// This JavaScript code should be inserted into the <script> tag at the end of the HTML from Part 1
+
+// ============================================
+// DATA STRUCTURE - Instruction Definitions
+// ============================================
+const instructionData = {
+  instructions: [
+    {
+      id: "add_r3_r1_r2",
+      name: "ADD R3, R1, R2",
+      description: "Add the contents of R1 and R2, store result in R3",
+      mnemonic: "ADD R3, R1, R2",
+      instruction_type: "R-type",
+      opcode: "000000",
+      cycles: [
+        {
+          cycle_number: 1,
+          phase: "FETCH",
+          goal: "Read the next instruction from memory into the instruction register (IR)",
+          required_signals: ["PC_OUT", "MAR_LOAD", "MEM_READ", "IR_LOAD", "PC_INC"],
+          explanation: "During FETCH, we must: (1) output PC to address bus via PC_OUT, (2) load the address into MAR via MAR_LOAD, (3) activate memory read via MEM_READ, (4) load the instruction from data bus into IR via IR_LOAD, and (5) increment PC for the next instruction via PC_INC.",
+          common_mistakes: [
+            { signal: "MEM_WRITE", reason: "We're reading from memory, not writing to it during fetch." },
+            { signal: "R1_OUT", reason: "We haven't decoded the instruction yet, so we don't know which registers are involved." }
+          ],
+          datapath_highlights: ["PC", "MAR", "Memory", "IR"]
+        },
+        {
+          cycle_number: 2,
+          phase: "DECODE",
+          goal: "Decode the instruction opcode to determine this is an ADD operation and extract register addresses",
+          required_signals: ["IR_DECODE"],
+          explanation: "The opcode field (bits 31-26) feeds into the opcode decoder. For ADD (opcode 000000, function 100000), the decoder recognizes this as an R-type arithmetic instruction. Register addresses Rs (R1), Rt (R2), and Rd (R3) are extracted from their respective fields. This is mostly combinational logic happening automatically.",
+          common_mistakes: [
+            { signal: "R1_OUT", reason: "We're only decoding in this cycle, not yet moving data. Register reads happen in EXECUTE." },
+            { signal: "ALU_OP", reason: "The ALU operation is set during execution, not during decode." }
+          ],
+          datapath_highlights: ["IR", "Opcode Decoder", "Control Unit"]
+        },
+        {
+          cycle_number: 3,
+          phase: "EXECUTE (Step 1)",
+          goal: "Read R1 and load its value into the ALU's A input register",
+          required_signals: ["R1_OUT", "ALU_A_LOAD"],
+          explanation: "Now we begin execution. First, we need to get the first operand. R1_OUT enables R1 to drive the internal bus, and ALU_A_LOAD captures this value into the ALU's input A register. The value is now staged for computation.",
+          common_mistakes: [
+            { signal: "R2_OUT", reason: "We can only enable one register output at a time to avoid bus contention. R2 comes next cycle." },
+            { signal: "ALU_OP", reason: "We're not ready to compute yet - we need both operands loaded first." },
+            { signal: "R3_LOAD", reason: "We haven't computed the result yet, so there's nothing to load into R3." }
+          ],
+          datapath_highlights: ["R1", "Internal Bus", "ALU Input A"]
+        },
+        {
+          cycle_number: 4,
+          phase: "EXECUTE (Step 2)",
+          goal: "Read R2, load into ALU's B input, and perform the addition",
+          required_signals: ["R2_OUT", "ALU_B_LOAD", "ALU_OP=ADD"],
+          explanation: "R2_OUT enables R2 to drive the bus, ALU_B_LOAD captures it into the ALU's B input register. Simultaneously, we set ALU_OP to ADD. The ALU performs the addition and the result appears on the ALU's output, ready for the next cycle.",
+          common_mistakes: [
+            { signal: "R1_OUT", reason: "R1 was already loaded into ALU_A in the previous cycle. Enabling it now would be redundant." },
+            { signal: "ALU_OP=SUB", reason: "The instruction specifies ADD, not SUB. ALU_OP must match the instruction." },
+            { signal: "R3_LOAD", reason: "Although the ALU is computing, we wait one more cycle for the result to stabilize before loading it." }
+          ],
+          datapath_highlights: ["R2", "Internal Bus", "ALU Input B", "ALU"]
+        },
+        {
+          cycle_number: 5,
+          phase: "WRITEBACK",
+          goal: "Write the ALU result back to the destination register R3",
+          required_signals: ["ALU_OUT", "R3_LOAD"],
+          explanation: "The ALU's result is now stable. ALU_OUT enables the ALU to drive the internal bus, and R3_LOAD captures this value into register R3. The instruction is complete! Next cycle will begin FETCH for the following instruction.",
+          common_mistakes: [
+            { signal: "R1_OUT", reason: "We want the ALU result, not R1's value." },
+            { signal: "MEM_WRITE", reason: "ADD writes to a register, not to memory." }
+          ],
+          datapath_highlights: ["ALU", "Internal Bus", "R3"]
+        }
+      ]
+    },
+    {
+      id: "load_r1_100",
+      name: "LOAD R1, [100]",
+      description: "Load the value from memory address 100 into register R1",
+      mnemonic: "LOAD R1, [100]",
+      instruction_type: "I-type",
+      opcode: "100011",
+      cycles: [
+        {
+          cycle_number: 1,
+          phase: "FETCH",
+          goal: "Read the next instruction from memory into the instruction register (IR)",
+          required_signals: ["PC_OUT", "MAR_LOAD", "MEM_READ", "IR_LOAD", "PC_INC"],
+          explanation: "FETCH is identical for all instructions. We output the PC, load MAR, read memory, load IR, and increment PC.",
+          common_mistakes: [
+            { signal: "MEM_WRITE", reason: "FETCH always reads memory, never writes." }
+          ],
+          datapath_highlights: ["PC", "MAR", "Memory", "IR"]
+        },
+        {
+          cycle_number: 2,
+          phase: "DECODE",
+          goal: "Decode the LOAD opcode and extract the immediate value (memory address 100)",
+          required_signals: ["IR_DECODE"],
+          explanation: "The opcode 100011 (LW - load word) is recognized. The 16-bit immediate field containing value 100 is extracted and prepared for use as a memory address.",
+          common_mistakes: [
+            { signal: "MAR_LOAD", reason: "We're just decoding in this cycle. The memory address will be loaded into MAR in the next cycle." }
+          ],
+          datapath_highlights: ["IR", "Opcode Decoder"]
+        },
+        {
+          cycle_number: 3,
+          phase: "EXECUTE (Memory Read)",
+          goal: "Access memory at address 100 and load the value into R1",
+          required_signals: ["IR_IMM_OUT", "MAR_LOAD", "MEM_READ", "R1_LOAD"],
+          explanation: "IR_IMM_OUT places the immediate value (100) on the address bus. MAR_LOAD captures it as the memory address. MEM_READ activates memory to read from address 100. The value appears on the data bus and R1_LOAD captures it into register R1. LOAD complete!",
+          common_mistakes: [
+            { signal: "MEM_WRITE", reason: "LOAD reads from memory; STORE would write to memory." },
+            { signal: "PC_OUT", reason: "We need the immediate value (100) from the instruction, not the PC value." },
+            { signal: "R1_OUT", reason: "R1 is the destination (being loaded), not the source (being read)." }
+          ],
+          datapath_highlights: ["IR Immediate Field", "MAR", "Memory", "Data Bus", "R1"]
+        }
+      ]
+    },
+    {
+      id: "store_r2_200",
+      name: "STORE R2, [200]",
+      description: "Store the value from register R2 into memory address 200",
+      mnemonic: "STORE R2, [200]",
+      instruction_type: "I-type",
+      opcode: "101011",
+      cycles: [
+        {
+          cycle_number: 1,
+          phase: "FETCH",
+          goal: "Read the next instruction from memory into the instruction register (IR)",
+          required_signals: ["PC_OUT", "MAR_LOAD", "MEM_READ", "IR_LOAD", "PC_INC"],
+          explanation: "Standard FETCH cycle - same for every instruction.",
+          common_mistakes: [],
+          datapath_highlights: ["PC", "MAR", "Memory", "IR"]
+        },
+        {
+          cycle_number: 2,
+          phase: "DECODE",
+          goal: "Decode the STORE opcode and extract the immediate value (memory address 200)",
+          required_signals: ["IR_DECODE"],
+          explanation: "Opcode 101011 (SW - store word) is decoded. The immediate field (200) and source register (R2) are identified.",
+          common_mistakes: [],
+          datapath_highlights: ["IR", "Opcode Decoder"]
+        },
+        {
+          cycle_number: 3,
+          phase: "EXECUTE (Prepare Address)",
+          goal: "Load the memory address (200) into MAR",
+          required_signals: ["IR_IMM_OUT", "MAR_LOAD"],
+          explanation: "IR_IMM_OUT places address 200 on the bus, MAR_LOAD captures it. The MAR now points to the memory location where we'll write.",
+          common_mistakes: [
+            { signal: "R2_OUT", reason: "We're setting up the address first. R2's data comes next cycle." },
+            { signal: "MEM_WRITE", reason: "We need to load MAR with the address before activating memory." }
+          ],
+          datapath_highlights: ["IR Immediate", "MAR"]
+        },
+        {
+          cycle_number: 4,
+          phase: "WRITEBACK (Memory Write)",
+          goal: "Write R2's contents to memory at address 200",
+          required_signals: ["R2_OUT", "MEM_WRITE"],
+          explanation: "R2_OUT places R2's value on the data bus. MEM_WRITE tells memory to save this value at the address currently in MAR (200). STORE complete!",
+          common_mistakes: [
+            { signal: "MEM_READ", reason: "We're writing to memory, not reading from it." },
+            { signal: "R2_LOAD", reason: "R2 is the source (being read), not the destination." },
+            { signal: "MAR_LOAD", reason: "MAR was already loaded with the address in the previous cycle." }
+          ],
+          datapath_highlights: ["R2", "Data Bus", "Memory"]
+        }
+      ]
+    },
+    {
+      id: "sub_r5_r4_r3",
+      name: "SUB R5, R4, R3",
+      description: "Subtract R3 from R4, store result in R5",
+      mnemonic: "SUB R5, R4, R3",
+      instruction_type: "R-type",
+      opcode: "000000",
+      cycles: [
+        {
+          cycle_number: 1,
+          phase: "FETCH",
+          goal: "Read the next instruction from memory into IR",
+          required_signals: ["PC_OUT", "MAR_LOAD", "MEM_READ", "IR_LOAD", "PC_INC"],
+          explanation: "Standard FETCH - identical for all instructions.",
+          common_mistakes: [],
+          datapath_highlights: ["PC", "MAR", "Memory", "IR"]
+        },
+        {
+          cycle_number: 2,
+          phase: "DECODE",
+          goal: "Decode SUB instruction and extract register addresses",
+          required_signals: ["IR_DECODE"],
+          explanation: "R-type opcode with SUB function code is decoded. Rs=R4, Rt=R3, Rd=R5 extracted.",
+          common_mistakes: [],
+          datapath_highlights: ["IR", "Opcode Decoder"]
+        },
+        {
+          cycle_number: 3,
+          phase: "EXECUTE (Step 1)",
+          goal: "Load R4 (minuend) into ALU input A",
+          required_signals: ["R4_OUT", "ALU_A_LOAD"],
+          explanation: "For subtraction R4 - R3, the minuend R4 goes into ALU_A first.",
+          common_mistakes: [
+            { signal: "R3_OUT", reason: "R3 is the subtrahend (what we subtract). It goes into ALU_B, not ALU_A." }
+          ],
+          datapath_highlights: ["R4", "ALU Input A"]
+        },
+        {
+          cycle_number: 4,
+          phase: "EXECUTE (Step 2)",
+          goal: "Load R3 (subtrahend) into ALU input B and perform subtraction",
+          required_signals: ["R3_OUT", "ALU_B_LOAD", "ALU_OP=SUB"],
+          explanation: "R3 goes to ALU_B. ALU_OP=SUB performs R4 - R3. Result appears on ALU output.",
+          common_mistakes: [
+            { signal: "ALU_OP=ADD", reason: "This is a SUB instruction, not ADD. The ALU_OP must match." }
+          ],
+          datapath_highlights: ["R3", "ALU Input B", "ALU"]
+        },
+        {
+          cycle_number: 5,
+          phase: "WRITEBACK",
+          goal: "Write subtraction result to R5",
+          required_signals: ["ALU_OUT", "R5_LOAD"],
+          explanation: "ALU outputs the result (R4 - R3), and R5 loads it. SUB complete!",
+          common_mistakes: [
+            { signal: "R4_LOAD", reason: "R5 is the destination register specified in the instruction, not R4." }
+          ],
+          datapath_highlights: ["ALU", "R5"]
+        }
+      ]
+    }
+  ],
+  available_signals: {
+    bus_control: ["PC_OUT", "IR_OUT", "IR_IMM_OUT", "R1_OUT", "R2_OUT", "R3_OUT", "R4_OUT", "R5_OUT", "ALU_OUT", "MEM_DATA_OUT"],
+    register_control: ["IR_LOAD", "MAR_LOAD", "R1_LOAD", "R2_LOAD", "R3_LOAD", "R4_LOAD", "R5_LOAD", "ALU_A_LOAD", "ALU_B_LOAD"],
+    memory_control: ["MEM_READ", "MEM_WRITE"],
+    alu_control: ["ALU_OP=ADD", "ALU_OP=SUB", "ALU_OP=AND", "ALU_OP=OR"],
+    pc_control: ["PC_INC", "PC_LOAD"],
+    decode_control: ["IR_DECODE"]
+  },
+  signal_descriptions: {
+    "PC_OUT": "Enable Program Counter to drive the address bus",
+    "IR_OUT": "Enable Instruction Register full output to bus",
+    "IR_IMM_OUT": "Enable Instruction Register immediate field to bus",
+    "R1_OUT": "Enable Register 1 to drive the data bus",
+    "R2_OUT": "Enable Register 2 to drive the data bus",
+    "R3_OUT": "Enable Register 3 to drive the data bus",
+    "R4_OUT": "Enable Register 4 to drive the data bus",
+    "R5_OUT": "Enable Register 5 to drive the data bus",
+    "ALU_OUT": "Enable ALU result to drive the data bus",
+    "MEM_DATA_OUT": "Enable memory data output to drive the data bus",
+    "IR_LOAD": "Load Instruction Register from data bus",
+    "MAR_LOAD": "Load Memory Address Register from address bus",
+    "R1_LOAD": "Load Register 1 from data bus",
+    "R2_LOAD": "Load Register 2 from data bus",
+    "R3_LOAD": "Load Register 3 from data bus",
+    "R4_LOAD": "Load Register 4 from data bus",
+    "R5_LOAD": "Load Register 5 from data bus",
+    "ALU_A_LOAD": "Load ALU input register A from data bus",
+    "ALU_B_LOAD": "Load ALU input register B from data bus",
+    "MEM_READ": "Activate memory read operation",
+    "MEM_WRITE": "Activate memory write operation",
+    "ALU_OP=ADD": "Set ALU to perform addition",
+    "ALU_OP=SUB": "Set ALU to perform subtraction",
+    "ALU_OP=AND": "Set ALU to perform bitwise AND",
+    "ALU_OP=OR": "Set ALU to perform bitwise OR",
+    "PC_INC": "Increment Program Counter by 1",
+    "PC_LOAD": "Load Program Counter with new address (for branches)",
+    "IR_DECODE": "Activate instruction decoder (combinational logic)"
+  },
+  feedback_messages: {
+    all_correct: [
+      "Perfect! You've correctly identified all the control signals for this cycle. 🎉",
+      "Excellent work! Your understanding of control signal timing is spot-on. ⚡",
+      "Outstanding! You're thinking like a control unit designer. 💡",
+      "Correct! You've nailed the control signals for this operation. ✨",
+      "Yes! This is exactly the signal combination needed. 🌟"
+    ],
+    partial_correct: [
+      "You're on the right track! Check which signals you might be missing.",
+      "Good start! You have some correct signals, but review what else needs to happen.",
+      "Close! Some signals are right, but double-check the cycle goal."
+    ],
+    missing_critical: [
+      "Careful - you're missing some essential signals. What needs to happen this cycle?",
+      "Review the cycle goal. Which signals are absolutely necessary?",
+      "Think about the data flow. How does data get from source to destination?"
+    ],
+    has_errors: [
+      "Some selected signals would cause problems. Check the common mistakes below.",
+      "Review your selections - some signals shouldn't be active during this cycle.",
+      "Remember: only one component can drive the bus at a time!"
+    ]
+  }
+};
+
+// ============================================
+// STATE MANAGEMENT
+// ============================================
+const state = {
+  currentInstruction: null,
+  currentCycleIndex: 0,
+  selectedSignals: new Set(),
+  isChecked: false,
+  instructionComplete: false
+};
+
+// ============================================
+// DOM ELEMENTS
+// ============================================
+const elements = {
+  instructionSelect: document.getElementById('instructionSelect'),
+  progressDisplay: document.getElementById('progressDisplay'),
+  currentCycleTitle: document.getElementById('currentCycleTitle'),
+  currentPhase: document.getElementById('currentPhase'),
+  progressBarFill: document.getElementById('progressBarFill'),
+  cycleGoalPanel: document.getElementById('cycleGoalPanel'),
+  cycleGoalText: document.getElementById('cycleGoalText'),
+  signalsContainer: document.getElementById('signalsContainer'),
+  signalCategories: document.getElementById('signalCategories'),
+  actionButtons: document.getElementById('actionButtons'),
+  checkAnswerBtn: document.getElementById('checkAnswerBtn'),
+  prevCycleBtn: document.getElementById('prevCycleBtn'),
+  nextCycleBtn: document.getElementById('nextCycleBtn'),
+  resetBtn: document.getElementById('resetBtn'),
+  feedbackPanel: document.getElementById('feedbackPanel'),
+  datapathContainer: document.getElementById('datapathContainer'),
+  datapathSvg: document.getElementById('datapathSvg'),
+  completionMessage: document.getElementById('completionMessage'),
+  completionText: document.getElementById('completionText')
+};
+
+// ============================================
+// INITIALIZATION
+// ============================================
+function initialize() {
+  // Set up event listeners
+  elements.instructionSelect.addEventListener('change', handleInstructionSelect);
+  elements.checkAnswerBtn.addEventListener('click', handleCheckAnswer);
+  elements.prevCycleBtn.addEventListener('click', handlePrevCycle);
+  elements.nextCycleBtn.addEventListener('click', handleNextCycle);
+  elements.resetBtn.addEventListener('click', handleReset);
+
+  // Initialize datapath SVG
+  initializeDatapathSVG();
+}
+
+// ============================================
+// EVENT HANDLERS
+// ============================================
+function handleInstructionSelect(event) {
+  const instructionId = event.target.value;
+  if (!instructionId) return;
+
+  // Find the selected instruction
+  state.currentInstruction = instructionData.instructions.find(inst => inst.id === instructionId);
+  state.currentCycleIndex = 0;
+  state.selectedSignals.clear();
+  state.isChecked = false;
+  state.instructionComplete = false;
+
+  // Show the activity interface
+  showActivityInterface();
+  
+  // Load the first cycle
+  loadCycle();
+}
+
+function handleCheckAnswer() {
+  if (state.isChecked) return;
+
+  const currentCycle = getCurrentCycle();
+  const requiredSignals = new Set(currentCycle.required_signals);
+  const correctSignals = [];
+  const missingSignals = [];
+  const incorrectSignals = [];
+
+  // Categorize selected signals
+  state.selectedSignals.forEach(signal => {
+    if (requiredSignals.has(signal)) {
+      correctSignals.push(signal);
+    } else {
+      incorrectSignals.push(signal);
+    }
+  });
+
+  // Find missing signals
+  requiredSignals.forEach(signal => {
+    if (!state.selectedSignals.has(signal)) {
+      missingSignals.push(signal);
+    }
+  });
+
+  // Update checkbox visuals
+  updateSignalCheckboxStatus(correctSignals, missingSignals, incorrectSignals);
+
+  // Display feedback
+  displayFeedback(correctSignals, missingSignals, incorrectSignals, currentCycle);
+
+  // Update state
+  state.isChecked = true;
+
+  // Enable next button only if all signals are correct
+  if (missingSignals.length === 0 && incorrectSignals.length === 0) {
+    elements.nextCycleBtn.disabled = false;
+  }
+
+  // Update datapath visualization
+  updateDatapathVisualization(Array.from(state.selectedSignals));
+}
+
+function handlePrevCycle() {
+  if (state.currentCycleIndex > 0) {
+    state.currentCycleIndex--;
+    resetCycleState();
+    loadCycle();
+  }
+}
+
+function handleNextCycle() {
+  if (state.currentCycleIndex < state.currentInstruction.cycles.length - 1) {
+    state.currentCycleIndex++;
+    resetCycleState();
+    loadCycle();
+  } else {
+    // Instruction complete
+    showCompletionMessage();
+  }
+}
+
+function handleReset() {
+  if (confirm('Are you sure you want to reset? Your progress will be lost.')) {
+    state.currentCycleIndex = 0;
+    resetCycleState();
+    loadCycle();
+    elements.completionMessage.classList.remove('show');
+  }
+}
+
+// ============================================
+// UI DISPLAY FUNCTIONS
+// ============================================
+function showActivityInterface() {
+  elements.progressDisplay.classList.remove('hidden');
+  elements.cycleGoalPanel.classList.remove('hidden');
+  elements.signalsContainer.classList.remove('hidden');
+  elements.actionButtons.classList.remove('hidden');
+  elements.datapathContainer.classList.remove('hidden');
+  elements.completionMessage.classList.remove('show');
+}
+
+function loadCycle() {
+  const currentCycle = getCurrentCycle();
+  const totalCycles = state.currentInstruction.cycles.length;
+
+  // Update progress display
+  elements.currentCycleTitle.textContent = `Cycle ${state.currentCycleIndex + 1} of ${totalCycles}`;
+  elements.currentPhase.textContent = `Phase: ${currentCycle.phase}`;
+  
+  const progressPercentage = ((state.currentCycleIndex + 1) / totalCycles) * 100;
+  elements.progressBarFill.style.width = `${progressPercentage}%`;
+
+  // Update cycle goal
+  elements.cycleGoalText.textContent = currentCycle.goal;
+
+  // Generate signal checkboxes
+  generateSignalCheckboxes();
+
+  // Update button states
+  elements.prevCycleBtn.disabled = state.currentCycleIndex === 0;
+  elements.nextCycleBtn.disabled = true;
+  elements.checkAnswerBtn.disabled = false;
+
+  // Hide feedback
+  elements.feedbackPanel.classList.remove('show');
+
+  // Update datapath
+  updateDatapathVisualization([]);
+}
+
+function resetCycleState() {
+  state.selectedSignals.clear();
+  state.isChecked = false;
+}
+
+function getCurrentCycle() {
+  return state.currentInstruction.cycles[state.currentCycleIndex];
+}
+
+function generateSignalCheckboxes() {
+  elements.signalCategories.innerHTML = '';
+
+  const categories = [
+    { key: 'bus_control', title: '🚌 Bus Control', icon: '🚌' },
+    { key: 'register_control', title: '📝 Register Control', icon: '📝' },
+    { key: 'memory_control', title: '💾 Memory Control', icon: '💾' },
+    { key: 'alu_control', title: '🔢 ALU Control', icon: '🔢' },
+    { key: 'pc_control', title: '➡️ PC Control', icon: '➡️' },
+    { key: 'decode_control', title: '🔍 Decode Control', icon: '🔍' }
+  ];
+
+  categories.forEach(category => {
+    const signals = instructionData.available_signals[category.key];
+    if (!signals || signals.length === 0) return;
+
+    const categoryDiv = document.createElement('div');
+    categoryDiv.className = 'signal-category';
+
+    const categoryTitle = document.createElement('h4');
+    categoryTitle.innerHTML = `${category.icon} ${category.title.split(' ').slice(1).join(' ')}`;
+    categoryDiv.appendChild(categoryTitle);
+
+    const checkboxGroup = document.createElement('div');
+    checkboxGroup.className = 'signal-checkbox-group';
+
+    signals.forEach(signal => {
+      const checkboxWrapper = document.createElement('div');
+      checkboxWrapper.className = 'signal-checkbox';
+      checkboxWrapper.dataset.signal = signal;
+
+      const checkbox = document.createElement('input');
+      checkbox.type = 'checkbox';
+      checkbox.id = `signal_${signal}`;
+      checkbox.value = signal;
+      checkbox.addEventListener('change', handleSignalCheckboxChange);
+
+      const label = document.createElement('label');
+      label.htmlFor = `signal_${signal}`;
+      label.textContent = signal;
+
+      const infoIcon = document.createElement('span');
+      infoIcon.className = 'info-icon';
+      infoIcon.textContent = 'i';
+      infoIcon.title = instructionData.signal_descriptions[signal];
+
+      const tooltip = document.createElement('div');
+      tooltip.className = 'tooltip';
+      tooltip.textContent = instructionData.signal_descriptions[signal];
+
+      checkboxWrapper.appendChild(checkbox);
+      checkboxWrapper.appendChild(label);
+      checkboxWrapper.appendChild(infoIcon);
+      checkboxWrapper.appendChild(tooltip);
+
+      checkboxGroup.appendChild(checkboxWrapper);
+    });
+
+    categoryDiv.appendChild(checkboxGroup);
+    elements.signalCategories.appendChild(categoryDiv);
+  });
+}
+
+function handleSignalCheckboxChange(event) {
+  const signal = event.target.value;
+  
+  if (event.target.checked) {
+    state.selectedSignals.add(signal);
+    
+    // Check for bus contention (multiple X_OUT signals)
+    const busSignals = Array.from(state.selectedSignals).filter(s => s.endsWith('_OUT'));
+    if (busSignals.length > 1) {
+      alert(`⚠️ Bus Contention Warning!\n\nYou've selected multiple signals that drive the bus: ${busSignals.join(', ')}\n\nOnly ONE component can drive the bus at a time. This would cause a bus conflict!`);
+    }
+  } else {
+    state.selectedSignals.delete(signal);
+  }
+
+  // If already checked, don't allow changes
+  if (state.isChecked) {
+    event.preventDefault();
+    event.target.checked = !event.target.checked;
+  }
+}
+
+function updateSignalCheckboxStatus(correctSignals, missingSignals, incorrectSignals) {
+  // Clear all status classes first
+  document.querySelectorAll('.signal-checkbox').forEach(wrapper => {
+    wrapper.classList.remove('correct', 'missing', 'incorrect');
+  });
+
+  // Add correct class
+  correctSignals.forEach(signal => {
+    const wrapper = document.querySelector(`.signal-checkbox[data-signal="${signal}"]`);
+    if (wrapper) wrapper.classList.add('correct');
+  });
+
+  // Add missing class
+  missingSignals.forEach(signal => {
+    const wrapper = document.querySelector(`.signal-checkbox[data-signal="${signal}"]`);
+    if (wrapper) wrapper.classList.add('missing');
+  });
+
+  // Add incorrect class
+  incorrectSignals.forEach(signal => {
+    const wrapper = document.querySelector(`.signal-checkbox[data-signal="${signal}"]`);
+    if (wrapper) wrapper.classList.add('incorrect');
+  });
+
+  // Disable all checkboxes
+  document.querySelectorAll('.signal-checkbox input[type="checkbox"]').forEach(cb => {
+    cb.disabled = true;
+  });
+}
+
+function displayFeedback(correctSignals, missingSignals, incorrectSignals, currentCycle) {
+  elements.feedbackPanel.innerHTML = '';
+  elements.feedbackPanel.classList.add('show');
+
+  let feedbackType = '';
+  let feedbackMessage = '';
+
+  // Determine feedback type
+  if (missingSignals.length === 0 && incorrectSignals.length === 0) {
+    feedbackType = 'success';
+    feedbackMessage = instructionData.feedback_messages.all_correct[
+      Math.floor(Math.random() * instructionData.feedback_messages.all_correct.length)
+    ];
+  } else if (incorrectSignals.length > 0) {
+    feedbackType = 'error';
+    feedbackMessage = instructionData.feedback_messages.has_errors[
+      Math.floor(Math.random() * instructionData.feedback_messages.has_errors.length)
+    ];
+  } else if (missingSignals.length > 0) {
+    feedbackType = 'warning';
+    feedbackMessage = instructionData.feedback_messages.missing_critical[
+      Math.floor(Math.random() * instructionData.feedback_messages.missing_critical.length)
+    ];
+  }
+
+  // Create feedback header
+  const header = document.createElement('div');
+  header.className = `feedback-header ${feedbackType}`;
+  header.textContent = feedbackMessage;
+  elements.feedbackPanel.appendChild(header);
+
+  // Create feedback content
+  const content = document.createElement('div');
+  content.className = 'feedback-content';
+
+  // Show correct signals
+  if (correctSignals.length > 0) {
+    const correctList = document.createElement('ul');
+    correctList.className = 'feedback-list';
+    const correctHeader = document.createElement('strong');
+    correctHeader.textContent = '✅ Correct Signals:';
+    correctHeader.style.color = 'var(--primary-green)';
+    content.appendChild(correctHeader);
+    correctSignals.forEach(signal => {
+      const li = document.createElement('li');
+      li.innerHTML = `<span class="correct-signal">${signal}</span> - ${instructionData.signal_descriptions[signal]}`;
+      correctList.appendChild(li);
+    });
+    content.appendChild(correctList);
+  }
+
+  // Show missing signals
+  if (missingSignals.length > 0) {
+    const missingList = document.createElement('ul');
+    missingList.className = 'feedback-list';
+    const missingHeader = document.createElement('strong');
+    missingHeader.textContent = '⚠️ Missing Required Signals:';
+    missingHeader.style.color = 'var(--warning-yellow)';
+    content.appendChild(missingHeader);
+    missingSignals.forEach(signal => {
+      const li = document.createElement('li');
+      li.innerHTML = `<span class="missing-signal">${signal}</span> - ${instructionData.signal_descriptions[signal]}`;
+      missingList.appendChild(li);
+    });
+    content.appendChild(missingList);
+  }
+
+  // Show incorrect signals
+  if (incorrectSignals.length > 0) {
+    const incorrectList = document.createElement('ul');
+    incorrectList.className = 'feedback-list';
+    const incorrectHeader = document.createElement('strong');
+    incorrectHeader.textContent = '❌ Incorrect Signals (Should Not Be Active):';
+    incorrectHeader.style.color = 'var(--error-red)';
+    content.appendChild(incorrectHeader);
+    incorrectSignals.forEach(signal => {
+      const li = document.createElement('li');
+      const mistake = currentCycle.common_mistakes.find(m => m.signal === signal);
+      const reason = mistake ? mistake.reason : 'This signal is not needed for this cycle.';
+      li.innerHTML = `<span class="incorrect-signal">${signal}</span> - ${reason}`;
+      incorrectList.appendChild(li);
+    });
+    content.appendChild(incorrectList);
+  }
+
+  // Add explanation box
+  if (missingSignals.length === 0 && incorrectSignals.length === 0) {
+    const explanationBox = document.createElement('div');
+    explanationBox.className = 'explanation-box';
+    explanationBox.innerHTML = `<strong>📖 Explanation:</strong><br>${currentCycle.explanation}`;
+    content.appendChild(explanationBox);
+  }
+
+  elements.feedbackPanel.appendChild(content);
+}
+
+function showCompletionMessage() {
+  state.instructionComplete = true;
+  elements.completionMessage.classList.add('show');
+  elements.completionText.textContent = `You've successfully traced the complete execution of ${state.currentInstruction.name}! You understand how control signals orchestrate the datapath to execute this instruction. Try another instruction to practice more, or move on to designing your own control unit!`;
+  
+  // Scroll to completion message
+  elements.completionMessage.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+// ============================================
+// DATAPATH VISUALIZATION
+// ============================================
+function initializeDatapathSVG() {
+  const svg = elements.datapathSvg;
+  svg.innerHTML = '';
+
+  // Define components and their positions
+  const components = [
+    { id: 'PC', x: 50, y: 50, width: 80, height: 60, label: 'PC' },
+    { id: 'MAR', x: 50, y: 150, width: 80, height: 60, label: 'MAR' },
+    { id: 'Memory', x: 200, y: 150, width: 100, height: 80, label: 'Memory' },
+    { id: 'IR', x: 350, y: 50, width: 80, height: 60, label: 'IR' },
+    { id: 'Opcode Decoder', x: 350, y: 150, width: 80, height: 50, label: 'Decoder' },
+    { id: 'Control Unit', x: 480, y: 150, width: 80, height: 50, label: 'Control\nUnit' },
+    { id: 'R1', x: 50, y: 280, width: 60, height: 50, label: 'R1' },
+    { id: 'R2', x: 130, y: 280, width: 60, height: 50, label: 'R2' },
+    { id: 'R3', x: 210, y: 280, width: 60, height: 50, label: 'R3' },
+    { id: 'R4', x: 290, y: 280, width: 60, height: 50, label: 'R4' },
+    { id: 'R5', x: 370, y: 280, width: 60, height: 50, label: 'R5' },
+    { id: 'ALU Input A', x: 500, y: 250, width: 70, height: 40, label: 'ALU A' },
+    { id: 'ALU Input B', x: 500, y: 310, width: 70, height: 40, label: 'ALU B' },
+    { id: 'ALU', x: 620, y: 270, width: 80, height: 70, label: 'ALU' }
+  ];
+
+  // Draw components
+  components.forEach(comp => {
+    const group = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+    group.classList.add('component');
+    group.dataset.id = comp.id;
+
+    const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+    rect.setAttribute('x', comp.x);
+    rect.setAttribute('y', comp.y);
+    rect.setAttribute('width', comp.width);
+    rect.setAttribute('height', comp.height);
+    rect.setAttribute('rx', 5);
+
+    const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    text.setAttribute('x', comp.x + comp.width / 2);
+    text.setAttribute('y', comp.y + comp.height / 2);
+    text.setAttribute('text-anchor', 'middle');
+    text.setAttribute('dominant-baseline', 'middle');
+    text.textContent = comp.label;
+
+    group.appendChild(rect);
+    group.appendChild(text);
+    svg.appendChild(group);
+  });
+
+  // Draw buses (simplified)
+  const buses = [
+    { id: 'address-bus', path: 'M 90 80 L 90 150', label: 'Address Bus' },
+    { id: 'data-bus', path: 'M 250 190 L 250 240 L 450 240 L 450 280', label: 'Data Bus' },
+    { id: 'internal-bus', path: 'M 200 305 L 480 305', label: 'Internal Bus' }
+  ];
+
+  buses.forEach(bus => {
+    const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    path.classList.add('bus-line');
+    path.dataset.id = bus.id;
+    path.setAttribute('d', bus.path);
+    path.setAttribute('stroke-dasharray', '5,5');
+    svg.appendChild(path);
+  });
+}
+
+function updateDatapathVisualization(activeSignals) {
+  // Clear all active states
+  document.querySelectorAll('.component').forEach(comp => {
+    comp.classList.remove('active');
+  });
+  document.querySelectorAll('.bus-line').forEach(bus => {
+    bus.classList.remove('active');
+  });
+
+  // Get current cycle highlights
+  const currentCycle = getCurrentCycle();
+  const highlights = currentCycle.datapath_highlights || [];
+
+  // Activate highlighted components
+  highlights.forEach(compName => {
+    const component = document.querySelector(`.component[data-id="${compName}"]`);
+    if (component) {
+      component.classList.add('active');
+    }
+  });
+
+  // Activate buses based on signals
+  const hasAddressBusActivity = activeSignals.some(s => s === 'PC_OUT' || s === 'IR_IMM_OUT');
+  const hasDataBusActivity = activeSignals.some(s => s.endsWith('_OUT') || s.endsWith('_LOAD'));
+
+  if (hasAddressBusActivity) {
+    const addressBus = document.querySelector('.bus-line[data-id="address-bus"]');
+    if (addressBus) addressBus.classList.add('active');
+  }
+
+  if (hasDataBusActivity) {
+    const dataBus = document.querySelector('.bus-line[data-id="data-bus"]');
+    if (dataBus) dataBus.classList.add('active');
+    
+    const internalBus = document.querySelector('.bus-line[data-id="internal-bus"]');
+    if (internalBus) internalBus.classList.add('active');
+  }
+}
+
+// ============================================
+// START APPLICATION
+// ============================================
+document.addEventListener('DOMContentLoaded', initialize);
+
+    </script>
+</body>
+</html>
