@@ -1,0 +1,1506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>7-Operation ALU Explorer (Universal Comparison Flags)</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <style>
+        /* Light theme enforcement */
+        html { 
+            font-family: 'Inter', sans-serif; 
+            background-color: #FDFBF8;
+            color: #1A1A1A;
+        }
+        
+        @media (prefers-color-scheme: dark) {
+            html {
+                background-color: #FDFBF8 !important; 
+                color: #1A1A1A !important; 
+            }
+        }
+        
+        /* Skip to content link */
+        .skip-link {
+            position: absolute;
+            top: -40px;
+            left: 0;
+            background: #2563eb;
+            color: white;
+            padding: 8px;
+            text-decoration: none;
+            z-index: 100;
+        }
+        
+        .skip-link:focus {
+            top: 0;
+        }
+        
+        /* Code blocks */
+        .code-block {
+            background: #f5f5f5;
+            border-left: 4px solid #2563eb;
+            padding: 1rem;
+            margin: 1rem 0;
+            font-family: 'Courier New', monospace;
+            overflow-x: auto;
+            white-space: pre;
+        }
+        
+        /* Operation buttons */
+        .op-button {
+            transition: all 0.2s ease;
+        }
+        
+        .op-button:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+        }
+        
+        .op-button.active {
+            background: #2563eb;
+            color: white;
+            border-color: #1d4ed8;
+        }
+        
+        /* Flag indicators */
+        .flag-badge {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .flag-active {
+            background: #10b981;
+            color: white;
+            box-shadow: 0 0 20px rgba(16, 185, 129, 0.5);
+        }
+        
+        .flag-inactive {
+            background: #e5e7eb;
+            color: #6b7280;
+        }
+        
+        .universal-flag {
+            background: #f59e0b;
+            color: white;
+            box-shadow: 0 0 20px rgba(245, 158, 11, 0.5);
+        }
+        
+        /* Decoder visualization */
+        .decoder-line {
+            transition: all 0.3s ease;
+            padding: 0.5rem;
+            margin: 0.25rem 0;
+            border-radius: 0.25rem;
+        }
+        
+        .decoder-line.active {
+            background: #10b981;
+            color: white;
+            font-weight: bold;
+            box-shadow: 0 0 15px rgba(16, 185, 129, 0.5);
+        }
+        
+        .decoder-line.inactive {
+            background: #f3f4f6;
+            color: #9ca3af;
+        }
+        
+        /* Functional unit boxes */
+        .functional-unit {
+            border: 2px solid #e5e7eb;
+            border-radius: 0.5rem;
+            padding: 0.75rem;
+            margin: 0.5rem 0;
+            transition: all 0.3s ease;
+        }
+        
+        .functional-unit.enabled {
+            border-color: #10b981;
+            background: #d1fae5;
+            box-shadow: 0 0 15px rgba(16, 185, 129, 0.3);
+        }
+        
+        .functional-unit.disabled {
+            background: #f9fafb;
+            opacity: 0.5;
+        }
+        
+        .functional-unit.always-on {
+            border-color: #f59e0b;
+            background: #fef3c7;
+            box-shadow: 0 0 15px rgba(245, 158, 11, 0.3);
+        }
+        
+        /* Challenge cards */
+        .challenge-card {
+            border: 2px solid #e5e7eb;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            margin: 1rem 0;
+            transition: all 0.3s ease;
+            background: linear-gradient(to right, #fffbeb, white);
+        }
+        
+        .challenge-card:hover {
+            border-color: #f59e0b;
+            box-shadow: 0 6px 16px rgba(245, 158, 11, 0.2);
+            transform: translateY(-2px);
+        }
+        
+        /* Quiz styling */
+        .quiz-option {
+            border: 2px solid #e5e7eb;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin: 0.5rem 0;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .quiz-option:hover {
+            border-color: #2563eb;
+            background: #eff6ff;
+        }
+        
+        .quiz-option.correct {
+            border-color: #10b981;
+            background: #d1fae5;
+        }
+        
+        .quiz-option.incorrect {
+            border-color: #ef4444;
+            background: #fee2e2;
+        }
+        
+        /* Tabs */
+        .tab-button {
+            padding: 1rem 1.5rem;
+            border: 2px solid #e5e7eb;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-radius: 0.5rem 0.5rem 0 0;
+            font-weight: 600;
+            font-size: 1rem;
+        }
+        
+        .tab-button:hover {
+            background: #eff6ff;
+            border-color: #2563eb;
+            transform: translateY(-2px);
+        }
+        
+        .tab-button.active {
+            background: #2563eb;
+            color: white;
+            border-color: #1d4ed8;
+            box-shadow: 0 4px 6px rgba(37, 99, 235, 0.3);
+        }
+        
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.3s ease-in;
+            padding: 2rem;
+            border-radius: 0.5rem;
+            min-height: 400px;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        #tab-intro {
+            background: linear-gradient(to bottom, #eff6ff, #ffffff);
+        }
+        
+        #tab-guide {
+            background: linear-gradient(to bottom, #f0fdf4, #ffffff);
+        }
+        
+        #tab-simulator {
+            background: linear-gradient(to bottom, #faf5ff, #ffffff);
+        }
+        
+        #tab-practice {
+            background: linear-gradient(to bottom, #fffbeb, #ffffff);
+        }
+        
+        #tab-summary {
+            background: linear-gradient(to bottom, #eef2ff, #ffffff);
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Responsive hex input */
+        .hex-input {
+            font-family: 'Courier New', monospace;
+            font-size: 1.125rem;
+            font-weight: 600;
+        }
+        
+        /* Animation for data flow */
+        @keyframes pulse-glow {
+            0%, 100% {
+                box-shadow: 0 0 10px rgba(16, 185, 129, 0.5);
+            }
+            50% {
+                box-shadow: 0 0 25px rgba(16, 185, 129, 0.8);
+            }
+        }
+        
+        .data-flow {
+            animation: pulse-glow 2s infinite;
+        }
+    </style>
+</head>
+<body class="bg-[#FDFBF8] text-[#1A1A1A]">
+    <a id="skip-to-content" href="#main-content" class="skip-link">Skip to Content</a>
+    
+    <main id="main-content" class="max-w-6xl mx-auto px-4 py-8">
+        <!-- Header Section -->
+        <header class="text-center mb-12">
+            <h1 class="text-4xl md:text-5xl font-bold text-blue-600 mb-4">
+                Interactive ALU Operation Explorer
+            </h1>
+            <p class="text-xl md:text-2xl text-gray-700 mb-2">
+                Your 7-Operation ALU with Universal Comparison Flags
+            </p>
+            <div class="inline-block bg-amber-100 border-2 border-amber-500 rounded-lg px-6 py-3 mt-4">
+                <p class="text-lg font-semibold text-amber-800">
+                    🔑 KEY FEATURE: Three flags work for ALL operations: Zero, A&gt;B, and A==B
+                </p>
+            </div>
+        </header>
+
+        <!-- Learning Objectives -->
+        <section class="bg-blue-50 border-2 border-blue-200 rounded-lg p-6 mb-8">
+            <h2 class="text-2xl font-bold text-blue-800 mb-4">Learning Objectives</h2>
+            <p class="mb-4">By the end of this interactive lesson, you will be able to:</p>
+            <ul class="space-y-2 list-disc list-inside text-gray-800">
+                <li>Identify all 7 operations in your ALU by their 3-bit operation codes (000-110)</li>
+                <li>Explain how a 3-to-8 decoder controls which functional unit drives the output</li>
+                <li>Understand the enable circuit mechanism and how only one unit is active at a time</li>
+                <li>Predict ALU output for any given operation and input combination</li>
+                <li>Understand which operations use one input (A only) versus two inputs (A and B)</li>
+                <li>Recognize the THREE universal flags that work for ALL operations: Zero, A&gt;B, and A==B</li>
+                <li>Understand that the carry-out/shift-out flag is operation-specific</li>
+                <li>Explain why operation code 111 is intentionally left unused</li>
+            </ul>
+        </section>
+
+        <!-- Tab Navigation -->
+        <nav class="mb-8" role="tablist" aria-label="ALU Learning Sections">
+            <div class="flex flex-wrap gap-2 border-b-2 border-gray-300">
+                <button class="tab-button active" data-tab="intro" role="tab" aria-selected="true" aria-controls="tab-intro">
+                    📖 Introduction
+                </button>
+                <button class="tab-button" data-tab="guide" role="tab" aria-selected="false" aria-controls="tab-guide">
+                    📚 How to Use
+                </button>
+                <button class="tab-button" data-tab="simulator" role="tab" aria-selected="false" aria-controls="tab-simulator">
+                    🖥️ Simulator
+                </button>
+                <button class="tab-button" data-tab="practice" role="tab" aria-selected="false" aria-controls="tab-practice">
+                    🎯 Practice
+                </button>
+                <button class="tab-button" data-tab="summary" role="tab" aria-selected="false" aria-controls="tab-summary">
+                    🎓 Summary
+                </button>
+            </div>
+        </nav>
+
+        <!-- Tab Content: Introduction Section -->
+        <div id="tab-intro" class="tab-content active" role="tabpanel" aria-labelledby="intro">
+            <section class="mb-8">
+                <h2 class="text-3xl font-bold text-gray-900 mb-6 pb-3 border-b-4 border-blue-600">Your 7-Operation ALU: The Heart of Computation</h2>
+                
+                <div class="bg-white rounded-xl shadow-lg p-6 mb-6">
+                    <h3 class="text-2xl font-bold text-gray-800 mb-4 flex items-center">
+                        <span class="bg-blue-600 text-white rounded-full w-10 h-10 flex items-center justify-center mr-3">1</span>
+                        What Does Your ALU Actually Do?
+                    </h3>
+                    <p class="text-lg mb-4">
+                        Think of your ALU as a Swiss Army knife with exactly 7 tools. Each tool (operation) does something different, and you select which tool to use by giving the ALU a 3-bit code called an <strong>operation code</strong> or <strong>opcode</strong>. Your ALU takes in two 8-bit numbers (we call them <strong>Input A</strong> and <strong>Input B</strong>), performs the selected operation, and produces an 8-bit result plus some helpful status flags.
+                    </p>
+                </div>
+
+                <div class="bg-white rounded-xl shadow-lg p-6 mb-6">
+                    <h3 class="text-2xl font-bold text-gray-800 mb-4 flex items-center">
+                        <span class="bg-blue-600 text-white rounded-full w-10 h-10 flex items-center justify-center mr-3">2</span>
+                        The Decoder-Based Architecture
+                    </h3>
+                    <p class="mb-4">
+                        Here's where your ALU design is particularly elegant! Inside your ALU, you have 7 separate functional units all computing their results simultaneously:
+                    </p>
+                    <ul class="list-disc list-inside space-y-2 mb-4 ml-4">
+                        <li><strong>An Adder</strong> - Does 8-bit addition</li>
+                        <li><strong>A Shift Right Unit</strong> - Shifts bits to the right</li>
+                        <li><strong>A Shift Left Unit</strong> - Shifts bits to the left</li>
+                        <li><strong>A NOT Unit</strong> - Inverts all bits</li>
+                        <li><strong>An OR Unit</strong> - Performs bitwise OR</li>
+                        <li><strong>An AND Unit</strong> - Performs bitwise AND</li>
+                        <li><strong>An XOR Comparator</strong> - Performs bitwise XOR</li>
+                    </ul>
+                    <p class="mb-4">
+                        All seven units are computing their results at the same time! But here's the clever part: you only see ONE result on the output bus. This is accomplished using a <strong>3-to-8 decoder</strong> connected to <strong>enable circuits</strong>.
+                    </p>
+                </div>
+
+                <div class="bg-white rounded-xl shadow-lg p-6 mb-6">
+                    <h3 class="text-2xl font-bold text-gray-800 mb-4 flex items-center">
+                        <span class="bg-blue-600 text-white rounded-full w-10 h-10 flex items-center justify-center mr-3">3</span>
+                        How the Decoder Control Works
+                    </h3>
+                    <p class="mb-4">
+                        Instead of using a multiplexer to select outputs (which is another valid approach), your design uses a more distributed control mechanism:
+                    </p>
+                    
+                    <div class="bg-gray-100 border-l-4 border-blue-500 p-4 mb-4">
+                        <h4 class="font-bold text-lg mb-2">The 3-to-8 Decoder:</h4>
+                        <ul class="list-disc list-inside space-y-1 ml-4">
+                            <li>Takes the 3-bit opcode as input</li>
+                            <li>Produces 8 output lines (one for each possible 3-bit combination)</li>
+                            <li>Only ONE output line is HIGH at any time</li>
+                            <li>The HIGH line corresponds to the binary value of the opcode</li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-gray-100 border-l-4 border-green-500 p-4 mb-4">
+                        <h4 class="font-bold text-lg mb-2">Enable Circuits:</h4>
+                        <ul class="list-disc list-inside space-y-1 ml-4">
+                            <li>Each functional unit has an enable circuit connected to one decoder output line</li>
+                            <li>When the enable signal is HIGH, that unit drives its result onto the output bus</li>
+                            <li>When the enable signal is LOW, that unit is disconnected (tri-state/high-impedance)</li>
+                            <li>This ensures only one unit drives the bus at any time, preventing conflicts</li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-blue-50 border-2 border-blue-300 rounded-lg p-6 my-6">
+                        <h4 class="font-bold text-lg mb-3">Example Flow:</h4>
+                        <div class="code-block text-sm">Opcode = 101 (binary) → Decoder activates output line 5
+→ Enable circuit for OR unit goes HIGH
+→ OR unit drives its result (A | B) onto output bus
+→ All other units are disabled (high-impedance)
+→ Result appears at ALU output</div>
+                    </div>
+
+                    <p class="mb-4">This architecture is elegant because:</p>
+                    <ul class="list-disc list-inside space-y-2 mb-6 ml-4">
+                        <li><strong>It's modular:</strong> Each unit operates independently</li>
+                        <li><strong>It prevents bus contention:</strong> Only one driver at a time</li>
+                        <li><strong>It's expandable:</strong> Adding operations just means adding decoder outputs and units</li>
+                        <li><strong>It's similar to how register files work</strong> (Week 9 concept!)</li>
+                    </ul>
+                </div>
+
+                <div class="bg-white rounded-xl shadow-lg p-6 mb-6">
+                    <h3 class="text-2xl font-bold text-gray-800 mb-4 flex items-center">
+                        <span class="bg-blue-600 text-white rounded-full w-10 h-10 flex items-center justify-center mr-3">4</span>
+                        Your Complete Operation Table
+                    </h3>
+                    <p class="mb-4">Here's the definitive guide to your ALU. You'll want to memorize this!</p>
+                    
+                    <div class="overflow-x-auto mb-6">
+                        <table class="w-full border-2 border-gray-300">
+                            <thead class="bg-blue-600 text-white">
+                                <tr>
+                                    <th class="border border-gray-300 px-4 py-3 text-left">OpCode</th>
+                                    <th class="border border-gray-300 px-4 py-3 text-left">Operation</th>
+                                    <th class="border border-gray-300 px-4 py-3 text-left">Decoder Output</th>
+                                    <th class="border border-gray-300 px-4 py-3 text-left">What It Does</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="bg-white hover:bg-blue-50">
+                                    <td class="border border-gray-300 px-4 py-2 font-mono">000</td>
+                                    <td class="border border-gray-300 px-4 py-2 font-bold">ADD</td>
+                                    <td class="border border-gray-300 px-4 py-2">Line 0</td>
+                                    <td class="border border-gray-300 px-4 py-2">Output = A + B</td>
+                                </tr>
+                                <tr class="bg-gray-50 hover:bg-blue-50">
+                                    <td class="border border-gray-300 px-4 py-2 font-mono">001</td>
+                                    <td class="border border-gray-300 px-4 py-2 font-bold">SHR</td>
+                                    <td class="border border-gray-300 px-4 py-2">Line 1</td>
+                                    <td class="border border-gray-300 px-4 py-2">Output = A >> 1 (shift right)</td>
+                                </tr>
+                                <tr class="bg-white hover:bg-blue-50">
+                                    <td class="border border-gray-300 px-4 py-2 font-mono">010</td>
+                                    <td class="border border-gray-300 px-4 py-2 font-bold">SHL</td>
+                                    <td class="border border-gray-300 px-4 py-2">Line 2</td>
+                                    <td class="border border-gray-300 px-4 py-2">Output = A << 1 (shift left)</td>
+                                </tr>
+                                <tr class="bg-gray-50 hover:bg-blue-50">
+                                    <td class="border border-gray-300 px-4 py-2 font-mono">011</td>
+                                    <td class="border border-gray-300 px-4 py-2 font-bold">NOT</td>
+                                    <td class="border border-gray-300 px-4 py-2">Line 3</td>
+                                    <td class="border border-gray-300 px-4 py-2">Output = ~A (bitwise invert)</td>
+                                </tr>
+                                <tr class="bg-white hover:bg-blue-50">
+                                    <td class="border border-gray-300 px-4 py-2 font-mono">100</td>
+                                    <td class="border border-gray-300 px-4 py-2 font-bold">AND</td>
+                                    <td class="border border-gray-300 px-4 py-2">Line 4</td>
+                                    <td class="border border-gray-300 px-4 py-2">Output = A & B (bitwise AND)</td>
+                                </tr>
+                                <tr class="bg-gray-50 hover:bg-blue-50">
+                                    <td class="border border-gray-300 px-4 py-2 font-mono">101</td>
+                                    <td class="border border-gray-300 px-4 py-2 font-bold">OR</td>
+                                    <td class="border border-gray-300 px-4 py-2">Line 5</td>
+                                    <td class="border border-gray-300 px-4 py-2">Output = A | B (bitwise OR)</td>
+                                </tr>
+                                <tr class="bg-white hover:bg-blue-50">
+                                    <td class="border border-gray-300 px-4 py-2 font-mono">110</td>
+                                    <td class="border border-gray-300 px-4 py-2 font-bold">XOR</td>
+                                    <td class="border border-gray-300 px-4 py-2">Line 6</td>
+                                    <td class="border border-gray-300 px-4 py-2">Output = A ^ B (bitwise XOR)</td>
+                                </tr>
+                                <tr class="bg-red-100 hover:bg-red-200">
+                                    <td class="border border-gray-300 px-4 py-2 font-mono">111</td>
+                                    <td class="border border-gray-300 px-4 py-2 font-bold text-red-600">UNUSED</td>
+                                    <td class="border border-gray-300 px-4 py-2">Line 7</td>
+                                    <td class="border border-gray-300 px-4 py-2 text-red-600">DON'T USE (no unit connected!)</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="bg-red-50 border-2 border-red-300 rounded-lg p-4 mb-6">
+                        <p class="font-bold text-red-800 mb-2">⚠️ Important Note About OpCode 111:</p>
+                        <p class="text-red-700">
+                            The decoder will activate line 7 if you use opcode 111, but there's no functional unit connected to that enable line! This means no unit will drive the output bus, resulting in undefined behavior (floating bus). In well-designed systems, you might connect line 7 to an error detection circuit or simply leave it unused. In your design, it's intentionally unused—so <strong>never set the opcode to 111</strong>!
+                        </p>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl shadow-lg p-6 mb-6">
+                    <h3 class="text-2xl font-bold text-gray-800 mb-4 flex items-center">
+                        <span class="bg-blue-600 text-white rounded-full w-10 h-10 flex items-center justify-center mr-3">5</span>
+                        Understanding the Output Flags: Universal vs. Operation-Specific
+                    </h3>
+                    <p class="mb-4">
+                        Your ALU produces four status flags, but here's the really clever part: <strong>three of them work for ALL operations</strong>! This is a sophisticated design feature that makes your ALU very powerful.
+                    </p>
+
+                    <div class="bg-amber-50 border-4 border-amber-400 rounded-lg p-6 mb-6">
+                        <h4 class="text-xl font-bold text-amber-900 mb-4">🌟 UNIVERSAL FLAGS (Work for ALL operations 000-110):</h4>
+                        
+                        <div class="mb-6">
+                            <h5 class="font-bold text-lg text-amber-800 mb-2">1. Zero Flag (output == 00000000): Is the result exactly zero?</h5>
+                            <ul class="list-disc list-inside space-y-1 ml-4 text-gray-800">
+                                <li>Generated by checking if all 8 output bits are 0</li>
+                                <li><strong>Always active</strong> - computed for every operation!</li>
+                                <li>Useful for: Loop termination, equality checks, conditional branching</li>
+                            </ul>
+                            <div class="bg-white rounded p-3 mt-2">
+                                <p class="font-semibold mb-1">Examples:</p>
+                                <ul class="list-disc list-inside text-sm space-y-1 ml-4">
+                                    <li>ADD: 0xFF + 0x01 = 0x00 → Zero flag = 1</li>
+                                    <li>AND: 0xFF & 0x00 = 0x00 → Zero flag = 1</li>
+                                    <li>XOR: 0x42 ^ 0x42 = 0x00 → Zero flag = 1</li>
+                                    <li>SHR: 0x01 >> 1 = 0x00 → Zero flag = 1</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="mb-6">
+                            <h5 class="font-bold text-lg text-amber-800 mb-2">2. A &gt; B Flag: Is Input A greater than Input B?</h5>
+                            <ul class="list-disc list-inside space-y-1 ml-4 text-gray-800">
+                                <li><strong>Always active</strong> - computed for every operation!</li>
+                                <li>Unsigned comparison of the two inputs</li>
+                                <li>Generated by dedicated comparison circuitry that always runs</li>
+                                <li>Useful for: Conditional branching, sorting, decision logic</li>
+                            </ul>
+                            <div class="bg-white rounded p-3 mt-2">
+                                <p class="font-semibold mb-1">Examples:</p>
+                                <ul class="list-disc list-inside text-sm space-y-1 ml-4">
+                                    <li>During ADD when A=0x50, B=0x30: A&gt;B flag = 1 (regardless of sum)</li>
+                                    <li>During AND when A=0xFF, B=0x0F: A&gt;B flag = 1 (regardless of AND result)</li>
+                                    <li>During NOT when A=0x80, B=0x00: A&gt;B flag = 1 (even though NOT ignores B!)</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <h5 class="font-bold text-lg text-amber-800 mb-2">3. A == B Flag: Are Input A and Input B equal?</h5>
+                            <ul class="list-disc list-inside space-y-1 ml-4 text-gray-800">
+                                <li><strong>Always active</strong> - computed for every operation!</li>
+                                <li>Checks if the two inputs are identical</li>
+                                <li>Generated by dedicated comparison circuitry that always runs</li>
+                                <li>Useful for: Equality testing, conditional branching</li>
+                            </ul>
+                            <div class="bg-white rounded p-3 mt-2">
+                                <p class="font-semibold mb-1">Examples:</p>
+                                <ul class="list-disc list-inside text-sm space-y-1 ml-4">
+                                    <li>During ADD when A=0x50, B=0x50: A==B flag = 1</li>
+                                    <li>During OR when A=0x42, B=0x42: A==B flag = 1</li>
+                                    <li>During SHL when A=0x10, B=0x10: A==B flag = 1 (even though SHL ignores B!)</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="bg-amber-100 border-2 border-amber-600 rounded p-4 mt-4">
+                            <p class="font-bold text-amber-900">
+                                💡 Why are these three flags universal? They're generated by separate, always-on comparison and zero-detection circuits that monitor the inputs and output continuously. They don't depend on which functional unit is enabled!
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="bg-gray-100 border-2 border-gray-400 rounded-lg p-6 mb-6">
+                        <h4 class="text-xl font-bold text-gray-900 mb-4">⚙️ OPERATION-SPECIFIC FLAG:</h4>
+                        
+                        <div class="mb-4">
+                            <h5 class="font-bold text-lg text-gray-800 mb-2">4. Carry-out/Shift-out Flag (c-out): This flag's meaning depends on which operation is selected!</h5>
+                            <ul class="list-disc list-inside space-y-2 ml-4 text-gray-800">
+                                <li><strong>For ADD (opcode 000, decoder line 0):</strong> The carry-out from bit 7
+                                    <ul class="list-circle list-inside ml-6 text-sm">
+                                        <li>Indicates unsigned overflow (e.g., 255 + 1 = 256, which doesn't fit in 8 bits)</li>
+                                        <li>Essential for multi-byte arithmetic</li>
+                                    </ul>
+                                </li>
+                                <li><strong>For SHIFT operations (opcodes 001, 010):</strong> The bit that "falls off" the edge
+                                    <ul class="list-circle list-inside ml-6 text-sm">
+                                        <li>For SHR (shift right, line 1): This is the original bit 0 that got shifted out</li>
+                                        <li>For SHL (shift left, line 2): This is the original bit 7 that got shifted out</li>
+                                        <li>Useful for multi-byte shifts or recovering the lost bit</li>
+                                    </ul>
+                                </li>
+                                <li><strong>For other operations (NOT, OR, AND, XOR):</strong> Typically cleared to 0 or not meaningful</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl shadow-lg p-6 mb-6">
+                    <h3 class="text-2xl font-bold text-gray-800 mb-4 flex items-center">
+                        <span class="bg-blue-600 text-white rounded-full w-10 h-10 flex items-center justify-center mr-3">6</span>
+                        Visual Architecture Diagram
+                    </h3>
+                    <p class="mb-4">Here's how your ALU is organized with the decoder control and flag generation:</p>
+                    
+                    <div class="code-block text-xs mb-6">                3-bit OpCode [2:0]
+                       │
+                       ▼
+                 ┌───────────┐
+                 │  3-to-8   │
+                 │  Decoder  │
+                 └─────┬─────┘
+                       │
+        ┌──────────────┴──────────────┐
+        │                             │
+   Line 0-6                       Line 7
+   (enabled)                    (disconnected)
+        │                             │
+   ┌────┴────┬────┬────┬────┬────┬───┴────┐
+   │         │    │    │    │    │        │
+   ▼         ▼    ▼    ▼    ▼    ▼        ▼
+┌─────┐  ┌─────┐ ... (7 functional units) [empty]
+│ ADD │  │ SHR │  │ XOR │
+│ En  │  │ En  │  │ En  │
+└──┬──┘  └──┬──┘  └──┬──┘
+   │        │        │
+   └────┬───┴────┬───┴──── All outputs connect to common bus
+        │        │
+        ▼        ▼
+   Output Bus (8 bits)
+        │
+        ├────────────────────────────────
+        │                              │
+        ▼                              ▼
+   Zero Detection              Input Comparison Logic
+   (all bits == 0?)            (always running)
+        │                              │
+        ▼                              ▼
+   Zero Flag                  ┌────────┴────────┐
+                              │                 │
+                              ▼                 ▼
+                          A > B Flag        A == B Flag
+
+   (c-out flag generated by each unit individually)</div>
+
+                    <div class="bg-blue-50 border-2 border-blue-300 rounded-lg p-4 mb-6">
+                        <p class="font-bold text-blue-900">
+                            🔍 Key Insight: The comparison logic (A&gt;B, A==B) and zero detection logic are separate from the functional units and decoder. They always run, monitoring inputs and outputs continuously!
+                        </p>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl shadow-lg p-6 mb-6">
+                    <h3 class="text-2xl font-bold text-gray-800 mb-4 flex items-center">
+                        <span class="bg-blue-600 text-white rounded-full w-10 h-10 flex items-center justify-center mr-3">7</span>
+                        Why Universal Comparison Flags are Brilliant Design
+                    </h3>
+                    <p class="mb-4">Having A&gt;B and A==B flags active for ALL operations is actually a sophisticated feature:</p>
+
+                    <div class="grid md:grid-cols-2 gap-4 mb-6">
+                        <div class="bg-green-50 border-2 border-green-300 rounded-lg p-4">
+                            <h5 class="font-bold text-green-800 mb-2">Advantage 1: Flexible Conditional Logic</h5>
+                            <p class="text-sm text-gray-800">You can perform ANY operation and simultaneously test the relationship between inputs. Get the result AND comparison in ONE operation!</p>
+                        </div>
+                        <div class="bg-green-50 border-2 border-green-300 rounded-lg p-4">
+                            <h5 class="font-bold text-green-800 mb-2">Advantage 2: Efficient Branching</h5>
+                            <p class="text-sm text-gray-800">After any operation, you can immediately branch based on input comparison without needing a separate compare instruction.</p>
+                        </div>
+                        <div class="bg-green-50 border-2 border-green-300 rounded-lg p-4">
+                            <h5 class="font-bold text-green-800 mb-2">Advantage 3: No Wasted Cycles</h5>
+                            <p class="text-sm text-gray-800">You never need to do a separate comparison operation just to test A vs B. The comparison happens "for free" alongside whatever operation you're performing.</p>
+                        </div>
+                        <div class="bg-green-50 border-2 border-green-300 rounded-lg p-4">
+                            <h5 class="font-bold text-green-800 mb-2">Advantage 4: Consistent Architecture</h5>
+                            <p class="text-sm text-gray-800">Software doesn't need to know which operations support comparison—they ALL do! This simplifies compiler design and assembly programming.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- Tab Content: How to Use Section -->
+        <div id="tab-guide" class="tab-content" role="tabpanel" aria-labelledby="guide">
+            <section class="mb-8">
+                <h2 class="text-3xl font-bold text-gray-900 mb-6 pb-3 border-b-4 border-green-600">Using the Interactive ALU Operation Explorer</h2>
+                
+                <div class="bg-white rounded-xl shadow-lg p-6 mb-6">
+                <p class="text-lg mb-6">
+                    Now it's time to get hands-on! The simulator below lets you experiment with your 7-operation ALU in real-time, and you'll see how the universal flags work for EVERY operation. Here's how to use it effectively:
+                </p>
+                </div>
+
+                <div class="bg-white rounded-xl shadow-lg p-6 mb-6">
+                    <h3 class="text-xl font-bold text-blue-900 mb-4">Getting Started</h3>
+                    
+                    <ol class="space-y-4">
+                        <li class="flex">
+                            <span class="flex-shrink-0 w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold mr-3">1</span>
+                            <div>
+                                <h4 class="font-bold mb-1">Set Your Inputs</h4>
+                                <p class="text-sm">Use the hexadecimal input fields to set Input A and Input B. Try starting with A = 0x55 (85 decimal) and B = 0x33 (51 decimal). The simulator will also show you the binary and decimal representations.</p>
+                            </div>
+                        </li>
+                        <li class="flex">
+                            <span class="flex-shrink-0 w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold mr-3">2</span>
+                            <div>
+                                <h4 class="font-bold mb-1">Select an Operation</h4>
+                                <p class="text-sm">Click on any of the 7 operation buttons (ADD, SHR, SHL, NOT, OR, AND, XOR). Notice how the opcode display shows the corresponding 3-bit binary code. Watch the visualization: The decoder activates the corresponding enable line. The simulator will immediately compute and display the result.</p>
+                            </div>
+                        </li>
+                        <li class="flex">
+                            <span class="flex-shrink-0 w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold mr-3">3</span>
+                            <div>
+                                <h4 class="font-bold mb-1">Observe the Decoder in Action</h4>
+                                <p class="text-sm">The visualization shows which decoder output line is active (highlighted). Only the enabled functional unit is highlighted. All other units are dimmed (disabled/high-impedance). This illustrates the tri-state bus control concept!</p>
+                            </div>
+                        </li>
+                        <li class="flex">
+                            <span class="flex-shrink-0 w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold mr-3">4</span>
+                            <div>
+                                <h4 class="font-bold mb-1">Observe ALL Four Flags</h4>
+                                <p class="text-sm">Zero flag: Shows if the result is 0x00 (works for ALL operations). A &gt; B flag: Shows if Input A &gt; Input B (works for ALL operations—always visible!). A == B flag: Shows if Input A == Input B (works for ALL operations—always visible!). c-out flag: Meaning depends on the operation (carry-out, shift-out, or not meaningful). Notice: The comparison flags (A&gt;B, A==B) update even when you change operations!</p>
+                            </div>
+                        </li>
+                        <li class="flex">
+                            <span class="flex-shrink-0 w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold mr-3">5</span>
+                            <div>
+                                <h4 class="font-bold mb-1">Experiment Freely</h4>
+                                <p class="text-sm">Change inputs and try different operations. Notice which operations use both A and B versus just A. Watch how A&gt;B and A==B flags are ALWAYS showing the input comparison. Pay attention to when the c-out flag is meaningful.</p>
+                            </div>
+                        </li>
+                    </ol>
+                </div>
+
+                <div class="bg-white rounded-xl shadow-lg p-6 mb-6">
+                    <h3 class="text-2xl font-bold text-gray-800 mb-4">📚 Guided Exploration Activities</h3>
+                    
+                    <div class="space-y-4">
+                        <details class="bg-gradient-to-r from-blue-50 to-white border-2 border-blue-300 rounded-lg p-4 hover:shadow-md transition-shadow">
+                            <summary class="font-bold text-lg cursor-pointer text-blue-800 flex items-center">
+                                <span class="bg-blue-600 text-white rounded-full w-8 h-8 flex items-center justify-center mr-3 text-sm">1</span>
+                                Activity 1: Universal Flags in Action
+                            </summary>
+                            <div class="mt-4 prose max-w-none">
+                                <ol class="list-decimal list-inside space-y-2">
+                                    <li>Set A = 0x80, B = 0x40</li>
+                                    <li>Notice the comparison flags: A&gt;B = 1 (128 &gt; 64), A==B = 0</li>
+                                    <li>Now try EVERY operation (ADD, SHR, SHL, NOT, OR, AND, XOR)</li>
+                                    <li>Notice: The A&gt;B and A==B flags stay the same for ALL operations!</li>
+                                    <li>This is because they're always monitoring the inputs, regardless of which unit is enabled</li>
+                                </ol>
+                            </div>
+                        </details>
+
+                        <details class="bg-gradient-to-r from-blue-50 to-white border-2 border-blue-300 rounded-lg p-4 hover:shadow-md transition-shadow">
+                            <summary class="font-bold text-lg cursor-pointer text-blue-800 flex items-center">
+                                <span class="bg-blue-600 text-white rounded-full w-8 h-8 flex items-center justify-center mr-3 text-sm">2</span>
+                                Activity 2: Understanding Decoder Operation
+                            </summary>
+                            <div class="mt-4 prose max-w-none">
+                                <ol class="list-decimal list-inside space-y-2">
+                                    <li>Set A = 0x10, B = 0x20</li>
+                                    <li>Click through each operation slowly</li>
+                                    <li>Watch the decoder visualization: Notice how exactly ONE line is active</li>
+                                    <li>Notice: A&gt;B = 0 (16 &lt; 32), A==B = 0 for ALL operations</li>
+                                    <li>The comparison happens independently of which functional unit is selected!</li>
+                                </ol>
+                            </div>
+                        </details>
+
+                        <details class="bg-gradient-to-r from-blue-50 to-white border-2 border-blue-300 rounded-lg p-4 hover:shadow-md transition-shadow">
+                            <summary class="font-bold text-lg cursor-pointer text-blue-800 flex items-center">
+                                <span class="bg-blue-600 text-white rounded-full w-8 h-8 flex items-center justify-center mr-3 text-sm">3</span>
+                                Activity 3: Equality Testing with Different Operations
+                            </summary>
+                            <div class="mt-4 prose max-w-none">
+                                <ol class="list-decimal list-inside space-y-2">
+                                    <li>Set A = 0x42, B = 0x42 (both inputs equal)</li>
+                                    <li>Notice immediately: A==B = 1 for ALL operations</li>
+                                    <li>Try ADD: Result = 0x84, Zero = 0, A==B = 1</li>
+                                    <li>Try XOR: Result = 0x00, Zero = 1, A==B = 1 (both tell you they're equal!)</li>
+                                    <li>Try AND: Result = 0x42, Zero = 0, A==B = 1</li>
+                                    <li>Key insight: You can test equality after ANY operation, not just XOR!</li>
+                                </ol>
+                            </div>
+                        </details>
+
+                        <details class="bg-gradient-to-r from-blue-50 to-white border-2 border-blue-300 rounded-lg p-4 hover:shadow-md transition-shadow">
+                            <summary class="font-bold text-lg cursor-pointer text-blue-800 flex items-center">
+                                <span class="bg-blue-600 text-white rounded-full w-8 h-8 flex items-center justify-center mr-3 text-sm">4</span>
+                                Activity 4: Understanding Carry-out
+                            </summary>
+                            <div class="mt-4 prose max-w-none">
+                                <ol class="list-decimal list-inside space-y-2">
+                                    <li>Set A = 0xFF, B = 0x01</li>
+                                    <li>Use the ADD operation (opcode 000)</li>
+                                    <li>Notice ALL flags: Zero = 1 (result is 0x00), c-out = 1 (overflow), A&gt;B = 1, A==B = 0</li>
+                                    <li>The universal flags tell you about inputs; c-out tells you about the addition</li>
+                                    <li>Observe: Decoder line 0 is active, enabling the ADD unit</li>
+                                </ol>
+                            </div>
+                        </details>
+
+                        <details class="bg-gradient-to-r from-blue-50 to-white border-2 border-blue-300 rounded-lg p-4 hover:shadow-md transition-shadow">
+                            <summary class="font-bold text-lg cursor-pointer text-blue-800 flex items-center">
+                                <span class="bg-blue-600 text-white rounded-full w-8 h-8 flex items-center justify-center mr-3 text-sm">5</span>
+                                Activity 5: Shift-out Behavior with Universal Flags
+                            </summary>
+                            <div class="mt-4 prose max-w-none">
+                                <ol class="list-decimal list-inside space-y-2">
+                                    <li>Set A = 0x81 (binary: 10000001), B = 0x05</li>
+                                    <li>Try SHR (shift right): Result = 0x40, Zero = 0, c-out = 1 (the original bit 0 that fell off), A&gt;B = 1 (129 &gt; 5), A==B = 0</li>
+                                    <li>Watch: Decoder line 1 activates, enabling SHR unit</li>
+                                    <li>Notice: The comparison flags show A vs B even though B isn't used in the shift!</li>
+                                </ol>
+                            </div>
+                        </details>
+                    </div>
+                </div>
+                
+                <!-- Print Button -->
+                <div class="mt-8 text-center bg-green-50 border-2 border-green-400 rounded-xl p-6">
+                    <h3 class="text-xl font-bold text-green-800 mb-3">📄 Print Instructions</h3>
+                    <p class="text-gray-700 mb-4">Print these instructions to keep beside you while using the simulator in the next tab!</p>
+                    <button id="print-instructions" class="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-8 rounded-lg shadow-lg transition-all hover:shadow-xl hover:scale-105">
+                        🖨️ Print Instructions as PDF
+                    </button>
+                </div>
+            </section>
+        </div>
+
+        <!-- Tab Content: Interactive Simulator -->
+        <div id="tab-simulator" class="tab-content" role="tabpanel" aria-labelledby="simulator">
+            <section class="mb-8">
+                <h2 class="text-3xl font-bold text-gray-900 mb-6 pb-3 border-b-4 border-purple-600">🖥️ Interactive ALU Simulator</h2>
+                
+                <div class="bg-purple-50 border-2 border-purple-300 rounded-lg p-4 mb-6">
+                    <p class="text-purple-900">
+                        <strong>💡 Tip:</strong> Use the printed instructions from the "How to Use" tab as a reference guide while exploring the simulator!
+                    </p>
+                </div>
+                
+                <div class="bg-white border-4 border-blue-500 rounded-xl p-6 shadow-xl">
+                    <!-- Input Controls -->
+                    <div class="grid md:grid-cols-3 gap-6 mb-6">
+                        <!-- Input A -->
+                        <div class="bg-gray-50 rounded-lg p-4 border-2 border-gray-300">
+                            <label class="block font-bold text-gray-800 mb-2">Input A (Hex)</label>
+                            <input type="text" id="inputA" class="hex-input w-full px-3 py-2 border-2 border-blue-400 rounded" value="55" maxlength="2">
+                            <div class="mt-2 text-sm text-gray-600">
+                                <div>Binary: <span id="inputA-bin" class="font-mono font-bold">01010101</span></div>
+                                <div>Decimal: <span id="inputA-dec" class="font-bold">85</span></div>
+                            </div>
+                        </div>
+
+                        <!-- Input B -->
+                        <div class="bg-gray-50 rounded-lg p-4 border-2 border-gray-300">
+                            <label class="block font-bold text-gray-800 mb-2">Input B (Hex)</label>
+                            <input type="text" id="inputB" class="hex-input w-full px-3 py-2 border-2 border-blue-400 rounded" value="33" maxlength="2">
+                            <div class="mt-2 text-sm text-gray-600">
+                                <div>Binary: <span id="inputB-bin" class="font-mono font-bold">00110011</span></div>
+                                <div>Decimal: <span id="inputB-dec" class="font-bold">51</span></div>
+                            </div>
+                        </div>
+
+                        <!-- Result -->
+                        <div class="bg-blue-50 rounded-lg p-4 border-2 border-blue-400">
+                            <label class="block font-bold text-blue-800 mb-2">Result (Hex)</label>
+                            <div class="hex-input text-2xl font-bold text-blue-600 mb-2" id="result-hex">88</div>
+                            <div class="text-sm text-gray-600">
+                                <div>Binary: <span id="result-bin" class="font-mono font-bold">10001000</span></div>
+                                <div>Decimal: <span id="result-dec" class="font-bold">136</span></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Operation Buttons -->
+                    <div class="mb-6">
+                        <h3 class="font-bold text-lg mb-3">Select Operation:</h3>
+                        <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-2">
+                            <button class="op-button bg-blue-500 text-white px-4 py-3 rounded-lg font-bold hover:bg-blue-600 active" data-op="000">
+                                ADD<br><span class="text-xs">000 / L0</span>
+                            </button>
+                            <button class="op-button bg-blue-500 text-white px-4 py-3 rounded-lg font-bold hover:bg-blue-600" data-op="001">
+                                SHR<br><span class="text-xs">001 / L1</span>
+                            </button>
+                            <button class="op-button bg-blue-500 text-white px-4 py-3 rounded-lg font-bold hover:bg-blue-600" data-op="010">
+                                SHL<br><span class="text-xs">010 / L2</span>
+                            </button>
+                            <button class="op-button bg-blue-500 text-white px-4 py-3 rounded-lg font-bold hover:bg-blue-600" data-op="011">
+                                NOT<br><span class="text-xs">011 / L3</span>
+                            </button>
+                            <button class="op-button bg-blue-500 text-white px-4 py-3 rounded-lg font-bold hover:bg-blue-600" data-op="100">
+                                AND<br><span class="text-xs">100 / L4</span>
+                            </button>
+                            <button class="op-button bg-blue-500 text-white px-4 py-3 rounded-lg font-bold hover:bg-blue-600" data-op="101">
+                                OR<br><span class="text-xs">101 / L5</span>
+                            </button>
+                            <button class="op-button bg-blue-500 text-white px-4 py-3 rounded-lg font-bold hover:bg-blue-600" data-op="110">
+                                XOR<br><span class="text-xs">110 / L6</span>
+                            </button>
+                        </div>
+                        <p class="text-sm text-gray-600 mt-2">⚠️ Remember: AND=100 (line 4), OR=101 (line 5)</p>
+                    </div>
+
+                    <!-- Decoder Visualization -->
+                    <div class="bg-gray-100 rounded-lg p-4 mb-6 border-2 border-gray-300">
+                        <h3 class="font-bold text-lg mb-3">3-to-8 Decoder & Functional Units</h3>
+                        <div class="grid md:grid-cols-2 gap-4">
+                            <div>
+                                <h4 class="font-semibold mb-2">Decoder Lines:</h4>
+                                <div id="decoder-lines" class="space-y-1"></div>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold mb-2">Functional Units:</h4>
+                                <div id="functional-units" class="space-y-2"></div>
+                                <div class="functional-unit always-on mt-3">
+                                    <div class="font-bold">🌟 Universal Comparison Logic</div>
+                                    <div class="text-xs">Always monitoring A &amp; B</div>
+                                </div>
+                                <div class="functional-unit always-on">
+                                    <div class="font-bold">🌟 Zero Detection</div>
+                                    <div class="text-xs">Always monitoring output</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Flags Display -->
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <!-- Universal Flags -->
+                        <div class="bg-amber-50 border-4 border-amber-400 rounded-lg p-4">
+                            <h3 class="font-bold text-xl text-amber-900 mb-3">🌟 Universal Flags (ALL Operations)</h3>
+                            <div class="space-y-2">
+                                <div class="flex items-center justify-between">
+                                    <span class="font-semibold">Zero (Result == 0x00):</span>
+                                    <span id="flag-zero" class="flag-badge">0</span>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <span class="font-semibold">A &gt; B:</span>
+                                    <span id="flag-agtb" class="flag-badge">1</span>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <span class="font-semibold">A == B:</span>
+                                    <span id="flag-aeqb" class="flag-badge">0</span>
+                                </div>
+                            </div>
+                            <p class="text-xs text-amber-800 mt-3 font-semibold">These flags work for EVERY operation!</p>
+                        </div>
+
+                        <!-- Operation-Specific Flag -->
+                        <div class="bg-gray-100 border-2 border-gray-400 rounded-lg p-4">
+                            <h3 class="font-bold text-xl text-gray-800 mb-3">⚙️ Operation-Specific Flag</h3>
+                            <div class="space-y-2">
+                                <div class="flex items-center justify-between">
+                                    <span class="font-semibold">c-out:</span>
+                                    <span id="flag-cout" class="flag-badge">0</span>
+                                </div>
+                                <div class="text-sm text-gray-700 mt-2">
+                                    <strong>Meaning:</strong> <span id="cout-meaning">Carry-out from addition</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Operation Description -->
+                    <div class="bg-blue-50 border-2 border-blue-300 rounded-lg p-4 mt-4">
+                        <h4 class="font-bold text-blue-900 mb-2">Current Operation:</h4>
+                        <p id="op-description" class="text-gray-800"></p>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- Tab Content: Practice (Challenges & Quiz) -->
+        <div id="tab-practice" class="tab-content" role="tabpanel" aria-labelledby="practice">
+            <!-- Challenges Section -->
+            <section class="mb-12">
+                <h2 class="text-3xl font-bold text-gray-900 mb-6 pb-3 border-b-4 border-amber-600">🎯 Challenge Problems</h2>
+                <div id="challenges-container" class="space-y-4"></div>
+            </section>
+
+            <!-- Quiz Section -->
+            <section class="mb-12">
+                <h2 class="text-3xl font-bold text-gray-900 mb-6 pb-3 border-b-4 border-green-600">✅ Knowledge Check Quiz</h2>
+                <div id="quiz-container"></div>
+                <div id="quiz-score" class="hidden mt-4 p-4 bg-green-100 border-2 border-green-400 rounded-lg">
+                    <p class="text-lg font-bold text-green-800">Score: <span id="score-display">0</span>/9</p>
+                </div>
+            </section>
+        </div>
+
+        <!-- Tab Content: Summary -->
+        <div id="tab-summary" class="tab-content" role="tabpanel" aria-labelledby="summary">
+            <!-- Educational Summary -->
+            <section class="mb-12">
+                <h2 class="text-3xl font-bold text-gray-900 mb-6 pb-3 border-b-4 border-indigo-600">🎓 Key Takeaways</h2>
+                
+                <div class="bg-white rounded-xl shadow-lg p-6 mb-6">
+                    <p class="text-lg text-gray-700 mb-6">
+                        Congratulations! You've explored the complete architecture of your 7-operation ALU. Here are the most important concepts to remember:
+                    </p>
+                </div>
+                
+                <div class="grid md:grid-cols-2 gap-4">
+                    <div class="bg-amber-50 border-2 border-amber-400 rounded-lg p-4">
+                        <h3 class="font-bold text-amber-900 mb-2">🔑 Universal Flags</h3>
+                        <p class="text-sm">Zero, A&gt;B, and A==B flags work for ALL operations! They're generated by separate, always-on circuitry.</p>
+                    </div>
+                    <div class="bg-blue-50 border-2 border-blue-400 rounded-lg p-4">
+                        <h3 class="font-bold text-blue-900 mb-2">🎯 Decoder Control</h3>
+                        <p class="text-sm">The 3-to-8 decoder ensures exactly ONE enable line is active at a time, preventing bus conflicts.</p>
+                    </div>
+                    <div class="bg-green-50 border-2 border-green-400 rounded-lg p-4">
+                        <h3 class="font-bold text-green-900 mb-2">⚙️ Operation-Specific Flag</h3>
+                        <p class="text-sm">c-out meaning depends on operation: carry for ADD, shift-out for shifts, not meaningful for logic ops.</p>
+                    </div>
+                    <div class="bg-purple-50 border-2 border-purple-400 rounded-lg p-4">
+                        <h3 class="font-bold text-purple-900 mb-2">🔄 Comparison Independence</h3>
+                        <p class="text-sm">Comparison flags work even for single-input operations (NOT, shifts) because they monitor inputs separately.</p>
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-xl shadow-lg p-6 mt-6">
+                    <h3 class="text-xl font-bold text-indigo-900 mb-4">🔗 Course Connections</h3>
+                    <div class="space-y-3">
+                        <div class="flex items-start">
+                            <span class="text-2xl mr-3">📘</span>
+                            <div>
+                                <p class="font-semibold text-indigo-800">Week 6: ALU Design</p>
+                                <p class="text-sm text-gray-600">You built this ALU with all 7 functional units</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start">
+                            <span class="text-2xl mr-3">📗</span>
+                            <div>
+                                <p class="font-semibold text-green-800">Week 9: Register Files</p>
+                                <p class="text-sm text-gray-600">The decoder-enable architecture works just like register file tri-state bus control</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start">
+                            <span class="text-2xl mr-3">📕</span>
+                            <div>
+                                <p class="font-semibold text-red-800">Week 11: Control Unit</p>
+                                <p class="text-sm text-gray-600">Your control unit will use these universal flags for conditional branching</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- Footer -->
+        <footer class="border-t-2 border-gray-300 pt-8 text-center text-gray-600">
+            <p class="mb-2">Continue to explore the simulator above to reinforce your understanding!</p>
+            <p class="text-sm">Week 6 ALU Design • Week 9 Register Files • Week 11 Control Unit</p>
+        </footer>
+    </main>
+
+    <!-- JAVASCRIPT WILL BE ADDED HERE IN PART 2 -->
+     <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('DOM loaded, initializing application...');
+        
+        // ==========================================
+        // TAB SWITCHING FUNCTIONALITY
+        // ==========================================
+        const tabButtons = document.querySelectorAll('.tab-button');
+        const tabContents = document.querySelectorAll('.tab-content');
+        
+        console.log('Found', tabButtons.length, 'tab buttons');
+        console.log('Found', tabContents.length, 'tab contents');
+        
+        tabButtons.forEach(button => {
+            button.addEventListener('click', function(e) {
+                e.preventDefault();
+                const targetTab = this.dataset.tab;
+                console.log('Clicked tab:', targetTab);
+                
+                // Remove active class from all buttons and contents
+                tabButtons.forEach(btn => {
+                    btn.classList.remove('active');
+                    btn.setAttribute('aria-selected', 'false');
+                });
+                tabContents.forEach(content => {
+                    content.classList.remove('active');
+                });
+                
+                // Add active class to clicked button and corresponding content
+                this.classList.add('active');
+                this.setAttribute('aria-selected', 'true');
+                const targetContent = document.getElementById(`tab-${targetTab}`);
+                if (targetContent) {
+                    targetContent.classList.add('active');
+                    console.log('Activated tab:', targetTab);
+                } else {
+                    console.error('Could not find tab content for:', targetTab);
+                }
+                
+                // Scroll to top of page
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+        });
+        
+        // ==========================================
+        // PRINT BUTTON FUNCTIONALITY
+        // ==========================================
+        const printButton = document.getElementById('print-instructions');
+        if (printButton) {
+            printButton.addEventListener('click', function() {
+                const printWindow = window.open('', '_blank');
+                const instructionsContent = document.getElementById('tab-guide').innerHTML;
+                
+                printWindow.document.write(`
+                    <!DOCTYPE html>
+                    <html>
+                    <head>
+                        <title>ALU Simulator Instructions</title>
+                        <style>
+                            body {
+                                font-family: Arial, sans-serif;
+                                max-width: 800px;
+                                margin: 20px auto;
+                                padding: 20px;
+                                line-height: 1.6;
+                            }
+                            h2 { color: #16a34a; border-bottom: 3px solid #16a34a; padding-bottom: 10px; }
+                            h3 { color: #059669; margin-top: 20px; }
+                            h4 { color: #047857; }
+                            ol { margin-left: 40px; }
+                            li { margin: 10px 0; }
+                            summary { font-weight: bold; color: #059669; }
+                            details { margin: 15px 0; padding: 10px; border: 1px solid #d1fae5; border-radius: 5px; }
+                            button { display: none; }
+                            @media print {
+                                body { max-width: 100%; }
+                            }
+                        </style>
+                    </head>
+                    <body>
+                        ${instructionsContent}
+                    </body>
+                    </html>
+                `);
+                
+                printWindow.document.close();
+                printWindow.focus();
+                setTimeout(() => {
+                    printWindow.print();
+                }, 500);
+            });
+        }
+        
+        // ==========================================
+        // STATE VARIABLES
+        // ==========================================
+        let currentOp = '000';
+        let inputA = 0x55;
+        let inputB = 0x33;
+        let quizAnswers = {};
+        
+        // ==========================================
+        // OPERATION DEFINITIONS
+        // ==========================================
+        const operations = {
+            '000': { name: 'ADD', symbol: '+', line: 0, desc: 'Adds Input A and Input B together (8-bit addition)', inputs: ['A', 'B'], coutMeaning: 'carry-out (unsigned overflow)' },
+            '001': { name: 'SHR', symbol: '>>', line: 1, desc: 'Shifts Input A right by 1 bit (bit 0 falls off, bit 7 becomes 0)', inputs: ['A'], coutMeaning: 'shift-out (original bit 0)' },
+            '010': { name: 'SHL', symbol: '<<', line: 2, desc: 'Shifts Input A left by 1 bit (bit 7 falls off, bit 0 becomes 0)', inputs: ['A'], coutMeaning: 'shift-out (original bit 7)' },
+            '011': { name: 'NOT', symbol: '~', line: 3, desc: 'Inverts all bits of Input A (0→1, 1→0)', inputs: ['A'], coutMeaning: 'not meaningful (cleared)' },
+            '100': { name: 'AND', symbol: '&', line: 4, desc: 'Bitwise AND of Input A and Input B (both must be 1 for result 1)', inputs: ['A', 'B'], coutMeaning: 'not meaningful (cleared)' },
+            '101': { name: 'OR', symbol: '|', line: 5, desc: 'Bitwise OR of Input A and Input B (either can be 1 for result 1)', inputs: ['A', 'B'], coutMeaning: 'not meaningful (cleared)' },
+            '110': { name: 'XOR', symbol: '^', line: 6, desc: 'Bitwise XOR of Input A and Input B (result=0x00 when A==B)', inputs: ['A', 'B'], coutMeaning: 'not meaningful (cleared)' }
+        };
+
+        // ==========================================
+        // CHALLENGE DATA
+        // ==========================================
+        const challenges = [
+            {
+                title: "Universal Flags Test",
+                desc: "Set A=0x80, B=0x40 and try THREE different operations. Verify A>B=1 for all of them.",
+                hint: "The comparison flags are universal - they work regardless of which operation you select!"
+            },
+            {
+                title: "Equality Multiple Ways",
+                desc: "Set both inputs to 0x42. Use XOR to see BOTH Zero=1 (result) AND A==B=1 (inputs).",
+                hint: "XOR gives you two ways to detect equality: Zero flag and A==B flag!"
+            },
+            {
+                title: "Single-Input Operation Comparison",
+                desc: "Use NOT with A=0xFF, B=0x01. Notice A>B flag still shows comparison even though NOT ignores B!",
+                hint: "Comparison logic is separate from functional units. It always compares inputs."
+            },
+            {
+                title: "Clear Lower Nibble with Comparison",
+                desc: "Clear bits 0-3 of A=0xAC using B=0xF0. What's A>B flag?",
+                hint: "Use AND (line 4). Then check: is 172 > 240? No! So A>B=0."
+            },
+            {
+                title: "Zero Result vs Equal Inputs",
+                desc: "Find inputs where result is zero BUT inputs are not equal. Try ADD.",
+                hint: "A=0xFF, B=0x01 gives result 0x00 (overflow), but A≠B!"
+            },
+            {
+                title: "Shift with Magnitude Check",
+                desc: "Shift A=0x20 left and simultaneously verify A>B where B=0x10.",
+                hint: "SHL (line 2) gives you shifted result AND comparison flags showing A>B=1."
+            }
+        ];
+
+        // ==========================================
+        // QUIZ DATA
+        // ==========================================
+        const quizQuestions = [
+            {
+                q: "Which flags work for ALL operations in this ALU?",
+                opts: ["Only the Zero flag", "Zero, A>B, and A==B flags", "All four flags including c-out", "Only c-out flag"],
+                correct: 1,
+                exp: "Zero, A>B, and A==B are universal flags generated by always-on circuitry. They work for every operation. Only c-out is operation-specific."
+            },
+            {
+                q: "If you perform a NOT operation with A=0x50, B=0x30, will the A>B flag be valid?",
+                opts: ["No, because NOT only uses Input A", "Yes, comparison logic always monitors both inputs", "Only if you use XOR instead", "The flag will be undefined"],
+                correct: 1,
+                exp: "A>B and A==B are universal flags that always compare inputs, regardless of which operation is selected or whether that operation uses both inputs."
+            },
+            {
+                q: "What's the difference between the Zero flag and the A==B flag?",
+                opts: ["They are the same thing", "Zero checks result, A==B checks inputs", "Zero works for all ops, A==B only for XOR", "A==B is more accurate"],
+                correct: 1,
+                exp: "Zero flag checks if the RESULT (output) is 0x00. A==B flag checks if the INPUTS are equal. Very different! Example: ADD with A=B=0x42 gives result=0x84 (Zero=0) but A==B=1."
+            },
+            {
+                q: "Why is the XOR operation particularly useful for equality testing?",
+                opts: ["It's the only operation that sets the A==B flag", "XOR result is 0x00 when inputs equal, giving two indicators (Zero and A==B)", "XOR is faster than other operations", "XOR automatically branches on equality"],
+                correct: 1,
+                exp: "XOR gives you TWO ways to detect equality: (1) A==B flag (like all operations), and (2) Zero flag will be set because XOR of equal values is 0x00. Both confirm equality!"
+            },
+            {
+                q: "What generates the A>B and A==B flags?",
+                opts: ["The currently enabled functional unit", "The 3-to-8 decoder", "Separate always-on comparison circuitry", "The XOR unit exclusively"],
+                correct: 2,
+                exp: "A>B and A==B are generated by dedicated comparison circuitry that always monitors inputs A and B, completely independent of which functional unit is enabled."
+            },
+            {
+                q: "If decoder line 5 (AND) is active with A=0xFF, B=0xFF, what will A==B flag show?",
+                opts: ["0 (false)", "1 (true)", "Undefined because AND doesn't support comparison", "Same as the Zero flag"],
+                correct: 1,
+                exp: "A==B will be 1 because the inputs are equal (0xFF == 0xFF). This flag works for ALL operations, including AND. The AND result (0xFF) and Zero flag (0) are separate from the input comparison."
+            },
+            {
+                q: "Which flag's meaning changes depending on the selected operation?",
+                opts: ["Zero flag", "A>B flag", "A==B flag", "c-out flag"],
+                correct: 3,
+                exp: "The c-out flag is operation-specific: carry-out for ADD, shift-out for shifts, not meaningful for logic ops. The three universal flags (Zero, A>B, A==B) always have the same meaning."
+            },
+            {
+                q: "Can you determine if A>B after performing a shift left operation?",
+                opts: ["No, shifts don't provide comparison information", "Only if you use a separate compare instruction first", "Yes, the A>B flag always shows input comparison", "Only if both inputs are used by the operation"],
+                correct: 2,
+                exp: "Yes! The A>B flag is universal and always compares inputs, regardless of operation. Even though SHL only uses Input A for the shift, the comparison logic still compares A and B."
+            },
+            {
+                q: "What advantage do universal comparison flags provide?",
+                opts: ["Faster operation execution", "Smaller chip size", "No need for separate comparison instructions - every operation provides comparison info", "Easier decoder design"],
+                correct: 2,
+                exp: "Universal flags mean you never waste cycles on separate comparison instructions. Every operation automatically tells you about input relationships (A>B, A==B) and result (Zero). This is a major efficiency win!"
+            }
+        ];
+        
+        // ==========================================
+        // HELPER FUNCTIONS
+        // ==========================================
+        function toBinary(num) {
+            return num.toString(2).padStart(8, '0');
+        }
+
+        function toHex(num) {
+            return num.toString(16).toUpperCase().padStart(2, '0');
+        }
+
+        function parseHex(str) {
+            const val = parseInt(str, 16);
+            return isNaN(val) ? 0 : Math.max(0, Math.min(255, val));
+        }
+
+        // ==========================================
+        // ALU COMPUTATION
+        // ==========================================
+        function computeALU() {
+            let result, cout = 0;
+            const op = operations[currentOp];
+
+            switch(currentOp) {
+                case '000': // ADD
+                    result = (inputA + inputB) & 0xFF;
+                    cout = (inputA + inputB) > 0xFF ? 1 : 0;
+                    break;
+                case '001': // SHR
+                    cout = inputA & 0x01;
+                    result = inputA >> 1;
+                    break;
+                case '010': // SHL
+                    cout = (inputA & 0x80) ? 1 : 0;
+                    result = (inputA << 1) & 0xFF;
+                    break;
+                case '011': // NOT
+                    result = (~inputA) & 0xFF;
+                    cout = 0;
+                    break;
+                case '100': // AND
+                    result = inputA & inputB;
+                    cout = 0;
+                    break;
+                case '101': // OR
+                    result = inputA | inputB;
+                    cout = 0;
+                    break;
+                case '110': // XOR
+                    result = inputA ^ inputB;
+                    cout = 0;
+                    break;
+            }
+
+            // Universal flags (always calculated)
+            const zero = result === 0 ? 1 : 0;
+            const aGreaterB = inputA > inputB ? 1 : 0;
+            const aEqualsB = inputA === inputB ? 1 : 0;
+
+            return { result, zero, aGreaterB, aEqualsB, cout };
+        }
+
+        // ==========================================
+        // UPDATE DISPLAY
+        // ==========================================
+        function updateDisplay() {
+            const { result, zero, aGreaterB, aEqualsB, cout } = computeALU();
+            const op = operations[currentOp];
+
+            // Update input displays
+            document.getElementById('inputA-bin').textContent = toBinary(inputA);
+            document.getElementById('inputA-dec').textContent = inputA;
+            document.getElementById('inputB-bin').textContent = toBinary(inputB);
+            document.getElementById('inputB-dec').textContent = inputB;
+
+            // Update result displays
+            document.getElementById('result-hex').textContent = toHex(result);
+            document.getElementById('result-bin').textContent = toBinary(result);
+            document.getElementById('result-dec').textContent = result;
+
+            // Update flags
+            updateFlag('flag-zero', zero);
+            updateFlag('flag-agtb', aGreaterB);
+            updateFlag('flag-aeqb', aEqualsB);
+            updateFlag('flag-cout', cout);
+
+            // Update c-out meaning
+            document.getElementById('cout-meaning').textContent = op.coutMeaning;
+
+            // Update operation description
+            document.getElementById('op-description').textContent = op.desc;
+
+            // Update decoder visualization
+            updateDecoderViz();
+        }
+
+        function updateFlag(id, value) {
+            const elem = document.getElementById(id);
+            elem.textContent = value;
+            if (id === 'flag-cout') {
+                elem.className = value ? 'flag-badge flag-active' : 'flag-badge flag-inactive';
+            } else {
+                elem.className = 'flag-badge universal-flag';
+            }
+        }
+
+        function updateDecoderViz() {
+            const op = operations[currentOp];
+            
+            // Update decoder lines
+            const decoderContainer = document.getElementById('decoder-lines');
+            decoderContainer.innerHTML = '';
+            for (let i = 0; i < 8; i++) {
+                const lineDiv = document.createElement('div');
+                lineDiv.className = i === op.line ? 'decoder-line active' : 'decoder-line inactive';
+                lineDiv.textContent = i === 7 ? `Line ${i}: UNUSED` : `Line ${i}: ${Object.values(operations).find(o => o.line === i)?.name || 'N/A'}`;
+                decoderContainer.appendChild(lineDiv);
+            }
+
+            // Update functional units
+            const unitsContainer = document.getElementById('functional-units');
+            unitsContainer.innerHTML = '';
+            Object.entries(operations).forEach(([opcode, opData]) => {
+                const unitDiv = document.createElement('div');
+                unitDiv.className = opcode === currentOp ? 'functional-unit enabled' : 'functional-unit disabled';
+                unitDiv.innerHTML = `<div class="font-bold">${opData.name} Unit</div><div class="text-xs">Decoder Line ${opData.line}</div>`;
+                unitsContainer.appendChild(unitDiv);
+            });
+        }
+
+        // ==========================================
+        // EVENT LISTENERS - INPUTS
+        // ==========================================
+        document.getElementById('inputA').addEventListener('input', function(e) {
+            inputA = parseHex(e.target.value);
+            updateDisplay();
+        });
+
+        document.getElementById('inputB').addEventListener('input', function(e) {
+            inputB = parseHex(e.target.value);
+            updateDisplay();
+        });
+
+        // ==========================================
+        // EVENT LISTENERS - OPERATION BUTTONS
+        // ==========================================
+        document.querySelectorAll('.op-button').forEach(btn => {
+            btn.addEventListener('click', function() {
+                currentOp = this.dataset.op;
+                document.querySelectorAll('.op-button').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                updateDisplay();
+            });
+        });
+
+        // ==========================================
+        // INITIALIZE CHALLENGES
+        // ==========================================
+        const challengesContainer = document.getElementById('challenges-container');
+        challenges.forEach((challenge, idx) => {
+            const card = document.createElement('div');
+            card.className = 'challenge-card';
+            card.innerHTML = `
+                <h3 class="font-bold text-lg text-amber-800 mb-2 flex items-center">
+                    <span class="bg-amber-600 text-white rounded-full w-8 h-8 flex items-center justify-center mr-3 text-sm">${idx + 1}</span>
+                    ${challenge.title}
+                </h3>
+                <p class="text-gray-700 mb-2 ml-11">${challenge.desc}</p>
+                <details class="mt-2 ml-11">
+                    <summary class="text-sm text-amber-700 cursor-pointer font-semibold hover:text-amber-900">💡 Show Hint</summary>
+                    <p class="text-sm text-gray-600 mt-2 bg-amber-50 p-3 rounded">${challenge.hint}</p>
+                </details>
+            `;
+            challengesContainer.appendChild(card);
+        });
+
+        // ==========================================
+        // INITIALIZE QUIZ
+        // ==========================================
+        const quizContainer = document.getElementById('quiz-container');
+        quizQuestions.forEach((q, idx) => {
+            const qDiv = document.createElement('div');
+            qDiv.className = 'bg-white border-2 border-gray-300 rounded-lg p-4 mb-4 hover:shadow-md transition-shadow';
+            qDiv.innerHTML = `
+                <p class="font-bold text-gray-800 mb-3 flex items-start">
+                    <span class="bg-green-600 text-white rounded-full w-8 h-8 flex items-center justify-center mr-3 text-sm flex-shrink-0">${idx + 1}</span>
+                    <span>${q.q}</span>
+                </p>
+                <div class="space-y-2 ml-11" data-question="${idx}">
+                    ${q.opts.map((opt, optIdx) => `
+                        <div class="quiz-option" data-option="${optIdx}">
+                            ${opt}
+                        </div>
+                    `).join('')}
+                </div>
+                <div class="hidden mt-3 p-3 bg-green-50 border-2 border-green-300 rounded ml-11" data-explanation="${idx}">
+                    <p class="text-sm text-gray-700"><strong>✓ Explanation:</strong> ${q.exp}</p>
+                </div>
+            `;
+            quizContainer.appendChild(qDiv);
+        });
+
+        // ==========================================
+        // QUIZ INTERACTION
+        // ==========================================
+        document.querySelectorAll('.quiz-option').forEach(opt => {
+            opt.addEventListener('click', function() {
+                const questionDiv = this.parentElement;
+                const questionIdx = parseInt(questionDiv.dataset.question);
+                const optionIdx = parseInt(this.dataset.option);
+                const correctIdx = quizQuestions[questionIdx].correct;
+
+                // Disable further clicks on this question
+                questionDiv.querySelectorAll('.quiz-option').forEach(o => {
+                    o.style.pointerEvents = 'none';
+                });
+
+                // Mark correct/incorrect
+                if (optionIdx === correctIdx) {
+                    this.classList.add('correct');
+                    quizAnswers[questionIdx] = true;
+                } else {
+                    this.classList.add('incorrect');
+                    questionDiv.querySelectorAll('.quiz-option')[correctIdx].classList.add('correct');
+                    quizAnswers[questionIdx] = false;
+                }
+
+                // Show explanation
+                document.querySelector(`[data-explanation="${questionIdx}"]`).classList.remove('hidden');
+
+                // Update score
+                const score = Object.values(quizAnswers).filter(a => a).length;
+                document.getElementById('score-display').textContent = score;
+                document.getElementById('quiz-score').classList.remove('hidden');
+            });
+        });
+
+        // ==========================================
+        // INITIAL DISPLAY
+        // ==========================================
+        updateDisplay();
+        console.log('Application initialized successfully!');
+    });
+</script>
+    
+</body>
+</html>
