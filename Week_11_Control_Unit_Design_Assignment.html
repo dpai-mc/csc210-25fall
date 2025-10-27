@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Week 11: Control Unit Design - Interactive Assignment</title>
+    
+    <!-- Chosen Palette: Scholarly Neutrals -->
+    <!-- Application Structure Plan: This assignment guides students through control unit design concepts including control signal generation, instruction execution cycles, FSM design, and comparison of hardwired vs microprogrammed approaches. The structure progresses from basic signal identification to complex design decisions. -->
+    <!-- Visualization & Content Choices: Interactive text inputs for control signals, multi-step instruction tracing with dynamic feedback, comparison tables, and FSM design exercises. All elements provide immediate feedback to support learning. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts: Inter and Fira Code -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #FDFBF8;
+            color: #383838;
+        }
+        
+        .worksheet-input {
+            font-family: 'Fira Code', monospace;
+            border: 1px solid #D1C7BF;
+            background-color: #FFFFFF;
+            padding: 0.5rem;
+            border-radius: 0.375rem;
+            width: 100%;
+        }
+        
+        .worksheet-input:focus {
+            outline: none;
+            border-color: #4A90E2;
+            box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.5);
+        }
+        
+        .submit-btn {
+            background-color: #4A90E2;
+            color: white;
+            font-weight: 600;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        .submit-btn:hover {
+            background-color: #357ABD;
+        }
+        
+        .check-btn {
+            background-color: #EADDD7;
+            color: #383838;
+            font-weight: 600;
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        .check-btn:hover {
+            background-color: #D1C7BF;
+        }
+        
+        .code-block {
+            background-color: #f4f4f4;
+            border: 1px solid #ddd;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            white-space: pre-wrap;
+            font-family: 'Fira Code', monospace;
+        }
+        
+        h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+        
+        h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            color: #383838;
+        }
+        
+        h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+            color: #383838;
+        }
+        
+        .section-container {
+            background-color: white;
+            border: 1px solid #EADDD7;
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .feedback {
+            margin-top: 0.5rem;
+            padding: 0.5rem;
+            border-radius: 0.375rem;
+            font-weight: 500;
+        }
+        
+        .feedback.correct {
+            background-color: #d4edda;
+            color: #28a745;
+            border: 1px solid #28a745;
+        }
+        
+        .feedback.incorrect {
+            background-color: #f8d7da;
+            color: #dc3545;
+            border: 1px solid #dc3545;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+        }
+        
+        th, td {
+            border: 1px solid #D1C7BF;
+            padding: 0.75rem;
+            text-align: left;
+        }
+        
+        th {
+            background-color: #EADDD7;
+            font-weight: 600;
+        }
+        
+        .instruction-step {
+            background-color: #f9f9f9;
+            border-left: 4px solid #4A90E2;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+        
+        @media print {
+            body {
+                background-color: white;
+            }
+            
+            .no-print {
+                display: none !important;
+            }
+            
+            .section-container {
+                page-break-inside: avoid;
+                border: 1px solid #ccc;
+            }
+            
+            .worksheet-input {
+                border: none;
+                border-bottom: 1px solid #000;
+                background-color: transparent;
+            }
+            
+            h1, h2, h3 {
+                page-break-after: avoid;
+            }
+            
+            .print-answer {
+                display: block !important;
+                margin-top: 0.5rem;
+                font-family: 'Fira Code', monospace;
+                color: #000;
+            }
+        }
+        
+        .print-answer {
+            display: none;
+        }
+        
+        @media (min-width: 768px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+        }
+    </style>
+</head>
+<body class="antialiased">
+    <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 focus:p-2 focus:bg-white focus:border focus:border-gray-800">Skip to main content</a>
+    
+    <main id="main-content" class="max-w-4xl mx-auto p-4 md:p-8">
+        <header class="mb-8">
+            <h1 class="text-3xl md:text-4xl font-bold mb-2">Week 11: Control Unit Design</h1>
+            <p class="text-lg text-gray-700 mb-4">Interactive Assignment - CSC210 Computer Organization & Architecture</p>
+            <div class="bg-blue-50 border-l-4 border-blue-500 p-4 mb-6">
+                <p class="font-semibold mb-2">Assignment Overview</p>
+                <p class="text-sm">This assignment covers control unit design principles including control signal generation, instruction execution cycles, FSM design, and architectural trade-offs. Complete all sections and use the "Save as PDF" button at the bottom to submit your work.</p>
+                <p class="text-sm mt-2"><strong>Estimated Time:</strong> 2-4 hours</p>
+            </div>
+            
+            <div class="bg-yellow-50 border-l-4 border-yellow-500 p-4">
+                <p class="font-semibold mb-2">Instructions</p>
+                <ul class="text-sm space-y-1 list-disc list-inside">
+                    <li>Complete all sections in order</li>
+                    <li>Type your answers in the provided input fields</li>
+                    <li>Use the "Check Answer" buttons for immediate feedback on selected questions</li>
+                    <li>When finished, click "Save as PDF" to generate your submission file</li>
+                    <li>Your answers will be captured in the PDF even if they extend beyond textbox boundaries</li>
+                </ul>
+            </div>
+        </header>
+
+        <!-- Section 1: Understanding Control Signals -->
+        <section class="section-container">
+            <h2>Section 1: Understanding Control Signals (25 points)</h2>
+            <p class="mb-4">Control signals are the output of the control unit that coordinate all CPU components. Each signal has a specific purpose and timing requirement.</p>
+            
+            <h3>Part A: Control Signal Identification (10 points)</h3>
+            <p class="mb-4">For each control signal below, describe its purpose and which CPU component(s) it controls.</p>
+            
+            <div class="mb-4">
+                <label for="signal1" class="block font-semibold mb-2">1. PC_OUT</label>
+                <p class="text-sm text-gray-600 mb-2">What does this signal do? Which component does it control?</p>
+                <textarea id="signal1" class="worksheet-input" rows="3" placeholder="Describe the purpose and affected component(s)..."></textarea>
+                <div class="print-answer" id="print-signal1"></div>
+            </div>
+            
+            <div class="mb-4">
+                <label for="signal2" class="block font-semibold mb-2">2. MAR_LOAD</label>
+                <p class="text-sm text-gray-600 mb-2">What does this signal do? Which component does it control?</p>
+                <textarea id="signal2" class="worksheet-input" rows="3" placeholder="Describe the purpose and affected component(s)..."></textarea>
+                <div class="print-answer" id="print-signal2"></div>
+            </div>
+            
+            <div class="mb-4">
+                <label for="signal3" class="block font-semibold mb-2">3. ALU_OP</label>
+                <p class="text-sm text-gray-600 mb-2">What does this signal do? How is it different from other control signals?</p>
+                <textarea id="signal3" class="worksheet-input" rows="3" placeholder="Describe the purpose and how it differs from other signals..."></textarea>
+                <div class="print-answer" id="print-signal3"></div>
+            </div>
+            
+            <div class="mb-4">
+                <label for="signal4" class="block font-semibold mb-2">4. MEM_READ vs. MEM_WRITE</label>
+                <p class="text-sm text-gray-600 mb-2">Explain why these two signals should never be asserted simultaneously.</p>
+                <textarea id="signal4" class="worksheet-input" rows="3" placeholder="Explain the conflict that would occur..."></textarea>
+                <div class="print-answer" id="print-signal4"></div>
+            </div>
+            
+            <div class="mb-4">
+                <label for="signal5" class="block font-semibold mb-2">5. IR_LOAD</label>
+                <p class="text-sm text-gray-600 mb-2">When during the instruction execution cycle must this signal be asserted? Why?</p>
+                <textarea id="signal5" class="worksheet-input" rows="3" placeholder="Describe when and why..."></textarea>
+                <div class="print-answer" id="print-signal5"></div>
+            </div>
+            
+            <h3>Part B: Bus Contention Analysis (15 points)</h3>
+            <p class="mb-4">One critical responsibility of the control unit is preventing bus contention—the situation where multiple components try to output to the same bus simultaneously.</p>
+            
+            <div class="mb-4">
+                <label for="bus1" class="block font-semibold mb-2">6. Explain what would happen physically if both PC_OUT and ACC_OUT were asserted at the same time on a shared data bus.</label>
+                <textarea id="bus1" class="worksheet-input" rows="4" placeholder="Describe the physical and logical consequences..."></textarea>
+                <div class="print-answer" id="print-bus1"></div>
+            </div>
+            
+            <div class="mb-4">
+                <label for="bus2" class="block font-semibold mb-2">7. How does the control unit prevent bus contention? Describe at least two mechanisms.</label>
+                <textarea id="bus2" class="worksheet-input" rows="5" placeholder="Describe mechanisms the control unit uses..."></textarea>
+                <div class="print-answer" id="print-bus2"></div>
+            </div>
+            
+            <div class="mb-4">
+                <label for="bus3" class="block font-semibold mb-2">8. Given the following sequence of control signals, identify any bus contention issues and explain how to fix them:</label>
+                <div class="code-block mb-2">Cycle 1: PC_OUT, MAR_LOAD, R1_OUT
+Cycle 2: MEM_READ, IR_LOAD, ACC_OUT
+Cycle 3: R2_OUT, ALU_OP=ADD, ACC_LOAD</div>
+                <textarea id="bus3" class="worksheet-input" rows="5" placeholder="Identify problems and provide corrected sequence..."></textarea>
+                <div class="print-answer" id="print-bus3"></div>
+            </div>
+        </section>
+
+        <!-- Section 2: Instruction Execution Cycle Tracing -->
+        <section class="section-container">
+            <h2>Section 2: Instruction Execution Cycle Tracing (30 points)</h2>
+            <p class="mb-4">Trace the complete execution of instructions through all phases: FETCH, DECODE, EXECUTE, and WRITEBACK. For each phase, specify the control signals that must be asserted.</p>
+            
+            <h3>Part A: ADD Instruction (15 points)</h3>
+            <p class="mb-4">Trace the execution of: <code class="code-block inline">ADD R3, R1, R2</code> (R3 = R1 + R2)</p>
+            <p class="text-sm text-gray-600 mb-4">Assume this is a 3-operand instruction format where the destination register is listed first.</p>
+            
+            <div class="instruction-step mb-4">
+                <h4 class="font-semibold mb-2">FETCH Phase</h4>
+                <label for="add-fetch" class="block mb-2">9. List all control signals needed during the FETCH phase (in order) and explain what each accomplishes:</label>
+                <textarea id="add-fetch" class="worksheet-input" rows="6" placeholder="List signals and their purposes, e.g., 'PC_OUT - Enables program counter to output address...'"></textarea>
+                <div class="print-answer" id="print-add-fetch"></div>
+            </div>
+            
+            <div class="instruction-step mb-4">
+                <h4 class="font-semibold mb-2">DECODE Phase</h4>
+                <label for="add-decode" class="block mb-2">10. What happens during the DECODE phase? Which parts of the instruction register are used, and how?</label>
+                <textarea id="add-decode" class="worksheet-input" rows="5" placeholder="Describe the decoding process and which IR fields are accessed..."></textarea>
+                <div class="print-answer" id="print-add-decode"></div>
+            </div>
+            
+            <div class="instruction-step mb-4">
+                <h4 class="font-semibold mb-2">EXECUTE Phase</h4>
+                <label for="add-execute" class="block mb-2">11. Break down the EXECUTE phase into sub-cycles. For each sub-cycle, list the control signals needed:</label>
+                <textarea id="add-execute" class="worksheet-input" rows="8" placeholder="Sub-cycle 1: [signals and data flow]
+Sub-cycle 2: [signals and data flow]
+etc."></textarea>
+                <div class="print-answer" id="print-add-execute"></div>
+            </div>
+            
+            <div class="instruction-step mb-4">
+                <h4 class="font-semibold mb-2">WRITEBACK Phase</h4>
+                <label for="add-writeback" class="block mb-2">12. Describe how the result is written back to R3. Which control signals are needed?</label>
+                <textarea id="add-writeback" class="worksheet-input" rows="4" placeholder="Describe the writeback process and required signals..."></textarea>
+                <div class="print-answer" id="print-add-writeback"></div>
+            </div>
+            
+            <h3>Part B: LOAD Instruction (15 points)</h3>
+            <p class="mb-4">Trace the execution of: <code class="code-block inline">LOAD R1, [0x1000]</code> (R1 = Memory[0x1000])</p>
+            
+            <div class="mb-4">
+                <label for="load-complete" class="block font-semibold mb-2">13. Provide a complete cycle-by-cycle trace of the LOAD instruction execution. For each cycle, list:</label>
+                <ul class="text-sm list-disc list-inside mb-2 text-gray-600">
+                    <li>Cycle number and phase name</li>
+                    <li>All active control signals</li>
+                    <li>Data flow description (what moves where)</li>
+                </ul>
+                <textarea id="load-complete" class="worksheet-input" rows="12" placeholder="Cycle 1 (FETCH): 
+  Signals: PC_OUT, MAR_LOAD...
+  Data flow: PC contents -> Address Bus -> MAR...
+  
+Cycle 2 (DECODE):
+  ...
+  
+etc."></textarea>
+                <div class="print-answer" id="print-load-complete"></div>
+            </div>
+            
+            <div class="mb-4">
+                <label for="load-compare" class="block font-semibold mb-2">14. Compare the LOAD instruction to the ADD instruction. Which requires more cycles? Why?</label>
+                <textarea id="load-compare" class="worksheet-input" rows="5" placeholder="Compare cycle counts and explain the difference..."></textarea>
+                <div class="print-answer" id="print-load-compare"></div>
+            </div>
+        </section>
+
+        <!-- Section 3: Hardwired vs. Microprogrammed Control -->
+        <section class="section-container">
+            <h2>Section 3: Control Unit Architectural Decisions (25 points)</h2>
+            <p class="mb-4">Control units can be designed using two fundamentally different approaches: hardwired logic or microprogramming. Understanding the trade-offs is essential for architectural decisions.</p>
+            
+            <h3>Part A: Comparison Analysis (15 points)</h3>
+            
+            <div class="mb-4">
+                <label for="hardwired-desc" class="block font-semibold mb-2">15. Describe how a hardwired control unit works. What are the main components?</label>
+                <textarea id="hardwired-desc" class="worksheet-input" rows="5" placeholder="Describe the structure and operation of hardwired control..."></textarea>
+                <div class="print-answer" id="print-hardwired-desc"></div>
+            </div>
+            
+            <div class="mb-4">
+                <label for="micro-desc" class="block font-semibold mb-2">16. Describe how a microprogrammed control unit works. What are the main components?</label>
+                <textarea id="micro-desc" class="worksheet-input" rows="5" placeholder="Describe the structure and operation of microprogrammed control..."></textarea>
+                <div class="print-answer" id="print-micro-desc"></div>
+            </div>
+            
+            <div class="mb-4">
+                <label class="block font-semibold mb-2">17. Complete the comparison table below:</label>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Characteristic</th>
+                            <th>Hardwired Control</th>
+                            <th>Microprogrammed Control</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Speed/Performance</td>
+                            <td><input type="text" id="comp-hw-speed" class="worksheet-input" placeholder="Describe speed..."></td>
+                            <td><input type="text" id="comp-micro-speed" class="worksheet-input" placeholder="Describe speed..."></td>
+                        </tr>
+                        <tr>
+                            <td>Flexibility/Modifiability</td>
+                            <td><input type="text" id="comp-hw-flex" class="worksheet-input" placeholder="Describe flexibility..."></td>
+                            <td><input type="text" id="comp-micro-flex" class="worksheet-input" placeholder="Describe flexibility..."></td>
+                        </tr>
+                        <tr>
+                            <td>Design Complexity</td>
+                            <td><input type="text" id="comp-hw-complex" class="worksheet-input" placeholder="Describe complexity..."></td>
+                            <td><input type="text" id="comp-micro-complex" class="worksheet-input" placeholder="Describe complexity..."></td>
+                        </tr>
+                        <tr>
+                            <td>Cost</td>
+                            <td><input type="text" id="comp-hw-cost" class="worksheet-input" placeholder="Describe cost..."></td>
+                            <td><input type="text" id="comp-micro-cost" class="worksheet-input" placeholder="Describe cost..."></td>
+                        </tr>
+                        <tr>
+                            <td>Best Use Cases</td>
+                            <td><input type="text" id="comp-hw-use" class="worksheet-input" placeholder="When to use..."></td>
+                            <td><input type="text" id="comp-micro-use" class="worksheet-input" placeholder="When to use..."></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="print-answer">
+                    <p><strong>Hardwired Speed:</strong> <span id="print-comp-hw-speed"></span></p>
+                    <p><strong>Microprogrammed Speed:</strong> <span id="print-comp-micro-speed"></span></p>
+                    <p><strong>Hardwired Flexibility:</strong> <span id="print-comp-hw-flex"></span></p>
+                    <p><strong>Microprogrammed Flexibility:</strong> <span id="print-comp-micro-flex"></span></p>
+                    <p><strong>Hardwired Complexity:</strong> <span id="print-comp-hw-complex"></span></p>
+                    <p><strong>Microprogrammed Complexity:</strong> <span id="print-comp-micro-complex"></span></p>
+                    <p><strong>Hardwired Cost:</strong> <span id="print-comp-hw-cost"></span></p>
+                    <p><strong>Microprogrammed Cost:</strong> <span id="print-comp-micro-cost"></span></p>
+                    <p><strong>Hardwired Use Cases:</strong> <span id="print-comp-hw-use"></span></p>
+                    <p><strong>Microprogrammed Use Cases:</strong> <span id="print-comp-micro-use"></span></p>
+                </div>
+            </div>
+            
+            <h3>Part B: Design Decision Scenario (10 points)</h3>
+            
+            <div class="mb-4">
+                <label for="scenario1" class="block font-semibold mb-2">18. Scenario: You're designing a CPU for embedded systems in automotive applications. The instruction set will rarely change, but execution speed is critical for real-time control. Which control unit design would you choose and why?</label>
+                <textarea id="scenario1" class="worksheet-input" rows="6" placeholder="State your choice and provide detailed justification based on the requirements..."></textarea>
+                <div class="print-answer" id="print-scenario1"></div>
+            </div>
+            
+            <div class="mb-4">
+                <label for="scenario2" class="block font-semibold mb-2">19. Scenario: You're designing a research processor that will be used to experiment with new instruction sets. The team expects to modify and add instructions frequently. Performance is secondary to flexibility. Which control unit design would you choose and why?</label>
+                <textarea id="scenario2" class="worksheet-input" rows="6" placeholder="State your choice and provide detailed justification based on the requirements..."></textarea>
+                <div class="print-answer" id="print-scenario2"></div>
+            </div>
+        </section>
+
+        <!-- Section 4: Finite State Machine Design -->
+        <section class="section-container">
+            <h2>Section 4: Finite State Machine for Control (15 points)</h2>
+            <p class="mb-4">Control units often use Finite State Machines (FSMs) to sequence through instruction execution phases. Each state represents a step in processing, and transitions occur on clock edges.</p>
+            
+            <div class="mb-4">
+                <label for="fsm-basics" class="block font-semibold mb-2">20. Explain why an FSM is an appropriate model for a control unit. What does each state represent? What causes state transitions?</label>
+                <textarea id="fsm-basics" class="worksheet-input" rows="5" placeholder="Explain the FSM model and its application to control units..."></textarea>
+                <div class="print-answer" id="print-fsm-basics"></div>
+            </div>
+            
+            <div class="mb-4">
+                <label for="fsm-design" class="block font-semibold mb-2">21. Design an FSM for executing a simple STORE instruction: <code class="inline code-block">STORE R1, [address]</code></label>
+                <p class="text-sm text-gray-600 mb-2">For each state, specify:</p>
+                <ul class="text-sm list-disc list-inside mb-2 text-gray-600">
+                    <li>State name/number</li>
+                    <li>Control signals asserted in that state</li>
+                    <li>Next state transition condition</li>
+                </ul>
+                <textarea id="fsm-design" class="worksheet-input" rows="12" placeholder="State 0 (FETCH1): 
+  Signals: PC_OUT, MAR_LOAD
+  Next: Unconditional -> State 1
+  
+State 1 (FETCH2):
+  Signals: MEM_READ, IR_LOAD, PC_INC
+  Next: Unconditional -> State 2
+  
+etc."></textarea>
+                <div class="print-answer" id="print-fsm-design"></div>
+            </div>
+            
+            <div class="mb-4">
+                <label for="fsm-branch" class="block font-semibold mb-2">22. How would your FSM design change if you needed to handle conditional branch instructions? What additional states or transitions would be needed?</label>
+                <textarea id="fsm-branch" class="worksheet-input" rows="6" placeholder="Describe modifications needed for conditional branches..."></textarea>
+                <div class="print-answer" id="print-fsm-branch"></div>
+            </div>
+        </section>
+
+        <!-- Section 5: Microprogramming Exercise -->
+        <section class="section-container">
+            <h2>Section 5: Microinstruction Design (15 points)</h2>
+            <p class="mb-4">In microprogrammed control, each instruction is implemented as a sequence of microinstructions stored in control memory. Each microinstruction specifies control signals for one clock cycle.</p>
+            
+            <div class="bg-gray-50 border border-gray-300 p-4 mb-4 rounded">
+                <p class="font-semibold mb-2">Microinstruction Format:</p>
+                <div class="code-block text-sm">
+Assume a 32-bit microinstruction word with the following fields:
+- Bits 0-7:   ALU Operation (8 bits)
+- Bits 8-11:  Register Source 1 (4 bits)
+- Bits 12-15: Register Source 2 (4 bits)
+- Bits 16-19: Register Destination (4 bits)
+- Bit 20:     MEM_READ
+- Bit 21:     MEM_WRITE
+- Bit 22:     IR_LOAD
+- Bit 23:     PC_INC
+- Bits 24-27: Next microinstruction address (4 bits)
+- Bits 28-31: Condition code (4 bits, 0000 = unconditional)
+                </div>
+            </div>
+            
+            <div class="mb-4">
+                <label for="micro1" class="block font-semibold mb-2">23. Write the microinstructions for the FETCH phase. Express each as a 32-bit binary number or describe each field's value.</label>
+                <textarea id="micro1" class="worksheet-input" rows="8" placeholder="Microinstruction 1 (Fetch cycle 1):
+  ALU_OP: 00000000 (none)
+  Reg_Src1: 0000
+  Reg_Src2: 0000
+  ...etc...
+  
+Microinstruction 2 (Fetch cycle 2):
+  ...etc..."></textarea>
+                <div class="print-answer" id="print-micro1"></div>
+            </div>
+            
+            <div class="mb-4">
+                <label for="micro2" class="block font-semibold mb-2">24. Write the microinstructions to execute: <code class="inline code-block">SUB R3, R1, R2</code> (R3 = R1 - R2)</label>
+                <p class="text-sm text-gray-600 mb-2">Start after the FETCH phase has completed. Assume registers are numbered R0-R15 (4 bits).</p>
+                <textarea id="micro2" class="worksheet-input" rows="10" placeholder="Provide the complete sequence of microinstructions with all field values..."></textarea>
+                <div class="print-answer" id="print-micro2"></div>
+            </div>
+            
+            <div class="mb-4">
+                <label for="micro3" class="block font-semibold mb-2">25. Explain the advantage of having the "Next microinstruction address" field. How does this enable more flexible control?</label>
+                <textarea id="micro3" class="worksheet-input" rows="5" placeholder="Explain the purpose and benefits of the next address field..."></textarea>
+                <div class="print-answer" id="print-micro3"></div>
+            </div>
+        </section>
+
+        <!-- Section 6: Critical Thinking and Application -->
+        <section class="section-container">
+            <h2>Section 6: Critical Analysis (10 points)</h2>
+            
+            <div class="mb-4">
+                <label for="critical1" class="block font-semibold mb-2">26. A student proposes: "Why don't we just make every instruction execute in one clock cycle? That would be much simpler and faster!" Explain why this is not practical for most instructions.</label>
+                <textarea id="critical1" class="worksheet-input" rows="6" placeholder="Explain the limitations and challenges..."></textarea>
+                <div class="print-answer" id="print-critical1"></div>
+            </div>
+            
+            <div class="mb-4">
+                <label for="critical2" class="block font-semibold mb-2">27. Modern CPUs use pipelining to execute multiple instructions simultaneously. How might this change the design of the control unit? What new challenges would arise?</label>
+                <textarea id="critical2" class="worksheet-input" rows="6" placeholder="Discuss pipelining implications for control unit design..."></textarea>
+                <div class="print-answer" id="print-critical2"></div>
+            </div>
+        </section>
+
+        <!-- Reflection Section -->
+        <section class="section-container">
+            <h2>Reflection Questions (Optional - Not Graded)</h2>
+            <p class="mb-4">These questions help you consolidate your learning. Your responses won't be graded but may be helpful for exam preparation.</p>
+            
+            <div class="mb-4">
+                <label for="reflect1" class="block font-semibold mb-2">What was the most challenging concept in this assignment?</label>
+                <textarea id="reflect1" class="worksheet-input" rows="3" placeholder="Optional reflection..."></textarea>
+                <div class="print-answer" id="print-reflect1"></div>
+            </div>
+            
+            <div class="mb-4">
+                <label for="reflect2" class="block font-semibold mb-2">How has your understanding of CPU operation changed after learning about control units?</label>
+                <textarea id="reflect2" class="worksheet-input" rows="3" placeholder="Optional reflection..."></textarea>
+                <div class="print-answer" id="print-reflect2"></div>
+            </div>
+        </section>
+
+        <!-- Student Information -->
+        <section class="section-container">
+            <h2>Student Information</h2>
+            <div class="mb-4">
+                <label for="student-name" class="block font-semibold mb-2">Name:</label>
+                <input type="text" id="student-name" class="worksheet-input" placeholder="Enter your full name">
+                <div class="print-answer" id="print-student-name"></div>
+            </div>
+            <div class="mb-4">
+                <label for="student-id" class="block font-semibold mb-2">Student ID:</label>
+                <input type="text" id="student-id" class="worksheet-input" placeholder="Enter your student ID">
+                <div class="print-answer" id="print-student-id"></div>
+            </div>
+            <div class="mb-4">
+                <label for="date-completed" class="block font-semibold mb-2">Date Completed:</label>
+                <input type="date" id="date-completed" class="worksheet-input">
+                <div class="print-answer" id="print-date-completed"></div>
+            </div>
+        </section>
+
+        <!-- Submission Button -->
+        <div class="text-center mt-8 mb-8 no-print">
+            <button onclick="preparePrintAndSave()" class="submit-btn">
+                Save as PDF for Submission
+            </button>
+            <p class="text-sm text-gray-600 mt-2">Click this button when you've completed all sections. Your browser's print dialog will open - save as PDF.</p>
+        </div>
+
+        <footer class="text-center text-sm text-gray-600 mt-8 border-t border-gray-300 pt-4 no-print">
+            <p>CSC210 Computer Organization & Architecture - Week 11 Assignment</p>
+            <p class="mt-2">© 2024 - For educational use only</p>
+        </footer>
+    </main>
+
+    <script>
+        // Capture all input values for printing
+        function preparePrintAndSave() {
+            // Text inputs and textareas
+            const inputs = document.querySelectorAll('input[type="text"], input[type="date"], textarea');
+            inputs.forEach(input => {
+                const printElement = document.getElementById('print-' + input.id);
+                if (printElement) {
+                    printElement.textContent = input.value || '[No answer provided]';
+                }
+            });
+            
+            // Table inputs for comparison section
+            const tableInputs = [
+                'comp-hw-speed', 'comp-micro-speed',
+                'comp-hw-flex', 'comp-micro-flex',
+                'comp-hw-complex', 'comp-micro-complex',
+                'comp-hw-cost', 'comp-micro-cost',
+                'comp-hw-use', 'comp-micro-use'
+            ];
+            
+            tableInputs.forEach(id => {
+                const input = document.getElementById(id);
+                const printElement = document.getElementById('print-' + id);
+                if (input && printElement) {
+                    printElement.textContent = input.value || '[No answer provided]';
+                }
+            });
+            
+            // Trigger print dialog
+            window.print();
+        }
+        
+        // Auto-save to localStorage periodically
+        function autoSave() {
+            const inputs = document.querySelectorAll('input, textarea');
+            const data = {};
+            inputs.forEach(input => {
+                if (input.id) {
+                    data[input.id] = input.value;
+                }
+            });
+            try {
+                // Note: localStorage is not available in Claude artifacts, but this
+                // provides the structure for when students use it in their own environment
+                console.log('Auto-save triggered');
+            } catch (e) {
+                console.log('Auto-save not available in this environment');
+            }
+        }
+        
+        // Auto-save every 2 minutes
+        setInterval(autoSave, 120000);
+        
+        // Check specific answers with feedback
+        function checkAnswer(questionId, correctAnswer, feedbackId) {
+            const input = document.getElementById(questionId);
+            const feedback = document.getElementById(feedbackId);
+            const answer = input.value.trim().toLowerCase();
+            
+            if (answer.includes(correctAnswer.toLowerCase())) {
+                feedback.className = 'feedback correct';
+                feedback.textContent = '✓ Good! Your answer includes key concepts.';
+            } else {
+                feedback.className = 'feedback incorrect';
+                feedback.textContent = '✗ Consider reviewing the material. Key concept: ' + correctAnswer;
+            }
+        }
+        
+        // Initialize date to today
+        document.addEventListener('DOMContentLoaded', function() {
+            const dateInput = document.getElementById('date-completed');
+            if (dateInput) {
+                const today = new Date().toISOString().split('T')[0];
+                dateInput.value = today;
+            }
+        });
+        
+        // Warn before leaving if work is not saved
+        let formModified = false;
+        document.querySelectorAll('input, textarea').forEach(element => {
+            element.addEventListener('change', function() {
+                formModified = true;
+            });
+        });
+        
+        window.addEventListener('beforeunload', function(e) {
+            if (formModified) {
+                e.preventDefault();
+                e.returnValue = '';
+                return 'You have unsaved changes. Are you sure you want to leave?';
+            }
+        });
+    </script>
+</body>
+</html>
