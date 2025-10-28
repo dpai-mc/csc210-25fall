@@ -146,10 +146,20 @@
                 margin-top: 0.5rem;
                 font-family: 'Fira Code', monospace;
                 color: #000;
+                white-space: pre-wrap;
+                word-wrap: break-word;
+            }
+            
+            .print-answer span {
+                display: inline !important;
             }
         }
         
         .print-answer {
+            display: none;
+        }
+        
+        .print-answer span {
             display: none;
         }
         
@@ -429,10 +439,14 @@ State 1 (EXECUTE-READ-R1):
 
         <!-- Submission Button -->
         <div class="text-center mt-8 mb-8 no-print">
+            <button onclick="testCapture()" class="check-btn mr-4">
+                Test Answer Capture
+            </button>
             <button onclick="preparePrintAndSave()" class="submit-btn">
                 Save as PDF for Submission
             </button>
-            <p class="text-sm text-gray-600 mt-2">Click this button when you've completed all sections. Your browser's print dialog will open - save as PDF.</p>
+            <p class="text-sm text-gray-600 mt-2">Click "Test Answer Capture" first to verify all answers are captured. Then click "Save as PDF" when ready to submit.</p>
+            <div id="capture-status" class="mt-4 text-sm"></div>
         </div>
 
         <footer class="text-center text-sm text-gray-600 mt-8 border-t border-gray-300 pt-4 no-print">
@@ -442,35 +456,75 @@ State 1 (EXECUTE-READ-R1):
     </main>
 
     <script>
-        // Capture all input values for printing
-        function preparePrintAndSave() {
-            // Text inputs and textareas
-            const inputs = document.querySelectorAll('input[type="text"], input[type="date"], textarea');
-            inputs.forEach(input => {
-                const printElement = document.getElementById('print-' + input.id);
-                if (printElement) {
-                    printElement.textContent = input.value || '[No answer provided]';
+        // Test function to verify all answers are captured
+        function testCapture() {
+            const allInputs = document.querySelectorAll('input[id], textarea[id]');
+            let capturedCount = 0;
+            let missingCount = 0;
+            let emptyCount = 0;
+            let missingElements = [];
+            
+            allInputs.forEach(input => {
+                if (input.id) {
+                    const printElement = document.getElementById('print-' + input.id);
+                    
+                    if (!printElement) {
+                        missingCount++;
+                        missingElements.push(input.id);
+                    } else if (!input.value || input.value.trim() === '') {
+                        emptyCount++;
+                    } else {
+                        capturedCount++;
+                    }
                 }
             });
             
-            // Table textareas for comparison section
-            const tableInputs = [
-                'comp-hw-impl', 'comp-micro-impl',
-                'comp-hw-speed', 'comp-micro-speed',
-                'comp-hw-flex', 'comp-micro-flex',
-                'comp-hw-use', 'comp-micro-use'
-            ];
+            const statusDiv = document.getElementById('capture-status');
+            let statusHTML = `<div class="p-4 rounded border ${missingCount > 0 ? 'bg-red-50 border-red-500' : 'bg-green-50 border-green-500'}">`;
+            statusHTML += `<p class="font-semibold mb-2">Answer Capture Test Results:</p>`;
+            statusHTML += `<p>✓ ${capturedCount} questions answered and ready to print</p>`;
+            statusHTML += `<p>○ ${emptyCount} questions not yet answered</p>`;
             
-            tableInputs.forEach(id => {
-                const input = document.getElementById(id);
-                const printElement = document.getElementById('print-' + id);
-                if (input && printElement) {
-                    printElement.textContent = input.value || '[No answer provided]';
+            if (missingCount > 0) {
+                statusHTML += `<p class="text-red-600 font-semibold">✗ ${missingCount} questions cannot be captured (technical issue)</p>`;
+                statusHTML += `<p class="text-sm mt-2">Missing print elements for: ${missingElements.join(', ')}</p>`;
+            } else {
+                statusHTML += `<p class="text-green-600 font-semibold mt-2">✓ All fields are properly configured for printing!</p>`;
+            }
+            
+            statusHTML += `</div>`;
+            statusDiv.innerHTML = statusHTML;
+            
+            // Scroll to status
+            statusDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+        
+        // Capture all input values for printing
+        function preparePrintAndSave() {
+            // Get ALL inputs and textareas that have an ID
+            const allInputs = document.querySelectorAll('input[id], textarea[id]');
+            
+            console.log('Total inputs found:', allInputs.length);
+            
+            allInputs.forEach(input => {
+                if (input.id) {
+                    // Look for corresponding print element
+                    const printElement = document.getElementById('print-' + input.id);
+                    
+                    if (printElement) {
+                        // Set the text content - this works for both divs and spans
+                        printElement.textContent = input.value || '[No answer provided]';
+                        console.log('Captured:', input.id, '- Value length:', input.value.length);
+                    } else {
+                        console.warn('No print element found for:', input.id);
+                    }
                 }
             });
             
             // Trigger print dialog
-            window.print();
+            setTimeout(() => {
+                window.print();
+            }, 100); // Small delay to ensure all updates are rendered
         }
         
         // Initialize date to today
