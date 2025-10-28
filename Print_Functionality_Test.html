@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Print Functionality Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+        }
+        .test-section {
+            border: 2px solid #ddd;
+            padding: 20px;
+            margin: 20px 0;
+            background: #f9f9f9;
+        }
+        textarea, input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+        }
+        button {
+            background: #4A90E2;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #357ABD;
+        }
+        .print-answer {
+            display: none;
+            margin: 10px 0;
+            padding: 10px;
+            background: #e8f5e9;
+            border-left: 4px solid #4caf50;
+        }
+        @media print {
+            .no-print {
+                display: none !important;
+            }
+            .print-answer {
+                display: block !important;
+            }
+            textarea, input {
+                border: none;
+                border-bottom: 1px solid #000;
+            }
+        }
+        .status {
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+        .success {
+            background: #d4edda;
+            border: 1px solid #28a745;
+            color: #155724;
+        }
+        .warning {
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            color: #856404;
+        }
+    </style>
+</head>
+<body>
+    <h1>Print Functionality Test Page</h1>
+    <p>This page tests whether the print-to-PDF functionality correctly captures all input values.</p>
+    
+    <div class="test-section">
+        <h2>Test 1: Simple Text Input</h2>
+        <label for="test1">Enter something:</label>
+        <input type="text" id="test1" placeholder="Type here...">
+        <div class="print-answer" id="print-test1"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>Test 2: Textarea</h2>
+        <label for="test2">Enter multiple lines:</label>
+        <textarea id="test2" rows="4" placeholder="Type here..."></textarea>
+        <div class="print-answer" id="print-test2"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>Test 3: Table with Inputs</h2>
+        <table style="width: 100%; border-collapse: collapse;">
+            <tr>
+                <td style="border: 1px solid #ccc; padding: 10px;">
+                    <textarea id="test3a" rows="2" placeholder="Cell A"></textarea>
+                </td>
+                <td style="border: 1px solid #ccc; padding: 10px;">
+                    <textarea id="test3b" rows="2" placeholder="Cell B"></textarea>
+                </td>
+            </tr>
+        </table>
+        <div class="print-answer">
+            <p><strong>Cell A:</strong> <span id="print-test3a"></span></p>
+            <p><strong>Cell B:</strong> <span id="print-test3b"></span></p>
+        </div>
+    </div>
+    
+    <div class="test-section">
+        <h2>Test 4: Long Text</h2>
+        <label for="test4">Enter a long response:</label>
+        <textarea id="test4" rows="6" placeholder="Type a long answer here..."></textarea>
+        <div class="print-answer" id="print-test4"></div>
+    </div>
+    
+    <div class="no-print" style="text-align: center; margin: 30px 0;">
+        <button onclick="testCapture()">Test Capture</button>
+        <button onclick="preparePrint()">Print Preview</button>
+        <div id="status"></div>
+    </div>
+    
+    <div class="no-print">
+        <h2>Instructions:</h2>
+        <ol>
+            <li>Fill in all the test fields above</li>
+            <li>Click "Test Capture" to verify all fields are detected</li>
+            <li>Click "Print Preview" to see if your input appears in the print view</li>
+            <li>In the print dialog, look for green boxes with your input</li>
+            <li>If you see "[No answer provided]", the field wasn't filled in</li>
+        </ol>
+    </div>
+    
+    <script>
+        function testCapture() {
+            const allInputs = document.querySelectorAll('input[id], textarea[id]');
+            let results = [];
+            let allFound = true;
+            
+            allInputs.forEach(input => {
+                if (input.id && input.id !== 'status') {
+                    const printElement = document.getElementById('print-' + input.id);
+                    const hasValue = input.value && input.value.trim() !== '';
+                    
+                    results.push({
+                        id: input.id,
+                        hasValue: hasValue,
+                        hasPrintElement: !!printElement,
+                        valueLength: input.value ? input.value.length : 0
+                    });
+                    
+                    if (!printElement) {
+                        allFound = false;
+                    }
+                }
+            });
+            
+            const statusDiv = document.getElementById('status');
+            let html = '<div class="status ' + (allFound ? 'success' : 'warning') + '">';
+            html += '<h3>Test Results:</h3>';
+            html += '<p><strong>Total fields tested:</strong> ' + results.length + '</p>';
+            
+            results.forEach(r => {
+                html += '<p>';
+                html += r.hasPrintElement ? '✓' : '✗';
+                html += ' ' + r.id + ': ';
+                html += r.hasValue ? 'Has value (' + r.valueLength + ' chars)' : 'Empty';
+                html += r.hasPrintElement ? '' : ' <strong>WARNING: No print element!</strong>';
+                html += '</p>';
+            });
+            
+            if (allFound) {
+                html += '<p style="margin-top: 10px; font-weight: bold;">✓ All fields are ready to print!</p>';
+            } else {
+                html += '<p style="margin-top: 10px; font-weight: bold; color: red;">✗ Some fields are missing print elements!</p>';
+            }
+            
+            html += '</div>';
+            statusDiv.innerHTML = html;
+        }
+        
+        function preparePrint() {
+            const allInputs = document.querySelectorAll('input[id], textarea[id]');
+            
+            allInputs.forEach(input => {
+                if (input.id && input.id !== 'status') {
+                    const printElement = document.getElementById('print-' + input.id);
+                    if (printElement) {
+                        printElement.textContent = input.value || '[No answer provided]';
+                    }
+                }
+            });
+            
+            setTimeout(() => {
+                window.print();
+            }, 100);
+        }
+    </script>
+</body>
+</html>
