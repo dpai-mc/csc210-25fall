@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Updated Title for CSC210 Week 11 -->
+    <title>CSC210 - Week 11: Control Unit and Datapath (MIPS)</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            background-color: #FDFBF8;
+            color: #383838;
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .code-font {
+            font-family: 'Fira Code', monospace;
+        }
+        
+        /* Style for the currently active transcript line */
+        .active-transcript-line {
+            background-color: #E8F0F8; /* Light blue accent for CSC210 */
+            font-weight: 600;
+            color: #000;
+            border-left: 4px solid #3B82F6; /* Blue accent for active line */
+        }
+
+        /* Skip link style (Accessibility requirement) */
+        .skip-link {
+            position: absolute;
+            top: -40px;
+            left: 0;
+            background: #3B82F6;
+            color: #FDFBF8;
+            padding: 8px;
+            z-index: 100;
+            transition: top 0.3s;
+        }
+
+        .skip-link:focus {
+            top: 0;
+        }
+
+        /* Custom scrollbar for transcript */
+        #transcript-container::-webkit-scrollbar {
+            width: 8px;
+        }
+        #transcript-container::-webkit-scrollbar-thumb {
+            background-color: #cccccc;
+            border-radius: 10px;
+        }
+        #transcript-container::-webkit-scrollbar-thumb:hover {
+            background-color: #a0a0a0;
+        }
+    </style>
+</head>
+<body class="p-4 sm:p-8">
+    <a href="#main-content" class="skip-link rounded-br-md">Skip to main content</a>
+    
+    <div id="main-content" class="max-w-7xl mx-auto">
+        <header class="mb-8">
+            <h1 class="text-3xl sm:text-4xl font-extrabold text-gray-800 mb-2">CSC210 - Week 11: The Control Unit and Datapath (MIPS)</h1>
+            <p class="text-lg text-gray-600">Welcome to **Week 11**! This lecture transitions from individual components like the ALU to the larger architecture of a functional processor. This week, we explore the **Control Unit** and the **Datapath**—the essential components that orchestrate all operations within the **32-bit MIPS processor** . Understanding how the Control Unit sends signals to manage the flow of data through the Datapath is key to grasping computer organization.</p>
+        </header>
+
+        <main class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <!-- Video Player Section - Used 'aspect-video' for responsive 16:9 ratio -->
+            <section class="lg:sticky lg:top-8 self-start">
+                <h2 class="text-2xl font-semibold mb-4 text-gray-700">Video Lecture: Control Unit Design</h2>
+                <!-- Video Embed with the new ID and settings -->
+                <div class="aspect-video w-full rounded-xl overflow-hidden shadow-2xl">
+                    <iframe id="youtube-player"
+                            width="100%" height="auto"
+                            src="https://www.youtube.com/embed/daT5EQ-D3Lg?si=lh3BMdqFq7w4XBGY&enablejsapi=1" 
+                            title="YouTube video player"
+                            frameborder="0" 
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                            allowfullscreen
+                            class="w-full h-full"></iframe>
+                </div>
+                <p class="mt-4 text-sm text-gray-500">Video ID: <span class="code-font">daT5EQ-D3Lg</span></p>
+            </section>
+
+            <!-- Interactive Transcript Section (Updated for ADA compliance) -->
+            <section>
+                <h2 class="text-2xl font-semibold mb-4 text-gray-700">Video Transcript</h2>
+                <div id="transcript-container" class="h-96 overflow-y-scroll bg-white p-4 rounded-xl shadow-inner border border-gray-200">
+                    <p class="text-center text-gray-400">Loading transcript...</p>
+                    <!-- Transcript lines will be injected here -->
+                </div>
+                <p class="mt-4 text-sm text-gray-600">Click any line in the transcript or use the **Enter/Space** keys when focused to jump to that moment in the video.</p>
+            </section>
+        </main>
+    </div>
+
+    <script type="text/javascript">
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- Configuration ---
+            const videoId = 'daT5EQ-D3Lg'; // Video ID for Control Unit lecture
+            let player;
+            let timeUpdater;
+            let parsedTranscript = [];
+
+            // Transcript content for CSC210 Week 11 (sourced from csc210-wk11-learn.srt)
+            const transcriptData = `1
+00:00:00,000 --> 00:00:07,800
+Aloha and welcome to Computer Organization Architecture Week 11, Control Unit Design.
+
+2
+00:00:08,720 --> 00:00:16,120
+So this week, I'm going to talk about, or what this week covers, is the control unit.
+
+3
+00:00:16,680 --> 00:00:21,480
+And this control unit is really what is determining what you're doing.
+
+4
+00:00:21,680 --> 00:00:26,780
+It's controlling everything in terms of what the computer is doing.
+
+5
+00:00:26,780 --> 00:00:31,060
+All right, so I'm going to read through this.
+
+6
+00:00:32,160 --> 00:00:33,400
+Basically, there's a couple.
+
+7
+00:00:33,900 --> 00:00:38,820
+The PC or program counters is super important because what the program counter does,
+
+8
+00:00:38,880 --> 00:00:42,780
+it tells you which instruction to fetch next.
+
+9
+00:00:43,440 --> 00:00:49,760
+Okay, so the instruction registers which holds the code that's currently being executed,
+
+10
+00:00:49,760 --> 00:00:53,920
+so those are important, the program counter and the instruction register.
+
+11
+00:00:54,780 --> 00:01:00,600
+And of course, we're talking about the MIPS architecture here, the MIPS processor,
+
+12
+00:01:01,080 --> 00:01:08,980
+and this is a 32-bit MIPS processor, which we are not implementing a 32-bit MIPS processor,
+
+13
+00:01:09,360 --> 00:01:14,320
+but our processor that we're implementing is based on this design.
+
+14
+00:01:15,020 --> 00:01:21,080
+So that's what's important here is what we're going to use this design
+
+15
+00:01:21,080 --> 00:01:26,440
+in some parts to implement our 8-bit CPU.
+
+16
+00:01:27,560 --> 00:01:31,340
+So we look at the basic datapath of the MIPS processor.
+
+17
+00:01:31,340 --> 00:01:36,760
+And the datapath is essentially how the data flows through the processor,
+
+18
+00:01:37,280 --> 00:01:43,600
+okay, and where it goes. So the instruction memory,
+
+19
+00:01:43,900 --> 00:01:50,900
+it's the register file, it's a couple muxes and the ALU,
+
+20
+00:01:51,200 --> 00:01:55,780
+and then you have the data memory and you have the program counter.
+
+21
+00:01:56,380 --> 00:02:00,500
+And then you have a sign extender and a shift left,
+
+22
+00:02:00,500 --> 00:02:03,800
+which we won't use in our 8-bit processor.
+
+23
+00:02:04,500 --> 00:02:07,520
+But this is basically how it's flowing.
+
+24
+00:02:07,840 --> 00:02:13,760
+So the instructions get sent to the instruction memory, or the PC gets sent there.
+
+25
+00:02:13,760 --> 00:02:16,740
+The instruction comes out,
+
+26
+00:02:16,740 --> 00:02:22,820
+and it's split into different parts, and then it goes through the register file,
+
+27
+00:02:22,820 --> 00:02:26,380
+and then it gets multiplexed to the ALU.
+
+28
+00:02:26,600 --> 00:02:30,940
+The ALU does the operation, and then it goes to the data memory,
+
+29
+00:02:30,940 --> 00:02:37,740
+and then from the data memory, it can be written back into the register file.
+
+30
+00:02:37,740 --> 00:02:44,020
+So that's the datapath, and that's essentially what a datapath looks like in a CPU.
+
+31
+00:02:44,680 --> 00:02:48,340
+All right, then we talk about the control unit.
+
+32
+00:02:48,640 --> 00:02:54,720
+The control unit is essentially the part that is sending the control signals,
+
+33
+00:02:54,720 --> 00:02:58,800
+the little switches that determine where the data goes.
+
+34
+00:02:59,320 --> 00:03:03,660
+The control signals control the different components.
+
+35
+00:03:03,960 --> 00:03:08,700
+And if you look at the datapath for the R-type instruction,
+
+36
+00:03:09,300 --> 00:03:13,920
+what you'll see is which control signals are active.
+
+37
+00:03:14,260 --> 00:03:17,860
+All right, so you have RegDist, RegWrite,
+
+38
+00:03:18,520 --> 00:03:22,260
+and the ALU src, the ALU op,
+
+39
+00:03:22,660 --> 00:03:27,580
+and the MemWrite, MemRead, and MemtoReg.
+
+40
+00:03:27,580 --> 00:03:33,880
+So these are the control signals that are active for the R-type instruction.
+
+41
+00:03:34,440 --> 00:03:40,240
+And then for the load word instruction, you'll see a different set of control signals
+
+42
+00:03:40,240 --> 00:03:45,180
+that are active, such as ALU src, MemRead,
+
+43
+00:03:45,580 --> 00:03:51,020
+MemtoReg, and RegWrite, and ALU op.
+
+44
+00:03:51,520 --> 00:03:54,720
+And you see the RegDist is not active.
+
+45
+00:03:55,300 --> 00:03:58,540
+Okay, so the control signals change.
+
+46
+00:03:58,940 --> 00:04:03,260
+And then the next is the store word instruction,
+
+47
+00:04:03,260 --> 00:04:08,260
+and you'll see what control signals are active for that one.
+
+48
+00:04:08,680 --> 00:04:15,640
+So you have ALU src, MemWrite, and ALU op.
+
+49
+00:04:16,140 --> 00:04:20,380
+And so the control signals change depending on the instruction.
+
+50
+00:04:20,960 --> 00:04:24,320
+And that's the part that is important.
+
+51
+00:04:24,780 --> 00:04:28,480
+And that's what the control unit is doing.
+
+52
+00:04:28,480 --> 00:04:35,540
+It's looking at the instruction code, and then it's setting the correct control signals
+
+53
+00:04:35,540 --> 00:04:40,540
+to activate the correct parts of the datapath.
+
+54
+00:04:41,200 --> 00:04:46,680
+Okay, so that's the datapath and the control unit.
+
+55
+00:04:47,100 --> 00:04:52,500
+Then we'll talk about the logic design for the control unit.
+
+56
+00:04:52,940 --> 00:04:59,340
+So what you'll see is that the control signals, or the datapath, the different signals
+
+57
+00:04:59,340 --> 00:05:04,460
+for the different instructions and which ones are active,
+
+58
+00:05:05,060 --> 00:05:09,860
+and then how to build a logic diagram
+
+59
+00:05:10,240 --> 00:05:16,280
+that will implement this control unit, okay, to generate these signals.
+
+60
+00:05:16,700 --> 00:05:22,860
+So the control unit is essentially a combinational logic circuit
+
+61
+00:05:22,860 --> 00:05:27,520
+that will generate the correct signals.
+
+62
+00:05:28,040 --> 00:05:32,600
+And we won't go into detail on how to build this circuit,
+
+63
+00:05:32,940 --> 00:05:38,400
+but we will understand what signals are being generated,
+
+64
+00:05:38,400 --> 00:05:43,300
+and where those signals go, and what they do.
+
+65
+00:05:43,760 --> 00:05:48,320
+And that is the core part of this lecture.
+
+66
+00:05:49,020 --> 00:05:53,420
+So that's the control unit for MIPS.
+
+67
+00:05:53,420 --> 00:06:01,000
+Now, the control unit for our processor that we're building is simpler.
+
+68
+00:06:01,000 --> 00:06:03,800
+We'll talk about that next week.
+
+69
+00:06:04,360 --> 00:06:09,460
+But the idea is the same of how the instructions
+
+70
+00:06:09,460 --> 00:06:14,700
+generate the control signals to activate the parts of the datapath.
+
+71
+00:06:15,000 --> 00:06:18,520
+Okay, so that's what's important here.
+
+72
+00:06:18,520 --> 00:06:21,300
+And we'll also talk about pipelining
+
+73
+00:06:22,240 --> 00:06:29,260
+and how pipelining is used to increase the throughput of the processor.
+
+74
+00:06:29,660 --> 00:06:36,180
+So there's a couple concepts in the reading, and I'd like you to review those.
+
+75
+00:06:36,880 --> 00:06:40,780
+And so we're going to talk about pipeline registers
+
+76
+00:06:41,200 --> 00:06:45,040
+and how the instruction is broken up into different stages.
+
+77
+00:06:45,340 --> 00:06:50,960
+So you have the instruction fetch, instruction decode, execute, memory,
+
+78
+00:06:51,280 --> 00:06:55,200
+and write back. So these are the five stages
+
+79
+00:06:55,200 --> 00:07:00,720
+of the MIPS processor, and each stage is doing something else.
+
+80
+00:07:01,200 --> 00:07:07,020
+Okay, so you fetch the instruction, you decode it, you execute it,
+
+81
+00:07:07,260 --> 00:07:11,540
+and then you access memory, and then you write the results back.
+
+82
+00:07:11,540 --> 00:07:16,840
+And that is the idea of the pipeline, where you're doing five things
+
+83
+00:07:16,840 --> 00:07:22,460
+simultaneously, and you're increasing the throughput of the processor.
+
+84
+00:07:23,080 --> 00:07:29,320
+So that's an important concept that you need to understand this week.
+
+85
+00:07:30,220 --> 00:07:36,440
+All right, and then the last part is the registers for MIPS.
+
+86
+00:07:36,960 --> 00:07:42,320
+We'll talk a little bit about the registers that MIPS uses,
+
+87
+00:07:42,880 --> 00:07:49,160
+and how they are used for passing arguments, for return values,
+
+88
+00:07:49,360 --> 00:07:53,400
+for temporaries, and for the stack pointer.
+
+89
+00:07:54,080 --> 00:07:57,800
+And we've talked about these registers before,
+
+90
+00:07:58,040 --> 00:08:04,400
+but this is a good review of which registers are used for which function.
+
+91
+00:08:05,240 --> 00:08:08,720
+And of course, MIPS has 32 registers,
+
+92
+00:08:09,300 --> 00:08:14,800
+and each register has a specific job that it's supposed to do,
+
+93
+00:08:15,080 --> 00:08:20,080
+and we want to make sure that we use those registers correctly.
+
+94
+00:08:20,540 --> 00:08:25,320
+Okay, so that's the core of the lecture.
+
+95
+00:08:25,820 --> 00:08:31,440
+And then the last part of this week is, again, the project.
+
+96
+00:08:31,880 --> 00:08:38,400
+So you're going to continue on your CPU project.
+
+97
+00:08:38,880 --> 00:08:44,700
+And so for this week, we're going to be talking about the ALU
+
+98
+00:08:44,700 --> 00:08:50,940
+and how to get that ALU to work, and how to get the registers to work.
+
+99
+00:08:51,520 --> 00:08:58,400
+And so that's what's important, that you're continually working on your project.
+
+100
+00:08:58,920 --> 00:09:03,640
+And there is a place where you're going to submit your project,
+
+101
+00:09:04,060 --> 00:09:09,240
+and there's a file that you need to upload to show that you're making progress.
+
+102
+00:09:09,780 --> 00:09:14,080
+Okay, so that's all for this week. Thank you.`;
+
+            // --- Utility Functions ---
+
+            // Converts time string (HH:MM:SS,ms) to seconds
+            function timeToSeconds(timeStr) {
+                if (!timeStr) return 0;
+                const parts = timeStr.replace(',', '.').split(':');
+                const hours = parseInt(parts[0]) || 0;
+                const minutes = parseInt(parts[1]) || 0;
+                const seconds = parseFloat(parts[2]) || 0;
+                return hours * 3600 + minutes * 60 + seconds;
+            }
+
+            // Parses SRT data into an array of objects
+            function parseSrt(srtText) {
+                const lines = srtText.trim().split('\n');
+                const cues = [];
+                let currentCue = null;
+
+                for (const line of lines) {
+                    if (line.match(/^\d+$/)) {
+                        // Start of a new cue (sequence number)
+                        if (currentCue) {
+                            cues.push(currentCue);
+                        }
+                        currentCue = { number: parseInt(line), text: [] };
+                    } else if (line.includes('-->') && currentCue) {
+                        // Timestamps
+                        const [startTimeStr, endTimeStr] = line.split(' --> ');
+                        currentCue.start = timeToSeconds(startTimeStr.trim());
+                        currentCue.end = timeToSeconds(endTimeStr.trim());
+                    } else if (line.trim() !== '' && currentCue) {
+                        // Dialogue text
+                        currentCue.text.push(line.trim());
+                    }
+                }
+                // Push the last cue
+                if (currentCue) {
+                    cues.push(currentCue);
+                }
+
+                // Join text array into a single string
+                return cues.map(cue => ({
+                    ...cue,
+                    text: cue.text.join(' ')
+                }));
+            }
+
+            // Populates the transcript container - updated for ADA compliance
+            function populateTranscript() {
+                const container = document.getElementById('transcript-container');
+                container.innerHTML = '';
+
+                parsedTranscript.forEach((cue, index) => {
+                    // Use a div with role="button" and tabindex="0" for keyboard focus/interaction
+                    const lineElement = document.createElement('div');
+                    lineElement.className = 'transcript-line p-2 cursor-pointer hover:bg-gray-100 rounded-lg text-base focus:outline-none focus:ring-2 focus:ring-blue-500';
+                    lineElement.dataset.start = cue.start;
+                    lineElement.dataset.end = cue.end;
+                    lineElement.dataset.index = index;
+                    lineElement.textContent = cue.text;
+                    
+                    // ADA: Role and Tabindex for making it keyboard focusable
+                    lineElement.setAttribute('role', 'button');
+                    lineElement.setAttribute('tabindex', '0');
+                    lineElement.setAttribute('aria-label', `Jump to ${Math.floor(cue.start)} seconds: ${cue.text.substring(0, 50)}...`);
+
+                    const seekToTime = () => {
+                        if (player && player.seekTo) {
+                            player.seekTo(cue.start, true);
+                            player.playVideo();
+                        }
+                    };
+
+                    lineElement.addEventListener('click', seekToTime);
+                    
+                    // ADA: Handle Enter and Space keys
+                    lineElement.addEventListener('keydown', (event) => {
+                        if (event.key === 'Enter' || event.key === ' ') {
+                            event.preventDefault(); // Prevent default scroll for spacebar
+                            seekToTime();
+                        }
+                    });
+
+                    container.appendChild(lineElement);
+                });
+            }
+
+            // Highlights the current line and scrolls it into view
+            function highlightCurrentLine() {
+                if (!player || !player.getCurrentTime) return;
+
+                const currentTime = player.getCurrentTime();
+                const lines = document.querySelectorAll('.transcript-line');
+                let foundActive = false;
+
+                lines.forEach(line => {
+                    const start = parseFloat(line.dataset.start);
+                    const end = parseFloat(line.dataset.end);
+
+                    if (currentTime >= start && currentTime < end) {
+                        if (!line.classList.contains('active-transcript-line')) {
+                            // Deactivate previous active line
+                            document.querySelector('.active-transcript-line')?.classList.remove('active-transcript-line');
+                            // Activate current line
+                            line.classList.add('active-transcript-line');
+                            
+                            // Scroll line into view if it's not already visible
+                            const container = document.getElementById('transcript-container');
+                            const containerRect = container.getBoundingClientRect();
+                            const lineRect = line.getBoundingClientRect();
+
+                            // Only scroll if the line is partially or completely outside the view
+                            if (lineRect.top < containerRect.top || lineRect.bottom > containerRect.bottom) {
+                                line.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                            }
+                        }
+                        foundActive = true;
+                    } else {
+                        line.classList.remove('active-transcript-line');
+                    }
+                });
+
+                // If playback stops, clear highlighting after the last line's duration
+                if (!foundActive && player.getPlayerState() !== YT.PlayerState.PLAYING) {
+                     document.querySelector('.active-transcript-line')?.classList.remove('active-transcript-line');
+                }
+            }
+
+
+            // --- YouTube Player API Functions ---
+            window.onYouTubeIframeAPIReady = function() {
+                player = new YT.Player('youtube-player', {
+                    videoId: videoId,
+                    events: {
+                        'onReady': onPlayerReady,
+                        'onStateChange': onPlayerStateChange
+                    }
+                });
+            };
+
+            function onPlayerReady(event) {
+                console.log('YouTube player is ready.');
+            }
+
+            function onPlayerStateChange(event) {
+                clearInterval(timeUpdater); // Clear any existing interval
+                if (event.data === YT.PlayerState.PLAYING) {
+                    timeUpdater = setInterval(highlightCurrentLine, 300);
+                }
+            }
+            
+            // --- Initialization ---
+            function initialize() {
+                parsedTranscript = parseSrt(transcriptData);
+                populateTranscript();
+                
+                // Load the YouTube IFrame Player API script if it's not already loaded
+                if (typeof(YT) == 'undefined' || typeof(YT.Player) == 'undefined') {
+                    const tag = document.createElement('script');
+                    tag.src = "https://www.youtube.com/iframe_api";
+                    const firstScriptTag = document.getElementsByTagName('script')[0];
+                    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+                } else {
+                    onYouTubeIframeAPIReady();
+                }
+                
+                console.log('Introduction page initialized.');
+            }
+
+            initialize();
+        });
+    </script>
+</body>
+</html>
