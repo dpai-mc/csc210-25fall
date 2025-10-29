@@ -3,81 +3,148 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Final Project: 8-bit CPU Design</title>
+    <title>8-bit CPU Design Final Project Requirements</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        // MANDATORY: Configure Tailwind to include the Typography plugin for consistent text/heading styling.
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                },
+            },
+            plugins: [
+                require('@tailwindcss/typography'),
+            ],
+        }
+    </script>
     <style>
-        body { font-family: Arial, sans-serif; line-height: 1.6; margin: 20px; }
-        h1, h2 { color: #333; }
-        ul { list-style-type: disc; margin-left: 20px; }
-        .note { border: 1px solid #ccc; padding: 15px; margin: 15px 0; background-color: #f9f9f9; }
-        .grade-section h3 { margin-top: 0; color: #0056b3; }
-        .image-container { text-align: center; margin: 20px 0; }
-        img { max-width: 100%; height: auto; border: 1px solid #ddd; padding: 5px; }
-        footer { margin-top: 30px; border-top: 1px solid #eee; padding-top: 10px; font-size: 0.8em; color: #666; }
+        /* Essential for ensuring light mode and setting base font */
+        html { 
+            font-family: 'Inter', sans-serif; 
+            background-color: #FDFBF8; /* Light background */
+            color: #1A1A1A; /* Dark text */
+        }
+        /* Override Tailwind default dark mode behavior */
+        @media (prefers-color-scheme: dark) {
+            html {
+                background-color: #FDFBF8 !important; 
+                color: #1A1A1A !important; 
+            }
+        }
+        /* Custom class for Skip Link (visible on focus) */
+        .skip-link {
+            position: absolute;
+            top: -40px;
+            left: 0;
+            background: #1A1A1A;
+            color: white;
+            padding: 8px;
+            z-index: 100;
+            transition: top 0.3s;
+        }
+        .skip-link:focus {
+            top: 0;
+        }
     </style>
-</head>
-<body>
+    
+    </head>
+<body class="bg-[#FDFBF8] text-[#1A1A1A]">
+    <a id="skip-to-content" href="#main-content" class="skip-link" tabindex="0">Skip to Content</a>
+    
+    <header class="bg-white shadow-md p-4 sticky top-0 z-10">
+        <div class="max-w-4xl mx-auto">
+            <h1 class="text-2xl font-bold text-[#1A1A1A]">Final Project: 8-bit CPU Design Requirements</h1>
+        </div>
+    </header>
 
-    <h1>Final Project: 8-bit CPU Design</h1>
+    <main id="main-content" class="p-4 sm:p-6 lg:p-8 max-w-4xl mx-auto">
+        
+        <section class="mb-8 p-6 bg-white rounded-xl shadow-lg">
+            <div class="prose max-w-none">
+                <h2>Project Overview</h2>
+                <p>For the Final Project in this course, we are going to design and build an **8-bit CPU** using a digital circuit simulation software.</p>
 
-    <p>For the Final Project in this course, we are going to design and build an **8-bit CPU** using a digital circuit simulation software.</p>
+                <h3>Overview of the Final CPU Design</h3>
+                <p>Here's an overview of the final CPU design that we will be building.</p>
 
-    <h2>Overview of the Final CPU Design</h2>
+                <div class="p-4 bg-yellow-50 border-l-4 border-yellow-500 text-yellow-800 rounded-md my-4">
+                    <p class="font-bold">PLEASE NOTE:</p>
+                    <p>You **MUST** use the file provided by the instructor at the beginning of this project as your CPU build file and all necessary circuits need to be included in that file (not linked... basically your entire CPU **MUST** be developed/built within that file).</p>
+                </div>
+            </div>
+            
+            <div class="flex justify-center my-6">
+                <img src="https://mendocino.instructure.com/courses/19705/files/2501477/download" alt="CPU Overview Diagram" class="max-w-full h-auto rounded-lg shadow-md">
+            </div>
+        </section>
 
-    <p>Here's an overview of the final CPU design that we will be building.</p>
+        <section class="mb-8">
+            <h2 class="text-3xl font-semibold mb-4 text-[#1A1A1A]">Final Submission Requirements</h2>
+            <p class="text-lg text-gray-700 mb-6">For the Final Submission, you need to complete the following based on the desired grade:</p>
 
-    <div class="note">
-        **PLEASE NOTE:** You **MUST** use the file provided by the instructor at the beginning of this project as your CPU build file and all necessary circuits need to be included in that file (not linked ... basically your entire CPU **MUST** be developed/built within that file).
-    </div>
+            <div class="p-6 mb-4 bg-white rounded-xl shadow-lg border-t-4 border-gray-400">
+                <div class="prose max-w-none">
+                    <h3 class="text-xl font-bold text-gray-700">For a Grade of "C":</h3>
+                    <ul>
+                        <li>You need to complete **ALL the Control Circuits** (Do each as an individual, separate circuit) and associated **CPU setups** (Do each as an individual, separate circuit) provided on the <a href="https://mendocino.instructure.com/courses/19705/pages/g866bc17ef292b16319ea918253aded0b" class="text-blue-600 hover:text-blue-800">Circuits: Control Summary</a> page.</li>
+                        <li>For Reference: <a href="https://mendocino.instructure.com/courses/19705/pages/circuits-needed-for-final-project" class="text-blue-600 hover:text-blue-800">Circuits Needed for Final Project</a></li>
+                    </ul>
+                </div>
+            </div>
 
-    <div class="image-container">
-        <img src="https://mendocino.instructure.com/courses/19705/files/2501477/download" alt="CPU_Overview.png">
-    </div>
+            <div class="p-6 mb-4 bg-white rounded-xl shadow-lg border-t-4 border-yellow-500">
+                <div class="prose max-w-none">
+                    <h3 class="text-xl font-bold text-gray-700">For a Grade of "B":</h3>
+                    <ul>
+                        <li>Complete "For Grade of C" **AND**</li>
+                        <li>Complete the integrated controls section: <a href="https://mendocino.instructure.com/courses/19705/pages/circuits-final-control-unit-circuit" class="text-blue-600 hover:text-blue-800">Circuits: Final Control Unit Circuit</a></li>
+                        <li>Create a "**Final**" CPU with all parts: (<a href="https://mendocino.instructure.com/courses/19705/pages/circuits-final-cpu" class="text-blue-600 hover:text-blue-800">Circuits: Final CPU</a>)</li>
+                    </ul>
+                </div>
+            </div>
 
-    <p>For the Final Submission, you need to do the following based on the desired grade:</p>
+            <div class="p-6 mb-4 bg-white rounded-xl shadow-lg border-t-4 border-green-600">
+                <div class="prose max-w-none">
+                    <h3 class="text-xl font-bold text-gray-700">For a Grade of "A":</h3>
+                    <ul>
+                        <li>Complete "For Grade of B" **AND**</li>
+                        <li>Create the **top-level CPU for simulation purposes** (<a href="https://mendocino.instructure.com/courses/19705/pages/circuits-top-level-cpu" class="text-blue-600 hover:text-blue-800">Circuits: Top-Level CPU</a>)</li>
+                        <li>Download the provided Program and run it (5 * 5 program - <a href="https://mendocino.instructure.com/courses/19705/files/2501480?wrap=1" target="_blank" rel="noopener" class="text-blue-600 hover:text-blue-800">MYSIM.txt)</a></li>
+                    </ul>
+                </div>
+            </div>
+        </section>
 
-    <hr>
+        <section class="mb-8 p-6 bg-white rounded-xl shadow-lg">
+            <div class="prose max-w-none">
+                <h3 class="text-xl font-bold text-gray-700">Top-Level CPU Simulation View</h3>
+            </div>
+            <div class="flex justify-center my-6">
+                <img src="https://mendocino.instructure.com/courses/19705/files/2501463/preview" alt="CPU Top-Level Simulation Preview" class="max-w-full h-auto rounded-lg shadow-md">
+            </div>
+        </section>
 
-    <div class="grade-section">
-        <h3>For a Grade of "C":</h3>
-        <ul>
-            <li>You need to complete **ALL the Control Circuits** (Do each as an individual, separate circuit) and associated **CPU setups** (Do each as an individual, separate circuit) provided on the <a href="https://mendocino.instructure.com/courses/19705/pages/g866bc17ef292b16319ea918253aded0b">Circuits: Control Summary</a> page.</li>
-            <li>For Reference: <a href="https://mendocino.instructure.com/courses/19705/pages/circuits-needed-for-final-project">Circuits Needed for Final Project</a></li>
-        </ul>
-    </div>
+        <footer class="mt-8 pt-4 border-t border-gray-300 text-center text-sm text-gray-500">
+            <div class="prose max-w-none mx-auto">
+                <p class="text-xs italic">Ref: This project adapted from "Design a CPU" by Ross McGowan (On Udemy)</p>
+            </div>
+        </footer>
+    </main>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // All JavaScript logic goes here. 
+            // Since this guide contains less than three distinct core concepts, the Mandatory Modular Navigation (Tabs) is NOT required.
+            // All interactivity (if added later, e.g., progress tracking) MUST use simple JS variables.
+            let progressState = {}; 
+            // Example: progressState.C_RequirementsMet = false;
 
-    <hr>
-
-    <div class="grade-section">
-        <h3>For a Grade of "B":</h3>
-        <ul>
-            <li>Complete "For Grade of C" **AND**</li>
-            <li>Complete the integrated controls section: <a href="https://mendocino.instructure.com/courses/19705/pages/circuits-final-control-unit-circuit">Circuits: Final Control Unit Circuit</a></li>
-            <li>Create a "**Final**" CPU with all parts: (<a href="https://mendocino.instructure.com/courses/19705/pages/circuits-final-cpu">Circuits: Final CPU</a>)</li>
-        </ul>
-    </div>
-
-    <hr>
-
-    <div class="grade-section">
-        <h3>For a Grade of "A":</h3>
-        <ul>
-            <li>Complete "For Grade of B" **AND**</li>
-            <li>Create the **top-level CPU for simulation purposes** (<a href="https://mendocino.instructure.com/courses/19705/pages/circuits-top-level-cpu">Circuits: Top-Level CPU</a>)</li>
-            <li>Download the provided Program and run it (5 * 5 program - <a href="https://mendocino.instructure.com/courses/19705/files/2501480?wrap=1" target="_blank" rel="noopener">MYSIM.txt)</a></li>
-        </ul>
-    </div>
-
-    <div class="image-container">
-        <img src="https://mendocino.instructure.com/courses/19705/files/2501463/preview" alt="CPU_TopSim.jpg">
-    </div>
-
-    <p>&nbsp;</p>
-
-    <footer>
-        <span style="font-size: 10pt;">
-            <em>Ref: This project adapted from "Design a CPU" by Ross McGowan (On Udemy)</em>
-        </span>
-    </footer>
-
+            // Add any session-level interactivity here, following the Vanilla JS mandate.
+        });
+    </script>
 </body>
 </html>
