@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Circuits: Top Level CPU</title>
+    <title>8-bit CPU Simulation Setup Guide</title>
     
+    <!-- 1. CDN Links & Tailwind Configuration -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         // MANDATORY: Configure Tailwind to include the Typography plugin.
@@ -48,99 +49,247 @@
         .skip-link:focus {
             top: 0;
         }
+        /* Hidden state for accordion content */
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease-in-out;
+            padding-top: 0;
+            padding-bottom: 0;
+        }
+        /* Expanded state uses a large max-height to simulate 'auto' transition */
+        .accordion-content.expanded {
+            max-height: 2000px; /* Large enough to hold all content */
+            padding-top: 1.5rem; /* Add padding when expanded */
+            padding-bottom: 1.5rem;
+        }
     </style>
     
-    </head>
+    <!-- 2. Meta Comments (Required) -->
+    <!-- Content now includes JS-driven accordions for sections 1-5. -->
+</head>
 <body class="bg-[#FDFBF8] text-[#1A1A1A]">
+    <!-- 3. Main Content Structure -->
     <a id="skip-to-content" href="#main-content" class="skip-link" tabindex="0">Skip to Content</a>
     
     <header class="bg-white shadow-md p-4 sticky top-0 z-10">
         <div class="max-w-4xl mx-auto">
-            <h1 class="text-2xl font-bold text-[#1A1A1A]">Circuits: Top Level CPU</h1>
+            <!-- UPDATED PAGE HEADER -->
+            <h1 class="text-2xl font-bold text-[#1A1A1A]">8-bit CPU Simulation Interface Setup</h1>
         </div>
     </header>
 
     <main id="main-content" class="p-4 sm:p-6 lg:p-8 max-w-4xl mx-auto">
         
-        <h1 class="text-4xl font-extrabold mb-8 text-blue-700">Top Level CPU Simulation Setup</h1>
+        <h1 class="text-4xl font-extrabold mb-4 text-blue-700">Top Level CPU Simulation Setup Guide</h1>
 
-        <section class="mb-8 p-6 bg-white rounded-xl shadow-lg">
-            <h2 class="text-2xl font-bold mt-0 mb-4 text-gray-800">1. Circuit Appearance and Tunnels</h2>
+        <!-- NEW INTRODUCTORY TEXT -->
+        <p class="prose max-w-none text-lg text-gray-700 mb-8">
+            The details provided on this page are used to **interface with the completed 8-bit CPU** in order to load, run, and monitor an assembly program for our 8-bit CPU simulation. The five sections below outline the crucial steps and components.
+        </p>
+
+        <!-- Accordion Container -->
+        <div id="accordion-root" class="space-y-4 mb-8">
             
-            <div class="prose max-w-none">
-                <p>The first step in creating the top-level CPU is to **Edit the Circuit Appearance** so that all of the necessary inputs and outputs are situated around the periphery.</p>
-            </div>
-            <div class="flex justify-center my-6">
-                <img src="images/CPU_Appearance.jpg" alt="Abstracted CPU Appearance with Ports" class="max-w-full h-auto rounded-lg shadow-md">
-            </div>
-
-            <div class="prose max-w-none">
-                <p>The second step is to setup tunnels on the Inputs/Outputs that we need:</p>
-            </div>
-            <div class="flex justify-center my-6">
-                <img src="images/CPU_withTunnels.jpg" alt="Abstracted CPU with Tunnels for signal routing" class="max-w-full h-auto rounded-lg shadow-md">
-            </div>
-        </section>
-
-        <section class="mb-8 p-6 bg-white rounded-xl shadow-lg">
-            <h2 class="text-2xl font-bold mt-0 mb-4 text-gray-800">2. Displays for CPU Status</h2>
-            <div class="prose max-w-none">
-                <p>In order to watch the status of our program while running, we need to create output displays for the following Items/locations on our CPU:</p>
-                <p class="font-bold">BUS, ACC, PC, IR, R0, R1, R2, R3</p>
-                <p>We do this by using the **"Hex Digit Display"** element from the "Input/Output" folder:</p>
-            </div>
-            <div class="flex justify-center my-6">
-                <img src="images/CPU_HexDigitDisplay.jpg" alt="Hex digit display in Logisim" class="max-w-full h-auto rounded-lg shadow-md">
-            </div>
-            <div class="prose max-w-none">
-                <p>We wire up the display by attaching an 8-bit splitter to the appropriate tunnel. We then pair that 8-bit fan with two 4-bit fans where each 4-bit fan is connected to one Hex Digit Display. The image below spreads this out to make it easier to see how these small circuits are wired. Once connected, you can compress the overall circuit for both aesthetics and to save real estate on the top-level simulation.</p>
-            </div>
-            <div class="flex justify-center my-6">
-                <img src="images/CPU_OutputDisplaysExplained.jpg" alt="How to wire up a Hex Digit Display" class="max-w-full h-auto rounded-lg shadow-md">
-            </div>
-        </section>
+            <!-- Section 1: Circuit Appearance and Tunnels -->
+            <section class="bg-white rounded-xl shadow-lg border-t-4 border-blue-200">
+                <button 
+                    class="accordion-toggle w-full p-6 text-left font-bold text-xl text-gray-800 flex justify-between items-center" 
+                    aria-expanded="false" 
+                    aria-controls="content-1" 
+                    id="heading-1"
+                >
+                    1. Circuit Appearance and Tunnels
+                    <svg class="w-5 h-5 transition-transform duration-300 transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                </button>
+                <div id="content-1" role="region" aria-labelledby="heading-1" class="accordion-content px-6">
+                    <div class="prose max-w-none pb-6">
+                        <p>The first step in creating the top-level CPU is to **Edit the Circuit Appearance** so that all of the necessary inputs and outputs are situated around the periphery.</p>
+                    </div>
+                    <div class="flex justify-center my-6">
+                        <!-- Image 1 -->
+                        <img src="images/CPU_Appearance.jpg" alt="Abstracted CPU Appearance with Ports" class="max-w-full h-auto rounded-lg shadow-md">
+                    </div>
         
-        <section class="mb-8 p-6 bg-white rounded-xl shadow-lg">
-            <h2 class="text-2xl font-bold mt-0 mb-4 text-gray-800">3. LOAD, RESET, MARS and END Controls</h2>
+                    <div class="prose max-w-none pb-6">
+                        <p>The second step is to setup tunnels on the Inputs/Outputs that we need:</p>
+                    </div>
+                    <div class="flex justify-center my-6">
+                        <!-- Image 2 -->
+                        <img src="images/CPU_withTunnels.jpg" alt="Abstracted CPU with Tunnels for signal routing" class="max-w-full h-auto rounded-lg shadow-md">
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 2: Displays for CPU Status -->
+            <section class="bg-white rounded-xl shadow-lg border-t-4 border-blue-200">
+                <button 
+                    class="accordion-toggle w-full p-6 text-left font-bold text-xl text-gray-800 flex justify-between items-center" 
+                    aria-expanded="false" 
+                    aria-controls="content-2" 
+                    id="heading-2"
+                >
+                    2. Displays for CPU Status
+                    <svg class="w-5 h-5 transition-transform duration-300 transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                </button>
+                <div id="content-2" role="region" aria-labelledby="heading-2" class="accordion-content px-6">
+                    <div class="prose max-w-none pb-6">
+                        <p>In order to watch the status of our program while running, we need to create output displays for the following Items/locations on our CPU:</p>
+                        <p class="font-bold">BUS, ACC, PC, IR, R0, R1, R2, R3</p>
+                        <p>We do this by using the **"Hex Digit Display"** element from the "Input/Output" folder:</p>
+                    </div>
+                    <div class="flex justify-center my-6">
+                        <!-- Image 3 -->
+                        <img src="images/CPU_HexDigitDisplay.jpg" alt="Hex digit display in Logisim" class="max-w-full h-auto rounded-lg shadow-md">
+                    </div>
+                    <div class="prose max-w-none pb-6">
+                        <p>We wire up the display by attaching an 8-bit splitter to the appropriate tunnel. We then pair that 8-bit fan with two 4-bit fans where each 4-bit fan is connected to one Hex Digit Display. The image below spreads this out to make it easier to see how these small circuits are wired. Once connected, you can compress the overall circuit for both aesthetics and to save real estate on the top-level simulation.</p>
+                    </div>
+                    <div class="flex justify-center my-6">
+                        <!-- Image 4 -->
+                        <img src="images/CPU_OutputDisplaysExplained.jpg" alt="How to wire up a Hex Digit Display" class="max-w-full h-auto rounded-lg shadow-md">
+                    </div>
+                </div>
+            </section>
+        
+            <!-- Section 3: LOAD, RESET, MARS and END -->
+            <section class="mb-8 bg-white rounded-xl shadow-lg border-t-4 border-blue-200">
+                <button 
+                    class="accordion-toggle w-full p-6 text-left font-bold text-xl text-gray-800 flex justify-between items-center" 
+                    aria-expanded="false" 
+                    aria-controls="content-3" 
+                    id="heading-3"
+                >
+                    3. LOAD, RESET, MARS and END Controls
+                    <svg class="w-5 h-5 transition-transform duration-300 transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                </button>
+                <div id="content-3" role="region" aria-labelledby="heading-3" class="accordion-content px-6">
+                    <div class="prose max-w-none pb-6">
+                        <p>In order to run a program, we need to be able to set the Bus and everything connected to it to zero. So we connect a button (found in the Input/Output folder) to the **RESET** tunnel. Clicking this button will set RESET to high which should set all of the "Pull Down" behaviors to Zero (item 2 below). We also need to create the **"LOAD"** and **"MARS"** input pins (1 and 3 below) so that we can set them high to LOAD our program into RAM. The last item is to have a way to see when the program operation is done. We do that by attaching an LED element (found in Input/Output folder) to the **"END"** tunnel.</p>
+                    </div>
+                    <div class="flex justify-center my-6">
+                        <!-- Image 5 -->
+                        <img src="images/CPU_LoadEnd.jpg" alt="Key setup inputs to run Simulation" class="max-w-full h-auto rounded-lg shadow-md">
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 4: Clock Settings -->
+            <section class="mb-8 bg-white rounded-xl shadow-lg border-t-4 border-blue-200">
+                <button 
+                    class="accordion-toggle w-full p-6 text-left font-bold text-xl text-gray-800 flex justify-between items-center" 
+                    aria-expanded="false" 
+                    aria-controls="content-4" 
+                    id="heading-4"
+                >
+                    4. Clock Settings
+                    <svg class="w-5 h-5 transition-transform duration-300 transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                </button>
+                <div id="content-4" role="region" aria-labelledby="heading-4" class="accordion-content px-6">
+                    <div class="prose max-w-none pb-6">
+                        <p>For the Clock, we have 2 things we want to do. The first is to monitor the values for **CLKL, CLKE** and **CLKS**. In the figure below, we have the values 0, 1, 0 next to each respectively. These are the values we want to see just before we run our program. The other thing that we need to do is to add the **"CLK" cycler** item back into our CPU (we removed it when we updated the complete CPU).</p>
+                    </div>
+                    <div class="flex justify-center my-6">
+                        <!-- Image 6 -->
+                        <img src="images/CPU_Clk.jpg" alt="Monitoring Clock Values during Setup" class="max-w-full h-auto rounded-lg shadow-md">
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 5: External RAM to LOAD our program -->
+            <section class="mb-8 bg-white rounded-xl shadow-lg border-t-4 border-blue-200">
+                <button 
+                    class="accordion-toggle w-full p-6 text-left font-bold text-xl text-gray-800 flex justify-between items-center" 
+                    aria-expanded="false" 
+                    aria-controls="content-5" 
+                    id="heading-5"
+                >
+                    5. External RAM to LOAD our Program
+                    <svg class="w-5 h-5 transition-transform duration-300 transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                </button>
+                <div id="content-5" role="region" aria-labelledby="heading-5" class="accordion-content px-6">
+                    <div class="prose max-w-none pb-6">
+                        <p>The Last item we need for our Top-Level Simulation is a way to load our assembly program. One of the primary elements we will use for this is the **"RAM"** item found in the "Memory" folder. We want to use this to make it easier for us to load our program (we could write our own RAM item but it would take a lot of work that isn't exactly necessary for our course).</p>
+                    </div>
+                    <div class="flex justify-center my-6">
+                        <!-- Image 7 -->
+                        <img src="images/CPU_OnlyExtRAM.jpg" alt="External RAM required for program loading" class="max-w-full h-auto rounded-lg shadow-md">
+                    </div>
+                    <div class="prose max-w-none pb-6">
+                        <p>In setting up the External RAM, we use a second 256 clock iterator (2nd iterator that is identical to the one attached to the CPU Bus). This iterator is connected to the A (Address) input so that we cycle through all of the bytes of RAM in this External RAM element. This iterator is also driven by the **CLKL** signal which also drives the iterator on the BUS keeping the 2 iterators in-sync. The 4 inputs across the bottom of the External RAM are set to "LOAD", "CLKL", "Constant 1" and "Ground" so that we can load the data as well as keep it in-sync. Lastly, the D output is connected to the 8-bit **"RAM INPUT"** element which will send the proper assembly command into our CPU RAM.</p>
+                    </div>
+                    <div class="flex justify-center my-6">
+                        <!-- Image 8 -->
+                        <img src="images/CPU_ExternalRAM.jpg" alt="External RAM setup for Program Load" class="max-w-full h-auto rounded-lg shadow-md">
+                    </div>
+                </div>
+            </section>
+        </div> <!-- End Accordion Container -->
+
+        <!-- Section 6: ALWAYS VISIBLE - Final Simulation Layout -->
+        <section class="mb-8 p-6 bg-white rounded-xl shadow-lg border-t-4 border-green-600">
+            <h2 class="text-2xl font-bold mt-0 mb-4 text-gray-800">6. Final Simulation Circuit Layout</h2>
             <div class="prose max-w-none">
-                <p>In order to run a program, we need to be able to set the Bus and everything connected to it to zero. So we connect a button (found in the Input/Output folder) to the **RESET** tunnel. Clicking this button will set RESET to high which should set all of the "Pull Down" behaviors to Zero (item 2 below). We also need to create the **"LOAD"** and **"MARS"** input pins (1 and 3 below) so that we can set them high to LOAD our program into RAM. The last item is to have a way to see when the program operation is done. We do that by attaching an LED element (found in Input/Output folder) to the **"END"** tunnel.</p>
+                <p>This final diagram illustrates how all the components detailed in sections 1 through 5 come together to form the complete Top-Level CPU Simulation circuit, ready for program loading and execution.</p>
             </div>
             <div class="flex justify-center my-6">
-                <img src="images/CPU_LoadEnd.jpg" alt="Key setup inputs to run Simulation" class="max-w-full h-auto rounded-lg shadow-md">
+                <!-- New Image: CPU_TopSim.jpg -->
+                <img src="images/CPU_TopSim.jpg" alt="Abstracted CPU Top-Level" class="max-w-full h-auto rounded-lg shadow-md">
             </div>
         </section>
 
-        <section class="mb-8 p-6 bg-white rounded-xl shadow-lg">
-            <h2 class="text-2xl font-bold mt-0 mb-4 text-gray-800">4. Clock Settings</h2>
-            <div class="prose max-w-none">
-                <p>For the Clock, we have 2 things we want to do. The first is to monitor the values for **CLKL, CLKE** and **CLKS**. In the figure below, we have the values 0, 1, 0 next to each respectively. These are the values we want to see just before we run our program. The other thing that we need to do is to add the **"CLK" cycler** item back into our CPU (we removed it when we updated the complete CPU).</p>
-            </div>
-            <div class="flex justify-center my-6">
-                <img src="images/CPU_Clk.jpg" alt="Monitoring Clock Values during Setup" class="max-w-full h-auto rounded-lg shadow-md">
-            </div>
-        </section>
 
-        <section class="mb-8 p-6 bg-white rounded-xl shadow-lg">
-            <h2 class="text-2xl font-bold mt-0 mb-4 text-gray-800">5. External RAM to LOAD our Program</h2>
-            <div class="prose max-w-none">
-                <p>The Last item we need for our Top-Level Simulation is a way to load our assembly program. One of the primary elements we will use for this is the **"RAM"** item found in the "Memory" folder. We want to use this to make it easier for us to load our program (we could write our own RAM item but it would take a lot of work that isn't exactly necessary for our course).</p>
+        <footer class="mt-8 pt-4 border-t border-gray-300 text-center text-sm text-gray-500">
+            <div class="prose max-w-none mx-auto">
+                <p class="text-xs italic">Ref: This project adapted from "Design a CPU" by Ross McGowan (On Udemy)</p>
             </div>
-            <div class="flex justify-center my-6">
-                <img src="images/CPU_OnlyExtRAM.jpg" alt="External RAM required for program loading" class="max-w-full h-auto rounded-lg shadow-md">
-            </div>
-            <div class="prose max-w-none">
-                <p>In setting up the External RAM, we use a second 256 clock iterator (2nd iterator that is identical to the one attached to the CPU Bus). This iterator is connected to the A (Address) input so that we cycle through all of the bytes of RAM in this External RAM element. This iterator is also driven by the **CLKL** signal which also drives the iterator on the BUS keeping the 2 iterators in-sync. The 4 inputs across the bottom of the External RAM are set to "LOAD", "CLKL", "Constant 1" and "Ground" so that we can load the data as well as keep it in-sync. Lastly, the D output is connected to the 8-bit **"RAM INPUT"** element which will send the proper assembly command into our CPU RAM.</p>
-            </div>
-            <div class="flex justify-center my-6">
-                <img src="images/CPU_ExternalRAM.jpg" alt="External RAM setup for Program Load" class="max-w-full h-auto rounded-lg shadow-md">
-            </div>
-        </section>
+        </footer>
     </main>
     
+    <!-- 4. Single Script Block (Vanilla JavaScript for Accordions) -->
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // All JavaScript logic goes here, following the Vanilla JS and Session-Only mandates.
-            let progressState = {}; 
+            // State must be managed using simple JavaScript variables or objects within the script's scope.
+            let progressState = {}; // Placeholder for session-only state
+            
+            const toggles = document.querySelectorAll('.accordion-toggle');
+
+            toggles.forEach(toggle => {
+                const content = document.getElementById(toggle.getAttribute('aria-controls'));
+                const icon = toggle.querySelector('svg');
+
+                // Initially close all content
+                content.classList.remove('expanded');
+                icon.classList.remove('rotate-180');
+                toggle.setAttribute('aria-expanded', 'false');
+
+                toggle.addEventListener('click', () => {
+                    const isExpanded = toggle.getAttribute('aria-expanded') === 'true';
+
+                    // Close any other open accordions
+                    toggles.forEach(otherToggle => {
+                        if (otherToggle !== toggle) {
+                            const otherContent = document.getElementById(otherToggle.getAttribute('aria-controls'));
+                            const otherIcon = otherToggle.querySelector('svg');
+
+                            otherContent.classList.remove('expanded');
+                            otherIcon.classList.remove('rotate-180');
+                            otherToggle.setAttribute('aria-expanded', 'false');
+                        }
+                    });
+
+                    // Toggle the current one
+                    if (isExpanded) {
+                        content.classList.remove('expanded');
+                        icon.classList.remove('rotate-180');
+                        toggle.setAttribute('aria-expanded', 'false');
+                    } else {
+                        content.classList.add('expanded');
+                        icon.classList.add('rotate-180');
+                        toggle.setAttribute('aria-expanded', 'true');
+                    }
+                });
+            });
         });
     </script>
 </body>
