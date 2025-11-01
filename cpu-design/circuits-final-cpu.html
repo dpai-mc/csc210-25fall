@@ -1,9 +1,119 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <title>Circuits: Final CPU</title>
-  </head>
-  <body>
-    <h1> Placeholder page</h1>
-  </body>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Circuits: Final CPU Design</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        // MANDATORY: Configure Tailwind to include the Typography plugin.
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                },
+            },
+            plugins: [
+                require('@tailwindcss/typography'),
+            ],
+        }
+    </script>
+    <style>
+        /* STRICT LIGHT THEME MANDATE: Overrides dark mode settings */
+        html { 
+            font-family: 'Inter', sans-serif; 
+            background-color: #FDFBF8; 
+            color: #1A1A1A; 
+        }
+        @media (prefers-color-scheme: dark) {
+            html {
+                background-color: #FDFBF8 !important; 
+                color: #1A1A1A !important; 
+            }
+        }
+        /* Custom class for Skip Link (visible on focus) */
+        .skip-link {
+            position: absolute;
+            top: -40px;
+            left: 0;
+            background: #1A1A1A;
+            color: white;
+            padding: 8px;
+            z-index: 100;
+            transition: top 0.3s;
+        }
+        .skip-link:focus {
+            top: 0;
+        }
+    </style>
+    
+    </head>
+<body class="bg-[#FDFBF8] text-[#1A1A1A]">
+    <a id="skip-to-content" href="#main-content" class="skip-link" tabindex="0">Skip to Content</a>
+    
+    <header class="bg-white shadow-md p-4 sticky top-0 z-10">
+        <div class="max-w-4xl mx-auto">
+            <h1 class="text-2xl font-bold text-[#1A1A1A]">Circuits: Final CPU Design</h1>
+        </div>
+    </header>
+
+    <main id="main-content" class="p-4 sm:p-6 lg:p-8 max-w-4xl mx-auto">
+        
+        <h1 class="text-4xl font-extrabold mb-8 text-blue-700">Final CPU Circuits: Required Modifications</h1>
+
+        <section class="mb-8 p-6 bg-white rounded-xl shadow-lg">
+            
+            <div class="prose max-w-none mb-4">
+                <p>This is the initial view of the **Final CPU Circuit** before detailed modifications for program loading and control are implemented.</p>
+            </div>
+            
+            <div class="flex justify-center my-6">
+                <img src="images/final-cpu-diagram.png" alt="Complete 8-bit CPU Circuit Diagram" class="max-w-full h-auto rounded-lg shadow-md">
+            </div>
+
+            <div class="prose max-w-none mt-8 mb-4">
+                <p>The changes required to complete the overall circuit are highlighted in the image below. Each highlighted area corresponds to a detailed explanation provided in the links below.</p>
+            </div>
+            
+            <div class="flex justify-center my-6">
+                <img src="images/final-cpu-highlighted.png" alt="8-bit CPU Diagram with Modification Highlights" class="max-w-full h-auto rounded-lg shadow-md">
+            </div>
+
+        </section>
+
+        <section class="mb-8 p-6 bg-white rounded-xl shadow-lg border-t-4 border-yellow-500">
+            <h2 class="text-2xl font-bold mt-0 mb-4 text-gray-800">Detailed Modification Requirements</h2>
+            <div class="prose max-w-none">
+                <p>Detailed definitions of the necessary changes include:</p>
+                <ul class="space-y-2">
+                    <li><a href="circuits-final-cpu-clock-input.html" class="text-blue-600 hover:text-blue-800">Circuits: Final CPU - Clock Input</a></li>
+                    <li><a href="circuits-final-cpu-bus-output-and-pull-down-behavior.html" class="text-blue-600 hover:text-blue-800">Circuits: Final CPU: BUS Output and PULL Down behavior</a></li>
+                    <li><a href="circuits-final-cpu-carry-in.html" class="text-blue-600 hover:text-blue-800">Circuits: Final CPU: Carry In</a></li>
+                    <li><a href="circuits-final-cpu-flags.html" class="text-blue-600 hover:text-blue-800">Circuits: Final CPU: FLAGS</a></li>
+                    <li><a href="circuits-final-cpu-reset.html" class="text-blue-600 hover:text-blue-800">Circuits: Final CPU: RESET</a></li>
+                    <li><a href="circuits-final-cpu-ram-input-mux.html" class="text-blue-600 hover:text-blue-800">Circuits: Final CPU: RAM Input MUX</a></li>
+                    <li><a href="circuits-final-cpu-load-mars-end.html" class="text-blue-600 hover:text-blue-800">Circuits: Final CPU: LOAD, MARS, END</a></li>
+                    <li><a href="circuits-final-cpu-io-clk-pins.html" class="text-blue-600 hover:text-blue-800">Circuits: Final CPU: IO CLK pins</a></li>
+                    <li><a href="circuits-final-cpu-counter-256-circuit.html" class="text-blue-600 hover:text-blue-800">Circuits: Final CPU: Counter 256 Circuit</a></li>
+                </ul>
+            </div>
+        </section>
+
+        <footer class="mt-8 pt-4 border-t border-gray-300 text-center text-sm text-gray-500">
+            <div class="prose max-w-none mx-auto">
+                <p class="text-xs italic">Ref: This project adapted from "Design a CPU" by Ross McGowan (On Udemy)</p>
+            </div>
+        </footer>
+    </main>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Placeholder for session-only JavaScript logic.
+            let progressState = {}; 
+        });
+    </script>
+</body>
 </html>
