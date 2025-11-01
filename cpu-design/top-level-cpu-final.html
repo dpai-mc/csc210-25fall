@@ -88,12 +88,26 @@
             <p class="text-lg text-gray-700 mb-6">For the Final Submission, you need to complete the following based on the desired grade:</p>
 
             <div class="p-6 mb-4 bg-white rounded-xl shadow-lg border-t-4 border-gray-400">
-                <div class="prose max-w-none">
-                    <h3 class="text-2xl font-bold text-gray-800 mt-0 mb-2">For a Grade of "C":</h3>
-                    <ul>
-                        <li>You need to complete **ALL the Control Circuits** (Do each as an individual, separate circuit) and associated **CPU setups** (Do each as an individual, separate circuit) provided on the <a href="https://mendocino.instructure.com/courses/19705/pages/g866bc17ef292b16319ea918253aded0b" class="text-blue-600 hover:text-blue-800">Circuits: Control Summary</a> page.</li>
-                        <li>For Reference: <a href="https://mendocino.instructure.com/courses/19705/pages/circuits-needed-for-final-project" class="text-blue-600 hover:text-blue-800">Circuits Needed for Final Project</a></li>
+                <h3 class="text-2xl font-bold text-gray-800 mt-0 mb-2">For a Grade of "C":</h3>
+                
+                <div id="c-requirements-checklist" class="prose max-w-none">
+                    <ul class="list-none pl-0">
+                        <li class="flex items-start mb-2">
+                            <input type="checkbox" id="c-req-1" data-req="control_circuits" class="mt-1 mr-3 h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+                            <label for="c-req-1" class="text-base text-gray-700">
+                                You need to complete **at least 4 of the Control Circuits** (Do each as an individual, separate circuit) and associated **CPU setups** (Do each as an individual, separate circuit) provided on the <a href="https://mendocino.instructure.com/courses/19705/pages/g866bc17ef292b16319ea918253aded0b" class="text-blue-600 hover:text-blue-800">Circuits: Control Summary</a> page.
+                            </label>
+                        </li>
+                        <li class="flex items-start mb-2">
+                            <input type="checkbox" id="c-req-2" data-req="reference_circuits" class="mt-1 mr-3 h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+                            <label for="c-req-2" class="text-base text-gray-700">
+                                For Reference: <a href="https://mendocino.instructure.com/courses/19705/pages/circuits-needed-for-final-project" class="text-blue-600 hover:text-blue-800">Circuits Needed for Final Project</a> (Completion of circuits listed here is implied by the first point).
+                            </label>
+                        </li>
                     </ul>
+                </div>
+                <div id="c-grade-status" class="mt-4 p-3 rounded-md bg-gray-100 text-center font-semibold text-sm">
+                    C-Grade Progress: 0/2 Requirements Met
                 </div>
             </div>
 
@@ -137,9 +151,55 @@
     
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // All JavaScript logic goes here. 
-            let progressState = {}; 
-            // Add any session-level interactivity here, following the Vanilla JS mandate.
+            // State must be managed using simple JavaScript variables or objects within the script's scope.
+            // Progress is lost upon browser refresh (SESSION-LEVEL PROGRESS ONLY mandate).
+            let progressState = {
+                c_grade: {
+                    control_circuits: false,
+                    reference_circuits: false,
+                }
+            };
+
+            const checklistContainer = document.getElementById('c-requirements-checklist');
+            const statusDisplay = document.getElementById('c-grade-status');
+            const totalCReqs = 2; // Fixed number of requirements
+
+            // Function to update the progress state and the UI status display
+            function updateProgress() {
+                // Count how many requirements are currently checked
+                const checkedCount = Object.values(progressState.c_grade).filter(v => v).length;
+                
+                // Update the status text
+                statusDisplay.textContent = `C-Grade Progress: ${checkedCount}/${totalCReqs} Requirements Met`;
+
+                // Optionally change the status box appearance based on completion
+                statusDisplay.classList.remove('bg-gray-100', 'bg-green-100');
+                statusDisplay.classList.add(checkedCount === totalCReqs ? 'bg-green-100' : 'bg-gray-100');
+            }
+
+            // Event listener for all checkboxes in the Grade C section
+            if (checklistContainer) {
+                checklistContainer.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+                    // Load state from the session object (if any was set *before* refresh - this is just good practice, 
+                    // but since we are not using localStorage, it starts fresh every time)
+                    const reqKey = checkbox.dataset.req;
+                    if (progressState.c_grade[reqKey]) {
+                        checkbox.checked = true;
+                    }
+
+                    checkbox.addEventListener('change', (event) => {
+                        const key = event.target.dataset.req;
+                        // Update the session-level JS variable
+                        progressState.c_grade[key] = event.target.checked;
+                        
+                        // Update the UI
+                        updateProgress();
+                    });
+                });
+            }
+
+            // Initialize the status display on load
+            updateProgress();
         });
     </script>
 </body>
