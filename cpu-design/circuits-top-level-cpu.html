@@ -71,14 +71,14 @@
                 <p>The first step in creating the top-level CPU is to **Edit the Circuit Appearance** so that all of the necessary inputs and outputs are situated around the periphery.</p>
             </div>
             <div class="flex justify-center my-6">
-                <img src="images/CPU_Appearance.jpg" alt="CPU Appearance Diagram" class="max-w-full h-auto rounded-lg shadow-md">
+                <img src="images/CPU_Appearance.jpg" alt="Abstracted CPU Appearance with Ports" class="max-w-full h-auto rounded-lg shadow-md">
             </div>
 
             <div class="prose max-w-none">
                 <p>The second step is to setup tunnels on the Inputs/Outputs that we need:</p>
             </div>
             <div class="flex justify-center my-6">
-                <img src="images/CPU_withTunnels.jpg" alt="CPU with Tunnels Diagram" class="max-w-full h-auto rounded-lg shadow-md">
+                <img src="images/CPU_withTunnels.jpg" alt="Abstracted CPU with Tunnels for signal routing" class="max-w-full h-auto rounded-lg shadow-md">
             </div>
         </section>
 
@@ -90,13 +90,13 @@
                 <p>We do this by using the **"Hex Digit Display"** element from the "Input/Output" folder:</p>
             </div>
             <div class="flex justify-center my-6">
-                <img src="images/CPU_HexDigitDisplay.jpg" alt="CPU Hex Digit Display Component" class="max-w-full h-auto rounded-lg shadow-md">
+                <img src="images/CPU_HexDigitDisplay.jpg" alt="Hex digit display in Logisim" class="max-w-full h-auto rounded-lg shadow-md">
             </div>
             <div class="prose max-w-none">
                 <p>We wire up the display by attaching an 8-bit splitter to the appropriate tunnel. We then pair that 8-bit fan with two 4-bit fans where each 4-bit fan is connected to one Hex Digit Display. The image below spreads this out to make it easier to see how these small circuits are wired. Once connected, you can compress the overall circuit for both aesthetics and to save real estate on the top-level simulation.</p>
             </div>
             <div class="flex justify-center my-6">
-                <img src="images/CPU_OutputDisplaysExplained.jpg" alt="CPU Output Displays Explained Wiring Diagram" class="max-w-full h-auto rounded-lg shadow-md">
+                <img src="images/CPU_OutputDisplaysExplained.jpg" alt="How to wire up a Hex Digit Display" class="max-w-full h-auto rounded-lg shadow-md">
             </div>
         </section>
         
@@ -106,7 +106,7 @@
                 <p>In order to run a program, we need to be able to set the Bus and everything connected to it to zero. So we connect a button (found in the Input/Output folder) to the **RESET** tunnel. Clicking this button will set RESET to high which should set all of the "Pull Down" behaviors to Zero (item 2 below). We also need to create the **"LOAD"** and **"MARS"** input pins (1 and 3 below) so that we can set them high to LOAD our program into RAM. The last item is to have a way to see when the program operation is done. We do that by attaching an LED element (found in Input/Output folder) to the **"END"** tunnel.</p>
             </div>
             <div class="flex justify-center my-6">
-                <img src="images/CPU_LoadEnd.jpg" alt="CPU Load and End Control Signals Diagram" class="max-w-full h-auto rounded-lg shadow-md">
+                <img src="images/CPU_LoadEnd.jpg" alt="Key setup inputs to run Simulation" class="max-w-full h-auto rounded-lg shadow-md">
             </div>
         </section>
 
@@ -116,7 +116,7 @@
                 <p>For the Clock, we have 2 things we want to do. The first is to monitor the values for **CLKL, CLKE** and **CLKS**. In the figure below, we have the values 0, 1, 0 next to each respectively. These are the values we want to see just before we run our program. The other thing that we need to do is to add the **"CLK" cycler** item back into our CPU (we removed it when we updated the complete CPU).</p>
             </div>
             <div class="flex justify-center my-6">
-                <img src="images/CPU_Clk.jpg" alt="CPU Clock Signal Monitoring Diagram" class="max-w-full h-auto rounded-lg shadow-md">
+                <img src="images/CPU_Clk.jpg" alt="Monitoring Clock Values during Setup" class="max-w-full h-auto rounded-lg shadow-md">
             </div>
         </section>
 
@@ -126,13 +126,13 @@
                 <p>The Last item we need for our Top-Level Simulation is a way to load our assembly program. One of the primary elements we will use for this is the **"RAM"** item found in the "Memory" folder. We want to use this to make it easier for us to load our program (we could write our own RAM item but it would take a lot of work that isn't exactly necessary for our course).</p>
             </div>
             <div class="flex justify-center my-6">
-                <img src="images/CPU_OnlyExtRAM.jpg" alt="CPU with External RAM Component" class="max-w-full h-auto rounded-lg shadow-md">
+                <img src="images/CPU_OnlyExtRAM.jpg" alt="External RAM required for program loading" class="max-w-full h-auto rounded-lg shadow-md">
             </div>
             <div class="prose max-w-none">
                 <p>In setting up the External RAM, we use a second 256 clock iterator (2nd iterator that is identical to the one attached to the CPU Bus). This iterator is connected to the A (Address) input so that we cycle through all of the bytes of RAM in this External RAM element. This iterator is also driven by the **CLKL** signal which also drives the iterator on the BUS keeping the 2 iterators in-sync. The 4 inputs across the bottom of the External RAM are set to "LOAD", "CLKL", "Constant 1" and "Ground" so that we can load the data as well as keep it in-sync. Lastly, the D output is connected to the 8-bit **"RAM INPUT"** element which will send the proper assembly command into our CPU RAM.</p>
             </div>
             <div class="flex justify-center my-6">
-                <img src="images/CPU_ExternalRAM.jpg" alt="CPU External RAM Detailed Wiring Diagram" class="max-w-full h-auto rounded-lg shadow-md">
+                <img src="images/CPU_ExternalRAM.jpg" alt="External RAM setup for Program Load" class="max-w-full h-auto rounded-lg shadow-md">
             </div>
         </section>
     </main>
