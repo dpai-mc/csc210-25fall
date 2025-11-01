@@ -79,7 +79,7 @@
             </div>
             
             <div class="flex justify-center my-6">
-                <img src="https://mendocino.instructure.com/courses/19705/files/2501477/download" alt="CPU Overview Diagram" class="max-w-full h-auto rounded-lg shadow-md">
+                <img src="images/CPU_Overview.png" alt="Conceptual CPU Overview" class="max-w-full h-auto rounded-lg shadow-md">
             </div>
         </section>
 
@@ -95,13 +95,13 @@
                         <li class="flex items-start mb-2">
                             <input type="checkbox" id="c-req-1" data-req="control_circuits" class="mt-1 mr-3 h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
                             <label for="c-req-1" class="text-base text-gray-700">
-                                You need to complete **at least 4 of the Control Circuits** (Do each as an individual, separate circuit) and associated **CPU setups** (Do each as an individual, separate circuit) provided on the <a href="https://mendocino.instructure.com/courses/19705/pages/g866bc17ef292b16319ea918253aded0b" class="text-blue-600 hover:text-blue-800">Circuits: Control Summary</a> page.
+                                You need to complete **at least 4 of the Control Circuits** (Do each as an individual, separate circuit) and associated **CPU setups** (Do each as an individual, separate circuit) provided on the <a href="circuits-control-summary.html" class="text-blue-600 hover:text-blue-800">Circuits: Control Summary</a> page.
                             </label>
                         </li>
                         <li class="flex items-start mb-2">
                             <input type="checkbox" id="c-req-2" data-req="reference_circuits" class="mt-1 mr-3 h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
                             <label for="c-req-2" class="text-base text-gray-700">
-                                For Reference: <a href="https://mendocino.instructure.com/courses/19705/pages/circuits-needed-for-final-project" class="text-blue-600 hover:text-blue-800">Circuits Needed for Final Project</a> (Completion of circuits listed here is implied by the first point).
+                                For Reference: <a href="circuits-needed-for-final-project.html" class="text-blue-600 hover:text-blue-800">Circuits Needed for Final Project</a> (Completion of circuits listed here is implied by the first point).
                             </label>
                         </li>
                     </ul>
@@ -116,8 +116,8 @@
                     <h3 class="text-2xl font-bold text-gray-800 mt-0 mb-2">For a Grade of "B":</h3>
                     <ul>
                         <li>Complete "For Grade of C" **AND**</li>
-                        <li>Complete the integrated controls section: <a href="https://mendocino.instructure.com/courses/19705/pages/circuits-final-control-unit-circuit" class="text-blue-600 hover:text-blue-800">Circuits: Final Control Unit Circuit</a></li>
-                        <li>Create a "**Final**" CPU with all parts: (<a href="https://mendocino.instructure.com/courses/19705/pages/circuits-final-cpu" class="text-blue-600 hover:text-blue-800">Circuits: Final CPU</a>)</li>
+                        <li>Complete the integrated controls section: <a href="circuits-final-control-unit-circuit.html" class="text-blue-600 hover:text-blue-800">Circuits: Final Control Unit Circuit</a></li>
+                        <li>Create a "**Final**" CPU with all parts: (<a href="circuits-final-cpu.html" class="text-blue-600 hover:text-blue-800">Circuits: Final CPU</a>)</li>
                     </ul>
                 </div>
             </div>
@@ -127,8 +127,8 @@
                     <h3 class="text-2xl font-bold text-gray-800 mt-0 mb-2">For a Grade of "A":</h3>
                     <ul>
                         <li>Complete "For Grade of B" **AND**</li>
-                        <li>Create the **top-level CPU for simulation purposes** (<a href="https://mendocino.instructure.com/courses/19705/pages/circuits-top-level-cpu" class="text-blue-600 hover:text-blue-800">Circuits: Top-Level CPU</a>)</li>
-                        <li>Download the provided Program and run it (5 * 5 program - <a href="https://mendocino.instructure.com/courses/19705/files/2501480?wrap=1" target="_blank" rel="noopener" class="text-blue-600 hover:text-blue-800">MYSIM.txt)</a></li>
+                        <li>Create the **top-level CPU for simulation purposes** (<a href="circuits-top-level-cpu.html" class="text-blue-600 hover:text-blue-800">Circuits: Top-Level CPU</a>)</li>
+                        <li>Download the provided Program and run it (5 * 5 program - <a href="files/MYSIM.txt" target="_blank" rel="noopener" class="text-blue-600 hover:text-blue-800">MYSIM.txt)</a></li>
                     </ul>
                 </div>
             </div>
@@ -138,7 +138,7 @@
             <h3 class="text-2xl font-bold text-gray-800 mt-0 mb-2">Top-Level CPU Simulation View</h3>
             
             <div class="flex justify-center my-6">
-                <img src="https://mendocino.instructure.com/courses/19705/files/2501463/preview" alt="CPU Top-Level Simulation Preview" class="max-w-full h-auto rounded-lg shadow-md">
+                <img src="images/CPU_TopSim.jpg" alt="Abstracted CPU Top-Level" class="max-w-full h-auto rounded-lg shadow-md">
             </div>
         </section>
 
@@ -180,13 +180,9 @@
             // Event listener for all checkboxes in the Grade C section
             if (checklistContainer) {
                 checklistContainer.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
-                    // Load state from the session object (if any was set *before* refresh - this is just good practice, 
-                    // but since we are not using localStorage, it starts fresh every time)
+                    // Note: Since no persistent storage (localStorage) is used, this starts fresh on every page load.
                     const reqKey = checkbox.dataset.req;
-                    if (progressState.c_grade[reqKey]) {
-                        checkbox.checked = true;
-                    }
-
+                    
                     checkbox.addEventListener('change', (event) => {
                         const key = event.target.dataset.req;
                         // Update the session-level JS variable
