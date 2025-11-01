@@ -64,16 +64,17 @@
     <main id="main-content" class="p-4 sm:p-6 lg:p-8 max-w-4xl mx-auto">
         
         <section class="mb-8 p-6 bg-white rounded-xl shadow-lg">
+            <h2 class="text-4xl font-extrabold mb-4 text-blue-700">Project Overview</h2>
+            
             <div class="prose max-w-none">
-                <h2>Project Overview</h2>
                 <p>For the Final Project in this course, we are going to design and build an **8-bit CPU** using a digital circuit simulation software.</p>
 
-                <h3>Overview of the Final CPU Design</h3>
+                <h3 class="text-2xl font-bold mt-6 mb-2 text-gray-800">Overview of the Final CPU Design</h3>
                 <p>Here's an overview of the final CPU design that we will be building.</p>
 
                 <div class="p-4 bg-yellow-50 border-l-4 border-yellow-500 text-yellow-800 rounded-md my-4">
                     <p class="font-bold">PLEASE NOTE:</p>
-                    <p>You **MUST** use the file provided by the instructor at the beginning of this project as your CPU build file and all necessary circuits need to be included in that file (not linked... basically your entire CPU **MUST** be developed/built within that file).</p>
+                    <p>You **MUST** include ALL of the circuits necessary for the CPU simulation in your final submission file. Do not link any libraries in your project other than those included by default. You MUST have created all of your component using basic gates as defined throughout the various component instructions, except as noted in the instructions.</p>
                 </div>
             </div>
             
@@ -83,12 +84,12 @@
         </section>
 
         <section class="mb-8">
-            <h2 class="text-3xl font-semibold mb-4 text-[#1A1A1A]">Final Submission Requirements</h2>
+            <h2 class="text-4xl font-extrabold mb-4 text-blue-700">Final Submission Requirements</h2>
             <p class="text-lg text-gray-700 mb-6">For the Final Submission, you need to complete the following based on the desired grade:</p>
 
             <div class="p-6 mb-4 bg-white rounded-xl shadow-lg border-t-4 border-gray-400">
                 <div class="prose max-w-none">
-                    <h3 class="text-xl font-bold text-gray-700">For a Grade of "C":</h3>
+                    <h3 class="text-2xl font-bold text-gray-800 mt-0 mb-2">For a Grade of "C":</h3>
                     <ul>
                         <li>You need to complete **ALL the Control Circuits** (Do each as an individual, separate circuit) and associated **CPU setups** (Do each as an individual, separate circuit) provided on the <a href="https://mendocino.instructure.com/courses/19705/pages/g866bc17ef292b16319ea918253aded0b" class="text-blue-600 hover:text-blue-800">Circuits: Control Summary</a> page.</li>
                         <li>For Reference: <a href="https://mendocino.instructure.com/courses/19705/pages/circuits-needed-for-final-project" class="text-blue-600 hover:text-blue-800">Circuits Needed for Final Project</a></li>
@@ -98,7 +99,7 @@
 
             <div class="p-6 mb-4 bg-white rounded-xl shadow-lg border-t-4 border-yellow-500">
                 <div class="prose max-w-none">
-                    <h3 class="text-xl font-bold text-gray-700">For a Grade of "B":</h3>
+                    <h3 class="text-2xl font-bold text-gray-800 mt-0 mb-2">For a Grade of "B":</h3>
                     <ul>
                         <li>Complete "For Grade of C" **AND**</li>
                         <li>Complete the integrated controls section: <a href="https://mendocino.instructure.com/courses/19705/pages/circuits-final-control-unit-circuit" class="text-blue-600 hover:text-blue-800">Circuits: Final Control Unit Circuit</a></li>
@@ -109,7 +110,7 @@
 
             <div class="p-6 mb-4 bg-white rounded-xl shadow-lg border-t-4 border-green-600">
                 <div class="prose max-w-none">
-                    <h3 class="text-xl font-bold text-gray-700">For a Grade of "A":</h3>
+                    <h3 class="text-2xl font-bold text-gray-800 mt-0 mb-2">For a Grade of "A":</h3>
                     <ul>
                         <li>Complete "For Grade of B" **AND**</li>
                         <li>Create the **top-level CPU for simulation purposes** (<a href="https://mendocino.instructure.com/courses/19705/pages/circuits-top-level-cpu" class="text-blue-600 hover:text-blue-800">Circuits: Top-Level CPU</a>)</li>
@@ -120,9 +121,8 @@
         </section>
 
         <section class="mb-8 p-6 bg-white rounded-xl shadow-lg">
-            <div class="prose max-w-none">
-                <h3 class="text-xl font-bold text-gray-700">Top-Level CPU Simulation View</h3>
-            </div>
+            <h3 class="text-2xl font-bold text-gray-800 mt-0 mb-2">Top-Level CPU Simulation View</h3>
+            
             <div class="flex justify-center my-6">
                 <img src="https://mendocino.instructure.com/courses/19705/files/2501463/preview" alt="CPU Top-Level Simulation Preview" class="max-w-full h-auto rounded-lg shadow-md">
             </div>
@@ -138,11 +138,7 @@
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             // All JavaScript logic goes here. 
-            // Since this guide contains less than three distinct core concepts, the Mandatory Modular Navigation (Tabs) is NOT required.
-            // All interactivity (if added later, e.g., progress tracking) MUST use simple JS variables.
             let progressState = {}; 
-            // Example: progressState.C_RequirementsMet = false;
-
             // Add any session-level interactivity here, following the Vanilla JS mandate.
         });
     </script>
