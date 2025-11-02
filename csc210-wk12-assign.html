@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Week 12: Memory Interface & I/O - Interactive Assignment</title>
+    
+    <!-- Chosen Palette: Scholarly Neutrals -->
+    <!-- Application Structure Plan: Single-page interactive assignment covering memory organization, addressing, timing diagrams, memory-mapped I/O, and bus protocols. Students complete 5 sections with various question types including calculations, diagrams, and design problems. All answers collected via print-to-PDF for submission. -->
+    <!-- Visualization & Content Choices: Interactive input fields for calculations and short answers, with immediate feedback on certain sections. Memory map visualization exercises and timing diagram analysis. Uses Fira Code for technical content and Inter for body text. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Inter and Fira Code -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #FDFBF8;
+            color: #383838;
+        }
+        
+        code, .code-block, .worksheet-input {
+            font-family: 'Fira Code', monospace;
+        }
+        
+        h1 {
+            @apply text-3xl md:text-4xl font-bold;
+        }
+        
+        h2 {
+            @apply text-2xl font-bold;
+            color: #383838;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #EADDD7;
+        }
+        
+        h3 {
+            @apply text-xl font-semibold;
+            color: #383838;
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+        }
+        
+        .worksheet-input {
+            border: 1px solid #D1C7BF;
+            background-color: #FFFFFF;
+            padding: 0.5rem;
+            border-radius: 0.375rem;
+            width: 100%;
+            transition: all 0.2s;
+        }
+        
+        .worksheet-input:focus {
+            outline: none;
+            border-color: #4A90E2;
+            box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.5);
+        }
+        
+        .submit-btn {
+            background-color: #4A90E2;
+            color: white;
+            font-weight: 600;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        .submit-btn:hover {
+            background-color: #357ABD;
+        }
+        
+        .check-btn {
+            background-color: #EADDD7;
+            font-weight: 600;
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        .check-btn:hover {
+            background-color: #D1C7BF;
+        }
+        
+        .code-block {
+            background-color: #f4f4f4;
+            border: 1px solid #ddd;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            white-space: pre-wrap;
+            overflow-x: auto;
+        }
+        
+        .question-box {
+            background-color: #FFFFFF;
+            border: 1px solid #EADDD7;
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .feedback {
+            margin-top: 0.5rem;
+            padding: 0.75rem;
+            border-radius: 0.375rem;
+            font-weight: 500;
+        }
+        
+        .feedback.correct {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .feedback.incorrect {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .memory-map-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+        }
+        
+        .memory-map-table th,
+        .memory-map-table td {
+            border: 1px solid #D1C7BF;
+            padding: 0.75rem;
+            text-align: left;
+        }
+        
+        .memory-map-table th {
+            background-color: #EADDD7;
+            font-weight: 600;
+        }
+        
+        .memory-map-table tr:nth-child(even) {
+            background-color: #FDFBF8;
+        }
+        
+        .timing-diagram {
+            font-family: 'Fira Code', monospace;
+            background-color: #f4f4f4;
+            border: 1px solid #ddd;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            overflow-x: auto;
+            line-height: 1.6;
+        }
+        
+        .info-box {
+            background-color: #E3F2FD;
+            border-left: 4px solid #4A90E2;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 0.25rem;
+        }
+        
+        @media print {
+            body {
+                background-color: white;
+            }
+            
+            .no-print {
+                display: none !important;
+            }
+            
+            .worksheet-input {
+                border: none;
+                border-bottom: 1px solid #383838;
+                background-color: transparent;
+                page-break-inside: avoid;
+            }
+            
+            .question-box {
+                page-break-inside: avoid;
+                border: 1px solid #383838;
+            }
+            
+            h2 {
+                page-break-after: avoid;
+            }
+            
+            .print-value {
+                display: inline-block;
+                min-height: 1.5em;
+                border-bottom: 1px solid #383838;
+                min-width: 200px;
+            }
+        }
+        
+        .print-only {
+            display: none;
+        }
+        
+        @media print {
+            .print-only {
+                display: block;
+            }
+        }
+    </style>
+</head>
+<body class="antialiased">
+    <main class="max-w-[800px] mx-auto p-4 md:p-8">
+        <!-- Header Section -->
+        <header class="mb-8">
+            <h1 class="mb-4">Week 12: Memory Interface & I/O</h1>
+            <div class="mb-4 p-4" style="background-color: #EADDD7; border-radius: 0.5rem;">
+                <p class="font-semibold mb-2">CSC210 - Computer Organization & Architecture</p>
+                <p class="mb-1"><strong>Student Name:</strong> <input type="text" id="studentName" class="worksheet-input" style="width: 300px; display: inline-block;" placeholder="Enter your full name"></p>
+                <p><strong>Date:</strong> <input type="text" id="assignmentDate" class="worksheet-input" style="width: 200px; display: inline-block;" placeholder="MM/DD/YYYY"></p>
+            </div>
+            
+            <div class="info-box">
+                <p class="font-semibold mb-2">📋 Assignment Instructions</p>
+                <p class="mb-2">This assignment assesses your understanding of memory interfaces, I/O systems, and bus protocols. Complete all sections and click "Save as PDF" at the bottom to submit your work.</p>
+                <p class="text-sm"><strong>Estimated Time:</strong> 60 minutes | <strong>Total Points:</strong> 100</p>
+            </div>
+        </header>
+
+        <!-- Section 1: Memory Organization & Addressing -->
+        <section class="mb-8">
+            <h2>Section 1: Memory Organization & Addressing (25 points)</h2>
+            
+            <div class="question-box">
+                <h3>Question 1.1: Address Space Calculations (5 points)</h3>
+                <p class="mb-4">Your 8-bit CPU has an 8-bit address bus. Answer the following questions:</p>
+                
+                <div class="mb-4">
+                    <label class="block mb-2"><strong>a)</strong> How many unique addresses can be accessed? (Show calculation)</label>
+                    <textarea class="worksheet-input" id="q1_1a" rows="2" placeholder="Enter your calculation (e.g., 2^n = ...)"></textarea>
+                </div>
+                
+                <div class="mb-4">
+                    <label class="block mb-2"><strong>b)</strong> If each address holds one byte, what is the total memory capacity in bytes?</label>
+                    <input type="text" class="worksheet-input" id="q1_1b" placeholder="Enter capacity">
+                </div>
+                
+                <div class="mb-4">
+                    <label class="block mb-2"><strong>c)</strong> What is the address range in hexadecimal notation?</label>
+                    <input type="text" class="worksheet-input" id="q1_1c" placeholder="Enter range (e.g., 0x00 to 0x__)">
+                </div>
+            </div>
+
+            <div class="question-box">
+                <h3>Question 1.2: Memory Map Design (10 points)</h3>
+                <p class="mb-4">Design a memory map for your 256-byte address space. Fill in the table below with appropriate address ranges and justifications.</p>
+                
+                <table class="memory-map-table">
+                    <thead>
+                        <tr>
+                            <th>Memory Segment</th>
+                            <th>Address Range (Hex)</th>
+                            <th>Size (bytes)</th>
+                            <th>Purpose/Justification</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Program Code</strong></td>
+                            <td><input type="text" class="worksheet-input" id="q1_2_code_range" placeholder="0x00 to 0x__"></td>
+                            <td><input type="text" class="worksheet-input" id="q1_2_code_size" placeholder="Size"></td>
+                            <td><input type="text" class="worksheet-input" id="q1_2_code_purpose" placeholder="Why this size?"></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Data/Variables</strong></td>
+                            <td><input type="text" class="worksheet-input" id="q1_2_data_range" placeholder="0x__ to 0x__"></td>
+                            <td><input type="text" class="worksheet-input" id="q1_2_data_size" placeholder="Size"></td>
+                            <td><input type="text" class="worksheet-input" id="q1_2_data_purpose" placeholder="Why this size?"></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Stack</strong></td>
+                            <td><input type="text" class="worksheet-input" id="q1_2_stack_range" placeholder="0x__ to 0x__"></td>
+                            <td><input type="text" class="worksheet-input" id="q1_2_stack_size" placeholder="Size"></td>
+                            <td><input type="text" class="worksheet-input" id="q1_2_stack_purpose" placeholder="Why this size?"></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Memory-Mapped I/O</strong></td>
+                            <td><input type="text" class="worksheet-input" id="q1_2_io_range" placeholder="0x__ to 0x__"></td>
+                            <td><input type="text" class="worksheet-input" id="q1_2_io_size" placeholder="Size"></td>
+                            <td><input type="text" class="worksheet-input" id="q1_2_io_purpose" placeholder="Why this location?"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="question-box">
+                <h3>Question 1.3: Endianness and Multi-Byte Storage (10 points)</h3>
+                <p class="mb-4">Consider storing a 16-bit value <code>0xABCD</code> starting at address <code>0x10</code>.</p>
+                
+                <div class="mb-4">
+                    <label class="block mb-2"><strong>a)</strong> In <strong>little-endian</strong> format, what value is stored at address 0x10? At 0x11?</label>
+                    <div class="mb-2">
+                        <span class="inline-block mr-4">Address 0x10: <input type="text" class="worksheet-input" id="q1_3a_10" style="width: 100px; display: inline;" placeholder="0x__"></span>
+                        <span class="inline-block">Address 0x11: <input type="text" class="worksheet-input" id="q1_3a_11" style="width: 100px; display: inline;" placeholder="0x__"></span>
+                    </div>
+                </div>
+                
+                <div class="mb-4">
+                    <label class="block mb-2"><strong>b)</strong> In <strong>big-endian</strong> format, what value is stored at address 0x10? At 0x11?</label>
+                    <div class="mb-2">
+                        <span class="inline-block mr-4">Address 0x10: <input type="text" class="worksheet-input" id="q1_3b_10" style="width: 100px; display: inline;" placeholder="0x__"></span>
+                        <span class="inline-block">Address 0x11: <input type="text" class="worksheet-input" id="q1_3b_11" style="width: 100px; display: inline;" placeholder="0x__"></span>
+                    </div>
+                </div>
+                
+                <div class="mb-4">
+                    <label class="block mb-2"><strong>c)</strong> Explain which endianness you would choose for your 8-bit CPU and why.</label>
+                    <textarea class="worksheet-input" id="q1_3c" rows="3" placeholder="Your explanation here..."></textarea>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 2: Memory Interface Timing -->
+        <section class="mb-8">
+            <h2>Section 2: Memory Interface Timing (25 points)</h2>
+            
+            <div class="question-box">
+                <h3>Question 2.1: Memory Specifications (10 points)</h3>
+                <p class="mb-4">Given the following memory chip specifications:</p>
+                <div class="code-block mb-4">Access Time:  55ns
+Setup Time:   10ns
+Hold Time:    8ns
+CPU Clock:    12MHz (period = 83.33ns)</div>
+                
+                <div class="mb-4">
+                    <label class="block mb-2"><strong>a)</strong> Can a memory read operation complete in a single clock cycle? Show your calculation and explain.</label>
+                    <textarea class="worksheet-input" id="q2_1a" rows="4" placeholder="Calculate: Access time + Setup time = ? Compare to clock period..."></textarea>
+                </div>
+                
+                <div class="mb-4">
+                    <label class="block mb-2"><strong>b)</strong> What is the minimum number of clock cycles required for a safe read operation?</label>
+                    <input type="text" class="worksheet-input" id="q2_1b" placeholder="Number of cycles">
+                </div>
+                
+                <div class="mb-4">
+                    <label class="block mb-2"><strong>c)</strong> If you wanted single-cycle memory access, what would be the maximum CPU clock frequency?</label>
+                    <textarea class="worksheet-input" id="q2_1c" rows="2" placeholder="Calculate maximum frequency..."></textarea>
+                </div>
+            </div>
+
+            <div class="question-box">
+                <h3>Question 2.2: Timing Diagram Analysis (15 points)</h3>
+                <p class="mb-4">Examine the following memory read timing diagram:</p>
+                <div class="timing-diagram mb-4">
+CLK:       __|‾‾|__|‾‾|__|‾‾|__|‾‾|__
+MAR_LOAD:  ______|‾‾‾‾|_____________
+Address:   --------[ADDR]----------→
+MEM_READ:  ___________|‾‾‾‾‾‾|_____
+Data:      -------------[DATA]-----→
+MDR_LOAD:  ________________|‾‾|____
+                </div>
+                
+                <div class="mb-4">
+                    <label class="block mb-2"><strong>a)</strong> Which clock cycle loads the address into the MAR?</label>
+                    <input type="text" class="worksheet-input" id="q2_2a" placeholder="Cycle number">
+                </div>
+                
+                <div class="mb-4">
+                    <label class="block mb-2"><strong>b)</strong> How many clock cycles after the address becomes valid does MEM_READ assert?</label>
+                    <input type="text" class="worksheet-input" id="q2_2b" placeholder="Number of cycles">
+                </div>
+                
+                <div class="mb-4">
+                    <label class="block mb-2"><strong>c)</strong> List all control signals that must be asserted in each cycle:</label>
+                    <textarea class="worksheet-input" id="q2_2c" rows="4" placeholder="Cycle 1: MAR_LOAD=1&#10;Cycle 2: ...&#10;Cycle 3: ..."></textarea>
+                </div>
+                
+                <div class="mb-4">
+                    <label class="block mb-2"><strong>d)</strong> Draw a similar timing diagram for a memory WRITE operation. Label all signals clearly.</label>
+                    <textarea class="worksheet-input" id="q2_2d" rows="8" placeholder="Draw your timing diagram here using ASCII characters..."></textarea>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 3: Memory-Mapped I/O -->
+        <section class="mb-8">
+            <h2>Section 3: Memory-Mapped I/O (25 points)</h2>
+            
+            <div class="question-box">
+                <h3>Question 3.1: Address Decoder Design (15 points)</h3>
+                <p class="mb-4">Design an address decoder that maps memory and I/O devices as follows:</p>
+                <ul class="list-disc ml-6 mb-4">
+                    <li><strong>RAM:</strong> 0x00 to 0xEF</li>
+                    <li><strong>Input Port:</strong> 0xF0</li>
+                    <li><strong>Output Port:</strong> 0xF1</li>
+                    <li><strong>Status Register:</strong> 0xF2</li>
+                    <li><strong>Control Register:</strong> 0xF3</li>
+                    <li><strong>Reserved:</strong> 0xF4 to 0xFF</li>
+                </ul>
+                
+                <div class="mb-4">
+                    <label class="block mb-2"><strong>a)</strong> What address bits would you check to determine if an address is in the I/O range (0xF0-0xFF)?</label>
+                    <input type="text" class="worksheet-input" id="q3_1a" placeholder="e.g., Check bits [7:4] for value...">
+                </div>
+                
+                <div class="mb-4">
+                    <label class="block mb-2"><strong>b)</strong> Write the Boolean expression for the RAM_ENABLE signal. (Hint: RAM_ENABLE should be HIGH when address is 0x00-0xEF)</label>
+                    <textarea class="worksheet-input" id="q3_1b" rows="2" placeholder="RAM_ENABLE = ..."></textarea>
+                </div>
+                
+                <div class="mb-4">
+                    <label class="block mb-2"><strong>c)</strong> Write the Boolean expressions for each I/O device enable signal:</label>
+                    <textarea class="worksheet-input" id="q3_1c" rows="4" placeholder="INPUT_ENABLE = ...&#10;OUTPUT_ENABLE = ...&#10;STATUS_ENABLE = ...&#10;CONTROL_ENABLE = ..."></textarea>
+                </div>
+                
+                <div class="mb-4">
+                    <label class="block mb-2"><strong>d)</strong> Explain how you would prevent bus contention between RAM and I/O devices on the data bus.</label>
+                    <textarea class="worksheet-input" id="q3_1d" rows="4" placeholder="Describe use of tri-state buffers and control signals..."></textarea>
+                </div>
+            </div>
+
+            <div class="question-box">
+                <h3>Question 3.2: I/O Port Implementation (10 points)</h3>
+                <p class="mb-4">Consider implementing an 8-bit output port at address 0xF1.</p>
+                
+                <div class="mb-4">
+                    <label class="block mb-2"><strong>a)</strong> List the hardware components needed for the output port (registers, buffers, logic gates).</label>
+                    <textarea class="worksheet-input" id="q3_2a" rows="3" placeholder="List components..."></textarea>
+                </div>
+                
+                <div class="mb-4">
+                    <label class="block mb-2"><strong>b)</strong> Describe the step-by-step operation when the CPU executes <code>STORE R1, [0xF1]</code>.</label>
+                    <textarea class="worksheet-input" id="q3_2b" rows="6" placeholder="Step 1: ...&#10;Step 2: ..."></textarea>
+                </div>
+                
+                <div class="mb-4">
+                    <label class="block mb-2"><strong>c)</strong> What is one advantage of memory-mapped I/O over port-based I/O?</label>
+                    <textarea class="worksheet-input" id="q3_2c" rows="2" placeholder="Advantage: ..."></textarea>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 4: Bus Protocols & Control -->
+        <section class="mb-8">
+            <h2>Section 4: Bus Protocols & Control (15 points)</h2>
+            
+            <div class="question-box">
+                <h3>Question 4.1: System Bus Architecture (8 points)</h3>
+                
+                <div class="mb-4">
+                    <label class="block mb-2"><strong>a)</strong> Identify the three main buses in your CPU system and their purposes:</label>
+                    <textarea class="worksheet-input" id="q4_1a" rows="4" placeholder="1. Address Bus: ...&#10;2. Data Bus: ...&#10;3. Control Bus: ..."></textarea>
+                </div>
+                
+                <div class="mb-4">
+                    <label class="block mb-2"><strong>b)</strong> Why must the data bus be bidirectional while the address bus is unidirectional?</label>
+                    <textarea class="worksheet-input" id="q4_1b" rows="3" placeholder="Explain..."></textarea>
+                </div>
+                
+                <div class="mb-4">
+                    <label class="block mb-2"><strong>c)</strong> What is bus contention and why is it problematic?</label>
+                    <textarea class="worksheet-input" id="q4_1c" rows="3" placeholder="Definition and problems..."></textarea>
+                </div>
+            </div>
+
+            <div class="question-box">
+                <h3>Question 4.2: Control Signal Coordination (7 points)</h3>
+                <p class="mb-4">Given the following control signals: MEM_READ, MEM_WRITE, MDR_OUT_ENABLE, RAM_ENABLE</p>
+                
+                <div class="mb-4">
+                    <label class="block mb-2"><strong>a)</strong> Which control signals should NEVER be asserted simultaneously? Explain why for each pair.</label>
+                    <textarea class="worksheet-input" id="q4_2a" rows="4" placeholder="List conflicting signal pairs and reasons..."></textarea>
+                </div>
+                
+                <div class="mb-4">
+                    <label class="block mb-2"><strong>b)</strong> Design a simple state machine (3-4 states) for a memory write operation. List states, transitions, and control signals for each state.</label>
+                    <textarea class="worksheet-input" id="q4_2b" rows="6" placeholder="State 0 (IDLE): ...&#10;State 1: ..."></textarea>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 5: Integration & Instruction Implementation -->
+        <section class="mb-8">
+            <h2>Section 5: Integration & Instruction Implementation (10 points)</h2>
+            
+            <div class="question-box">
+                <h3>Question 5.1: LOAD Instruction Implementation (5 points)</h3>
+                <p class="mb-4">Consider the instruction: <code>LOAD R2, [0x40]</code> (Load byte at address 0x40 into register R2)</p>
+                
+                <div class="mb-4">
+                    <label class="block mb-2"><strong>a)</strong> Write the complete microoperation sequence for the EXECUTE phase only (assume fetch/decode are complete):</label>
+                    <textarea class="worksheet-input" id="q5_1a" rows="5" placeholder="Execute Phase:&#10;Cycle 1: ...&#10;Cycle 2: ..."></textarea>
+                </div>
+                
+                <div class="mb-4">
+                    <label class="block mb-2"><strong>b)</strong> List all control signals that must be asserted during the execute phase, organized by cycle:</label>
+                    <textarea class="worksheet-input" id="q5_1b" rows="4" placeholder="Cycle 1: MAR_LOAD=1, ...&#10;Cycle 2: ..."></textarea>
+                </div>
+            </div>
+
+            <div class="question-box">
+                <h3>Question 5.2: STORE Instruction Implementation (5 points)</h3>
+                <p class="mb-4">Consider the instruction: <code>STORE R3, [0x60]</code> (Store R3 value to address 0x60)</p>
+                
+                <div class="mb-4">
+                    <label class="block mb-2"><strong>a)</strong> How does the STORE instruction's execute phase differ from LOAD's execute phase?</label>
+                    <textarea class="worksheet-input" id="q5_2a" rows="4" placeholder="Key differences..."></textarea>
+                </div>
+                
+                <div class="mb-4">
+                    <label class="block mb-2"><strong>b)</strong> Write the complete microoperation sequence for the STORE execute phase:</label>
+                    <textarea class="worksheet-input" id="q5_2b" rows="5" placeholder="Execute Phase:&#10;Cycle 1: ...&#10;Cycle 2: ..."></textarea>
+                </div>
+            </div>
+        </section>
+
+        <!-- Reflection Section -->
+        <section class="mb-8">
+            <h2>Reflection Questions (Bonus: 5 points)</h2>
+            
+            <div class="question-box">
+                <div class="mb-4">
+                    <label class="block mb-2"><strong>1.</strong> What was the most challenging concept in this assignment and how did you work through it?</label>
+                    <textarea class="worksheet-input" id="reflection1" rows="3" placeholder="Your reflection..."></textarea>
+                </div>
+                
+                <div class="mb-4">
+                    <label class="block mb-2"><strong>2.</strong> How does understanding memory interfaces help you appreciate how real computers work?</label>
+                    <textarea class="worksheet-input" id="reflection2" rows="3" placeholder="Your thoughts..."></textarea>
+                </div>
+            </div>
+        </section>
+
+        <!-- Academic Integrity Statement -->
+        <section class="mb-8">
+            <div class="question-box">
+                <h3>Academic Integrity Statement</h3>
+                <p class="mb-4">By submitting this assignment, I affirm that:</p>
+                <ul class="list-disc ml-6 mb-4">
+                    <li>I completed this work independently or with only permitted collaboration</li>
+                    <li>I have cited any external resources, AI assistance, or help received</li>
+                    <li>I understand the consequences of academic dishonesty</li>
+                </ul>
+                <div class="mb-4">
+                    <label class="block mb-2"><strong>List any resources used or assistance received (if none, write "None"):</strong></label>
+                    <textarea class="worksheet-input" id="resources" rows="3" placeholder="List textbooks, websites, tutors, classmates who helped, AI tools used, etc."></textarea>
+                </div>
+                <div class="mb-4">
+                    <label class="inline-flex items-center">
+                        <input type="checkbox" id="integrityCheck" class="mr-2" style="width: auto;">
+                        <span>I have read and agree to the academic integrity statement</span>
+                    </label>
+                </div>
+            </div>
+        </section>
+
+        <!-- Submit Button -->
+        <div class="mb-8 text-center no-print">
+            <button onclick="window.print()" class="submit-btn">
+                💾 Save as PDF for Submission
+            </button>
+            <p class="mt-4 text-sm" style="color: #666;">Click the button above to generate a PDF of your completed assignment.</p>
+        </div>
+
+        <!-- Print-Only Header -->
+        <div class="print-only" style="position: fixed; top: 0; right: 0; font-size: 10px; color: #666;">
+            Printed: <span id="printDate"></span>
+        </div>
+
+    </main>
+
+    <script>
+        // Set print date
+        document.getElementById('printDate').textContent = new Date().toLocaleString();
+        
+        // Collect and display all answers when printing
+        window.addEventListener('beforeprint', function() {
+            // Get student info
+            const studentName = document.getElementById('studentName').value || '_______________';
+            const assignmentDate = document.getElementById('assignmentDate').value || '_______________';
+            
+            // Ensure all textarea and input values are visible in print
+            document.querySelectorAll('.worksheet-input').forEach(function(input) {
+                if (input.tagName === 'TEXTAREA') {
+                    // For textareas, ensure the full content is visible
+                    input.style.height = 'auto';
+                    input.style.height = (input.scrollHeight + 10) + 'px';
+                    input.style.minHeight = '3em';
+                } else {
+                    // For text inputs, ensure value is visible
+                    if (!input.value) {
+                        input.value = '_______________';
+                    }
+                }
+            });
+            
+            // Set print date
+            document.getElementById('printDate').textContent = new Date().toLocaleString();
+        });
+        
+        // Auto-resize textareas as user types
+        document.querySelectorAll('textarea.worksheet-input').forEach(function(textarea) {
+            textarea.addEventListener('input', function() {
+                this.style.height = 'auto';
+                this.style.height = (this.scrollHeight) + 'px';
+            });
+        });
+        
+        // Check integrity checkbox before printing
+        document.querySelector('.submit-btn').addEventListener('click', function(e) {
+            const integrityCheck = document.getElementById('integrityCheck');
+            if (!integrityCheck.checked) {
+                e.preventDefault();
+                alert('Please read and check the Academic Integrity Statement before submitting.');
+                return false;
+            }
+            
+            const studentName = document.getElementById('studentName').value.trim();
+            if (!studentName) {
+                e.preventDefault();
+                alert('Please enter your name before submitting.');
+                return false;
+            }
+        });
+        
+        // Save progress to localStorage (optional enhancement)
+        function saveProgress() {
+            const formData = {};
+            document.querySelectorAll('.worksheet-input').forEach(function(input) {
+                if (input.id) {
+                    formData[input.id] = input.value;
+                }
+            });
+            localStorage.setItem('week12_assignment', JSON.stringify(formData));
+        }
+        
+        // Load saved progress
+        function loadProgress() {
+            const saved = localStorage.getItem('week12_assignment');
+            if (saved) {
+                const formData = JSON.parse(saved);
+                Object.keys(formData).forEach(function(id) {
+                    const input = document.getElementById(id);
+                    if (input) {
+                        input.value = formData[id];
+                    }
+                });
+            }
+        }
+        
+        // Auto-save every 30 seconds
+        setInterval(saveProgress, 30000);
+        
+        // Load progress on page load
+        window.addEventListener('load', loadProgress);
+        
+        // Save before unload
+        window.addEventListener('beforeunload', saveProgress);
+    </script>
+</body>
+</html>
