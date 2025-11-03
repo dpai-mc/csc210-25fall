@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Week 12: Memory Hierarchy - Interactive Learning Guide</title>
+    <title>Week 12: Memory Interface & I/O - Interactive Learning Guide</title>
     
     <!-- CDN Links & Tailwind Configuration -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
-        // MANDATORY: Configure Tailwind to include the Typography plugin for consistent text/heading styling.
+        // MANDATORY: Configure Tailwind
         tailwind.config = {
             theme: {
                 extend: {
@@ -24,8 +24,8 @@
         /* Essential for ensuring light mode and setting base font */
         html { 
             font-family: 'Inter', sans-serif; 
-            background-color: #FDFBF8; /* Light background */
-            color: #1A1A1A; /* Dark text */
+            background-color: #FDFBF8;
+            color: #1A1A1A;
         }
         
         /* Override Tailwind default dark mode behavior */
@@ -56,16 +56,39 @@
             top: 0;
         }
         
-        /* Custom pyramid visualization styles */
+        /* Module navigation styles */
+        .module-nav-btn {
+            transition: all 0.2s ease;
+        }
+        
+        .module-nav-btn.active {
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+            color: white;
+            box-shadow: 0 4px 6px rgba(37, 99, 235, 0.3);
+        }
+        
+        .module-nav-btn.completed {
+            background-color: #10b981;
+            color: white;
+        }
+        
+        .module-nav-btn.locked {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        /* Pyramid visualization */
         .pyramid-level {
             position: relative;
-            margin: 0 auto;
-            min-height: 100px;
+            margin: 12px auto;
+            min-height: 80px;
             display: flex;
             align-items: center;
             justify-content: center;
             border: 2px dashed #cbd5e1;
             transition: all 0.3s ease;
+            background: white;
+            border-radius: 8px;
         }
         
         .pyramid-level.filled {
@@ -77,14 +100,10 @@
             background-color: #dbeafe;
             border-color: #2563eb;
             transform: scale(1.02);
+            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
         }
         
-        .pyramid-level-1 { width: 25%; }
-        .pyramid-level-2 { width: 50%; }
-        .pyramid-level-3 { width: 75%; }
-        .pyramid-level-4 { width: 100%; }
-        
-        /* Draggable card styles */
+        /* Draggable cards */
         .draggable-card {
             cursor: grab;
             transition: all 0.3s ease;
@@ -103,649 +122,644 @@
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
         }
         
-        /* Memory pyramid visual representation */
-        .memory-pyramid-visual {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 8px;
-            padding: 20px;
+        /* Timing diagram styles */
+        .timing-row {
+            display: grid;
+            grid-template-columns: 150px repeat(5, 1fr);
+            gap: 1px;
+            background-color: #cbd5e1;
+            border: 1px solid #94a3b8;
         }
         
-        .pyramid-visual-level {
+        .timing-cell {
+            background-color: white;
+            padding: 12px 8px;
+            text-align: center;
+            font-size: 0.875rem;
+        }
+        
+        .timing-cell.header {
+            background-color: #f1f5f9;
+            font-weight: 600;
+        }
+        
+        .timing-cell.signal-high {
+            background-color: #dcfce7;
+            color: #166534;
+            font-weight: 600;
+        }
+        
+        .timing-cell.signal-low {
+            background-color: #f3f4f6;
+            color: #6b7280;
+        }
+        
+        .timing-cell.data-present {
+            background-color: #dbeafe;
+            color: #1e40af;
+            font-weight: 600;
+            font-family: 'Courier New', monospace;
+        }
+        
+        /* Instruction trace visualization */
+        .cpu-component {
+            position: relative;
+            padding: 12px 16px;
+            background-color: white;
+            border: 2px solid #cbd5e1;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        
+        .cpu-component.active {
+            border-color: #2563eb;
+            background-color: #eff6ff;
+            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+        }
+        
+        .bus-line {
+            position: relative;
+            height: 3px;
+            background: linear-gradient(90deg, #cbd5e1 0%, #cbd5e1 100%);
+            transition: background 0.3s ease;
+        }
+        
+        .bus-line.active {
+            background: linear-gradient(90deg, #2563eb 0%, #60a5fa 50%, #2563eb 100%);
+            background-size: 200% 100%;
+            animation: flowAnimation 1s linear infinite;
+        }
+        
+        @keyframes flowAnimation {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 100% 50%; }
+        }
+        
+        /* Memory address boxes for endianness */
+        .memory-address-box {
+            padding: 16px;
+            border: 2px dashed #cbd5e1;
+            border-radius: 8px;
+            background-color: white;
+            min-height: 80px;
             display: flex;
             align-items: center;
             justify-content: center;
+            transition: all 0.3s ease;
+        }
+        
+        .memory-address-box.filled {
+            border: 2px solid #2563eb;
+            background-color: #eff6ff;
+        }
+        
+        .memory-address-box.drag-over {
+            background-color: #dbeafe;
+            border-color: #2563eb;
+            transform: scale(1.05);
+        }
+        
+        .byte-value {
+            font-family: 'Courier New', monospace;
+            font-weight: 700;
+            font-size: 1.125rem;
+            color: #1e40af;
+        }
+        
+        /* I/O comparison split view */
+        .comparison-panel {
+            background-color: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+        
+        .code-block {
+            font-family: 'Courier New', monospace;
+            font-size: 0.875rem;
+            background-color: #1e293b;
+            color: #e2e8f0;
             padding: 16px;
             border-radius: 8px;
-            font-size: 0.875rem;
-            line-height: 1.25rem;
-            font-weight: 500;
+            overflow-x: auto;
+            line-height: 1.6;
         }
         
-        .pyramid-visual-level-1 {
-            width: 30%;
-            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
-            color: white;
+        .code-block .comment {
+            color: #64748b;
         }
         
-        .pyramid-visual-level-2 {
-            width: 50%;
-            background: linear-gradient(135deg, #1e40af 0%, #60a5fa 100%);
-            color: white;
+        /* Address decoder visualization */
+        .decoder-visual {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 16px;
+            padding: 24px;
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            border-radius: 12px;
         }
         
-        .pyramid-visual-level-3 {
-            width: 70%;
-            background: linear-gradient(135deg, #2563eb 0%, #93c5fd 100%);
-            color: white;
+        .decoder-box {
+            padding: 20px 32px;
+            background-color: white;
+            border: 2px solid #2563eb;
+            border-radius: 8px;
+            font-weight: 600;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
         
-        .pyramid-visual-level-4 {
-            width: 90%;
-            background: linear-gradient(135deg, #3b82f6 0%, #bfdbfe 100%);
-            color: #1e3a8a;
+        .decoder-arrow {
+            font-size: 2rem;
+            color: #2563eb;
         }
         
-        /* Dropdown styling */
-        .characteristic-select {
-            appearance: none;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='currentColor'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
-            background-repeat: no-repeat;
-            background-position: right 0.5rem center;
-            background-size: 1.5em 1.5em;
-            padding-right: 2.5rem;
+        /* Progress indicator */
+        .progress-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: #cbd5e1;
+            transition: all 0.3s ease;
         }
         
-        .characteristic-select.correct {
-            border-color: #22c55e;
-            background-color: #f0fdf4;
+        .progress-dot.completed {
+            background-color: #10b981;
         }
         
-        .characteristic-select.incorrect {
-            border-color: #ef4444;
-            background-color: #fef2f2;
+        .progress-dot.active {
+            background-color: #2563eb;
+            transform: scale(1.3);
         }
         
-        /* Quiz question styles */
-        .quiz-option {
-            transition: all 0.2s ease;
+        /* Responsive timing diagrams */
+        @media (max-width: 768px) {
+            .timing-row {
+                grid-template-columns: 120px repeat(5, 1fr);
+                font-size: 0.75rem;
+            }
+            
+            .timing-cell {
+                padding: 8px 4px;
+            }
         }
         
-        .quiz-option:hover {
-            background-color: #f3f4f6;
-        }
-        
-        .quiz-option.selected {
-            background-color: #eff6ff;
-            border-color: #2563eb;
-        }
-        
-        .quiz-option.correct-answer {
-            background-color: #f0fdf4;
-            border-color: #22c55e;
-        }
-        
-        .quiz-option.incorrect-answer {
-            background-color: #fef2f2;
-            border-color: #ef4444;
-        }
-        
-        /* Hide content by default */
-        .tab-content {
+        /* Hidden content */
+        .module-content {
             display: none;
         }
         
-        .tab-content.active {
+        .module-content.active {
             display: block;
+            animation: fadeIn 0.3s ease-in;
         }
         
-        /* Responsive adjustments */
-        @media (max-width: 768px) {
-            .pyramid-level-1,
-            .pyramid-level-2,
-            .pyramid-level-3,
-            .pyramid-level-4 {
-                width: 100%;
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
             }
-            
-            .pyramid-visual-level-1,
-            .pyramid-visual-level-2,
-            .pyramid-visual-level-3,
-            .pyramid-visual-level-4 {
-                width: 90%;
+            to {
+                opacity: 1;
+                transform: translateY(0);
             }
         }
     </style>
     
     <!-- Meta Comments -->
-    <!-- Chosen Palette: Primary Blue (#2563eb), Success Green (#22c55e), Background (#FDFBF8), Text (#1A1A1A) -->
-    <!-- Application Structure: Header with title, Tabbed Navigation for three main sections, Main Content Area with interactive components, Footer with completion tracking -->
-    <!-- Visualization Choices: Memory pyramid rendered using progressive width divs with CSS gradients, drag-and-drop using HTML/CSS visual feedback -->
+    <!-- Chosen Palette: Primary Blue (#2563eb), Success Green (#10b981), Error Red (#ef4444), Background (#FDFBF8), Text (#1A1A1A) -->
+    <!-- Application Structure: Header with title, 5-Module Navigation Bar, Dynamic Content Area with Progressive Modules, Footer with Completion Tracking -->
+    <!-- Visualization Choices: Memory pyramid (CSS widths), Timing diagrams (CSS grid tables), Instruction trace (HTML component boxes with CSS animations), Endianness (draggable byte boxes), I/O comparison (side-by-side panels) -->
 </head>
 <body class="bg-[#FDFBF8] text-[#1A1A1A]">
     <!-- Skip to Content Link -->
     <a id="skip-to-content" href="#main-content" class="skip-link">Skip to Content</a>
     
     <!-- Main Content -->
-    <main id="main-content" class="min-h-screen">
+    <main id="main-content" class="min-h-screen pb-12">
         <!-- Header -->
-        <header class="bg-white shadow-sm border-b border-gray-200">
-            <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-                <h1 class="text-3xl sm:text-4xl font-bold text-[#1A1A1A]">
-                    Week 12: Memory Hierarchy
+        <header class="bg-gradient-to-r from-blue-600 to-blue-700 text-white shadow-lg">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                <h1 class="text-3xl sm:text-4xl font-bold mb-2">
+                    Week 12: Memory Interface & I/O
                 </h1>
-                <p class="mt-2 text-lg text-gray-600">
-                    Interactive Learning Guide
+                <p class="text-lg text-blue-100">
+                    Interactive Learning Guide - Master Memory Operations & I/O Architectures
                 </p>
             </div>
         </header>
         
-        <!-- Tab Navigation -->
-        <nav class="bg-white border-b border-gray-200 sticky top-0 z-50 shadow-sm" role="tablist" aria-label="Learning sections">
-            <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="flex flex-wrap gap-2 sm:gap-0 py-4">
-                    <button 
-                        id="tab-foundations" 
-                        class="tab-button flex-1 sm:flex-none px-4 sm:px-6 py-3 text-base font-medium rounded-lg sm:rounded-none transition-all duration-200"
-                        role="tab"
-                        aria-selected="true"
-                        aria-controls="content-foundations"
-                        data-tab="foundations"
-                    >
-                        <span class="hidden sm:inline">Foundations: </span>Memory Challenge
+        <!-- Progress Bar -->
+        <div class="bg-white border-b border-gray-200 shadow-sm">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+                <div class="flex items-center justify-between mb-3">
+                    <span class="text-sm font-semibold text-gray-700">Overall Progress</span>
+                    <span id="progress-percentage" class="text-sm font-bold text-blue-600">0%</span>
+                </div>
+                <div class="w-full bg-gray-200 rounded-full h-3">
+                    <div id="progress-bar" class="bg-blue-600 h-3 rounded-full transition-all duration-500" style="width: 0%"></div>
+                </div>
+                <div class="flex justify-between mt-3">
+                    <span class="progress-dot" id="dot-1"></span>
+                    <span class="progress-dot" id="dot-2"></span>
+                    <span class="progress-dot" id="dot-3"></span>
+                    <span class="progress-dot" id="dot-4"></span>
+                    <span class="progress-dot" id="dot-5"></span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Module Navigation -->
+        <nav class="bg-white border-b border-gray-200 shadow-sm sticky top-0 z-40" aria-label="Module navigation">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+                <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+                    <button id="nav-module-1" class="module-nav-btn active px-4 py-3 rounded-lg font-medium text-sm transition-all border-2 border-blue-600" data-module="1">
+                        <div class="text-xs opacity-75">Module 1</div>
+                        <div class="font-bold">Hierarchy</div>
                     </button>
-                    <button 
-                        id="tab-hierarchy" 
-                        class="tab-button flex-1 sm:flex-none px-4 sm:px-6 py-3 text-base font-medium rounded-lg sm:rounded-none transition-all duration-200"
-                        role="tab"
-                        aria-selected="false"
-                        aria-controls="content-hierarchy"
-                        data-tab="hierarchy"
-                    >
-                        <span class="hidden sm:inline">Understanding: </span>Each Level
+                    <button id="nav-module-2" class="module-nav-btn px-4 py-3 rounded-lg font-medium text-sm transition-all border-2 border-gray-300 hover:border-gray-400" data-module="2">
+                        <div class="text-xs opacity-75">Module 2</div>
+                        <div class="font-bold">Endianness</div>
                     </button>
-                    <button 
-                        id="tab-interactive" 
-                        class="tab-button flex-1 sm:flex-none px-4 sm:px-6 py-3 text-base font-medium rounded-lg sm:rounded-none transition-all duration-200"
-                        role="tab"
-                        aria-selected="false"
-                        aria-controls="content-interactive"
-                        data-tab="interactive"
-                    >
-                        <span class="hidden sm:inline">Practice: </span>Interactive Builder
+                    <button id="nav-module-3" class="module-nav-btn px-4 py-3 rounded-lg font-medium text-sm transition-all border-2 border-gray-300 hover:border-gray-400" data-module="3">
+                        <div class="text-xs opacity-75">Module 3</div>
+                        <div class="font-bold">Timing</div>
+                    </button>
+                    <button id="nav-module-4" class="module-nav-btn px-4 py-3 rounded-lg font-medium text-sm transition-all border-2 border-gray-300 hover:border-gray-400" data-module="4">
+                        <div class="text-xs opacity-75">Module 4</div>
+                        <div class="font-bold">Execution</div>
+                    </button>
+                    <button id="nav-module-5" class="module-nav-btn px-4 py-3 rounded-lg font-medium text-sm transition-all border-2 border-gray-300 hover:border-gray-400" data-module="5">
+                        <div class="text-xs opacity-75">Module 5</div>
+                        <div class="font-bold">I/O Systems</div>
                     </button>
                 </div>
             </div>
         </nav>
         
         <!-- Content Container -->
-        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
             
-            <!-- Tab 1: Foundations Content -->
-            <section 
-                id="content-foundations" 
-                class="tab-content active"
-                role="tabpanel"
-                aria-labelledby="tab-foundations"
-            >
-                <div class="prose max-w-none">
-                    <h2 class="text-2xl font-bold text-[#1A1A1A] mb-6">The Memory Challenge: Speed vs. Capacity</h2>
+            <!-- MODULE 1: Memory Hierarchy Quick Review -->
+            <section id="module-1" class="module-content active">
+                <div class="bg-white rounded-xl shadow-lg p-6 sm:p-8 mb-6">
+                    <div class="flex items-center justify-between mb-6">
+                        <h2 class="text-2xl sm:text-3xl font-bold text-gray-900">Module 1: Memory Hierarchy Quick Review</h2>
+                        <span class="text-sm px-3 py-1 bg-blue-100 text-blue-700 rounded-full font-semibold">~5 min</span>
+                    </div>
                     
-                    <p class="text-lg leading-relaxed mb-4">
-                        Imagine you're working on a research paper. You need quick access to your current paragraph (in your brain), reference books on your desk, more books on nearby shelves, and even more in the library across campus. Each location offers different trade-offs between access speed and storage capacity. Computer memory works exactly the same way!
-                    </p>
+                    <div class="prose max-w-none mb-8">
+                        <p class="text-lg text-gray-700 leading-relaxed">
+                            Let's quickly review the memory hierarchy to set the context for this week's work. You'll build the memory pyramid by dragging components into their correct positions from fastest (top) to slowest (bottom).
+                        </p>
+                    </div>
                     
-                    <h3 class="text-xl font-bold text-[#1A1A1A] mt-8 mb-4">Why Can't We Just Use One Type of Memory?</h3>
+                    <!-- Draggable Components -->
+                    <div class="mb-8">
+                        <h3 class="text-xl font-bold mb-4">Memory Components (Drag to Pyramid)</h3>
+                        <div id="draggable-components-1" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                            <!-- Generated by JavaScript -->
+                        </div>
+                    </div>
                     
-                    <p class="text-lg leading-relaxed mb-4">
-                        Here's the fundamental problem computer architects face: <strong>Fast memory is expensive and can't be made very large, while cheap memory that can be made large is slow.</strong> This isn't a temporary engineering limitation—it's based on fundamental physics and economics.
-                    </p>
-                    
-                    <p class="text-lg leading-relaxed mb-4">Let's break down what this means:</p>
-                    
-                    <h4 class="text-lg font-semibold text-[#1A1A1A] mt-6 mb-3">The Physics Problem:</h4>
-                    <ul class="list-disc list-inside space-y-2 mb-4 text-lg">
-                        <li>Faster memory must be physically closer to the CPU (shorter distances = faster signals)</li>
-                        <li>Closer to the CPU means less physical space available</li>
-                        <li>Less space = smaller capacity</li>
-                    </ul>
-                    
-                    <h4 class="text-lg font-semibold text-[#1A1A1A] mt-6 mb-3">The Economics Problem:</h4>
-                    <ul class="list-disc list-inside space-y-2 mb-4 text-lg">
-                        <li>The fastest memory technologies (like SRAM used in registers) cost over 1,000 times more per byte than slow memory (like hard drives)</li>
-                        <li>Building a terabyte of the fastest memory would cost millions of dollars and wouldn't physically fit!</li>
-                    </ul>
-                    
-                    <h3 class="text-xl font-bold text-[#1A1A1A] mt-8 mb-4">The Brilliant Solution: The Memory Hierarchy</h3>
-                    
-                    <p class="text-lg leading-relaxed mb-4">
-                        Instead of choosing between fast-but-small or slow-but-large, computer designers use <strong>all of them together</strong> in a layered system called the <strong>memory hierarchy</strong>. Each level serves as a "cache" or buffer for the level below it, creating an illusion of having memory that's both fast AND large.
-                    </p>
-                    
-                    <h3 class="text-xl font-bold text-[#1A1A1A] mt-8 mb-4">The Memory Pyramid</h3>
-                    
-                    <p class="text-lg leading-relaxed mb-6">
-                        Here's how memory is organized in modern computers, from fastest to slowest:
-                    </p>
-                    
-                    <!-- HTML/CSS Memory Pyramid Visualization -->
-                    <div class="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-lg p-8 mb-8 border border-blue-200">
-                        <div class="memory-pyramid-visual">
-                            <div class="pyramid-visual-level pyramid-visual-level-1 text-center">
-                                <div>
-                                    <div class="font-bold text-base mb-1">CPU Registers</div>
-                                    <div class="text-xs opacity-90">Speed: &lt;1 ns | Size: Bytes</div>
-                                </div>
+                    <!-- Memory Pyramid Drop Zones -->
+                    <div class="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-8 mb-6">
+                        <h3 class="text-xl font-bold mb-6 text-center">Memory Hierarchy Pyramid</h3>
+                        <div class="space-y-4" id="pyramid-drop-zones">
+                            <div id="drop-level-1" class="pyramid-level" data-level="1" style="width: 30%;" aria-label="Level 1 - Fastest memory">
+                                <span class="text-gray-400 text-sm">Level 1: Fastest</span>
                             </div>
-                            
-                            <div class="text-2xl text-blue-600">↓</div>
-                            
-                            <div class="pyramid-visual-level pyramid-visual-level-2 text-center">
-                                <div>
-                                    <div class="font-bold text-base mb-1">Cache Memory</div>
-                                    <div class="text-xs opacity-90">Speed: 1-20 ns | Size: KB-MB</div>
-                                </div>
+                            <div id="drop-level-2" class="pyramid-level" data-level="2" style="width: 50%;" aria-label="Level 2">
+                                <span class="text-gray-400 text-sm">Level 2</span>
                             </div>
-                            
-                            <div class="text-2xl text-blue-600">↓</div>
-                            
-                            <div class="pyramid-visual-level pyramid-visual-level-3 text-center">
-                                <div>
-                                    <div class="font-bold text-base mb-1">Main Memory (RAM)</div>
-                                    <div class="text-xs opacity-90">Speed: 50-100 ns | Size: GB</div>
-                                </div>
+                            <div id="drop-level-3" class="pyramid-level" data-level="3" style="width: 70%;" aria-label="Level 3">
+                                <span class="text-gray-400 text-sm">Level 3</span>
                             </div>
-                            
-                            <div class="text-2xl text-blue-600">↓</div>
-                            
-                            <div class="pyramid-visual-level pyramid-visual-level-4 text-center">
-                                <div>
-                                    <div class="font-bold text-base mb-1">Secondary Storage (SSD/HDD)</div>
-                                    <div class="text-xs opacity-90">Speed: μs-ms | Size: TB</div>
-                                </div>
+                            <div id="drop-level-4" class="pyramid-level" data-level="4" style="width: 90%;" aria-label="Level 4 - Slowest memory">
+                                <span class="text-gray-400 text-sm">Level 4: Slowest</span>
                             </div>
                         </div>
                     </div>
                     
-                    <h3 class="text-xl font-bold text-[#1A1A1A] mt-8 mb-4">The Key Principle: Locality of Reference</h3>
-                    
-                    <p class="text-lg leading-relaxed mb-4">
-                        The memory hierarchy only works because of a beautiful principle discovered in computer science: <strong>programs don't access memory randomly.</strong> Instead, they exhibit two types of predictable behavior:
-                    </p>
-                    
-                    <div class="grid sm:grid-cols-2 gap-6 my-6">
-                        <div class="bg-white rounded-lg p-6 border border-gray-200 shadow-sm">
-                            <h4 class="font-bold text-lg text-[#1A1A1A] mb-2">1. Temporal Locality</h4>
-                            <p class="text-base">If you access memory location X, you'll likely access X again soon</p>
-                            <p class="text-sm text-gray-600 mt-2"><em>Example: Loop variables get accessed repeatedly</em></p>
-                        </div>
-                        
-                        <div class="bg-white rounded-lg p-6 border border-gray-200 shadow-sm">
-                            <h4 class="font-bold text-lg text-[#1A1A1A] mb-2">2. Spatial Locality</h4>
-                            <p class="text-base">If you access memory location X, you'll likely access nearby locations (X+1, X+2, etc.) soon</p>
-                            <p class="text-sm text-gray-600 mt-2"><em>Example: Processing array elements sequentially</em></p>
-                        </div>
+                    <!-- Controls -->
+                    <div class="flex flex-col sm:flex-row gap-4">
+                        <button id="check-module-1" class="flex-1 px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                            Check My Pyramid
+                        </button>
+                        <button id="reset-module-1" class="flex-1 px-6 py-3 bg-gray-200 text-gray-700 font-semibold rounded-lg hover:bg-gray-300 transition-colors focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2">
+                            Reset
+                        </button>
                     </div>
                     
-                    <p class="text-lg leading-relaxed mb-4">
-                        By keeping recently and frequently accessed data in faster memory levels, the system achieves performance close to the fastest memory while providing capacity close to the largest memory. It's like magic, but it's actually just clever engineering!
-                    </p>
+                    <!-- Feedback -->
+                    <div id="feedback-module-1" class="hidden mt-6"></div>
                     
-                    <h3 class="text-xl font-bold text-[#1A1A1A] mt-8 mb-4">The Trade-Off Triangle</h3>
-                    
-                    <p class="text-lg leading-relaxed mb-4">
-                        Every level of the memory hierarchy represents a point on this trade-off triangle:
-                    </p>
-                    
-                    <div class="bg-white rounded-lg p-6 border border-gray-200 shadow-sm mb-6">
-                        <ul class="space-y-3 text-lg">
-                            <li><strong class="text-blue-600">Speed</strong> — How fast can we access data?</li>
-                            <li><strong class="text-green-600">Capacity</strong> — How much data can we store?</li>
-                            <li><strong class="text-purple-600">Cost</strong> — How expensive is it per byte?</li>
-                        </ul>
-                    </div>
-                    
-                    <p class="text-lg leading-relaxed mb-4">
-                        You can optimize for any two, but not all three:
-                    </p>
-                    
-                    <ul class="list-disc list-inside space-y-2 mb-4 text-lg">
-                        <li><strong>Fast + Large = Expensive</strong> (not practical)</li>
-                        <li><strong>Fast + Cheap = Small</strong> (registers)</li>
-                        <li><strong>Large + Cheap = Slow</strong> (hard drives)</li>
-                    </ul>
-                    
-                    <h3 class="text-xl font-bold text-[#1A1A1A] mt-8 mb-4">Why This Matters for Your CPU Project</h3>
-                    
-                    <p class="text-lg leading-relaxed mb-4">
-                        In Week 12, you're building the interface between your CPU and main memory (RAM). This interface is the critical connection that allows your CPU to:
-                    </p>
-                    
-                    <ol class="list-decimal list-inside space-y-2 mb-4 text-lg">
-                        <li><strong>Fetch instructions</strong> from memory to execute</li>
-                        <li><strong>Load data</strong> from memory into registers for processing</li>
-                        <li><strong>Store results</strong> from registers back to memory</li>
-                        <li><strong>Access I/O devices</strong> through memory-mapped addresses</li>
-                    </ol>
-                    
-                    <p class="text-lg leading-relaxed mb-4">
-                        Without this memory interface, your beautifully designed ALU and control unit from previous weeks would be useless—just an isolated calculator with nowhere to store programs or data!
-                    </p>
-                    
-                    <h3 class="text-xl font-bold text-[#1A1A1A] mt-8 mb-4">Real-World Impact</h3>
-                    
-                    <p class="text-lg leading-relaxed mb-4">
-                        Every time you:
-                    </p>
-                    
-                    <ul class="list-disc list-inside space-y-2 mb-4 text-lg">
-                        <li>Edit a photo and it responds instantly to your clicks</li>
-                        <li>Stream a video without buffering</li>
-                        <li>Play a game with smooth graphics</li>
-                        <li>Load a large dataset for analysis</li>
-                    </ul>
-                    
-                    <p class="text-lg leading-relaxed mb-4">
-                        ...you're experiencing the memory hierarchy in action. Understanding how it works gives you insight into why computers behave the way they do and how to write more efficient programs. Let's explore each level in detail! 🚀
-                    </p>
+                    <!-- Next Button -->
+                    <button id="next-module-1" class="hidden w-full mt-6 px-6 py-3 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition-colors focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2">
+                        Continue to Module 2 →
+                    </button>
                 </div>
             </section>
             
-            <!-- Tab 2: Understanding Each Level Content -->
-            <section 
-                id="content-hierarchy" 
-                class="tab-content"
-                role="tabpanel"
-                aria-labelledby="tab-hierarchy"
-            >
-                <div class="prose max-w-none">
-                    <h2 class="text-2xl font-bold text-[#1A1A1A] mb-6">Understanding Each Level</h2>
+            <!-- MODULE 2: Endianness Explorer -->
+            <section id="module-2" class="module-content">
+                <div class="bg-white rounded-xl shadow-lg p-6 sm:p-8 mb-6">
+                    <div class="flex items-center justify-between mb-6">
+                        <h2 class="text-2xl sm:text-3xl font-bold text-gray-900">Module 2: Endianness Explorer</h2>
+                        <span class="text-sm px-3 py-1 bg-purple-100 text-purple-700 rounded-full font-semibold">~10 min</span>
+                    </div>
                     
-                    <!-- Level 1: CPU Registers -->
-                    <div class="bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg p-6 mb-6 border-l-4 border-blue-600">
-                        <h3 class="text-xl font-bold text-[#1A1A1A] mb-4">Level 1: CPU Registers (Fastest, Smallest, Most Expensive)</h3>
-                        
-                        <p class="text-lg leading-relaxed mb-4">
-                            Think of registers as the workspace directly in your hands—the pencil you're holding and the sentence you're currently writing. In your 8-bit CPU project, you have just a handful of registers (maybe 8-16 registers, each holding 8 bits). The CPU can access register data in a single clock cycle—instantly, from its perspective.
+                    <div class="prose max-w-none mb-8">
+                        <p class="text-lg text-gray-700 leading-relaxed mb-4">
+                            <strong>Endianness</strong> determines the order in which multi-byte values are stored in memory. Let's explore both little-endian and big-endian formats through hands-on exercises.
                         </p>
                         
-                        <div class="bg-white rounded-lg p-4 border border-blue-200">
-                            <p class="text-base font-semibold text-blue-800 mb-1">Real-world example:</p>
-                            <p class="text-base text-gray-700">Modern CPUs have 16-32 general-purpose registers, each 64 bits wide. That's only 128-256 bytes total!</p>
+                        <div class="grid md:grid-cols-2 gap-4 my-6">
+                            <div class="bg-blue-50 rounded-lg p-4 border border-blue-200">
+                                <h4 class="font-bold text-blue-900 mb-2">Little-Endian</h4>
+                                <p class="text-sm text-blue-800">Least significant byte (LSB) at the lowest address. "Little end first."</p>
+                            </div>
+                            <div class="bg-green-50 rounded-lg p-4 border border-green-200">
+                                <h4 class="font-bold text-green-900 mb-2">Big-Endian</h4>
+                                <p class="text-sm text-green-800">Most significant byte (MSB) at the lowest address. "Big end first."</p>
+                            </div>
                         </div>
                     </div>
                     
-                    <!-- Level 2: Cache Memory -->
-                    <div class="bg-gradient-to-br from-indigo-50 to-indigo-100 rounded-lg p-6 mb-6 border-l-4 border-indigo-600">
-                        <h3 class="text-xl font-bold text-[#1A1A1A] mb-4">Level 2: Cache Memory (Very Fast, Small, Expensive)</h3>
-                        
-                        <p class="text-lg leading-relaxed mb-4">
-                            Cache acts like the notepad on your desk—information you're likely to need very soon. Modern CPUs have multiple cache levels (L1, L2, L3), each progressively larger but slightly slower. Cache memory is made from SRAM (Static RAM), which is fast but expensive.
-                        </p>
-                        
-                        <div class="bg-white rounded-lg p-4 border border-indigo-200 mb-4">
-                            <p class="text-base font-semibold text-indigo-800 mb-1">Real-world example:</p>
-                            <p class="text-base text-gray-700">A modern Intel i7 processor might have 64 KB of L1 cache, 512 KB of L2 cache, and 16 MB of L3 cache.</p>
+                    <!-- Exercise Display -->
+                    <div class="mb-8">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-xl font-bold">Exercise <span id="current-exercise">1</span> of <span id="total-exercises">4</span></h3>
+                            <div class="space-x-2">
+                                <button id="prev-exercise" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed">
+                                    Previous
+                                </button>
+                                <button id="next-exercise" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed">
+                                    Next
+                                </button>
+                            </div>
                         </div>
                         
-                        <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-                            <p class="text-base text-gray-700"><strong>Note:</strong> Cache is introduced in Week 16 of your course. This week focuses on the main memory interface.</p>
-                        </div>
-                    </div>
-                    
-                    <!-- Level 3: Main Memory / RAM -->
-                    <div class="bg-gradient-to-br from-purple-50 to-purple-100 rounded-lg p-6 mb-6 border-l-4 border-purple-600">
-                        <h3 class="text-xl font-bold text-[#1A1A1A] mb-4">Level 3: Main Memory / RAM (Medium Speed, Medium Size, Moderate Cost)</h3>
-                        
-                        <p class="text-lg leading-relaxed mb-4">
-                            Main memory is like the bookshelf in your room—you can access any book in seconds, and it holds everything you're actively working with. This is the primary focus of Week 12. Your 8-bit CPU project will interface with 256 bytes of RAM, which seems tiny but demonstrates all the essential concepts.
-                        </p>
-                        
-                        <p class="text-lg leading-relaxed mb-4">
-                            RAM is made from DRAM (Dynamic RAM), which is slower than SRAM but much cheaper and denser. It's "volatile" memory, meaning it loses its contents when power is turned off.
-                        </p>
-                        
-                        <div class="bg-white rounded-lg p-4 border border-purple-200">
-                            <p class="text-base font-semibold text-purple-800 mb-1">Real-world example:</p>
-                            <p class="text-base text-gray-700">Your laptop might have 16 GB of RAM, accessing any byte in about 60-70 nanoseconds.</p>
+                        <div class="bg-gray-50 rounded-lg p-6 mb-6">
+                            <p id="exercise-instruction" class="text-base font-medium text-gray-800 mb-6"></p>
+                            
+                            <!-- Memory Address Boxes -->
+                            <div id="memory-addresses-container" class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
+                                <!-- Generated by JavaScript -->
+                            </div>
+                            
+                            <!-- Byte Values -->
+                            <div class="border-t pt-6">
+                                <h4 class="font-semibold mb-3 text-gray-700">Available Byte Values (Drag to Addresses)</h4>
+                                <div id="byte-values-container" class="flex flex-wrap gap-3">
+                                    <!-- Generated by JavaScript -->
+                                </div>
+                            </div>
                         </div>
                     </div>
                     
-                    <!-- Level 4: Secondary Storage -->
-                    <div class="bg-gradient-to-br from-pink-50 to-pink-100 rounded-lg p-6 mb-6 border-l-4 border-pink-600">
-                        <h3 class="text-xl font-bold text-[#1A1A1A] mb-4">Level 4: Secondary Storage (Slow, Large, Cheap)</h3>
-                        
-                        <p class="text-lg leading-relaxed mb-4">
-                            Secondary storage is like the library across campus—huge capacity, but you need to walk there to get books. Modern computers use SSDs (Solid State Drives) or HDDs (Hard Disk Drives) for permanent storage. Unlike RAM, this memory is "non-volatile"—it retains data even when powered off.
+                    <!-- Controls -->
+                    <div class="flex flex-col sm:flex-row gap-4">
+                        <button id="check-module-2" class="flex-1 px-6 py-3 bg-purple-600 text-white font-semibold rounded-lg hover:bg-purple-700 transition-colors">
+                            Check Answer
+                        </button>
+                        <button id="reset-module-2" class="flex-1 px-6 py-3 bg-gray-200 text-gray-700 font-semibold rounded-lg hover:bg-gray-300 transition-colors">
+                            Reset Exercise
+                        </button>
+                    </div>
+                    
+                    <!-- Feedback -->
+                    <div id="feedback-module-2" class="hidden mt-6"></div>
+                    
+                    <!-- Progress -->
+                    <div id="module-2-progress" class="mt-6 text-center text-sm text-gray-600">
+                        Complete at least 3 of 4 exercises correctly to proceed
+                    </div>
+                    
+                    <!-- Next Button -->
+                    <button id="next-module-2" class="hidden w-full mt-6 px-6 py-3 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition-colors">
+                        Continue to Module 3 →
+                    </button>
+                </div>
+            </section>
+            
+            <!-- MODULE 3: Timing Diagram Analyzer -->
+            <section id="module-3" class="module-content">
+                <div class="bg-white rounded-xl shadow-lg p-6 sm:p-8 mb-6">
+                    <div class="flex items-center justify-between mb-6">
+                        <h2 class="text-2xl sm:text-3xl font-bold text-gray-900">Module 3: Timing Diagram Analyzer</h2>
+                        <span class="text-sm px-3 py-1 bg-indigo-100 text-indigo-700 rounded-full font-semibold">~15 min</span>
+                    </div>
+                    
+                    <div class="prose max-w-none mb-8">
+                        <p class="text-lg text-gray-700 leading-relaxed">
+                            Memory operations take multiple clock cycles and require precise timing. Analyze these timing diagrams to understand how signals change during READ and WRITE operations.
                         </p>
-                        
-                        <div class="bg-white rounded-lg p-4 border border-pink-200">
-                            <p class="text-base font-semibold text-pink-800 mb-1">Real-world example:</p>
-                            <p class="text-base text-gray-700">A 1 TB SSD provides persistent storage with access times around 0.1 milliseconds (100,000 nanoseconds)—about 1,000× slower than RAM!</p>
+                    </div>
+                    
+                    <!-- Diagram Tabs -->
+                    <div class="mb-6">
+                        <div class="flex border-b border-gray-300">
+                            <button id="tab-read" class="diagram-tab px-6 py-3 font-semibold border-b-2 border-blue-600 text-blue-600" data-diagram="read">
+                                READ Operation
+                            </button>
+                            <button id="tab-write" class="diagram-tab px-6 py-3 font-semibold text-gray-600 hover:text-gray-800" data-diagram="write">
+                                WRITE Operation
+                            </button>
                         </div>
                     </div>
                     
-                    <h3 class="text-xl font-bold text-[#1A1A1A] mt-8 mb-4">Comparing All Levels</h3>
-                    
-                    <div class="overflow-x-auto mb-8">
-                        <table class="min-w-full bg-white border border-gray-300 rounded-lg">
-                            <thead class="bg-gray-100">
-                                <tr>
-                                    <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700 border-b">Memory Level</th>
-                                    <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700 border-b">Access Speed</th>
-                                    <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700 border-b">Typical Size</th>
-                                    <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700 border-b">Volatility</th>
-                                    <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700 border-b">Cost/GB</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr class="border-b hover:bg-gray-50">
-                                    <td class="px-4 py-3 text-sm font-medium">Registers</td>
-                                    <td class="px-4 py-3 text-sm">&lt;1 ns</td>
-                                    <td class="px-4 py-3 text-sm">Bytes</td>
-                                    <td class="px-4 py-3 text-sm">Volatile</td>
-                                    <td class="px-4 py-3 text-sm">N/A (part of CPU)</td>
-                                </tr>
-                                <tr class="border-b hover:bg-gray-50">
-                                    <td class="px-4 py-3 text-sm font-medium">Cache</td>
-                                    <td class="px-4 py-3 text-sm">1-20 ns</td>
-                                    <td class="px-4 py-3 text-sm">KB to MB</td>
-                                    <td class="px-4 py-3 text-sm">Volatile</td>
-                                    <td class="px-4 py-3 text-sm">Very High</td>
-                                </tr>
-                                <tr class="border-b hover:bg-gray-50">
-                                    <td class="px-4 py-3 text-sm font-medium">RAM</td>
-                                    <td class="px-4 py-3 text-sm">50-100 ns</td>
-                                    <td class="px-4 py-3 text-sm">GB</td>
-                                    <td class="px-4 py-3 text-sm">Volatile</td>
-                                    <td class="px-4 py-3 text-sm">Moderate</td>
-                                </tr>
-                                <tr class="hover:bg-gray-50">
-                                    <td class="px-4 py-3 text-sm font-medium">SSD/HDD</td>
-                                    <td class="px-4 py-3 text-sm">μs to ms</td>
-                                    <td class="px-4 py-3 text-sm">TB</td>
-                                    <td class="px-4 py-3 text-sm">Non-volatile</td>
-                                    <td class="px-4 py-3 text-sm">Low</td>
-                                </tr>
-                            </tbody>
-                        </table>
+                    <!-- Timing Diagram Display -->
+                    <div id="timing-diagram-container" class="mb-8">
+                        <!-- Generated by JavaScript -->
                     </div>
                     
-                    <div class="bg-blue-50 border-l-4 border-blue-500 p-6 rounded-lg">
-                        <h4 class="text-lg font-bold text-blue-900 mb-2">💡 Key Insight</h4>
-                        <p class="text-base text-blue-900">
-                            Notice the pattern? As you move down the hierarchy, speed decreases exponentially, but capacity increases exponentially, and cost per byte decreases exponentially. This inverse relationship is fundamental to computer architecture design!
+                    <!-- Questions -->
+                    <div id="timing-questions-container" class="space-y-6 mb-8">
+                        <!-- Generated by JavaScript -->
+                    </div>
+                    
+                    <!-- Progress -->
+                    <div id="module-3-progress" class="mb-6 p-4 bg-gray-50 rounded-lg text-center">
+                        <p class="text-sm text-gray-700">Score: <span id="timing-score" class="font-bold text-blue-600">0 / 9</span> correct</p>
+                        <p class="text-xs text-gray-600 mt-1">Answer at least 7 questions correctly to proceed</p>
+                    </div>
+                    
+                    <!-- Next Button -->
+                    <button id="next-module-3" class="hidden w-full px-6 py-3 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition-colors">
+                        Continue to Module 4 →
+                    </button>
+                </div>
+            </section>
+            
+            <!-- MODULE 4: Instruction Execution Tracer -->
+            <section id="module-4" class="module-content">
+                <div class="bg-white rounded-xl shadow-lg p-6 sm:p-8 mb-6">
+                    <div class="flex items-center justify-between mb-6">
+                        <h2 class="text-2xl sm:text-3xl font-bold text-gray-900">Module 4: Instruction Execution Tracer</h2>
+                        <span class="text-sm px-3 py-1 bg-green-100 text-green-700 rounded-full font-semibold">~15 min</span>
+                    </div>
+                    
+                    <div class="prose max-w-none mb-8">
+                        <p class="text-lg text-gray-700 leading-relaxed">
+                            Step through complete LOAD and STORE instruction execution cycle-by-cycle. Watch how data flows through MAR, MDR, buses, and registers at each step.
                         </p>
+                    </div>
+                    
+                    <!-- Instruction Tabs -->
+                    <div class="mb-6">
+                        <div class="flex border-b border-gray-300">
+                            <button id="tab-load" class="trace-tab px-6 py-3 font-semibold border-b-2 border-green-600 text-green-600" data-trace="load">
+                                LOAD R1, [0x45]
+                            </button>
+                            <button id="tab-store" class="trace-tab px-6 py-3 font-semibold text-gray-600 hover:text-gray-800" data-trace="store">
+                                STORE [0x50], R2
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Cycle Info -->
+                    <div class="mb-6 p-4 bg-gray-50 rounded-lg">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-sm font-semibold text-gray-700">Current Cycle: <span id="current-cycle" class="text-blue-600">0</span> of <span id="total-cycles">7</span></span>
+                            <span class="text-sm font-semibold text-gray-700">Phase: <span id="current-phase" class="text-purple-600">Fetch</span></span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-2">
+                            <div id="cycle-progress" class="bg-green-600 h-2 rounded-full transition-all duration-300" style="width: 0%"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- CPU Visualization -->
+                    <div id="cpu-visualization" class="mb-8 p-6 bg-gradient-to-br from-gray-50 to-gray-100 rounded-lg">
+                        <!-- Generated by JavaScript -->
+                    </div>
+                    
+                    <!-- Cycle Description -->
+                    <div id="cycle-description" class="mb-6 p-6 bg-white border-2 border-gray-200 rounded-lg">
+                        <!-- Generated by JavaScript -->
+                    </div>
+                    
+                    <!-- Controls -->
+                    <div class="flex gap-4 mb-6">
+                        <button id="prev-cycle" class="flex-1 px-6 py-3 bg-gray-200 text-gray-700 font-semibold rounded-lg hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed">
+                            ← Previous Cycle
+                        </button>
+                        <button id="next-cycle" class="flex-1 px-6 py-3 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed">
+                            Next Cycle →
+                        </button>
+                        <button id="reset-trace" class="px-6 py-3 bg-gray-200 text-gray-700 font-semibold rounded-lg hover:bg-gray-300">
+                            Reset
+                        </button>
+                    </div>
+                    
+                    <!-- Questions (shown after completion) -->
+                    <div id="trace-questions-container" class="hidden space-y-4 mb-6">
+                        <!-- Generated by JavaScript -->
+                    </div>
+                    
+                    <!-- Next Button -->
+                    <button id="next-module-4" class="hidden w-full px-6 py-3 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition-colors">
+                        Continue to Module 5 →
+                    </button>
+                </div>
+            </section>
+            
+            <!-- MODULE 5: I/O Architecture Comparison -->
+            <section id="module-5" class="module-content">
+                <div class="bg-white rounded-xl shadow-lg p-6 sm:p-8 mb-6">
+                    <div class="flex items-center justify-between mb-6">
+                        <h2 class="text-2xl sm:text-3xl font-bold text-gray-900">Module 5: I/O Architecture Comparison</h2>
+                        <span class="text-sm px-3 py-1 bg-orange-100 text-orange-700 rounded-full font-semibold">~10 min</span>
+                    </div>
+                    
+                    <div class="prose max-w-none mb-8">
+                        <p class="text-lg text-gray-700 leading-relaxed">
+                            Compare memory-mapped I/O and port-based I/O through interactive scenarios. Understand the trade-offs and why your CPU uses memory-mapped I/O.
+                        </p>
+                    </div>
+                    
+                    <!-- Scenario Display -->
+                    <div id="io-scenario-container" class="mb-8">
+                        <!-- Generated by JavaScript -->
+                    </div>
+                    
+                    <!-- Comparison Questions -->
+                    <div id="io-questions-container" class="space-y-6 mb-8">
+                        <!-- Generated by JavaScript -->
+                    </div>
+                    
+                    <!-- Address Decoder Simulation -->
+                    <div class="mt-12">
+                        <h3 class="text-2xl font-bold mb-4">Address Decoder Simulation</h3>
+                        <p class="text-gray-700 mb-6">Test different addresses to see if they route to memory or I/O devices:</p>
+                        
+                        <div class="decoder-visual mb-6">
+                            <div class="text-center">
+                                <label for="test-address" class="block text-sm font-semibold text-gray-700 mb-2">Enter Address (0x00-0xFF):</label>
+                                <input 
+                                    type="text" 
+                                    id="test-address" 
+                                    class="px-4 py-2 border-2 border-gray-300 rounded-lg font-mono text-center focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                    placeholder="0x7F"
+                                    maxlength="4"
+                                />
+                                <button id="test-decoder" class="ml-2 px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                                    Test
+                                </button>
+                            </div>
+                            
+                            <div class="decoder-arrow">↓</div>
+                            
+                            <div class="decoder-box text-center">
+                                <div class="text-sm text-gray-600 mb-1">Address Decoder Logic</div>
+                                <div class="font-mono text-sm">if (address ≥ 0xF0) → I/O</div>
+                                <div class="font-mono text-sm">else → Memory</div>
+                            </div>
+                            
+                            <div class="decoder-arrow">↓</div>
+                            
+                            <div id="decoder-result" class="decoder-box text-center hidden">
+                                <!-- Result displayed here -->
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Progress -->
+                    <div id="module-5-progress" class="mb-6 p-4 bg-gray-50 rounded-lg text-center">
+                        <p class="text-sm text-gray-700">Score: <span id="io-score" class="font-bold text-blue-600">0 / 10</span> correct</p>
+                        <p class="text-xs text-gray-600 mt-1">Answer at least 8 questions correctly to proceed</p>
+                    </div>
+                    
+                    <!-- Complete Button -->
+                    <button id="complete-activity" class="hidden w-full px-6 py-3 bg-gradient-to-r from-green-600 to-emerald-600 text-white font-bold text-lg rounded-lg hover:from-green-700 hover:to-emerald-700 transition-all">
+                        🎉 Complete Activity
+                    </button>
+                    
+                    <!-- Final Completion Message -->
+                    <div id="completion-message" class="hidden mt-6 p-8 bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-500 rounded-xl">
+                        <!-- Generated by JavaScript -->
                     </div>
                 </div>
             </section>
             
-            <!-- Tab 3: Interactive Builder Content -->
-            <section 
-                id="content-interactive" 
-                class="tab-content"
-                role="tabpanel"
-                aria-labelledby="tab-interactive"
-            >
-                <div class="mb-6">
-                    <h2 class="text-2xl font-bold text-[#1A1A1A] mb-2">Interactive Memory Hierarchy Builder</h2>
-                    <p class="text-lg text-gray-600">Test your knowledge through three interactive phases!</p>
-                </div>
-                
-                <!-- Phase Progress Indicator -->
-                <div class="bg-white rounded-lg p-4 mb-8 border border-gray-200 shadow-sm">
-                    <div class="flex items-center justify-between mb-2">
-                        <span class="text-sm font-semibold text-gray-700">Your Progress</span>
-                        <span id="phase-indicator" class="text-sm font-semibold text-blue-600">Phase 1 of 3</span>
-                    </div>
-                    <div class="w-full bg-gray-200 rounded-full h-2">
-                        <div id="progress-bar" class="bg-blue-600 h-2 rounded-full transition-all duration-500" style="width: 33.33%"></div>
-                    </div>
-                </div>
-                
-                <!-- Phase 1: Pyramid Builder -->
-                <div id="phase-1" class="phase-container">
-                    <div class="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-lg p-6 mb-6 border border-blue-200">
-                        <h3 class="text-xl font-bold text-[#1A1A1A] mb-4">Phase 1: Build the Memory Pyramid</h3>
-                        <p class="text-base text-gray-700 mb-6">
-                            Drag each memory component to its correct position in the hierarchy. The fastest, smallest memory goes at the top!
-                        </p>
-                        
-                        <!-- Draggable Cards -->
-                        <div id="draggable-cards" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-                            <!-- Cards will be generated by JavaScript -->
-                        </div>
-                        
-                        <!-- Drop Zones (Pyramid) -->
-                        <div class="bg-white rounded-lg p-8 border border-gray-300 mb-6">
-                            <h4 class="text-center text-lg font-semibold mb-6 text-gray-700">Memory Hierarchy Pyramid</h4>
-                            <div class="space-y-4">
-                                <div id="drop-level-1" class="pyramid-level pyramid-level-1" data-level="1" aria-label="Top level - Fastest memory">
-                                    <span class="text-gray-400 text-sm">Level 1: Fastest</span>
-                                </div>
-                                <div id="drop-level-2" class="pyramid-level pyramid-level-2" data-level="2" aria-label="Second level">
-                                    <span class="text-gray-400 text-sm">Level 2</span>
-                                </div>
-                                <div id="drop-level-3" class="pyramid-level pyramid-level-3" data-level="3" aria-label="Third level">
-                                    <span class="text-gray-400 text-sm">Level 3</span>
-                                </div>
-                                <div id="drop-level-4" class="pyramid-level pyramid-level-4" data-level="4" aria-label="Bottom level - Slowest memory">
-                                    <span class="text-gray-400 text-sm">Level 4: Slowest</span>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- Phase 1 Controls -->
-                        <div class="flex flex-col sm:flex-row gap-4 items-center justify-between">
-                            <button 
-                                id="check-pyramid-btn" 
-                                class="w-full sm:w-auto px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors"
-                            >
-                                Check My Pyramid
-                            </button>
-                            <button 
-                                id="reset-pyramid-btn" 
-                                class="w-full sm:w-auto px-6 py-3 bg-gray-200 text-gray-700 font-semibold rounded-lg hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-colors"
-                            >
-                                Reset
-                            </button>
-                        </div>
-                        
-                        <!-- Phase 1 Feedback -->
-                        <div id="phase-1-feedback" class="hidden mt-6 p-4 rounded-lg"></div>
-                        
-                        <!-- Next Phase Button (Hidden Initially) -->
-                        <button 
-                            id="phase-1-next" 
-                            class="hidden w-full mt-6 px-6 py-3 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition-colors"
-                        >
-                            Continue to Phase 2 →
-                        </button>
-                    </div>
-                </div>
-                
-                <!-- Phase 2: Characteristic Matching -->
-                <div id="phase-2" class="phase-container hidden">
-                    <div class="bg-gradient-to-br from-purple-50 to-pink-50 rounded-lg p-6 mb-6 border border-purple-200">
-                        <h3 class="text-xl font-bold text-[#1A1A1A] mb-4">Phase 2: Match Memory Characteristics</h3>
-                        <p class="text-base text-gray-700 mb-6">
-                            For each memory level, select the correct speed, size, and cost characteristics.
-                        </p>
-                        
-                        <!-- Characteristic Grid -->
-                        <div id="characteristics-grid" class="space-y-6 mb-6">
-                            <!-- Grid will be generated by JavaScript -->
-                        </div>
-                        
-                        <!-- Phase 2 Controls -->
-                        <div class="flex flex-col sm:flex-row gap-4 items-center justify-between">
-                            <button 
-                                id="check-characteristics-btn" 
-                                class="w-full sm:w-auto px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors"
-                            >
-                                Check My Answers
-                            </button>
-                            <button 
-                                id="reset-characteristics-btn" 
-                                class="w-full sm:w-auto px-6 py-3 bg-gray-200 text-gray-700 font-semibold rounded-lg hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-colors"
-                            >
-                                Reset
-                            </button>
-                        </div>
-                        
-                        <!-- Phase 2 Feedback -->
-                        <div id="phase-2-feedback" class="hidden mt-6 p-4 rounded-lg"></div>
-                        
-                        <!-- Next Phase Button (Hidden Initially) -->
-                        <button 
-                            id="phase-2-next" 
-                            class="hidden w-full mt-6 px-6 py-3 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition-colors"
-                        >
-                            Continue to Phase 3 →
-                        </button>
-                    </div>
-                </div>
-                
-                <!-- Phase 3: Knowledge Quiz -->
-                <div id="phase-3" class="phase-container hidden">
-                    <div class="bg-gradient-to-br from-green-50 to-teal-50 rounded-lg p-6 mb-6 border border-green-200">
-                        <h3 class="text-xl font-bold text-[#1A1A1A] mb-4">Phase 3: Memory Hierarchy Quiz</h3>
-                        <p class="text-base text-gray-700 mb-6">
-                            Test your understanding with these questions. Your score: <span id="quiz-score" class="font-bold text-green-600">0 / 6</span>
-                        </p>
-                        
-                        <!-- Quiz Questions Container -->
-                        <div id="quiz-questions" class="space-y-6 mb-6">
-                            <!-- Questions will be generated by JavaScript -->
-                        </div>
-                        
-                        <!-- Complete Button (Hidden Initially) -->
-                        <button 
-                            id="complete-activity-btn" 
-                            class="hidden w-full mt-6 px-6 py-3 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition-colors"
-                        >
-                            Complete Activity 🎉
-                        </button>
-                        
-                        <!-- Final Completion Message -->
-                        <div id="completion-message" class="hidden mt-6 p-6 bg-gradient-to-r from-green-100 to-blue-100 border-2 border-green-500 rounded-lg"></div>
-                    </div>
-                </div>
-            </section>
         </div>
         
         <!-- Footer -->
         <footer class="bg-white border-t border-gray-200 mt-12">
-            <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-                <p class="text-center text-sm text-gray-600">
-                    Week 12: Memory Hierarchy Interactive Learning Guide | Built for Computer Architecture Students
-                </p>
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                <div class="text-center">
+                    <p class="text-lg font-semibold text-gray-800 mb-2">
+                        Modules Completed: <span id="modules-completed" class="text-blue-600">0</span> of 5
+                    </p>
+                    <p class="text-sm text-gray-600">
+                        Week 12: Memory Interface & I/O Interactive Learning Guide
+                    </p>
+                </div>
             </div>
         </footer>
     </main>
     
-    <!-- PART 2: COMPLETE JAVASCRIPT -->
+    <!-- PART 2: COMPLETE JAVASCRIPT FOR EXPANDED MEMORY INTERFACE GUIDE -->
 <!-- Place this script block before the closing </body> tag in the HTML file -->
 
 <script>
@@ -753,236 +767,359 @@
 document.addEventListener('DOMContentLoaded', function() {
     
     // ============================================================================
-    // DATA STRUCTURES (From Phase 4 of the content)
+    // DATA STRUCTURES (From expanded content JSON)
     // ============================================================================
     
-    const memoryComponents = {
-        "registers": {
-            "id": "registers",
-            "name": "CPU Registers",
-            "emoji": "⚡",
-            "correctLevel": 1,
-            "description": "Fastest memory inside CPU"
-        },
-        "cache": {
-            "id": "cache",
-            "name": "Cache Memory",
-            "emoji": "📝",
-            "correctLevel": 2,
-            "description": "Very fast SRAM cache"
-        },
-        "ram": {
-            "id": "ram",
-            "name": "Main Memory (RAM)",
-            "emoji": "💾",
-            "correctLevel": 3,
-            "description": "DRAM for active programs"
-        },
-        "storage": {
-            "id": "storage",
-            "name": "Secondary Storage",
-            "emoji": "💿",
-            "correctLevel": 4,
-            "description": "Large persistent storage"
-        }
-    };
-    
-    const memoryCharacteristics = {
-        "speed": {
-            "registers": "< 1 nanosecond (instant)",
-            "cache": "1-20 nanoseconds",
-            "ram": "50-100 nanoseconds",
-            "storage": "Microseconds to Milliseconds"
-        },
-        "size": {
-            "registers": "Bytes (32-256 bytes)",
-            "cache": "Kilobytes to Megabytes",
-            "ram": "Gigabytes (4-64 GB)",
-            "storage": "Terabytes (1-20 TB)"
-        },
-        "cost": {
-            "registers": "Integrated into CPU (very expensive per byte)",
-            "cache": "$$$$ per megabyte",
-            "ram": "$$ per gigabyte",
-            "storage": "$ per gigabyte (cheapest)"
-        }
-    };
-    
-    const quizQuestions = [
+    // Module 1: Memory Hierarchy
+    const module1Components = [
         {
-            "id": "q1",
-            "question": "Why does your laptop need both RAM (16 GB) and an SSD (512 GB) instead of just using 512 GB of RAM?",
-            "options": [
-                "RAM is too fast and would overheat if we used that much",
-                "512 GB of RAM would be extremely expensive and RAM is volatile (loses data when powered off)",
-                "SSDs are required by the operating system to boot the computer",
-                "RAM can only hold programs, not data files"
-            ],
-            "correct": 1,
-            "explanation": "Building 512 GB of RAM would cost thousands of dollars (vs. ~$50 for an SSD), and RAM is volatile—it loses everything when you shut down. SSDs provide cheap, persistent storage for files you want to keep."
+            id: "registers",
+            name: "CPU Registers",
+            icon: "🔧",
+            correctLevel: 1,
+            hint: "Closest to CPU, accessed in < 1 nanosecond"
         },
         {
-            "id": "q2",
-            "question": "A variable in your program is accessed repeatedly in a loop. Which type of locality does this demonstrate?",
-            "options": [
-                "Spatial Locality - accessing nearby memory locations",
-                "Temporal Locality - accessing the same location multiple times",
-                "Cache Locality - keeping data in cache memory",
-                "Register Locality - storing data in CPU registers"
-            ],
-            "correct": 1,
-            "explanation": "Temporal locality means if you access memory location X, you'll likely access X again soon. Loop variables are accessed repeatedly, making them perfect examples of temporal locality."
+            id: "cache",
+            name: "Cache Memory",
+            icon: "⚡",
+            correctLevel: 2,
+            hint: "Fast buffer between CPU and RAM, made of SRAM"
         },
         {
-            "id": "q3",
-            "question": "Why can't computer designers just use the fastest memory type for all storage needs?",
-            "options": [
-                "Fast memory is illegal to manufacture in large quantities",
-                "The fastest memory is far too expensive and can't be made large enough",
-                "Fast memory requires too much electrical power",
-                "Fast memory loses data too quickly and needs constant refreshing"
-            ],
-            "correct": 1,
-            "explanation": "The fundamental trade-off: faster memory requires more expensive manufacturing and must be physically closer to the CPU (limiting size). A terabyte of register-speed memory would cost millions of dollars and wouldn't physically fit!"
+            id: "ram",
+            name: "Main Memory (RAM)",
+            icon: "🧠",
+            correctLevel: 3,
+            hint: "Primary working memory, Week 12 focus"
         },
         {
-            "id": "q4",
-            "question": "A program is processing array elements sequentially (array[0], array[1], array[2]...). Which memory principle makes this efficient?",
-            "options": [
-                "Temporal Locality - accessing the same data repeatedly",
-                "Spatial Locality - accessing nearby memory locations",
-                "Cache Coherence - keeping multiple caches synchronized",
-                "Virtual Memory - using disk space as RAM"
-            ],
-            "correct": 1,
-            "explanation": "Spatial locality means that when you access memory location X, you're likely to access nearby locations (X+1, X+2, etc.) soon. The memory hierarchy exploits this by loading chunks of adjacent data into cache."
-        },
-        {
-            "id": "q5",
-            "question": "Your laptop has 16 GB of RAM and a 512 GB SSD. When you open a large video file for editing, where is the video initially stored, and where does it move when actively being edited?",
-            "options": [
-                "Initially in RAM, moves to SSD when editing",
-                "Initially in Cache, moves to RAM when editing",
-                "Initially in SSD, moves to RAM when editing",
-                "Initially in Registers, moves to Cache when editing"
-            ],
-            "correct": 2,
-            "explanation": "The video file is stored permanently on the SSD (secondary storage). When you open it for editing, the necessary portions are loaded into RAM (main memory) where they can be accessed much faster. The most actively used data may also be cached."
-        },
-        {
-            "id": "q6",
-            "question": "In the memory hierarchy pyramid, why does each level get progressively WIDER as you move down?",
-            "options": [
-                "To show that lower levels cost more money",
-                "To show that lower levels have larger storage capacity",
-                "To show that lower levels are physically bigger devices",
-                "To show that lower levels use more electrical power"
-            ],
-            "correct": 1,
-            "explanation": "The pyramid's widening shape visually represents increasing storage capacity at each level. Registers (top) have just bytes of storage, while secondary storage (bottom) has terabytes—about a trillion times more capacity!"
+            id: "storage",
+            name: "Secondary Storage",
+            icon: "💾",
+            correctLevel: 4,
+            hint: "Permanent storage, slowest but largest"
         }
     ];
     
-    const feedbackMessages = {
-        "phase1Correct": "Excellent! You've correctly built the memory hierarchy. Notice how each level represents a balance between speed, size, and cost.",
-        "phase1Incorrect": "Not quite right. Remember: faster memory is at the top (smallest capacity), slower memory is at the bottom (largest capacity). Try again!",
-        "phase2AllCorrect": "Perfect! You understand the trade-offs at each level. See how speed decreases as size increases?",
-        "phase2Hint": "Think about the inverse relationships: Faster = Smaller + More Expensive. Slower = Larger + Cheaper.",
-        "phase3Excellent": "Outstanding! You've mastered the memory hierarchy. You can now explain why computers need multiple types of memory and predict data flow.",
-        "completionMessage": "🎉 Congratulations! You've successfully completed the Memory Hierarchy Builder. You now understand one of the most fundamental design patterns in computer architecture—a pattern used in every computer from smartphones to supercomputers. This knowledge will be crucial as you build the memory interface for your CPU in Week 12!"
+    // Module 2: Endianness Exercises
+    const module2Exercises = [
+        {
+            id: "ex1",
+            instruction: "Store the 16-bit value 0x4A3F starting at address 0x20 using LITTLE-ENDIAN format",
+            value: "0x4A3F",
+            startAddress: "0x20",
+            format: "little-endian",
+            correctLayout: [
+                {address: "0x20", value: "0x3F", label: "Low byte (LSB)"},
+                {address: "0x21", value: "0x4A", label: "High byte (MSB)"}
+            ],
+            explanation: "Little-endian stores the least significant byte (0x3F) at the lowest address (0x20)."
+        },
+        {
+            id: "ex2",
+            instruction: "Store the 16-bit value 0x4A3F starting at address 0x20 using BIG-ENDIAN format",
+            value: "0x4A3F",
+            startAddress: "0x20",
+            format: "big-endian",
+            correctLayout: [
+                {address: "0x20", value: "0x4A", label: "High byte (MSB)"},
+                {address: "0x21", value: "0x3F", label: "Low byte (LSB)"}
+            ],
+            explanation: "Big-endian stores the most significant byte (0x4A) at the lowest address (0x20)."
+        },
+        {
+            id: "ex3",
+            instruction: "Store the 16-bit value 0xBEEF starting at address 0x50 using LITTLE-ENDIAN format",
+            value: "0xBEEF",
+            startAddress: "0x50",
+            format: "little-endian",
+            correctLayout: [
+                {address: "0x50", value: "0xEF", label: "Low byte (LSB)"},
+                {address: "0x51", value: "0xBE", label: "High byte (MSB)"}
+            ],
+            explanation: "Little-endian: LSB (0xEF) at lower address, MSB (0xBE) at higher address."
+        },
+        {
+            id: "ex4",
+            instruction: "Store the 16-bit value 0xBEEF starting at address 0x50 using BIG-ENDIAN format",
+            value: "0xBEEF",
+            startAddress: "0x50",
+            format: "big-endian",
+            correctLayout: [
+                {address: "0x50", value: "0xBE", label: "High byte (MSB)"},
+                {address: "0x51", value: "0xEF", label: "Low byte (LSB)"}
+            ],
+            explanation: "Big-endian: MSB (0xBE) at lower address, LSB (0xEF) at higher address."
+        }
+    ];
+    
+    // Module 3: Timing Diagrams
+    const module3Diagrams = {
+        read: {
+            title: "Memory READ Operation",
+            description: "LOAD instruction reading 0x7B from address 0x45",
+            signals: [
+                {name: "Clock", values: ["↓", "↑", "↓", "↑", "↓"], type: "clock"},
+                {name: "MAR", values: ["--", "0x45", "0x45", "0x45", "0x45"], type: "data"},
+                {name: "MEM_READ", values: ["LOW", "LOW", "HIGH", "HIGH", "LOW"], type: "control"},
+                {name: "Data Bus", values: ["--", "--", "--", "0x7B", "0x7B"], type: "data"},
+                {name: "MDR", values: ["--", "--", "--", "--", "0x7B"], type: "data"}
+            ],
+            questions: [
+                {
+                    q: "In which cycle is the address (0x45) loaded into MAR?",
+                    options: ["Cycle 0", "Cycle 1", "Cycle 2", "Cycle 3"],
+                    correct: 1,
+                    explanation: "The address 0x45 is loaded into MAR in cycle 1, setting up the memory read."
+                },
+                {
+                    q: "When is MEM_READ asserted (HIGH)?",
+                    options: ["Cycle 1", "Cycles 2-3", "Cycle 4", "Never"],
+                    correct: 1,
+                    explanation: "MEM_READ goes HIGH in cycle 2 and remains HIGH through cycle 3, triggering the memory read."
+                },
+                {
+                    q: "In which cycle does data (0x7B) first appear on the data bus?",
+                    options: ["Cycle 1", "Cycle 2", "Cycle 3", "Cycle 4"],
+                    correct: 2,
+                    explanation: "After MEM_READ is asserted, memory responds by placing data on the bus in cycle 3."
+                },
+                {
+                    q: "When does MDR capture the data from the bus?",
+                    options: ["Cycle 2", "Cycle 3", "Cycle 4", "Never"],
+                    correct: 2,
+                    explanation: "MDR latches the data from the data bus at the end of cycle 4, completing the read."
+                }
+            ]
+        },
+        write: {
+            title: "Memory WRITE Operation",
+            description: "STORE instruction writing 0xA8 to address 0x50",
+            signals: [
+                {name: "Clock", values: ["↓", "↑", "↓", "↑", "↓"], type: "clock"},
+                {name: "MAR", values: ["--", "0x50", "0x50", "0x50", "0x50"], type: "data"},
+                {name: "MDR", values: ["--", "0xA8", "0xA8", "0xA8", "0xA8"], type: "data"},
+                {name: "MEM_WRITE", values: ["LOW", "LOW", "HIGH", "HIGH", "LOW"], type: "control"},
+                {name: "Data Bus", values: ["--", "--", "0xA8", "0xA8", "--"], type: "data"}
+            ],
+            questions: [
+                {
+                    q: "What is loaded in cycle 1?",
+                    options: ["Only MAR", "Only MDR", "Both MAR and MDR", "Neither"],
+                    correct: 2,
+                    explanation: "Both the address (0x50 to MAR) and the data (0xA8 to MDR) are loaded in cycle 1."
+                },
+                {
+                    q: "When is MEM_WRITE asserted?",
+                    options: ["Cycle 1", "Cycles 2-3", "Cycle 4", "Never"],
+                    correct: 1,
+                    explanation: "MEM_WRITE is asserted in cycles 2-3 to perform the write operation."
+                },
+                {
+                    q: "When does data appear on the data bus?",
+                    options: ["Cycle 1", "Cycles 2-3", "Cycle 4", "All cycles"],
+                    correct: 1,
+                    explanation: "MDR drives the data bus with 0xA8 during cycles 2-3 while MEM_WRITE is active."
+                },
+                {
+                    q: "What's the key difference between READ and WRITE timing?",
+                    options: [
+                        "WRITE is faster",
+                        "WRITE loads both MAR and MDR first",
+                        "READ uses more cycles",
+                        "No difference"
+                    ],
+                    correct: 1,
+                    explanation: "WRITE must load both address and data before asserting MEM_WRITE, while READ only needs the address first."
+                },
+                {
+                    q: "How many clock cycles does this WRITE operation take?",
+                    options: ["2 cycles", "3 cycles", "4 cycles", "5 cycles"],
+                    correct: 2,
+                    explanation: "From address/data setup (cycle 1) to write completion (cycle 4) takes 4 complete clock cycles."
+                }
+            ]
+        }
+    };
+    
+    // Module 4: Instruction Traces (simplified for demo)
+    const module4Traces = {
+        load: {
+            instruction: "LOAD R1, [0x45]",
+            totalCycles: 7,
+            cycles: [
+                {cycle: 0, phase: "Fetch", description: "PC → MAR: Load program counter into MAR", registers: {MAR: "0x10"}, active: ["PC", "MAR"]},
+                {cycle: 1, phase: "Fetch", description: "Memory[MAR] → MDR, PC++: Fetch instruction", registers: {MDR: "LOAD", PC: "0x11"}, active: ["Memory", "MDR", "PC"]},
+                {cycle: 2, phase: "Fetch", description: "MDR → IR: Move instruction to IR", registers: {IR: "LOAD"}, active: ["MDR", "IR"]},
+                {cycle: 3, phase: "Decode", description: "Control unit decodes: LOAD R1, [0x45]", registers: {}, active: ["IR", "Control Unit"]},
+                {cycle: 4, phase: "Execute", description: "0x45 → MAR: Load data address into MAR", registers: {MAR: "0x45"}, active: ["MAR"]},
+                {cycle: 5, phase: "Execute", description: "Memory[0x45] → Data Bus: Assert MEM_READ", registers: {DataBus: "0x7B"}, active: ["Memory", "MAR"]},
+                {cycle: 6, phase: "Execute", description: "Data Bus → MDR → R1: Complete LOAD", registers: {MDR: "0x7B", R1: "0x7B"}, active: ["MDR", "R1"]}
+            ],
+            questions: [
+                {q: "What is the final value in R1?", answer: "0x7B"},
+                {q: "How many cycles does the Execute phase take?", answer: "3"},
+                {q: "Which register holds the memory address during execute?", answer: "MAR"}
+            ]
+        },
+        store: {
+            instruction: "STORE [0x50], R2",
+            totalCycles: 7,
+            cycles: [
+                {cycle: 0, phase: "Fetch", description: "PC → MAR: Load program counter", registers: {MAR: "0x12"}, active: ["PC", "MAR"]},
+                {cycle: 1, phase: "Fetch", description: "Memory[MAR] → MDR, PC++", registers: {MDR: "STORE", PC: "0x13"}, active: ["Memory", "MDR", "PC"]},
+                {cycle: 2, phase: "Fetch", description: "MDR → IR", registers: {IR: "STORE"}, active: ["MDR", "IR"]},
+                {cycle: 3, phase: "Decode", description: "Control unit decodes: STORE [0x50], R2", registers: {}, active: ["IR", "Control Unit"]},
+                {cycle: 4, phase: "Execute", description: "0x50 → MAR, R2 → MDR: Load address and data", registers: {MAR: "0x50", MDR: "0xA8"}, active: ["MAR", "MDR", "R2"]},
+                {cycle: 5, phase: "Execute", description: "MDR → Data Bus: Assert MEM_WRITE", registers: {DataBus: "0xA8"}, active: ["MDR"]},
+                {cycle: 6, phase: "Execute", description: "Data Bus → Memory[0x50]: Complete write", registers: {"Memory[0x50]": "0xA8"}, active: ["Memory"]}
+            ],
+            questions: [
+                {q: "What value is written to memory?", answer: "0xA8"},
+                {q: "In which cycle are both MAR and MDR loaded?", answer: "4"},
+                {q: "Does R2 change during this operation?", answer: "No"}
+            ]
+        }
+    };
+    
+    // Module 5: I/O Comparison
+    const module5Data = {
+        scenarios: [
+            {
+                id: "scenario1",
+                title: "Reading Keyboard Input",
+                memoryMapped: {
+                    code: "LOAD R1, [0xF0]    ; Read keyboard into R1",
+                    explanation: "Uses standard LOAD instruction with memory address 0xF0"
+                },
+                portBased: {
+                    code: "IN R1, PORT_0      ; Read keyboard into R1",
+                    explanation: "Uses special IN instruction with port number 0"
+                },
+                questions: [
+                    {
+                        q: "Which approach uses the LOAD instruction?",
+                        options: ["Memory-Mapped", "Port-Based", "Both", "Neither"],
+                        correct: 0,
+                        explanation: "Memory-mapped I/O uses standard memory instructions like LOAD."
+                    },
+                    {
+                        q: "Which approach requires a special instruction (IN)?",
+                        options: ["Memory-Mapped", "Port-Based", "Both", "Neither"],
+                        correct: 1,
+                        explanation: "Port-based I/O requires dedicated IN and OUT instructions."
+                    }
+                ]
+            },
+            {
+                id: "scenario2",
+                title: "Controlling 8 LEDs",
+                memoryMapped: {
+                    code: "LOAD R1, #0b10101010\nSTORE [0xF2], R1    ; Write to LED register",
+                    explanation: "LEDs assigned memory address 0xF2; write using STORE"
+                },
+                portBased: {
+                    code: "LOAD R1, #0b10101010\nOUT PORT_2, R1      ; Write to LED port",
+                    explanation: "LEDs assigned port 2; write using OUT instruction"
+                },
+                questions: [
+                    {
+                        q: "Which approach uses address space for I/O?",
+                        options: ["Memory-Mapped", "Port-Based", "Both", "Neither"],
+                        correct: 0,
+                        explanation: "Memory-mapped I/O uses addresses from the memory address space."
+                    },
+                    {
+                        q: "Which approach has a separate address space for I/O?",
+                        options: ["Memory-Mapped", "Port-Based", "Both", "Neither"],
+                        correct: 1,
+                        explanation: "Port-based I/O has its own address space, separate from memory."
+                    }
+                ]
+            }
+        ],
+        tradeoffQuestions: [
+            {
+                q: "Your CPU has only 256 addresses. You need 16 I/O devices. Which approach preserves more memory space?",
+                options: ["Memory-Mapped", "Port-Based", "Both equal", "Neither helps"],
+                correct: 1,
+                explanation: "Port-based I/O doesn't use memory address space, preserving all 256 addresses for memory."
+            },
+            {
+                q: "You want to use indexed addressing with I/O. Which approach naturally supports this?",
+                options: ["Memory-Mapped", "Port-Based", "Both", "Neither"],
+                correct: 0,
+                explanation: "Memory-mapped I/O can use all addressing modes supported by LOAD/STORE."
+            },
+            {
+                q: "You need to clearly distinguish I/O operations from memory operations. Which is clearer?",
+                options: ["Memory-Mapped", "Port-Based", "Both equal", "Neither"],
+                correct: 1,
+                explanation: "Port-based I/O uses explicit IN/OUT instructions, making I/O immediately recognizable."
+            },
+            {
+                q: "Your control unit already handles LOAD/STORE. Which I/O approach requires fewer additional instructions?",
+                options: ["Memory-Mapped", "Port-Based", "Both equal", "Neither"],
+                correct: 0,
+                explanation: "Memory-mapped I/O reuses existing LOAD/STORE instructions."
+            },
+            {
+                q: "Which approach does your 8-bit CPU project use?",
+                options: ["Memory-Mapped", "Port-Based", "Both", "Neither"],
+                correct: 0,
+                explanation: "Your CPU uses memory-mapped I/O for simplicity, reserving addresses 0xF0-0xFF for I/O."
+            },
+            {
+                q: "Which architecture is used by modern ARM processors?",
+                options: ["Memory-Mapped", "Port-Based", "Both", "Neither"],
+                correct: 0,
+                explanation: "ARM processors use memory-mapped I/O for simplicity and flexibility."
+            }
+        ]
     };
     
     // ============================================================================
     // STATE MANAGEMENT (Session-only, no localStorage)
     // ============================================================================
     
-    let currentPhase = 1;
-    let phase1Complete = false;
-    let phase2Complete = false;
-    let phase3Complete = false;
-    let quizScore = 0;
-    let answeredQuestions = new Set();
-    
-    // Phase 1 state
-    let droppedComponents = {
-        1: null,
-        2: null,
-        3: null,
-        4: null
+    let currentModule = 1;
+    let moduleCompletion = {
+        module1: false,
+        module2: false,
+        module3: false,
+        module4: false,
+        module5: false
     };
     
-    // Phase 2 state
-    let selectedCharacteristics = {
-        "registers": { speed: null, size: null, cost: null },
-        "cache": { speed: null, size: null, cost: null },
-        "ram": { speed: null, size: null, cost: null },
-        "storage": { speed: null, size: null, cost: null }
-    };
+    // Module 1 state
+    let droppedComponents = {1: null, 2: null, 3: null, 4: null};
     
-    // ============================================================================
-    // TAB NAVIGATION
-    // ============================================================================
+    // Module 2 state
+    let currentExerciseIndex = 0;
+    let exerciseResults = [];
+    let droppedBytes = {};
     
-    function initializeTabs() {
-        const tabButtons = document.querySelectorAll('.tab-button');
-        
-        tabButtons.forEach(button => {
-            button.addEventListener('click', function() {
-                const targetTab = this.getAttribute('data-tab');
-                switchTab(targetTab);
-            });
-            
-            // Keyboard navigation
-            button.addEventListener('keydown', function(e) {
-                if (e.key === 'Enter' || e.key === ' ') {
-                    e.preventDefault();
-                    const targetTab = this.getAttribute('data-tab');
-                    switchTab(targetTab);
-                }
-            });
-        });
-    }
+    // Module 3 state
+    let currentDiagram = 'read';
+    let timingAnswers = {};
+    let timingScore = 0;
     
-    function switchTab(tabName) {
-        // Update tab buttons
-        const tabButtons = document.querySelectorAll('.tab-button');
-        tabButtons.forEach(btn => {
-            const isActive = btn.getAttribute('data-tab') === tabName;
-            btn.setAttribute('aria-selected', isActive);
-            
-            if (isActive) {
-                btn.classList.add('bg-blue-600', 'text-white');
-                btn.classList.remove('bg-white', 'text-gray-700', 'hover:bg-gray-50');
-            } else {
-                btn.classList.remove('bg-blue-600', 'text-white');
-                btn.classList.add('bg-white', 'text-gray-700', 'hover:bg-gray-50');
-            }
-        });
-        
-        // Update content sections
-        const contentSections = document.querySelectorAll('.tab-content');
-        contentSections.forEach(section => {
-            const sectionId = section.getAttribute('id');
-            const isActive = sectionId === `content-${tabName}`;
-            
-            if (isActive) {
-                section.classList.add('active');
-            } else {
-                section.classList.remove('active');
-            }
-        });
-        
-        // Scroll to top smoothly
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
+    // Module 4 state
+    let currentTrace = 'load';
+    let currentCycle = 0;
+    let traceAnswers = {};
+    
+    // Module 5 state
+    let ioAnswers = {};
+    let ioScore = 0;
     
     // ============================================================================
     // UTILITY FUNCTIONS
     // ============================================================================
     
-    // Fisher-Yates shuffle algorithm for randomizing arrays
     function shuffleArray(array) {
-        const newArray = [...array]; // Create a copy to avoid mutating original
+        const newArray = [...array];
         for (let i = newArray.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
             [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
@@ -990,53 +1127,104 @@ document.addEventListener('DOMContentLoaded', function() {
         return newArray;
     }
     
-    // ============================================================================
-    // PHASE 1: DRAG AND DROP PYRAMID BUILDER
-    // ============================================================================
+    function updateProgressBar() {
+        const completed = Object.values(moduleCompletion).filter(v => v).length;
+        const percentage = (completed / 5) * 100;
+        document.getElementById('progress-bar').style.width = percentage + '%';
+        document.getElementById('progress-percentage').textContent = Math.round(percentage) + '%';
+        document.getElementById('modules-completed').textContent = completed;
+        
+        // Update progress dots
+        for (let i = 1; i <= 5; i++) {
+            const dot = document.getElementById(`dot-${i}`);
+            if (moduleCompletion[`module${i}`]) {
+                dot.classList.add('completed');
+                dot.classList.remove('active');
+            } else if (i === currentModule) {
+                dot.classList.add('active');
+                dot.classList.remove('completed');
+            } else {
+                dot.classList.remove('completed', 'active');
+            }
+        }
+    }
     
-    function initializePhase1() {
-        const cardsContainer = document.getElementById('draggable-cards');
-        cardsContainer.innerHTML = '';
-        
-        // Randomize the order of components so they're not in correct order
-        const componentsArray = Object.values(memoryComponents);
-        const shuffledComponents = shuffleArray(componentsArray);
-        
-        // Create draggable cards in random order
-        shuffledComponents.forEach(component => {
-            const card = document.createElement('div');
-            card.className = 'draggable-card bg-white rounded-lg p-4 shadow-md border-2 border-gray-200';
-            card.draggable = true;
-            card.id = `card-${component.id}`;
-            card.setAttribute('data-component', component.id);
-            
-            card.innerHTML = `
-                <div class="text-4xl mb-2 text-center">${component.emoji}</div>
-                <h4 class="font-bold text-center text-sm mb-1">${component.name}</h4>
-                <p class="text-xs text-gray-600 text-center">${component.description}</p>
-            `;
-            
-            // Drag event listeners
-            card.addEventListener('dragstart', handleDragStart);
-            card.addEventListener('dragend', handleDragEnd);
-            
-            cardsContainer.appendChild(card);
-        });
-        
-        // Set up drop zones
-        for (let i = 1; i <= 4; i++) {
-            const dropZone = document.getElementById(`drop-level-${i}`);
-            dropZone.addEventListener('dragover', handleDragOver);
-            dropZone.addEventListener('drop', handleDrop);
-            dropZone.addEventListener('dragleave', handleDragLeave);
+    function showModule(moduleNumber) {
+        // Hide all modules
+        for (let i = 1; i <= 5; i++) {
+            document.getElementById(`module-${i}`).classList.remove('active');
+            const navBtn = document.getElementById(`nav-module-${i}`);
+            navBtn.classList.remove('active');
+            if (!moduleCompletion[`module${i}`]) {
+                navBtn.classList.remove('completed');
+            }
         }
         
-        // Button listeners
-        document.getElementById('check-pyramid-btn').addEventListener('click', checkPyramid);
-        document.getElementById('reset-pyramid-btn').addEventListener('click', resetPhase1);
-        document.getElementById('phase-1-next').addEventListener('click', () => {
-            showPhase(2);
+        // Show selected module
+        currentModule = moduleNumber;
+        document.getElementById(`module-${moduleNumber}`).classList.add('active');
+        const navBtn = document.getElementById(`nav-module-${moduleNumber}`);
+        navBtn.classList.add('active');
+        
+        updateProgressBar();
+        window.scrollTo({top: 0, behavior: 'smooth'});
+    }
+    
+    // ============================================================================
+    // MODULE NAVIGATION
+    // ============================================================================
+    
+    function initializeNavigation() {
+        for (let i = 1; i <= 5; i++) {
+            document.getElementById(`nav-module-${i}`).addEventListener('click', function() {
+                showModule(i);
+            });
+        }
+        
+        // Next module buttons
+        document.getElementById('next-module-1')?.addEventListener('click', () => showModule(2));
+        document.getElementById('next-module-2')?.addEventListener('click', () => showModule(3));
+        document.getElementById('next-module-3')?.addEventListener('click', () => showModule(4));
+        document.getElementById('next-module-4')?.addEventListener('click', () => showModule(5));
+        document.getElementById('complete-activity')?.addEventListener('click', showFinalCompletion);
+    }
+    
+    // ============================================================================
+    // MODULE 1: MEMORY HIERARCHY DRAG-DROP
+    // ============================================================================
+    
+    function initializeModule1() {
+        const container = document.getElementById('draggable-components-1');
+        container.innerHTML = '';
+        
+        const shuffled = shuffleArray([...module1Components]);
+        
+        shuffled.forEach(comp => {
+            const card = document.createElement('div');
+            card.className = 'draggable-card bg-white rounded-lg p-4 shadow-md border-2 border-gray-200 hover:shadow-lg';
+            card.draggable = true;
+            card.id = `card-${comp.id}`;
+            card.setAttribute('data-component', comp.id);
+            card.innerHTML = `
+                <div class="text-4xl mb-2 text-center">${comp.icon}</div>
+                <h4 class="font-bold text-center text-sm">${comp.name}</h4>
+            `;
+            
+            card.addEventListener('dragstart', handleDragStart);
+            card.addEventListener('dragend', handleDragEnd);
+            container.appendChild(card);
         });
+        
+        // Setup drop zones
+        for (let i = 1; i <= 4; i++) {
+            const zone = document.getElementById(`drop-level-${i}`);
+            zone.addEventListener('dragover', handleDragOver);
+            zone.addEventListener('drop', handleDrop);
+            zone.addEventListener('dragleave', handleDragLeave);
+        }
+        
+        document.getElementById('check-module-1').addEventListener('click', checkModule1);
+        document.getElementById('reset-module-1').addEventListener('click', resetModule1);
     }
     
     let draggedElement = null;
@@ -1044,8 +1232,6 @@ document.addEventListener('DOMContentLoaded', function() {
     function handleDragStart(e) {
         draggedElement = e.target;
         e.target.classList.add('dragging');
-        e.dataTransfer.effectAllowed = 'move';
-        e.dataTransfer.setData('text/html', e.target.innerHTML);
     }
     
     function handleDragEnd(e) {
@@ -1053,12 +1239,8 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     function handleDragOver(e) {
-        if (e.preventDefault) {
-            e.preventDefault();
-        }
-        e.dataTransfer.dropEffect = 'move';
+        e.preventDefault();
         e.currentTarget.classList.add('drag-over');
-        return false;
     }
     
     function handleDragLeave(e) {
@@ -1066,11 +1248,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     function handleDrop(e) {
-        if (e.stopPropagation) {
-            e.stopPropagation();
-        }
         e.preventDefault();
-        
         const dropZone = e.currentTarget;
         dropZone.classList.remove('drag-over');
         
@@ -1078,443 +1256,742 @@ document.addEventListener('DOMContentLoaded', function() {
             const level = parseInt(dropZone.getAttribute('data-level'));
             const componentId = draggedElement.getAttribute('data-component');
             
-            // Remove component from previous level if it exists
+            // Remove from previous level
             Object.keys(droppedComponents).forEach(lvl => {
                 if (droppedComponents[lvl] === componentId) {
                     droppedComponents[lvl] = null;
                 }
             });
             
-            // Place component in new level
             droppedComponents[level] = componentId;
             
-            // Clear drop zone and add the card
             dropZone.innerHTML = '';
-            const clonedCard = draggedElement.cloneNode(true);
-            clonedCard.draggable = false;
-            clonedCard.classList.remove('dragging');
-            clonedCard.classList.add('cursor-default');
-            dropZone.appendChild(clonedCard);
+            const clone = draggedElement.cloneNode(true);
+            clone.draggable = false;
+            clone.classList.add('cursor-default');
+            dropZone.appendChild(clone);
             dropZone.classList.add('filled');
             
-            // Remove original card from cards container
             draggedElement.remove();
-            
-            // Reset feedback
-            const feedback = document.getElementById('phase-1-feedback');
-            feedback.classList.add('hidden');
+            document.getElementById('feedback-module-1').classList.add('hidden');
         }
-        
-        return false;
     }
     
-    function checkPyramid() {
-        let allCorrect = true;
-        const feedback = document.getElementById('phase-1-feedback');
+    function checkModule1() {
+        const filled = Object.values(droppedComponents).filter(c => c !== null).length;
+        const feedback = document.getElementById('feedback-module-1');
         
-        // Check if all levels are filled
-        const filledLevels = Object.values(droppedComponents).filter(c => c !== null).length;
-        if (filledLevels !== 4) {
+        if (filled !== 4) {
             feedback.className = 'mt-6 p-4 rounded-lg bg-yellow-100 border border-yellow-400';
-            feedback.innerHTML = `
-                <p class="text-yellow-800 font-semibold">⚠️ Please place all memory components before checking.</p>
-                <p class="text-yellow-700 text-sm mt-1">You've placed ${filledLevels} out of 4 components.</p>
-            `;
+            feedback.innerHTML = `<p class="text-yellow-800 font-semibold">⚠️ Please place all 4 components before checking.</p>`;
             feedback.classList.remove('hidden');
             return;
         }
         
-        // Validate placement
-        Object.entries(droppedComponents).forEach(([level, componentId]) => {
-            const component = memoryComponents[componentId];
-            if (component && component.correctLevel !== parseInt(level)) {
+        let allCorrect = true;
+        Object.entries(droppedComponents).forEach(([level, id]) => {
+            const comp = module1Components.find(c => c.id === id);
+            if (comp && comp.correctLevel !== parseInt(level)) {
                 allCorrect = false;
             }
         });
         
         if (allCorrect) {
-            phase1Complete = true;
+            moduleCompletion.module1 = true;
             feedback.className = 'mt-6 p-4 rounded-lg bg-green-100 border border-green-400';
-            feedback.innerHTML = `
-                <p class="text-green-800 font-semibold">✅ ${feedbackMessages.phase1Correct}</p>
-            `;
-            document.getElementById('phase-1-next').classList.remove('hidden');
+            feedback.innerHTML = `<p class="text-green-800 font-semibold">✅ Excellent! You've correctly built the memory hierarchy.</p>`;
+            document.getElementById('next-module-1').classList.remove('hidden');
+            document.getElementById('nav-module-1').classList.add('completed');
+            updateProgressBar();
         } else {
             feedback.className = 'mt-6 p-4 rounded-lg bg-red-100 border border-red-400';
-            feedback.innerHTML = `
-                <p class="text-red-800 font-semibold">❌ ${feedbackMessages.phase1Incorrect}</p>
-            `;
+            feedback.innerHTML = `<p class="text-red-800 font-semibold">❌ Not quite right. Remember: faster memory is at the top (smallest capacity).</p>`;
         }
         
         feedback.classList.remove('hidden');
     }
     
-    function resetPhase1() {
-        // Clear dropped components
-        droppedComponents = { 1: null, 2: null, 3: null, 4: null };
-        
-        // Reset drop zones
+    function resetModule1() {
+        droppedComponents = {1: null, 2: null, 3: null, 4: null};
         for (let i = 1; i <= 4; i++) {
-            const dropZone = document.getElementById(`drop-level-${i}`);
-            dropZone.innerHTML = `<span class="text-gray-400 text-sm">Level ${i}${i === 1 ? ': Fastest' : i === 4 ? ': Slowest' : ''}</span>`;
-            dropZone.classList.remove('filled');
+            const zone = document.getElementById(`drop-level-${i}`);
+            zone.innerHTML = `<span class="text-gray-400 text-sm">Level ${i}${i===1?': Fastest':i===4?': Slowest':''}</span>`;
+            zone.classList.remove('filled');
         }
-        
-        // Recreate cards
-        initializePhase1();
-        
-        // Hide feedback and next button
-        document.getElementById('phase-1-feedback').classList.add('hidden');
-        document.getElementById('phase-1-next').classList.add('hidden');
-        phase1Complete = false;
+        initializeModule1();
+        document.getElementById('feedback-module-1').classList.add('hidden');
+        document.getElementById('next-module-1').classList.add('hidden');
+        moduleCompletion.module1 = false;
+        updateProgressBar();
     }
     
     // ============================================================================
-    // PHASE 2: CHARACTERISTIC MATCHING
+    // MODULE 2: ENDIANNESS EXPLORER
     // ============================================================================
     
-    function initializePhase2() {
-        const grid = document.getElementById('characteristics-grid');
-        grid.innerHTML = '';
+    function initializeModule2() {
+        currentExerciseIndex = 0;
+        exerciseResults = [];
+        showExercise(0);
         
-        const levelOrder = ['registers', 'cache', 'ram', 'storage'];
-        const levelNames = {
-            'registers': 'CPU Registers',
-            'cache': 'Cache Memory',
-            'ram': 'Main Memory (RAM)',
-            'storage': 'Secondary Storage'
-        };
-        
-        levelOrder.forEach(componentId => {
-            const container = document.createElement('div');
-            container.className = 'bg-white rounded-lg p-6 border border-gray-200 shadow-sm';
-            
-            let html = `
-                <h4 class="font-bold text-lg text-[#1A1A1A] mb-4">${levelNames[componentId]}</h4>
-                <div class="space-y-4">
-            `;
-            
-            // Speed dropdown
-            html += createCharacteristicDropdown(componentId, 'speed', 'Speed', Object.values(memoryCharacteristics.speed));
-            
-            // Size dropdown
-            html += createCharacteristicDropdown(componentId, 'size', 'Size', Object.values(memoryCharacteristics.size));
-            
-            // Cost dropdown
-            html += createCharacteristicDropdown(componentId, 'cost', 'Cost per Byte', Object.values(memoryCharacteristics.cost));
-            
-            html += `</div>`;
-            container.innerHTML = html;
-            grid.appendChild(container);
+        document.getElementById('prev-exercise').addEventListener('click', () => {
+            if (currentExerciseIndex > 0) showExercise(currentExerciseIndex - 1);
         });
         
-        // Add event listeners to all dropdowns
-        document.querySelectorAll('.characteristic-select').forEach(select => {
-            select.addEventListener('change', function() {
-                const [componentId, characteristic] = this.id.split('-').slice(1);
-                selectedCharacteristics[componentId][characteristic] = this.value;
-                
-                // Remove any previous validation styling
-                this.classList.remove('correct', 'incorrect');
-            });
+        document.getElementById('next-exercise').addEventListener('click', () => {
+            if (currentExerciseIndex < module2Exercises.length - 1) showExercise(currentExerciseIndex + 1);
         });
         
-        // Button listeners
-        document.getElementById('check-characteristics-btn').addEventListener('click', checkCharacteristics);
-        document.getElementById('reset-characteristics-btn').addEventListener('click', resetPhase2);
-        document.getElementById('phase-2-next').addEventListener('click', () => {
-            showPhase(3);
-        });
+        document.getElementById('check-module-2').addEventListener('click', checkModule2);
+        document.getElementById('reset-module-2').addEventListener('click', () => showExercise(currentExerciseIndex));
     }
     
-    function createCharacteristicDropdown(componentId, characteristic, label, options) {
-        // Randomize the order of options to prevent pattern-matching
-        const shuffledOptions = shuffleArray(options);
+    function showExercise(index) {
+        currentExerciseIndex = index;
+        droppedBytes = {};
+        const ex = module2Exercises[index];
         
-        return `
-            <div>
-                <label for="select-${componentId}-${characteristic}" class="block text-sm font-medium text-gray-700 mb-2">
-                    ${label}
-                </label>
-                <select 
-                    id="select-${componentId}-${characteristic}" 
-                    class="characteristic-select w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                >
-                    <option value="">-- Select ${label} --</option>
-                    ${shuffledOptions.map(opt => `<option value="${opt}">${opt}</option>`).join('')}
-                </select>
-            </div>
-        `;
-    }
-    
-    function checkCharacteristics() {
-        let allCorrect = true;
-        let allSelected = true;
-        const feedback = document.getElementById('phase-2-feedback');
-        const incorrectComponents = [];
+        document.getElementById('current-exercise').textContent = index + 1;
+        document.getElementById('total-exercises').textContent = module2Exercises.length;
+        document.getElementById('exercise-instruction').textContent = ex.instruction;
         
-        Object.keys(selectedCharacteristics).forEach(componentId => {
-            ['speed', 'size', 'cost'].forEach(characteristic => {
-                const select = document.getElementById(`select-${componentId}-${characteristic}`);
-                const selectedValue = selectedCharacteristics[componentId][characteristic];
-                const correctValue = memoryCharacteristics[characteristic][componentId];
-                
-                if (!selectedValue) {
-                    allSelected = false;
-                    return;
-                }
-                
-                if (selectedValue === correctValue) {
-                    select.classList.add('correct');
-                    select.classList.remove('incorrect');
-                } else {
-                    select.classList.add('incorrect');
-                    select.classList.remove('correct');
-                    allCorrect = false;
-                    incorrectComponents.push(componentId);
-                }
-            });
-        });
+        // Update prev/next buttons
+        document.getElementById('prev-exercise').disabled = index === 0;
+        document.getElementById('next-exercise').disabled = index === module2Exercises.length - 1;
         
-        if (!allSelected) {
-            feedback.className = 'mt-6 p-4 rounded-lg bg-yellow-100 border border-yellow-400';
-            feedback.innerHTML = `
-                <p class="text-yellow-800 font-semibold">⚠️ Please select all characteristics before checking.</p>
-            `;
-            feedback.classList.remove('hidden');
-            return;
-        }
-        
-        if (allCorrect) {
-            phase2Complete = true;
-            feedback.className = 'mt-6 p-4 rounded-lg bg-green-100 border border-green-400';
-            feedback.innerHTML = `
-                <p class="text-green-800 font-semibold">✅ ${feedbackMessages.phase2AllCorrect}</p>
-            `;
-            document.getElementById('phase-2-next').classList.remove('hidden');
-        } else {
-            feedback.className = 'mt-6 p-4 rounded-lg bg-red-100 border border-red-400';
-            feedback.innerHTML = `
-                <p class="text-red-800 font-semibold">❌ Some characteristics are incorrect.</p>
-                <p class="text-red-700 text-sm mt-2">${feedbackMessages.phase2Hint}</p>
-            `;
-        }
-        
-        feedback.classList.remove('hidden');
-    }
-    
-    function resetPhase2() {
-        // Reset state
-        selectedCharacteristics = {
-            "registers": { speed: null, size: null, cost: null },
-            "cache": { speed: null, size: null, cost: null },
-            "ram": { speed: null, size: null, cost: null },
-            "storage": { speed: null, size: null, cost: null }
-        };
-        
-        // Reset all dropdowns
-        document.querySelectorAll('.characteristic-select').forEach(select => {
-            select.value = '';
-            select.classList.remove('correct', 'incorrect');
-        });
-        
-        // Hide feedback and next button
-        document.getElementById('phase-2-feedback').classList.add('hidden');
-        document.getElementById('phase-2-next').classList.add('hidden');
-        phase2Complete = false;
-    }
-    
-    // ============================================================================
-    // PHASE 3: QUIZ
-    // ============================================================================
-    
-    function initializePhase3() {
-        const container = document.getElementById('quiz-questions');
+        // Create memory address boxes
+        const container = document.getElementById('memory-addresses-container');
         container.innerHTML = '';
         
-        quizQuestions.forEach((question, index) => {
-            const questionDiv = document.createElement('div');
-            questionDiv.className = 'bg-white rounded-lg p-6 border border-gray-200 shadow-sm';
-            questionDiv.id = `question-${question.id}`;
-            
-            let html = `
-                <h4 class="font-semibold text-base text-[#1A1A1A] mb-4">
-                    Question ${index + 1}: ${question.question}
-                </h4>
-                <div class="space-y-3 mb-4">
-            `;
-            
-            question.options.forEach((option, optIndex) => {
-                html += `
-                    <label class="quiz-option flex items-start p-3 border-2 border-gray-200 rounded-lg cursor-pointer">
-                        <input 
-                            type="radio" 
-                            name="${question.id}" 
-                            value="${optIndex}"
-                            class="mt-1 mr-3 h-4 w-4 text-blue-600 focus:ring-blue-500"
-                        >
-                        <span class="text-sm text-gray-800">${option}</span>
-                    </label>
-                `;
-            });
-            
-            html += `
+        ex.correctLayout.forEach(addr => {
+            const box = document.createElement('div');
+            box.className = 'text-center';
+            box.innerHTML = `
+                <h4 class="font-bold mb-2">Address ${addr.address}</h4>
+                <div class="memory-address-box" data-address="${addr.address}">
+                    <span class="text-gray-400 text-sm">Drop byte here</span>
                 </div>
-                <button 
-                    class="quiz-submit-btn px-4 py-2 bg-blue-600 text-white text-sm font-semibold rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors"
-                    data-question-id="${question.id}"
-                >
-                    Submit Answer
-                </button>
-                <div class="quiz-feedback-${question.id} hidden mt-4 p-4 rounded-lg"></div>
+                <p class="text-xs text-gray-600 mt-2">${addr.label}</p>
             `;
+            container.appendChild(box);
             
-            questionDiv.innerHTML = html;
-            container.appendChild(questionDiv);
+            box.querySelector('.memory-address-box').addEventListener('dragover', handleEndianDragOver);
+            box.querySelector('.memory-address-box').addEventListener('drop', handleEndianDrop);
+            box.querySelector('.memory-address-box').addEventListener('dragleave', handleEndianDragLeave);
         });
         
-        // Add submit button listeners
-        document.querySelectorAll('.quiz-submit-btn').forEach(btn => {
-            btn.addEventListener('click', function() {
-                const questionId = this.getAttribute('data-question-id');
-                checkQuizAnswer(questionId);
+        // Create byte values
+        const bytesContainer = document.getElementById('byte-values-container');
+        bytesContainer.innerHTML = '';
+        
+        const bytes = ex.correctLayout.map(l => l.value);
+        const shuffledBytes = shuffleArray(bytes);
+        
+        shuffledBytes.forEach(byte => {
+            const byteDiv = document.createElement('div');
+            byteDiv.className = 'draggable-card bg-blue-100 border-2 border-blue-300 rounded-lg px-4 py-2';
+            byteDiv.draggable = true;
+            byteDiv.setAttribute('data-byte', byte);
+            byteDiv.innerHTML = `<span class="byte-value">${byte}</span>`;
+            
+            byteDiv.addEventListener('dragstart', function(e) {
+                e.dataTransfer.setData('byte', byte);
+                e.target.classList.add('dragging');
             });
+            
+            byteDiv.addEventListener('dragend', function(e) {
+                e.target.classList.remove('dragging');
+            });
+            
+            bytesContainer.appendChild(byteDiv);
         });
         
-        // Complete button listener
-        document.getElementById('complete-activity-btn').addEventListener('click', showCompletion);
+        document.getElementById('feedback-module-2').classList.add('hidden');
     }
     
-    function checkQuizAnswer(questionId) {
-        const question = quizQuestions.find(q => q.id === questionId);
-        const selectedOption = document.querySelector(`input[name="${questionId}"]:checked`);
+    function handleEndianDragOver(e) {
+        e.preventDefault();
+        e.currentTarget.classList.add('drag-over');
+    }
+    
+    function handleEndianDragLeave(e) {
+        e.currentTarget.classList.remove('drag-over');
+    }
+    
+    function handleEndianDrop(e) {
+        e.preventDefault();
+        const box = e.currentTarget;
+        box.classList.remove('drag-over');
         
-        if (!selectedOption) {
-            alert('Please select an answer before submitting.');
-            return;
-        }
+        const byte = e.dataTransfer.getData('byte');
+        const address = box.getAttribute('data-address');
         
-        const userAnswer = parseInt(selectedOption.value);
-        const isCorrect = userAnswer === question.correct;
-        const feedback = document.querySelector(`.quiz-feedback-${questionId}`);
-        const submitBtn = document.querySelector(`button[data-question-id="${questionId}"]`);
+        droppedBytes[address] = byte;
         
-        // Mark as answered
-        if (!answeredQuestions.has(questionId)) {
-            answeredQuestions.add(questionId);
-            if (isCorrect) {
-                quizScore++;
-                updateQuizScore();
+        box.innerHTML = `<span class="byte-value text-2xl">${byte}</span>`;
+        box.classList.add('filled');
+        
+        // Remove dragged element
+        const draggedEl = document.querySelector(`[data-byte="${byte}"]`);
+        if (draggedEl) draggedEl.remove();
+    }
+    
+    function checkModule2() {
+        const ex = module2Exercises[currentExerciseIndex];
+        const feedback = document.getElementById('feedback-module-2');
+        
+        let correct = true;
+        ex.correctLayout.forEach(layout => {
+            if (droppedBytes[layout.address] !== layout.value) {
+                correct = false;
             }
-        }
-        
-        // Disable further changes
-        document.querySelectorAll(`input[name="${questionId}"]`).forEach(input => {
-            input.disabled = true;
         });
-        submitBtn.disabled = true;
-        submitBtn.classList.add('opacity-50', 'cursor-not-allowed');
         
-        // Style the selected option
-        const selectedLabel = selectedOption.closest('.quiz-option');
-        if (isCorrect) {
-            selectedLabel.classList.add('correct-answer');
-            feedback.className = `quiz-feedback-${questionId} mt-4 p-4 rounded-lg bg-green-100 border border-green-400`;
+        exerciseResults[currentExerciseIndex] = correct;
+        
+        if (correct) {
+            feedback.className = 'mt-6 p-4 rounded-lg bg-green-100 border border-green-400';
             feedback.innerHTML = `
                 <p class="text-green-800 font-semibold">✅ Correct!</p>
-                <p class="text-green-700 text-sm mt-2">${question.explanation}</p>
+                <p class="text-green-700 text-sm mt-2">${ex.explanation}</p>
             `;
         } else {
-            selectedLabel.classList.add('incorrect-answer');
-            feedback.className = `quiz-feedback-${questionId} mt-4 p-4 rounded-lg bg-red-100 border border-red-400`;
+            feedback.className = 'mt-6 p-4 rounded-lg bg-red-100 border border-red-400';
             feedback.innerHTML = `
                 <p class="text-red-800 font-semibold">❌ Not quite right.</p>
-                <p class="text-red-700 text-sm mt-2"><strong>Correct answer:</strong> ${question.options[question.correct]}</p>
-                <p class="text-red-700 text-sm mt-2">${question.explanation}</p>
+                <p class="text-red-700 text-sm mt-2">${ex.explanation}</p>
             `;
         }
         
         feedback.classList.remove('hidden');
         
-        // Check if all questions answered
-        if (answeredQuestions.size === quizQuestions.length) {
-            phase3Complete = true;
-            document.getElementById('complete-activity-btn').classList.remove('hidden');
+        // Check if completed enough exercises
+        const correctCount = exerciseResults.filter(r => r).length;
+        if (correctCount >= 3) {
+            moduleCompletion.module2 = true;
+            document.getElementById('next-module-2').classList.remove('hidden');
+            document.getElementById('nav-module-2').classList.add('completed');
+            updateProgressBar();
         }
-    }
-    
-    function updateQuizScore() {
-        document.getElementById('quiz-score').textContent = `${quizScore} / ${quizQuestions.length}`;
-    }
-    
-    function showCompletion() {
-        const message = document.getElementById('completion-message');
-        const percentage = Math.round((quizScore / quizQuestions.length) * 100);
         
-        let performance = '';
-        if (percentage === 100) {
-            performance = '🏆 Perfect Score! ';
-        } else if (percentage >= 80) {
-            performance = '🌟 Excellent Work! ';
-        } else if (percentage >= 60) {
-            performance = '👍 Good Job! ';
+        document.getElementById('module-2-progress').innerHTML = `
+            Correct: ${correctCount} / ${module2Exercises.length} (Need 3 to proceed)
+        `;
+    }
+    
+    // ============================================================================
+    // MODULE 3: TIMING DIAGRAMS
+    // ============================================================================
+    
+    function initializeModule3() {
+        showTimingDiagram('read');
+        
+        document.getElementById('tab-read').addEventListener('click', () => showTimingDiagram('read'));
+        document.getElementById('tab-write').addEventListener('click', () => showTimingDiagram('write'));
+    }
+    
+    function showTimingDiagram(type) {
+        currentDiagram = type;
+        const diagram = module3Diagrams[type];
+        
+        // Update tabs
+        document.querySelectorAll('.diagram-tab').forEach(tab => {
+            if (tab.getAttribute('data-diagram') === type) {
+                tab.classList.add('border-b-2', 'border-blue-600', 'text-blue-600');
+                tab.classList.remove('text-gray-600');
+            } else {
+                tab.classList.remove('border-b-2', 'border-blue-600', 'text-blue-600');
+                tab.classList.add('text-gray-600');
+            }
+        });
+        
+        // Create timing diagram
+        const container = document.getElementById('timing-diagram-container');
+        container.innerHTML = `
+            <div class="bg-white rounded-lg p-6 border border-gray-300 mb-6">
+                <h3 class="text-xl font-bold mb-2">${diagram.title}</h3>
+                <p class="text-gray-600 text-sm mb-4">${diagram.description}</p>
+                
+                <div class="overflow-x-auto">
+                    <div class="timing-row">
+                        <div class="timing-cell header">Signal</div>
+                        <div class="timing-cell header">Cycle 0</div>
+                        <div class="timing-cell header">Cycle 1</div>
+                        <div class="timing-cell header">Cycle 2</div>
+                        <div class="timing-cell header">Cycle 3</div>
+                        <div class="timing-cell header">Cycle 4</div>
+                    </div>
+                    ${diagram.signals.map(signal => `
+                        <div class="timing-row">
+                            <div class="timing-cell header">${signal.name}</div>
+                            ${signal.values.map((val, i) => {
+                                let cellClass = 'timing-cell';
+                                if (signal.type === 'control' && val === 'HIGH') cellClass += ' signal-high';
+                                else if (signal.type === 'control' && val === 'LOW') cellClass += ' signal-low';
+                                else if (signal.type === 'data' && val !== '--') cellClass += ' data-present';
+                                return `<div class="${cellClass}">${val}</div>`;
+                            }).join('')}
+                        </div>
+                    `).join('')}
+                </div>
+            </div>
+        `;
+        
+        // Show questions
+        const questionsContainer = document.getElementById('timing-questions-container');
+        questionsContainer.innerHTML = '';
+        
+        diagram.questions.forEach((q, index) => {
+            const qDiv = document.createElement('div');
+            qDiv.className = 'bg-white rounded-lg p-6 border border-gray-200';
+            qDiv.innerHTML = `
+                <h4 class="font-semibold mb-3">${q.q}</h4>
+                <div class="space-y-2">
+                    ${q.options.map((opt, i) => `
+                        <label class="flex items-center p-3 border-2 border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer">
+                            <input type="radio" name="timing-${type}-${index}" value="${i}" class="mr-3">
+                            <span>${opt}</span>
+                        </label>
+                    `).join('')}
+                </div>
+                <button class="timing-submit mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700" data-type="${type}" data-index="${index}">
+                    Submit Answer
+                </button>
+                <div class="timing-feedback-${type}-${index} hidden mt-4"></div>
+            `;
+            questionsContainer.appendChild(qDiv);
+            
+            qDiv.querySelector('.timing-submit').addEventListener('click', function() {
+                checkTimingQuestion(type, index);
+            });
+        });
+    }
+    
+    function checkTimingQuestion(type, qIndex) {
+        const diagram = module3Diagrams[type];
+        const question = diagram.questions[qIndex];
+        const selected = document.querySelector(`input[name="timing-${type}-${qIndex}"]:checked`);
+        
+        if (!selected) {
+            alert('Please select an answer');
+            return;
+        }
+        
+        const answer = parseInt(selected.value);
+        const feedback = document.querySelector(`.timing-feedback-${type}-${qIndex}`);
+        const key = `${type}-${qIndex}`;
+        
+        if (!timingAnswers[key]) {
+            if (answer === question.correct) {
+                timingScore++;
+            }
+            timingAnswers[key] = true;
+        }
+        
+        if (answer === question.correct) {
+            feedback.className = `timing-feedback-${type}-${qIndex} mt-4 p-4 rounded-lg bg-green-100 border border-green-400`;
+            feedback.innerHTML = `
+                <p class="text-green-800 font-semibold">✅ Correct!</p>
+                <p class="text-green-700 text-sm mt-1">${question.explanation}</p>
+            `;
         } else {
-            performance = '📚 Keep Learning! ';
+            feedback.className = `timing-feedback-${type}-${qIndex} mt-4 p-4 rounded-lg bg-red-100 border border-red-400`;
+            feedback.innerHTML = `
+                <p class="text-red-800 font-semibold">❌ Incorrect.</p>
+                <p class="text-red-700 text-sm mt-1"><strong>Correct answer:</strong> ${question.options[question.correct]}</p>
+                <p class="text-red-700 text-sm mt-1">${question.explanation}</p>
+            `;
         }
         
-        message.innerHTML = `
-            <h3 class="text-2xl font-bold text-green-800 mb-4">${performance}</h3>
+        feedback.classList.remove('hidden');
+        
+        // Disable further changes
+        document.querySelectorAll(`input[name="timing-${type}-${qIndex}"]`).forEach(input => {
+            input.disabled = true;
+        });
+        
+        document.getElementById('timing-score').textContent = `${timingScore} / 9`;
+        
+        if (timingScore >= 7) {
+            moduleCompletion.module3 = true;
+            document.getElementById('next-module-3').classList.remove('hidden');
+            document.getElementById('nav-module-3').classList.add('completed');
+            updateProgressBar();
+        }
+    }
+    
+    // ============================================================================
+    // MODULE 4: INSTRUCTION TRACE
+    // ============================================================================
+    
+    function initializeModule4() {
+        showTrace('load');
+        
+        document.getElementById('tab-load').addEventListener('click', () => showTrace('load'));
+        document.getElementById('tab-store').addEventListener('click', () => showTrace('store'));
+        document.getElementById('next-cycle').addEventListener('click', nextCycle);
+        document.getElementById('prev-cycle').addEventListener('click', prevCycle);
+        document.getElementById('reset-trace').addEventListener('click', () => {
+            currentCycle = 0;
+            updateTraceDisplay();
+        });
+    }
+    
+    function showTrace(type) {
+        currentTrace = type;
+        currentCycle = 0;
+        
+        // Update tabs
+        document.querySelectorAll('.trace-tab').forEach(tab => {
+            if (tab.getAttribute('data-trace') === type) {
+                tab.classList.add('border-b-2', 'border-green-600', 'text-green-600');
+                tab.classList.remove('text-gray-600');
+            } else {
+                tab.classList.remove('border-b-2', 'border-green-600', 'text-green-600');
+                tab.classList.add('text-gray-600');
+            }
+        });
+        
+        updateTraceDisplay();
+    }
+    
+    function updateTraceDisplay() {
+        const trace = module4Traces[currentTrace];
+        const cycle = trace.cycles[currentCycle];
+        
+        document.getElementById('current-cycle').textContent = currentCycle;
+        document.getElementById('total-cycles').textContent = trace.totalCycles - 1;
+        document.getElementById('current-phase').textContent = cycle.phase;
+        document.getElementById('cycle-progress').style.width = ((currentCycle / (trace.totalCycles - 1)) * 100) + '%';
+        
+        // Update CPU visualization (simplified)
+        const viz = document.getElementById('cpu-visualization');
+        viz.innerHTML = `
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
+                ${['PC', 'MAR', 'MDR', 'IR', 'R1', 'R2'].map(reg => {
+                    const isActive = cycle.active && cycle.active.includes(reg);
+                    return `
+                        <div class="cpu-component ${isActive ? 'active' : ''}">
+                            <div class="text-xs text-gray-600 mb-1">${reg}</div>
+                            <div class="font-mono font-bold text-sm">${cycle.registers[reg] || '--'}</div>
+                        </div>
+                    `;
+                }).join('')}
+            </div>
+            <div class="text-center">
+                <div class="cpu-component ${cycle.active && cycle.active.includes('Memory') ? 'active' : ''} inline-block">
+                    <div class="text-xs text-gray-600">Memory</div>
+                    <div class="font-mono text-sm">${cycle.registers.DataBus || '--'}</div>
+                </div>
+            </div>
+        `;
+        
+        // Update description
+        const desc = document.getElementById('cycle-description');
+        desc.innerHTML = `
+            <h4 class="font-bold text-lg mb-2">Cycle ${currentCycle}: ${cycle.phase} Phase</h4>
+            <p class="text-gray-700">${cycle.description}</p>
+            ${cycle.registers && Object.keys(cycle.registers).length > 0 ? `
+                <div class="mt-3 p-3 bg-blue-50 rounded-lg">
+                    <h5 class="font-semibold text-sm mb-2">Register Changes:</h5>
+                    <div class="font-mono text-sm space-y-1">
+                        ${Object.entries(cycle.registers).map(([reg, val]) => 
+                            `<div>${reg} ← ${val}</div>`
+                        ).join('')}
+                    </div>
+                </div>
+            ` : ''}
+        `;
+        
+        // Update buttons
+        document.getElementById('prev-cycle').disabled = currentCycle === 0;
+        document.getElementById('next-cycle').disabled = currentCycle >= trace.totalCycles - 1;
+        
+        // Show questions at end
+        if (currentCycle >= trace.totalCycles - 1) {
+            showTraceQuestions();
+        } else {
+            document.getElementById('trace-questions-container').classList.add('hidden');
+        }
+    }
+    
+    function nextCycle() {
+        const trace = module4Traces[currentTrace];
+        if (currentCycle < trace.totalCycles - 1) {
+            currentCycle++;
+            updateTraceDisplay();
+        }
+    }
+    
+    function prevCycle() {
+        if (currentCycle > 0) {
+            currentCycle--;
+            updateTraceDisplay();
+        }
+    }
+    
+    function showTraceQuestions() {
+        const container = document.getElementById('trace-questions-container');
+        const trace = module4Traces[currentTrace];
+        
+        container.innerHTML = `
+            <h3 class="text-xl font-bold mb-4">Comprehension Check</h3>
+            ${trace.questions.map((q, i) => `
+                <div class="p-4 bg-gray-50 rounded-lg mb-3">
+                    <label class="block font-semibold mb-2">${q.q}</label>
+                    <input type="text" class="trace-answer w-full px-3 py-2 border border-gray-300 rounded-lg" data-answer="${q.answer}" data-trace="${currentTrace}" data-index="${i}">
+                    <button class="trace-check mt-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700" data-trace="${currentTrace}" data-index="${i}">Check</button>
+                    <div class="trace-feedback-${currentTrace}-${i} hidden mt-2"></div>
+                </div>
+            `).join('')}
+        `;
+        container.classList.remove('hidden');
+        
+        container.querySelectorAll('.trace-check').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const trace = this.getAttribute('data-trace');
+                const index = this.getAttribute('data-index');
+                checkTraceQuestion(trace, index);
+            });
+        });
+    }
+    
+    function checkTraceQuestion(trace, index) {
+        const input = document.querySelector(`.trace-answer[data-trace="${trace}"][data-index="${index}"]`);
+        const correctAnswer = input.getAttribute('data-answer').toLowerCase();
+        const userAnswer = input.value.trim().toLowerCase();
+        const feedback = document.querySelector(`.trace-feedback-${trace}-${index}`);
+        
+        const key = `${trace}-${index}`;
+        if (!traceAnswers[key]) {
+            traceAnswers[key] = userAnswer === correctAnswer;
+        }
+        
+        if (userAnswer === correctAnswer) {
+            feedback.className = `trace-feedback-${trace}-${index} mt-2 p-3 rounded-lg bg-green-100 text-green-800`;
+            feedback.textContent = '✅ Correct!';
+        } else {
+            feedback.className = `trace-feedback-${trace}-${index} mt-2 p-3 rounded-lg bg-red-100 text-red-800`;
+            feedback.textContent = `❌ Incorrect. Correct answer: ${correctAnswer}`;
+        }
+        
+        feedback.classList.remove('hidden');
+        input.disabled = true;
+        
+        // Check if both traces completed
+        const loadCompleted = module4Traces.load.questions.every((q, i) => traceAnswers[`load-${i}`]);
+        const storeCompleted = module4Traces.store.questions.every((q, i) => traceAnswers[`store-${i}`]);
+        
+        if (loadCompleted && storeCompleted) {
+            moduleCompletion.module4 = true;
+            document.getElementById('next-module-4').classList.remove('hidden');
+            document.getElementById('nav-module-4').classList.add('completed');
+            updateProgressBar();
+        }
+    }
+    
+    // ============================================================================
+    // MODULE 5: I/O COMPARISON
+    // ============================================================================
+    
+    function initializeModule5() {
+        showIOScenarios();
+        setupAddressDecoder();
+    }
+    
+    function showIOScenarios() {
+        const container = document.getElementById('io-scenario-container');
+        container.innerHTML = '';
+        
+        module5Data.scenarios.forEach((scenario, sIndex) => {
+            const div = document.createElement('div');
+            div.className = 'mb-8';
+            div.innerHTML = `
+                <h3 class="text-2xl font-bold mb-4">${scenario.title}</h3>
+                <div class="grid md:grid-cols-2 gap-6 mb-6">
+                    <div class="comparison-panel border-2 border-blue-300">
+                        <h4 class="text-lg font-bold text-blue-700 mb-3">Memory-Mapped I/O</h4>
+                        <div class="code-block mb-3">${scenario.memoryMapped.code.replace(/\n/g, '<br>')}</div>
+                        <p class="text-sm text-gray-600">${scenario.memoryMapped.explanation}</p>
+                    </div>
+                    <div class="comparison-panel border-2 border-green-300">
+                        <h4 class="text-lg font-bold text-green-700 mb-3">Port-Based I/O</h4>
+                        <div class="code-block mb-3">${scenario.portBased.code.replace(/\n/g, '<br>')}</div>
+                        <p class="text-sm text-gray-600">${scenario.portBased.explanation}</p>
+                    </div>
+                </div>
+            `;
+            container.appendChild(div);
+        });
+        
+        // Show questions
+        const questionsContainer = document.getElementById('io-questions-container');
+        questionsContainer.innerHTML = '';
+        
+        const allQuestions = [];
+        module5Data.scenarios.forEach(s => allQuestions.push(...s.questions));
+        allQuestions.push(...module5Data.tradeoffQuestions);
+        
+        allQuestions.forEach((q, index) => {
+            const qDiv = document.createElement('div');
+            qDiv.className = 'bg-white rounded-lg p-6 border border-gray-200';
+            qDiv.innerHTML = `
+                <h4 class="font-semibold mb-3">${q.q}</h4>
+                <div class="space-y-2">
+                    ${q.options.map((opt, i) => `
+                        <label class="flex items-center p-3 border-2 border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer">
+                            <input type="radio" name="io-q-${index}" value="${i}" class="mr-3">
+                            <span>${opt}</span>
+                        </label>
+                    `).join('')}
+                </div>
+                <button class="io-submit mt-4 px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700" data-index="${index}">
+                    Submit Answer
+                </button>
+                <div class="io-feedback-${index} hidden mt-4"></div>
+            `;
+            questionsContainer.appendChild(qDiv);
+            
+            qDiv.querySelector('.io-submit').addEventListener('click', function() {
+                checkIOQuestion(index, allQuestions);
+            });
+        });
+    }
+    
+    function checkIOQuestion(index, allQuestions) {
+        const question = allQuestions[index];
+        const selected = document.querySelector(`input[name="io-q-${index}"]:checked`);
+        
+        if (!selected) {
+            alert('Please select an answer');
+            return;
+        }
+        
+        const answer = parseInt(selected.value);
+        const feedback = document.querySelector(`.io-feedback-${index}`);
+        
+        if (!ioAnswers[index]) {
+            if (answer === question.correct) {
+                ioScore++;
+            }
+            ioAnswers[index] = true;
+        }
+        
+        if (answer === question.correct) {
+            feedback.className = `io-feedback-${index} mt-4 p-4 rounded-lg bg-green-100 border border-green-400`;
+            feedback.innerHTML = `
+                <p class="text-green-800 font-semibold">✅ Correct!</p>
+                <p class="text-green-700 text-sm mt-1">${question.explanation}</p>
+            `;
+        } else {
+            feedback.className = `io-feedback-${index} mt-4 p-4 rounded-lg bg-red-100 border border-red-400`;
+            feedback.innerHTML = `
+                <p class="text-red-800 font-semibold">❌ Incorrect.</p>
+                <p class="text-red-700 text-sm mt-1"><strong>Correct:</strong> ${question.options[question.correct]}</p>
+                <p class="text-red-700 text-sm mt-1">${question.explanation}</p>
+            `;
+        }
+        
+        feedback.classList.remove('hidden');
+        
+        document.querySelectorAll(`input[name="io-q-${index}"]`).forEach(input => {
+            input.disabled = true;
+        });
+        
+        document.getElementById('io-score').textContent = `${ioScore} / ${allQuestions.length}`;
+        
+        if (ioScore >= 8) {
+            moduleCompletion.module5 = true;
+            document.getElementById('complete-activity').classList.remove('hidden');
+            document.getElementById('nav-module-5').classList.add('completed');
+            updateProgressBar();
+        }
+    }
+    
+    function setupAddressDecoder() {
+        document.getElementById('test-decoder').addEventListener('click', function() {
+            const input = document.getElementById('test-address').value.trim();
+            const result = document.getElementById('decoder-result');
+            
+            let address;
+            try {
+                address = parseInt(input, 16);
+            } catch(e) {
+                result.className = 'decoder-box text-center bg-red-100';
+                result.innerHTML = '<div class="text-red-800">Invalid address format</div>';
+                result.classList.remove('hidden');
+                return;
+            }
+            
+            if (isNaN(address) || address < 0 || address > 255) {
+                result.className = 'decoder-box text-center bg-red-100';
+                result.innerHTML = '<div class="text-red-800">Address must be 0x00-0xFF</div>';
+                result.classList.remove('hidden');
+                return;
+            }
+            
+            const isIO = address >= 0xF0;
+            result.className = `decoder-box text-center ${isIO ? 'bg-purple-100' : 'bg-green-100'}`;
+            result.innerHTML = `
+                <div class="font-bold text-lg mb-2">${isIO ? 'I/O Device' : 'Memory'}</div>
+                <div class="text-sm">${input} ${isIO ? '≥' : '<'} 0xF0</div>
+                <div class="text-sm font-semibold mt-2">${isIO ? 'IO_ENABLE' : 'MEM_ENABLE'} asserted</div>
+            `;
+            result.classList.remove('hidden');
+        });
+    }
+    
+    function showFinalCompletion() {
+        const msg = document.getElementById('completion-message');
+        const totalScore = timingScore + ioScore;
+        
+        msg.innerHTML = `
+            <h3 class="text-3xl font-bold text-green-800 mb-4">🎉 Congratulations!</h3>
             <p class="text-lg text-gray-800 mb-4">
-                You scored <strong>${quizScore} out of ${quizQuestions.length}</strong> (${percentage}%)
+                You've successfully completed all 5 modules of the Week 12 Memory Interface & I/O learning guide!
             </p>
+            <div class="grid grid-cols-2 md:grid-cols-5 gap-4 my-6">
+                <div class="text-center p-4 bg-white rounded-lg">
+                    <div class="text-2xl mb-1">✅</div>
+                    <div class="text-sm font-semibold">Module 1</div>
+                </div>
+                <div class="text-center p-4 bg-white rounded-lg">
+                    <div class="text-2xl mb-1">✅</div>
+                    <div class="text-sm font-semibold">Module 2</div>
+                </div>
+                <div class="text-center p-4 bg-white rounded-lg">
+                    <div class="text-2xl mb-1">✅</div>
+                    <div class="text-sm font-semibold">Module 3</div>
+                </div>
+                <div class="text-center p-4 bg-white rounded-lg">
+                    <div class="text-2xl mb-1">✅</div>
+                    <div class="text-sm font-semibold">Module 4</div>
+                </div>
+                <div class="text-center p-4 bg-white rounded-lg">
+                    <div class="text-2xl mb-1">✅</div>
+                    <div class="text-sm font-semibold">Module 5</div>
+                </div>
+            </div>
             <p class="text-base text-gray-700 leading-relaxed">
-                ${feedbackMessages.completionMessage}
+                You now understand one of the most fundamental aspects of computer architecture—the memory interface that enables your CPU to communicate with memory and I/O devices. This knowledge is crucial as you build the memory interface for your CPU in Week 12!
             </p>
         `;
-        message.classList.remove('hidden');
-        
-        // Scroll to completion message
-        message.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }
-    
-    // ============================================================================
-    // PHASE MANAGEMENT
-    // ============================================================================
-    
-    function showPhase(phaseNumber) {
-        currentPhase = phaseNumber;
-        
-        // Update progress indicator
-        const indicator = document.getElementById('phase-indicator');
-        indicator.textContent = `Phase ${phaseNumber} of 3`;
-        
-        const progressBar = document.getElementById('progress-bar');
-        progressBar.style.width = `${(phaseNumber / 3) * 100}%`;
-        
-        // Hide all phases
-        document.getElementById('phase-1').classList.add('hidden');
-        document.getElementById('phase-2').classList.add('hidden');
-        document.getElementById('phase-3').classList.add('hidden');
-        
-        // Show current phase
-        document.getElementById(`phase-${phaseNumber}`).classList.remove('hidden');
-        
-        // Scroll to top of interactive section
-        document.getElementById('content-interactive').scrollIntoView({ behavior: 'smooth' });
+        msg.classList.remove('hidden');
+        msg.scrollIntoView({behavior: 'smooth', block: 'center'});
     }
     
     // ============================================================================
     // INITIALIZATION
     // ============================================================================
     
-    initializeTabs();
-    initializePhase1();
-    initializePhase2();
-    initializePhase3();
-    updateQuizScore();
-    
+    initializeNavigation();
+    initializeModule1();
+    initializeModule2();
+    initializeModule3();
+    initializeModule4();
+    initializeModule5();
+    updateProgressBar();
 });
 </script>
-
 </body>
 </html>
