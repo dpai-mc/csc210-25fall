@@ -404,15 +404,214 @@
             <section id="module-1" class="module-content active">
                 <div class="bg-white rounded-xl shadow-lg p-6 sm:p-8 mb-6">
                     <div class="flex items-center justify-between mb-6">
-                        <h2 class="text-2xl sm:text-3xl font-bold text-gray-900">Module 1: Memory Hierarchy Quick Review</h2>
-                        <span class="text-sm px-3 py-1 bg-blue-100 text-blue-700 rounded-full font-semibold">~5 min</span>
+                        <h2 class="text-2xl sm:text-3xl font-bold text-gray-900">Module 1: Memory Hierarchy</h2>
+                        <span class="text-sm px-3 py-1 bg-blue-100 text-blue-700 rounded-full font-semibold">~10 min</span>
                     </div>
                     
+                    <!-- Educational Content -->
                     <div class="prose max-w-none mb-8">
-                        <p class="text-lg text-gray-700 leading-relaxed">
-                            Let's quickly review the memory hierarchy to set the context for this week's work. You'll build the memory pyramid by dragging components into their correct positions from fastest (top) to slowest (bottom).
+                        <h3 class="text-xl font-bold text-gray-900 mb-4">The Memory Challenge: Speed vs. Capacity</h3>
+                        
+                        <p class="text-lg text-gray-700 leading-relaxed mb-4">
+                            Imagine you're working on a research paper. You need quick access to your current paragraph (in your brain), reference books on your desk, more books on nearby shelves, and even more in the library across campus. Each location offers different trade-offs between access speed and storage capacity. Computer memory works exactly the same way!
+                        </p>
+                        
+                        <h3 class="text-xl font-bold text-gray-900 mb-4 mt-8">Why Can't We Just Use One Type of Memory?</h3>
+                        
+                        <p class="text-lg text-gray-700 leading-relaxed mb-4">
+                            Here's the fundamental problem computer architects face: <strong>Fast memory is expensive and can't be made very large, while cheap memory that can be made large is slow.</strong> This isn't a temporary engineering limitation—it's based on fundamental physics and economics.
+                        </p>
+                        
+                        <div class="grid md:grid-cols-2 gap-6 my-6">
+                            <div class="bg-red-50 rounded-lg p-6 border border-red-200">
+                                <h4 class="font-bold text-red-900 mb-3">The Physics Problem</h4>
+                                <ul class="space-y-2 text-red-800">
+                                    <li>• Faster memory must be physically closer to the CPU (shorter distances = faster signals)</li>
+                                    <li>• Closer to the CPU means less physical space available</li>
+                                    <li>• Less space = smaller capacity</li>
+                                </ul>
+                            </div>
+                            <div class="bg-amber-50 rounded-lg p-6 border border-amber-200">
+                                <h4 class="font-bold text-amber-900 mb-3">The Economics Problem</h4>
+                                <ul class="space-y-2 text-amber-800">
+                                    <li>• The fastest memory technologies (like SRAM) cost over 1,000 times more per byte than slow memory (like hard drives)</li>
+                                    <li>• Building a terabyte of the fastest memory would cost millions of dollars and wouldn't physically fit!</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <h3 class="text-xl font-bold text-gray-900 mb-4 mt-8">The Brilliant Solution: The Memory Hierarchy</h3>
+                        
+                        <p class="text-lg text-gray-700 leading-relaxed mb-4">
+                            Instead of choosing between fast-but-small or slow-but-large, computer designers use <strong>all of them together</strong> in a layered system called the <strong>memory hierarchy</strong>. Each level serves as a "cache" or buffer for the level below it, creating an illusion of having memory that's both fast AND large.
+                        </p>
+                        
+                        <div class="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-lg p-6 my-6 border border-blue-200">
+                            <h4 class="font-bold text-center text-gray-900 mb-4">The Memory Pyramid</h4>
+                            <div class="text-center space-y-2 font-mono text-sm">
+                                <div class="bg-blue-800 text-white py-2 px-4 rounded mx-auto" style="width: 30%;">CPU Registers</div>
+                                <div class="text-blue-600 text-xl">↓</div>
+                                <div class="bg-blue-600 text-white py-2 px-4 rounded mx-auto" style="width: 50%;">Cache Memory</div>
+                                <div class="text-blue-600 text-xl">↓</div>
+                                <div class="bg-blue-500 text-white py-2 px-4 rounded mx-auto" style="width: 70%;">Main Memory (RAM)</div>
+                                <div class="text-blue-600 text-xl">↓</div>
+                                <div class="bg-blue-400 text-gray-900 py-2 px-4 rounded mx-auto" style="width: 90%;">Secondary Storage</div>
+                            </div>
+                        </div>
+                        
+                        <h3 class="text-xl font-bold text-gray-900 mb-4 mt-8">Understanding Each Level</h3>
+                        
+                        <div class="space-y-6 my-6">
+                            <div class="bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg p-6 border-l-4 border-blue-600">
+                                <h4 class="text-lg font-bold text-blue-900 mb-3">Level 1: CPU Registers (Fastest, Smallest, Most Expensive)</h4>
+                                <p class="text-gray-800 mb-3">
+                                    Think of registers as the workspace directly in your hands—the pencil you're holding and the sentence you're currently writing. In your 8-bit CPU project, you have just a handful of registers (maybe 8-16 registers, each holding 8 bits). The CPU can access register data in a single clock cycle—instantly, from its perspective.
+                                </p>
+                                <div class="bg-white rounded-lg p-4 border border-blue-200">
+                                    <p class="text-sm font-semibold text-blue-800 mb-1">Real-world example:</p>
+                                    <p class="text-sm text-gray-700">Modern CPUs have 16-32 general-purpose registers, each 64 bits wide. That's only 128-256 bytes total!</p>
+                                </div>
+                            </div>
+                            
+                            <div class="bg-gradient-to-br from-indigo-50 to-indigo-100 rounded-lg p-6 border-l-4 border-indigo-600">
+                                <h4 class="text-lg font-bold text-indigo-900 mb-3">Level 2: Cache Memory (Very Fast, Small, Expensive)</h4>
+                                <p class="text-gray-800 mb-3">
+                                    Cache acts like the notepad on your desk—information you're likely to need very soon. Modern CPUs have multiple cache levels (L1, L2, L3), each progressively larger but slightly slower. Cache memory is made from SRAM (Static RAM), which is fast but expensive.
+                                </p>
+                                <div class="bg-white rounded-lg p-4 border border-indigo-200 mb-3">
+                                    <p class="text-sm font-semibold text-indigo-800 mb-1">Real-world example:</p>
+                                    <p class="text-sm text-gray-700">A modern Intel i7 processor might have 64 KB of L1 cache, 512 KB of L2 cache, and 16 MB of L3 cache.</p>
+                                </div>
+                                <div class="bg-yellow-50 border border-yellow-300 rounded-lg p-3">
+                                    <p class="text-sm text-gray-700"><strong>Note:</strong> Cache is introduced in Week 16 of your course. This week focuses on the main memory interface.</p>
+                                </div>
+                            </div>
+                            
+                            <div class="bg-gradient-to-br from-purple-50 to-purple-100 rounded-lg p-6 border-l-4 border-purple-600">
+                                <h4 class="text-lg font-bold text-purple-900 mb-3">Level 3: Main Memory / RAM (Medium Speed, Medium Size, Moderate Cost)</h4>
+                                <p class="text-gray-800 mb-3">
+                                    Main memory is like the bookshelf in your room—you can access any book in seconds, and it holds everything you're actively working with. This is the primary focus of Week 12. Your 8-bit CPU project will interface with 256 bytes of RAM, which seems tiny but demonstrates all the essential concepts.
+                                </p>
+                                <p class="text-gray-800 mb-3">
+                                    RAM is made from DRAM (Dynamic RAM), which is slower than SRAM but much cheaper and denser. It's "volatile" memory, meaning it loses its contents when power is turned off.
+                                </p>
+                                <div class="bg-white rounded-lg p-4 border border-purple-200">
+                                    <p class="text-sm font-semibold text-purple-800 mb-1">Real-world example:</p>
+                                    <p class="text-sm text-gray-700">Your laptop might have 16 GB of RAM, accessing any byte in about 60-70 nanoseconds.</p>
+                                </div>
+                            </div>
+                            
+                            <div class="bg-gradient-to-br from-pink-50 to-pink-100 rounded-lg p-6 border-l-4 border-pink-600">
+                                <h4 class="text-lg font-bold text-pink-900 mb-3">Level 4: Secondary Storage (Slow, Large, Cheap)</h4>
+                                <p class="text-gray-800 mb-3">
+                                    Secondary storage is like the library across campus—huge capacity, but you need to walk there to get books. Modern computers use SSDs (Solid State Drives) or HDDs (Hard Disk Drives) for permanent storage. Unlike RAM, this memory is "non-volatile"—it retains data even when powered off.
+                                </p>
+                                <div class="bg-white rounded-lg p-4 border border-pink-200">
+                                    <p class="text-sm font-semibold text-pink-800 mb-1">Real-world example:</p>
+                                    <p class="text-sm text-gray-700">A 1 TB SSD provides persistent storage with access times around 0.1 milliseconds (100,000 nanoseconds)—about 1,000× slower than RAM!</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <h3 class="text-xl font-bold text-gray-900 mb-4 mt-8">Comparing All Levels</h3>
+                        
+                        <div class="overflow-x-auto mb-6">
+                            <table class="min-w-full bg-white border border-gray-300 rounded-lg">
+                                <thead class="bg-gray-100">
+                                    <tr>
+                                        <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700 border-b">Memory Level</th>
+                                        <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700 border-b">Access Speed</th>
+                                        <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700 border-b">Typical Size</th>
+                                        <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700 border-b">Volatility</th>
+                                        <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700 border-b">Cost/GB</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="border-b hover:bg-gray-50">
+                                        <td class="px-4 py-3 text-sm font-medium">Registers</td>
+                                        <td class="px-4 py-3 text-sm">&lt;1 ns</td>
+                                        <td class="px-4 py-3 text-sm">Bytes</td>
+                                        <td class="px-4 py-3 text-sm">Volatile</td>
+                                        <td class="px-4 py-3 text-sm">N/A (part of CPU)</td>
+                                    </tr>
+                                    <tr class="border-b hover:bg-gray-50">
+                                        <td class="px-4 py-3 text-sm font-medium">Cache</td>
+                                        <td class="px-4 py-3 text-sm">1-20 ns</td>
+                                        <td class="px-4 py-3 text-sm">KB to MB</td>
+                                        <td class="px-4 py-3 text-sm">Volatile</td>
+                                        <td class="px-4 py-3 text-sm">Very High</td>
+                                    </tr>
+                                    <tr class="border-b hover:bg-gray-50">
+                                        <td class="px-4 py-3 text-sm font-medium">RAM</td>
+                                        <td class="px-4 py-3 text-sm">50-100 ns</td>
+                                        <td class="px-4 py-3 text-sm">GB</td>
+                                        <td class="px-4 py-3 text-sm">Volatile</td>
+                                        <td class="px-4 py-3 text-sm">Moderate</td>
+                                    </tr>
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="px-4 py-3 text-sm font-medium">SSD/HDD</td>
+                                        <td class="px-4 py-3 text-sm">μs to ms</td>
+                                        <td class="px-4 py-3 text-sm">TB</td>
+                                        <td class="px-4 py-3 text-sm">Non-volatile</td>
+                                        <td class="px-4 py-3 text-sm">Low</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <div class="bg-blue-50 border-l-4 border-blue-500 p-6 rounded-lg mb-6">
+                            <h4 class="text-lg font-bold text-blue-900 mb-2">💡 Key Insight</h4>
+                            <p class="text-base text-blue-900">
+                                Notice the pattern? As you move down the hierarchy, speed decreases exponentially, but capacity increases exponentially, and cost per byte decreases exponentially. This inverse relationship is fundamental to computer architecture design!
+                            </p>
+                        </div>
+                        
+                        <h3 class="text-xl font-bold text-gray-900 mb-4 mt-8">The Key Principle: Locality of Reference</h3>
+                        
+                        <p class="text-lg text-gray-700 leading-relaxed mb-4">
+                            The memory hierarchy only works because of a beautiful principle: <strong>programs don't access memory randomly.</strong> Instead, they exhibit two types of predictable behavior:
+                        </p>
+                        
+                        <div class="grid md:grid-cols-2 gap-6 my-6">
+                            <div class="bg-white rounded-lg p-6 border-2 border-green-200 shadow-sm">
+                                <h4 class="font-bold text-lg text-green-800 mb-2">1. Temporal Locality</h4>
+                                <p class="text-gray-700 mb-2">If you access memory location X, you'll likely access X again soon</p>
+                                <p class="text-sm text-gray-600 italic">Example: Loop variables get accessed repeatedly</p>
+                            </div>
+                            
+                            <div class="bg-white rounded-lg p-6 border-2 border-blue-200 shadow-sm">
+                                <h4 class="font-bold text-lg text-blue-800 mb-2">2. Spatial Locality</h4>
+                                <p class="text-gray-700 mb-2">If you access memory location X, you'll likely access nearby locations (X+1, X+2, etc.) soon</p>
+                                <p class="text-sm text-gray-600 italic">Example: Processing array elements sequentially</p>
+                            </div>
+                        </div>
+                        
+                        <p class="text-lg text-gray-700 leading-relaxed mb-6">
+                            By keeping recently and frequently accessed data in faster memory levels, the system achieves performance close to the fastest memory while providing capacity close to the largest memory. It's like magic, but it's actually just clever engineering!
+                        </p>
+                        
+                        <h3 class="text-xl font-bold text-gray-900 mb-4 mt-8">Why This Matters for Your CPU Project</h3>
+                        
+                        <p class="text-lg text-gray-700 leading-relaxed mb-4">
+                            In Week 12, you're building the interface between your CPU and main memory (RAM). This interface is the critical connection that allows your CPU to:
+                        </p>
+                        
+                        <ol class="list-decimal list-inside space-y-2 mb-6 text-lg text-gray-700">
+                            <li><strong>Fetch instructions</strong> from memory to execute</li>
+                            <li><strong>Load data</strong> from memory into registers for processing</li>
+                            <li><strong>Store results</strong> from registers back to memory</li>
+                            <li><strong>Access I/O devices</strong> through memory-mapped addresses</li>
+                        </ol>
+                        
+                        <p class="text-lg text-gray-700 leading-relaxed mb-6">
+                            Without this memory interface, your beautifully designed ALU and control unit from previous weeks would be useless—just an isolated calculator with nowhere to store programs or data!
                         </p>
                     </div>
+                    
+                    <hr class="my-8 border-t-2 border-gray-200">
+                    
+                    <h3 class="text-xl font-bold text-gray-900 mb-4">Interactive Activity: Build the Memory Pyramid</h3>
+                    <p class="text-gray-700 mb-6">Now test your understanding by dragging each memory component to its correct position in the hierarchy.</p>
                     
                     <!-- Draggable Components -->
                     <div class="mb-8">
@@ -465,26 +664,224 @@
             <section id="module-2" class="module-content">
                 <div class="bg-white rounded-xl shadow-lg p-6 sm:p-8 mb-6">
                     <div class="flex items-center justify-between mb-6">
-                        <h2 class="text-2xl sm:text-3xl font-bold text-gray-900">Module 2: Endianness Explorer</h2>
-                        <span class="text-sm px-3 py-1 bg-purple-100 text-purple-700 rounded-full font-semibold">~10 min</span>
+                        <h2 class="text-2xl sm:text-3xl font-bold text-gray-900">Module 2: Endianness & Multi-Byte Storage</h2>
+                        <span class="text-sm px-3 py-1 bg-purple-100 text-purple-700 rounded-full font-semibold">~15 min</span>
                     </div>
                     
+                    <!-- Educational Content -->
                     <div class="prose max-w-none mb-8">
+                        <h3 class="text-xl font-bold text-gray-900 mb-4">Memory Organization and Addressing</h3>
+                        
                         <p class="text-lg text-gray-700 leading-relaxed mb-4">
-                            <strong>Endianness</strong> determines the order in which multi-byte values are stored in memory. Let's explore both little-endian and big-endian formats through hands-on exercises.
+                            Your 8-bit CPU has an 8-bit address bus, meaning it can address <strong>2^8 = 256 bytes</strong> of memory. These 256 addresses (0x00 to 0xFF) form your <strong>address space</strong>, and you need to organize them intelligently.
                         </p>
                         
-                        <div class="grid md:grid-cols-2 gap-4 my-6">
-                            <div class="bg-blue-50 rounded-lg p-4 border border-blue-200">
-                                <h4 class="font-bold text-blue-900 mb-2">Little-Endian</h4>
-                                <p class="text-sm text-blue-800">Least significant byte (LSB) at the lowest address. "Little end first."</p>
+                        <div class="bg-gradient-to-br from-gray-50 to-gray-100 rounded-lg p-6 my-6 border border-gray-300">
+                            <h4 class="font-bold text-gray-900 mb-3">Example Memory Map for Your CPU:</h4>
+                            <table class="w-full text-sm">
+                                <thead>
+                                    <tr class="border-b-2 border-gray-300">
+                                        <th class="text-left py-2">Address Range</th>
+                                        <th class="text-left py-2">Purpose</th>
+                                        <th class="text-left py-2">Access Type</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="font-mono text-xs">
+                                    <tr class="border-b border-gray-200">
+                                        <td class="py-2">0x00 - 0x3F</td>
+                                        <td class="py-2">Program Code</td>
+                                        <td class="py-2">Read-Only</td>
+                                    </tr>
+                                    <tr class="border-b border-gray-200">
+                                        <td class="py-2">0x40 - 0x7F</td>
+                                        <td class="py-2">Data/Variables</td>
+                                        <td class="py-2">Read/Write</td>
+                                    </tr>
+                                    <tr class="border-b border-gray-200">
+                                        <td class="py-2">0x80 - 0xEF</td>
+                                        <td class="py-2">Stack Space</td>
+                                        <td class="py-2">Read/Write</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="py-2">0xF0 - 0xFF</td>
+                                        <td class="py-2">Memory-Mapped I/O</td>
+                                        <td class="py-2">Read/Write</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <h3 class="text-xl font-bold text-gray-900 mb-4 mt-8">Byte Addressing vs. Word Addressing</h3>
+                        
+                        <p class="text-lg text-gray-700 leading-relaxed mb-4">
+                            <strong>Critical Design Decision:</strong> Your 8-bit CPU uses <strong>byte-addressable memory</strong>, meaning each address points to one byte (8 bits).
+                        </p>
+                        
+                        <div class="grid md:grid-cols-2 gap-6 my-6">
+                            <div class="bg-blue-50 rounded-lg p-6 border border-blue-200">
+                                <h4 class="font-bold text-blue-900 mb-3">Byte Addressable (your CPU)</h4>
+                                <ul class="space-y-2 text-gray-800 text-sm">
+                                    <li>• Address 0x10 → byte 0</li>
+                                    <li>• Address 0x11 → byte 1</li>
+                                    <li>• Address 0x12 → byte 2</li>
+                                    <li>• Simple for 8-bit operations</li>
+                                    <li>• Multi-byte values require multiple memory accesses</li>
+                                </ul>
                             </div>
-                            <div class="bg-green-50 rounded-lg p-4 border border-green-200">
-                                <h4 class="font-bold text-green-900 mb-2">Big-Endian</h4>
-                                <p class="text-sm text-green-800">Most significant byte (MSB) at the lowest address. "Big end first."</p>
+                            <div class="bg-green-50 rounded-lg p-6 border border-green-200">
+                                <h4 class="font-bold text-green-900 mb-3">Word Addressable (some architectures)</h4>
+                                <ul class="space-y-2 text-gray-800 text-sm">
+                                    <li>• Address 0x10 → entire word (e.g., 32 bits)</li>
+                                    <li>• More efficient for word-sized data</li>
+                                    <li>• Complicates byte access</li>
+                                    <li>• Used in some DSP and older systems</li>
+                                </ul>
                             </div>
                         </div>
+                        
+                        <h3 class="text-xl font-bold text-gray-900 mb-4 mt-8">Multi-Byte Storage: The Endianness Problem</h3>
+                        
+                        <p class="text-lg text-gray-700 leading-relaxed mb-4">
+                            Suppose you need to store a 16-bit value <code class="bg-gray-200 px-2 py-1 rounded">0x4A3F</code> starting at address 0x20. You need TWO bytes:
+                        </p>
+                        
+                        <ul class="list-disc list-inside space-y-2 mb-4 text-lg text-gray-700">
+                            <li>High byte: <code class="bg-gray-200 px-2 py-1 rounded">0x4A</code></li>
+                            <li>Low byte: <code class="bg-gray-200 px-2 py-1 rounded">0x3F</code></li>
+                        </ul>
+                        
+                        <p class="text-lg text-gray-700 leading-relaxed mb-6">
+                            <strong>But which byte goes in which address?</strong> This is where <strong>endianness</strong> matters!
+                        </p>
+                        
+                        <h3 class="text-xl font-bold text-gray-900 mb-4 mt-8">Endianness: Big-Endian vs. Little-Endian</h3>
+                        
+                        <p class="text-lg text-gray-700 leading-relaxed mb-6">
+                            <strong>Endianness</strong> determines the order in which multi-byte values are stored in memory. The term comes from Jonathan Swift's "Gulliver's Travels" where people argued about which end of an egg to crack first!
+                        </p>
+                        
+                        <div class="grid md:grid-cols-2 gap-6 my-8">
+                            <div class="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-6 border-2 border-blue-400">
+                                <h4 class="text-lg font-bold text-blue-900 mb-3">Little-Endian (x86, most modern CPUs)</h4>
+                                <p class="text-gray-800 mb-4"><strong>Least significant byte (LSB)</strong> at the lowest address</p>
+                                <p class="text-sm text-blue-800 mb-4 italic">"Little end first"</p>
+                                
+                                <div class="bg-white rounded-lg p-4 border border-blue-300">
+                                    <p class="font-semibold text-sm mb-2">Storing 0x4A3F at address 0x20:</p>
+                                    <table class="w-full text-sm font-mono">
+                                        <thead>
+                                            <tr class="border-b border-blue-300">
+                                                <th class="text-left py-1">Address</th>
+                                                <th class="text-left py-1">Value</th>
+                                                <th class="text-left py-1">Meaning</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr class="border-b border-blue-200">
+                                                <td class="py-1">0x20</td>
+                                                <td class="py-1 text-blue-600 font-bold">0x3F</td>
+                                                <td class="py-1 text-xs">Low byte (LSB)</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="py-1">0x21</td>
+                                                <td class="py-1 text-blue-800 font-bold">0x4A</td>
+                                                <td class="py-1 text-xs">High byte (MSB)</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            
+                            <div class="bg-gradient-to-br from-green-50 to-green-100 rounded-xl p-6 border-2 border-green-400">
+                                <h4 class="text-lg font-bold text-green-900 mb-3">Big-Endian (network protocols, some older systems)</h4>
+                                <p class="text-gray-800 mb-4"><strong>Most significant byte (MSB)</strong> at the lowest address</p>
+                                <p class="text-sm text-green-800 mb-4 italic">"Big end first"</p>
+                                
+                                <div class="bg-white rounded-lg p-4 border border-green-300">
+                                    <p class="font-semibold text-sm mb-2">Storing 0x4A3F at address 0x20:</p>
+                                    <table class="w-full text-sm font-mono">
+                                        <thead>
+                                            <tr class="border-b border-green-300">
+                                                <th class="text-left py-1">Address</th>
+                                                <th class="text-left py-1">Value</th>
+                                                <th class="text-left py-1">Meaning</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr class="border-b border-green-200">
+                                                <td class="py-1">0x20</td>
+                                                <td class="py-1 text-green-800 font-bold">0x4A</td>
+                                                <td class="py-1 text-xs">High byte (MSB)</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="py-1">0x21</td>
+                                                <td class="py-1 text-green-600 font-bold">0x3F</td>
+                                                <td class="py-1 text-xs">Low byte (LSB)</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <h3 class="text-xl font-bold text-gray-900 mb-4 mt-8">Why It Matters</h3>
+                        
+                        <div class="bg-yellow-50 border-l-4 border-yellow-500 p-6 rounded-lg mb-6">
+                            <h4 class="font-bold text-yellow-900 mb-3">⚠️ Critical Importance</h4>
+                            <ul class="space-y-2 text-gray-800">
+                                <li>• <strong>Your CPU must be consistent!</strong> Choose one format and document it clearly</li>
+                                <li>• When reading a 16-bit value with two LOAD instructions, you must know which byte is which</li>
+                                <li>• Network communication requires converting between endiannesses (TCP/IP uses "network byte order" which is big-endian)</li>
+                                <li>• Reading binary files created on different systems requires understanding their endianness</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="bg-blue-50 border-l-4 border-blue-500 p-6 rounded-lg mb-6">
+                            <h4 class="font-bold text-blue-900 mb-3">📘 For Your Project</h4>
+                            <p class="text-gray-800">
+                                We recommend using <strong>little-endian</strong> format for your 8-bit CPU project. It's more common in modern systems (x86, ARM) and slightly easier to work with when debugging. Just remember: "little end first" means the LSB goes at the lower address.
+                            </p>
+                        </div>
+                        
+                        <h3 class="text-xl font-bold text-gray-900 mb-4 mt-8">Common Pitfalls to Avoid</h3>
+                        
+                        <div class="space-y-4 mb-6">
+                            <div class="bg-red-50 rounded-lg p-4 border border-red-200">
+                                <h4 class="font-semibold text-red-900 mb-2">❌ Mistake #1</h4>
+                                <p class="text-gray-800 text-sm">Thinking "big-endian" means "bigger number at higher address"</p>
+                                <p class="text-green-800 text-sm mt-1"><strong>Reality:</strong> Big-endian means "most significant byte at LOWEST address"</p>
+                            </div>
+                            
+                            <div class="bg-red-50 rounded-lg p-4 border border-red-200">
+                                <h4 class="font-semibold text-red-900 mb-2">❌ Mistake #2</h4>
+                                <p class="text-gray-800 text-sm">Forgetting to account for endianness when reading/writing multi-byte values</p>
+                                <p class="text-green-800 text-sm mt-1"><strong>Reality:</strong> Every multi-byte operation must handle byte ordering correctly</p>
+                            </div>
+                            
+                            <div class="bg-red-50 rounded-lg p-4 border border-red-200">
+                                <h4 class="font-semibold text-red-900 mb-2">❌ Mistake #3</h4>
+                                <p class="text-gray-800 text-sm">Mixing endianness within the same system</p>
+                                <p class="text-green-800 text-sm mt-1"><strong>Reality:</strong> Consistency is key—pick one format and stick with it!</p>
+                            </div>
+                        </div>
+                        
+                        <h3 class="text-xl font-bold text-gray-900 mb-4 mt-8">Memory Trick</h3>
+                        
+                        <div class="bg-gradient-to-r from-purple-100 to-pink-100 rounded-xl p-6 border-2 border-purple-300">
+                            <p class="text-lg text-gray-900 font-medium">
+                                <span class="text-2xl">💡</span> <strong>Little-Endian:</strong> "Little end (LSB) comes first"<br>
+                                <span class="text-2xl">💡</span> <strong>Big-Endian:</strong> "Big end (MSB) comes first"
+                            </p>
+                            <p class="text-sm text-gray-700 mt-3 italic">
+                                The "end" refers to which end of the multi-byte value (most significant vs least significant) appears at the first (lowest) address.
+                            </p>
+                        </div>
                     </div>
+                    
+                    <hr class="my-8 border-t-2 border-gray-200">
+                    
+                    <h3 class="text-xl font-bold text-gray-900 mb-4">Interactive Activity: Endianness Exercises</h3>
+                    <p class="text-gray-700 mb-6">Now practice storing multi-byte values using both endian formats. Drag the correct byte values to their corresponding memory addresses.</p>
                     
                     <!-- Exercise Display -->
                     <div class="mb-8">
@@ -547,15 +944,232 @@
             <section id="module-3" class="module-content">
                 <div class="bg-white rounded-xl shadow-lg p-6 sm:p-8 mb-6">
                     <div class="flex items-center justify-between mb-6">
-                        <h2 class="text-2xl sm:text-3xl font-bold text-gray-900">Module 3: Timing Diagram Analyzer</h2>
-                        <span class="text-sm px-3 py-1 bg-indigo-100 text-indigo-700 rounded-full font-semibold">~15 min</span>
+                        <h2 class="text-2xl sm:text-3xl font-bold text-gray-900">Module 3: Memory Operation Timing</h2>
+                        <span class="text-sm px-3 py-1 bg-indigo-100 text-indigo-700 rounded-full font-semibold">~20 min</span>
                     </div>
                     
+                    <!-- Educational Content -->
                     <div class="prose max-w-none mb-8">
-                        <p class="text-lg text-gray-700 leading-relaxed">
-                            Memory operations take multiple clock cycles and require precise timing. Analyze these timing diagrams to understand how signals change during READ and WRITE operations.
+                        <h3 class="text-xl font-bold text-gray-900 mb-4">Understanding Memory Interface Hardware</h3>
+                        
+                        <p class="text-lg text-gray-700 leading-relaxed mb-6">
+                            Before diving into timing diagrams, let's review the essential registers that manage all memory communication:
                         </p>
+                        
+                        <div class="grid md:grid-cols-2 gap-6 mb-8">
+                            <div class="bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg p-6 border-2 border-blue-400">
+                                <h4 class="text-lg font-bold text-blue-900 mb-3">1. MAR (Memory Address Register)</h4>
+                                <ul class="space-y-2 text-gray-800 text-sm">
+                                    <li>• Holds the address for the current memory operation</li>
+                                    <li>• Width: 8 bits (matches your address bus)</li>
+                                    <li>• Connected to the <strong>address bus</strong></li>
+                                    <li>• Output only (CPU → Memory)</li>
+                                </ul>
+                            </div>
+                            
+                            <div class="bg-gradient-to-br from-green-50 to-green-100 rounded-lg p-6 border-2 border-green-400">
+                                <h4 class="text-lg font-bold text-green-900 mb-3">2. MDR (Memory Data Register)</h4>
+                                <ul class="space-y-2 text-gray-800 text-sm">
+                                    <li>• Holds data being read from or written to memory</li>
+                                    <li>• Width: 8 bits (matches your data bus)</li>
+                                    <li>• Connected to the <strong>data bus</strong></li>
+                                    <li>• Bidirectional (CPU ↔ Memory)</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-purple-50 rounded-lg p-6 border border-purple-300 mb-6">
+                            <h4 class="font-bold text-purple-900 mb-3">Example: Reading from address 0x45</h4>
+                            <ol class="space-y-2 text-gray-800 text-sm list-decimal list-inside">
+                                <li>Load 0x45 into MAR</li>
+                                <li>Assert MEM_READ signal</li>
+                                <li>Memory places data onto data bus</li>
+                                <li>MDR captures the data</li>
+                                <li>CPU reads value from MDR</li>
+                            </ol>
+                        </div>
+                        
+                        <h3 class="text-xl font-bold text-gray-900 mb-4 mt-8">Control Signals for Memory Operations</h3>
+                        
+                        <p class="text-lg text-gray-700 leading-relaxed mb-4">
+                            Memory operations require precise control signals to coordinate between CPU and memory:
+                        </p>
+                        
+                        <div class="overflow-x-auto mb-6">
+                            <table class="min-w-full bg-white border border-gray-300 rounded-lg">
+                                <thead class="bg-gray-100">
+                                    <tr>
+                                        <th class="px-4 py-3 text-left text-sm font-semibold">Signal</th>
+                                        <th class="px-4 py-3 text-left text-sm font-semibold">Direction</th>
+                                        <th class="px-4 py-3 text-left text-sm font-semibold">Purpose</th>
+                                        <th class="px-4 py-3 text-left text-sm font-semibold">Active State</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="border-b hover:bg-gray-50">
+                                        <td class="px-4 py-3 text-sm font-mono">MEM_READ</td>
+                                        <td class="px-4 py-3 text-sm">CPU → Memory</td>
+                                        <td class="px-4 py-3 text-sm">Request read operation</td>
+                                        <td class="px-4 py-3 text-sm text-green-600 font-semibold">HIGH</td>
+                                    </tr>
+                                    <tr class="border-b hover:bg-gray-50">
+                                        <td class="px-4 py-3 text-sm font-mono">MEM_WRITE</td>
+                                        <td class="px-4 py-3 text-sm">CPU → Memory</td>
+                                        <td class="px-4 py-3 text-sm">Request write operation</td>
+                                        <td class="px-4 py-3 text-sm text-green-600 font-semibold">HIGH</td>
+                                    </tr>
+                                    <tr class="border-b hover:bg-gray-50">
+                                        <td class="px-4 py-3 text-sm font-mono">MEM_ENABLE</td>
+                                        <td class="px-4 py-3 text-sm">CPU → Memory</td>
+                                        <td class="px-4 py-3 text-sm">Activate memory chip</td>
+                                        <td class="px-4 py-3 text-sm text-red-600 font-semibold">LOW</td>
+                                    </tr>
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="px-4 py-3 text-sm font-mono">MEM_READY</td>
+                                        <td class="px-4 py-3 text-sm">Memory → CPU</td>
+                                        <td class="px-4 py-3 text-sm">Operation complete (optional)</td>
+                                        <td class="px-4 py-3 text-sm text-green-600 font-semibold">HIGH</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <div class="bg-red-50 border-l-4 border-red-500 p-6 rounded-lg mb-6">
+                            <h4 class="font-bold text-red-900 mb-2">🚫 Critical Rule</h4>
+                            <p class="text-red-800">
+                                <strong>Never assert MEM_READ and MEM_WRITE simultaneously!</strong> This causes <strong>bus contention</strong> and can damage hardware. The data bus would have multiple drivers trying to control it at once.
+                            </p>
+                        </div>
+                        
+                        <h3 class="text-xl font-bold text-gray-900 mb-4 mt-8">The System Bus Architecture</h3>
+                        
+                        <p class="text-lg text-gray-700 leading-relaxed mb-4">
+                            Your CPU communicates with memory via three buses:
+                        </p>
+                        
+                        <div class="space-y-4 mb-6">
+                            <div class="bg-amber-50 rounded-lg p-4 border border-amber-300">
+                                <h4 class="font-bold text-amber-900 mb-2">1. Address Bus (8 bits, unidirectional: CPU → Memory)</h4>
+                                <ul class="text-sm text-gray-800 space-y-1">
+                                    <li>• Carries memory addresses</li>
+                                    <li>• Driven by MAR</li>
+                                    <li>• Determines which memory location is accessed</li>
+                                    <li>• With 8 bits: addresses 0x00 to 0xFF (256 bytes)</li>
+                                </ul>
+                            </div>
+                            
+                            <div class="bg-sky-50 rounded-lg p-4 border border-sky-300">
+                                <h4 class="font-bold text-sky-900 mb-2">2. Data Bus (8 bits, bidirectional: CPU ↔ Memory)</h4>
+                                <ul class="text-sm text-gray-800 space-y-1">
+                                    <li>• Carries data being read or written</li>
+                                    <li>• Connected to MDR</li>
+                                    <li>• Must use <strong>tri-state buffers</strong> to prevent bus contention</li>
+                                    <li>• Only one component can drive the bus at a time</li>
+                                </ul>
+                            </div>
+                            
+                            <div class="bg-purple-50 rounded-lg p-4 border border-purple-300">
+                                <h4 class="font-bold text-purple-900 mb-2">3. Control Bus (multiple lines, bidirectional)</h4>
+                                <ul class="text-sm text-gray-800 space-y-1">
+                                    <li>• Carries control signals: MEM_READ, MEM_WRITE, MEM_ENABLE, CLK, etc.</li>
+                                    <li>• Coordinates operations between CPU and memory</li>
+                                    <li>• Ensures proper timing and synchronization</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <h3 class="text-xl font-bold text-gray-900 mb-4 mt-8">Understanding Timing Diagrams</h3>
+                        
+                        <p class="text-lg text-gray-700 leading-relaxed mb-4">
+                            Memory operations take <strong>multiple clock cycles</strong> and require precise timing. A timing diagram shows how signals change over time, allowing us to understand and debug memory operations.
+                        </p>
+                        
+                        <h4 class="text-lg font-semibold text-gray-900 mb-3">Key Timing Concepts</h4>
+                        
+                        <div class="grid md:grid-cols-2 gap-4 mb-6">
+                            <div class="bg-white rounded-lg p-4 border-2 border-gray-300">
+                                <h5 class="font-bold text-gray-900 mb-2">Setup Time</h5>
+                                <p class="text-sm text-gray-700">Signals must be stable <strong>BEFORE</strong> clock edge</p>
+                            </div>
+                            <div class="bg-white rounded-lg p-4 border-2 border-gray-300">
+                                <h5 class="font-bold text-gray-900 mb-2">Hold Time</h5>
+                                <p class="text-sm text-gray-700">Signals must remain stable <strong>AFTER</strong> clock edge</p>
+                            </div>
+                            <div class="bg-white rounded-lg p-4 border-2 border-gray-300">
+                                <h5 class="font-bold text-gray-900 mb-2">Access Time</h5>
+                                <p class="text-sm text-gray-700">Delay from address valid to data available</p>
+                            </div>
+                            <div class="bg-white rounded-lg p-4 border-2 border-gray-300">
+                                <h5 class="font-bold text-gray-900 mb-2">Wait States</h5>
+                                <p class="text-sm text-gray-700">Extra clock cycles inserted for slow memory</p>
+                            </div>
+                        </div>
+                        
+                        <h3 class="text-xl font-bold text-gray-900 mb-4 mt-8">Memory READ Cycle Overview</h3>
+                        
+                        <p class="text-lg text-gray-700 leading-relaxed mb-4">
+                            A typical memory READ operation takes 3-4 clock cycles:
+                        </p>
+                        
+                        <div class="bg-gradient-to-r from-green-50 to-emerald-50 rounded-lg p-6 border border-green-300 mb-6">
+                            <ol class="space-y-3 text-gray-800">
+                                <li><strong>Clock Cycle 1:</strong> MAR loaded with address (e.g., 0x45)</li>
+                                <li><strong>Clock Cycle 2:</strong> MEM_READ asserted; memory begins reading</li>
+                                <li><strong>Clock Cycle 3:</strong> Data (e.g., 0x7B) appears on data bus; MDR prepares to capture it</li>
+                                <li><strong>Clock Cycle 4:</strong> MDR latches data; MEM_READ de-asserted; operation complete</li>
+                            </ol>
+                        </div>
+                        
+                        <h3 class="text-xl font-bold text-gray-900 mb-4 mt-8">Memory WRITE Cycle Overview</h3>
+                        
+                        <p class="text-lg text-gray-700 leading-relaxed mb-4">
+                            A memory WRITE operation also takes 3-4 clock cycles but with different signal patterns:
+                        </p>
+                        
+                        <div class="bg-gradient-to-r from-blue-50 to-cyan-50 rounded-lg p-6 border border-blue-300 mb-6">
+                            <ol class="space-y-3 text-gray-800">
+                                <li><strong>Clock Cycle 1:</strong> MAR loaded with address (e.g., 0x50); MDR loaded with data (e.g., 0xA8)</li>
+                                <li><strong>Clock Cycle 2:</strong> MEM_WRITE asserted; MDR drives data bus</li>
+                                <li><strong>Clock Cycle 3:</strong> Memory writes data from bus to selected address</li>
+                                <li><strong>Clock Cycle 4:</strong> MEM_WRITE de-asserted; operation complete</li>
+                            </ol>
+                        </div>
+                        
+                        <div class="bg-indigo-50 border-l-4 border-indigo-500 p-6 rounded-lg mb-6">
+                            <h4 class="font-bold text-indigo-900 mb-2">💡 Key Difference</h4>
+                            <p class="text-indigo-800">
+                                <strong>READ:</strong> Data flows FROM memory TO CPU (memory drives the data bus)<br>
+                                <strong>WRITE:</strong> Data flows FROM CPU TO memory (CPU drives the data bus)<br><br>
+                                Notice how WRITE must load <em>both</em> MAR and MDR in the first cycle, while READ only needs MAR initially.
+                            </p>
+                        </div>
+                        
+                        <h3 class="text-xl font-bold text-gray-900 mb-4 mt-8">Reading Timing Diagrams: A Guide</h3>
+                        
+                        <p class="text-lg text-gray-700 leading-relaxed mb-4">
+                            When analyzing a timing diagram:
+                        </p>
+                        
+                        <ol class="list-decimal list-inside space-y-2 mb-6 text-gray-700">
+                            <li><strong>Identify the clock:</strong> Usually shown as a square wave at the top</li>
+                            <li><strong>Track signal changes:</strong> Note when each signal goes HIGH or LOW</li>
+                            <li><strong>Follow data flow:</strong> Watch when values appear on MAR, data bus, and MDR</li>
+                            <li><strong>Count cycles:</strong> Determine how long the operation takes</li>
+                            <li><strong>Verify timing:</strong> Ensure signals meet setup/hold time requirements</li>
+                        </ol>
+                        
+                        <div class="bg-yellow-50 border-l-4 border-yellow-500 p-6 rounded-lg">
+                            <h4 class="font-bold text-yellow-900 mb-2">⚠️ Pro Tip</h4>
+                            <p class="text-yellow-800">
+                                Always check that the address is stable BEFORE asserting read/write signals. Data must be stable DURING the write signal. Getting timing wrong causes unreliable memory access—the #1 source of bugs in CPU projects!
+                            </p>
+                        </div>
                     </div>
+                    
+                    <hr class="my-8 border-t-2 border-gray-200">
+                    
+                    <h3 class="text-xl font-bold text-gray-900 mb-4">Interactive Activity: Analyze Timing Diagrams</h3>
+                    <p class="text-gray-700 mb-6">Now analyze actual timing diagrams for READ and WRITE operations. Answer questions about signal timing, data flow, and cycle counts.</p>
                     
                     <!-- Diagram Tabs -->
                     <div class="mb-6">
