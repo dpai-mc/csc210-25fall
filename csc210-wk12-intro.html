@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Title for CSC210 Week 12 -->
+    <title>CSC210 - Week 12: Memory Hierarchy and I/O</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            /* Light, professional color scheme suitable for an IT/CS class */
+            background-color: #F8F9FA; 
+            color: #212529;
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .code-font {
+            font-family: 'Fira Code', monospace;
+        }
+        
+        /* Style for the currently active transcript line */
+        .active-transcript-line {
+            background-color: #E9ECEF; /* Light gray/blue accent */
+            font-weight: 600;
+            color: #000;
+            border-left: 4px solid #007BFF; /* Primary blue accent for active line */
+        }
+
+        /* Skip link style (Accessibility requirement) */
+        .skip-link {
+            position: absolute;
+            top: -40px;
+            left: 0;
+            background: #007BFF;
+            color: #F8F9FA;
+            padding: 8px;
+            z-index: 100;
+            transition: top 0.3s;
+        }
+
+        .skip-link:focus {
+            top: 0;
+        }
+
+        /* Custom scrollbar for transcript */
+        #transcript-container::-webkit-scrollbar {
+            width: 8px;
+        }
+        #transcript-container::-webkit-scrollbar-thumb {
+            background-color: #ced4da;
+            border-radius: 10px;
+        }
+        #transcript-container::-webkit-scrollbar-thumb:hover {
+            background-color: #adb5bd;
+        }
+    </style>
+</head>
+<body class="p-4 sm:p-8">
+    <a href="#main-content" class="skip-link rounded-br-md">Skip to main content</a>
+    
+    <div id="main-content" class="max-w-7xl mx-auto">
+        <header class="mb-8">
+            <h1 class="text-3xl sm:text-4xl font-extrabold text-gray-800 mb-2">CSC210 - Week 12: Memory Hierarchy and I/O</h1>
+            <p class="text-lg text-gray-600">Aloha, and welcome to **Week 12**. This week dives deep into the architecture of data storage and transfer. We will explore the tiered **memory hierarchy** (registers, cache, RAM, secondary storage), the importance of **big vs little endian** data ordering, the fundamental **LOAD and STORE** memory cycles, and the differences between **memory-mapped I/O** and **port-mapped I/O** for peripheral communication.</p>
+        </header>
+
+        <main class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <!-- Video Player Section - Used 'aspect-video' for responsive 16:9 ratio -->
+            <section class="lg:sticky lg:top-8 self-start">
+                <h2 class="text-2xl font-semibold mb-4 text-gray-700">Video Lecture: Memory Interfaces and I/O</h2>
+                <!-- Video Embed with the provided ID and settings -->
+                <div class="aspect-video w-full rounded-xl overflow-hidden shadow-2xl">
+                    <iframe id="youtube-player"
+                            width="100%" height="auto"
+                            src="https://www.youtube.com/embed/6WRBdwsfXiE?si=-sQ6Z65D_zs1_EiJ&enablejsapi=1" 
+                            title="YouTube video player"
+                            frameborder="0" 
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                            allowfullscreen
+                            class="w-full h-full"></iframe>
+                </div>
+                <p class="mt-4 text-sm text-gray-500">Video ID: <span class="code-font">6WRBdwsfXiE</span></p>
+            </section>
+
+            <!-- Interactive Transcript Section -->
+            <section>
+                <h2 class="text-2xl font-semibold mb-4 text-gray-700">Video Transcript</h2>
+                <div id="transcript-container" class="h-96 overflow-y-scroll bg-white p-4 rounded-xl shadow-inner border border-gray-200">
+                    <p class="text-center text-gray-400">Loading transcript...</p>
+                    <!-- Transcript lines will be injected here -->
+                </div>
+                <p class="mt-4 text-sm text-gray-600">Click any line in the transcript or use the **Enter/Space** keys when focused to jump to that moment in the video.</p>
+            </section>
+        </main>
+    </div>
+
+    <script type="text/javascript">
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- Configuration ---
+            const videoId = '6WRBdwsfXiE'; 
+            let player;
+            let timeUpdater;
+            let parsedTranscript = [];
+
+            // Transcript content for CSC210 Week 12 (from uploaded file)
+            const transcriptData = `1
+00:00:00,040 --> 00:00:08,640
+Aloha and welcome to week 12 memory interfaces in IO for this week. It's
+
+2
+00:00:08,640 --> 00:00:13,020
+first week in November. So when we look at the learning platform what we're
+
+3
+00:00:13,020 --> 00:00:17,520
+gonna see is it's fairly extensive. Okay so first we're gonna do memory hierarchy.
+
+4
+00:00:17,520 --> 00:00:22,760
+We'll go through basically the four types of memory. What they are CPU
+
+5
+00:00:22,760 --> 00:00:28,920
+registers, cache, RAM, and then secondary storage. Talk about them. Benefits,
+
+6
+00:00:28,920 --> 00:00:33,600
+drawbacks, all that kind of stuff. And then we'll talk about the next part is
+
+7
+00:00:33,600 --> 00:00:42,680
+endianness. And so endianness is big endian and little endian. And so before
+
+8
+00:00:42,680 --> 00:00:44,720
+you go through here, I recommend that you...
+
+9
+00:00:45,140 --> 00:00:52,940
+Know what it is, and then you'll understand why we do one versus the other. And it's
+
+10
+00:00:52,940 --> 00:01:00,560
+gonna determine, basically, how your data is stored in memory in registers. All right.
+
+11
+00:01:00,560 --> 00:01:04,360
+And then we'll talk about basic memory cycles.
+
+12
+00:01:04,360 --> 00:01:10,240
+These are LOAD and STORE, and basically, we'll talk about how the register knows
+
+13
+00:01:10,240 --> 00:01:17,200
+what to load, what address it's getting, how to load the address, how to load the data,
+
+14
+00:01:17,200 --> 00:01:21,520
+and where to store the data, and how to store the data.
+
+15
+00:01:21,520 --> 00:01:27,600
+And then the last part is going to be memory versus port IO. And
+
+16
+00:01:27,600 --> 00:01:33,540
+so memory mapped IO versus port mapped IO, which one's better?
+
+17
+00:01:33,540 --> 00:01:39,060
+Why are they better? Why would you use one over the other? Okay.
+
+18
+00:01:40,240 --> 00:01:46,600
+And then what is also in there is then you have, of course, the exercises
+
+19
+00:01:46,600 --> 00:01:54,720
+for this week. And there's four activities, and that's going to be a lot of those
+
+20
+00:01:54,720 --> 00:02:02,160
+things that are going to be covered. So, uh, I recommend that you read them.
+
+21
+00:02:02,160 --> 00:02:06,120
+There's one for memory hierarchy, endianness,
+
+22
+00:02:06,120 --> 00:02:11,560
+memory cycles, and then memory mapped IO versus port mapped IO.
+
+23
+00:02:11,560 --> 00:02:16,720
+And you're going to use this information to fill out
+
+24
+00:02:16,720 --> 00:02:22,880
+the last part of your project, which is this week is still a project week.
+
+25
+00:02:22,880 --> 00:02:29,200
+So you're doing the memory interfaces and IO project.
+
+26
+00:02:29,200 --> 00:02:35,760
+And so you're going to get a sheet to fill out, which will basically be all of those
+
+27
+00:02:35,760 --> 00:02:40,680
+questions for your project that you'll have to fill in,
+
+28
+00:02:40,680 --> 00:02:46,240
+and it'll be a Word document or a Google Doc for you to download
+
+29
+00:02:46,240 --> 00:02:51,320
+and fill in those questions and then submit it.
+
+30
+00:02:51,320 --> 00:02:54,760
+And it's not a lot of questions, but they are detailed.
+
+31
+00:02:54,760 --> 00:03:00,160
+You're going to have to make sure you use your, you know, textbook or your
+
+32
+00:03:00,160 --> 00:03:03,800
+readings to fill out what they are.
+
+33
+00:03:03,800 --> 00:03:06,320
+You know, basically what is memory hierarchy?
+
+34
+00:03:06,320 --> 00:03:08,800
+What are the different parts? What are the benefits?
+
+35
+00:03:08,800 --> 00:03:11,040
+What are the drawbacks of the different memory?
+
+36
+00:03:11,040 --> 00:03:13,920
+What is big endian versus little endian?
+
+37
+00:03:13,920 --> 00:03:16,480
+You know, which is more prevalent?
+
+38
+00:03:16,480 --> 00:03:19,200
+Where is it used? All that kind of stuff.
+
+39
+00:03:19,200 --> 00:03:22,760
+And then the memory cycle is LOAD and STORE.
+
+40
+00:03:22,760 --> 00:03:25,920
+How does that happen? What's the timing?
+
+41
+00:03:25,920 --> 00:03:27,920
+What does the CPU know about it?
+
+42
+00:03:27,920 --> 00:03:31,440
+And then memory mapped IO versus port mapped IO.
+
+43
+00:03:31,440 --> 00:03:34,800
+Which one is more prevalent today? Why?
+
+44
+00:03:34,800 --> 00:03:36,760
+And that's pretty much the assignment.
+
+45
+00:03:37,280 --> 00:03:41,200
+All right, so that's the project this week.
+
+46
+00:03:41,200 --> 00:04:47,200
+And then you'll also have a quiz this week, so don't forget about the quiz.
+
+47
+00:04:47,200 --> 00:04:54,200
+And if you have any questions, please let me know, and I'll see you online.`;
+
+            // --- Utility Functions ---
+
+            // Converts time string (HH:MM:SS,ms) to seconds
+            function timeToSeconds(timeStr) {
+                if (!timeStr) return 0;
+                // Use a regex to safely replace comma with dot for both format types
+                const cleanTimeStr = timeStr.replace(',', '.');
+                const parts = cleanTimeStr.split(':');
+                
+                // Handle missing hour part if format is MM:SS.ms (common in SRT)
+                let hours = 0;
+                let minutes = 0;
+                let seconds = 0;
+                
+                if (parts.length === 3) {
+                    hours = parseInt(parts[0]) || 0;
+                    minutes = parseInt(parts[1]) || 0;
+                    seconds = parseFloat(parts[2]) || 0;
+                } else if (parts.length === 2) {
+                    minutes = parseInt(parts[0]) || 0;
+                    seconds = parseFloat(parts[1]) || 0;
+                }
+                
+                return hours * 3600 + minutes * 60 + seconds;
+            }
+
+            // Parses SRT data into an array of objects
+            function parseSrt(srtText) {
+                const lines = srtText.trim().split('\n');
+                const cues = [];
+                let currentCue = null;
+
+                for (const line of lines) {
+                    if (line.match(/^\d+$/)) {
+                        // Start of a new cue (sequence number)
+                        if (currentCue) {
+                            cues.push(currentCue);
+                        }
+                        currentCue = { number: parseInt(line), text: [] };
+                    } else if (line.includes('-->') && currentCue) {
+                        // Timestamps
+                        const [startTimeStr, endTimeStr] = line.split(' --> ');
+                        currentCue.start = timeToSeconds(startTimeStr.trim());
+                        currentCue.end = timeToSeconds(endTimeStr.trim());
+                    } else if (line.trim() !== '' && currentCue) {
+                        // Dialogue text
+                        currentCue.text.push(line.trim());
+                    }
+                }
+                // Push the last cue
+                if (currentCue) {
+                    cues.push(currentCue);
+                }
+
+                // Join text array into a single string
+                return cues.map(cue => ({
+                    ...cue,
+                    text: cue.text.join(' ')
+                }));
+            }
+
+            // Populates the transcript container - updated for ADA compliance
+            function populateTranscript() {
+                const container = document.getElementById('transcript-container');
+                container.innerHTML = '';
+
+                parsedTranscript.forEach((cue, index) => {
+                    // Use a div with role="button" and tabindex="0" for keyboard focus/interaction
+                    const lineElement = document.createElement('div');
+                    lineElement.className = 'transcript-line p-2 cursor-pointer hover:bg-gray-100 rounded-lg text-base focus:outline-none focus:ring-2 focus:ring-blue-500';
+                    lineElement.dataset.start = cue.start;
+                    lineElement.dataset.end = cue.end;
+                    lineElement.dataset.index = index;
+                    lineElement.textContent = cue.text;
+                    
+                    // ADA: Role and Tabindex for making it keyboard focusable
+                    lineElement.setAttribute('role', 'button');
+                    lineElement.setAttribute('tabindex', '0');
+                    lineElement.setAttribute('aria-label', `Jump to ${Math.floor(cue.start)} seconds: ${cue.text.substring(0, 50)}...`);
+
+                    const seekToTime = () => {
+                        if (player && player.seekTo) {
+                            player.seekTo(cue.start, true);
+                            player.playVideo();
+                        }
+                    };
+
+                    lineElement.addEventListener('click', seekToTime);
+                    
+                    // ADA: Handle Enter and Space keys
+                    lineElement.addEventListener('keydown', (event) => {
+                        if (event.key === 'Enter' || event.key === ' ') {
+                            event.preventDefault(); // Prevent default scroll for spacebar
+                            seekToTime();
+                        }
+                    });
+
+                    container.appendChild(lineElement);
+                });
+            }
+
+            // Highlights the current line and scrolls it into view
+            function highlightCurrentLine() {
+                if (!player || !player.getCurrentTime) return;
+
+                const currentTime = player.getCurrentTime();
+                const lines = document.querySelectorAll('.transcript-line');
+                let foundActive = false;
+
+                lines.forEach(line => {
+                    const start = parseFloat(line.dataset.start);
+                    const end = parseFloat(line.dataset.end);
+
+                    if (currentTime >= start && currentTime < end) {
+                        if (!line.classList.contains('active-transcript-line')) {
+                            // Deactivate previous active line
+                            document.querySelector('.active-transcript-line')?.classList.remove('active-transcript-line');
+                            // Activate current line
+                            line.classList.add('active-transcript-line');
+                            
+                            // Scroll line into view if it's not already visible
+                            const container = document.getElementById('transcript-container');
+                            const containerRect = container.getBoundingClientRect();
+                            const lineRect = line.getBoundingClientRect();
+
+                            // Only scroll if the line is partially or completely outside the view
+                            if (lineRect.top < containerRect.top || lineRect.bottom > containerRect.bottom) {
+                                line.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                            }
+                        }
+                        foundActive = true;
+                    } else {
+                        line.classList.remove('active-transcript-line');
+                    }
+                });
+
+                // If playback stops, clear highlighting after the last line's duration
+                if (!foundActive && player.getPlayerState() !== YT.PlayerState.PLAYING) {
+                     document.querySelector('.active-transcript-line')?.classList.remove('active-transcript-line');
+                }
+            }
+
+
+            // --- YouTube Player API Functions ---
+            window.onYouTubeIframeAPIReady = function() {
+                player = new YT.Player('youtube-player', {
+                    videoId: videoId,
+                    events: {
+                        'onReady': onPlayerReady,
+                        'onStateChange': onPlayerStateChange
+                    }
+                });
+            };
+
+            function onPlayerReady(event) {
+                console.log('YouTube player is ready.');
+            }
+
+            function onPlayerStateChange(event) {
+                clearInterval(timeUpdater); // Clear any existing interval
+                if (event.data === YT.PlayerState.PLAYING) {
+                    timeUpdater = setInterval(highlightCurrentLine, 300);
+                }
+            }
+            
+            // --- Initialization ---
+            function initialize() {
+                parsedTranscript = parseSrt(transcriptData);
+                populateTranscript();
+                
+                // Load the YouTube IFrame Player API script if it's not already loaded
+                if (typeof(YT) == 'undefined' || typeof(YT.Player) == 'undefined') {
+                    const tag = document.createElement('script');
+                    tag.src = "https://www.youtube.com/iframe_api";
+                    const firstScriptTag = document.getElementsByTagName('script')[0];
+                    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+                } else {
+                    onYouTubeIframeAPIReady();
+                }
+                
+                console.log('CSC210 Week 12 page initialized.');
+            }
+
+            initialize();
+        });
+    </script>
+</body>
+</html>
