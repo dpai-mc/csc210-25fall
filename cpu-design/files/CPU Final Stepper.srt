@@ -1,0 +1,160 @@
+1
+00:00:00,000 --> 00:00:13,960
+Aloha so here's our completed stepper circuit you'll see we've made some changes some of the
+
+2
+00:00:13,960 --> 00:00:21,960
+changes we made we have an input called reset okay and the reset goes into this or we have a clock
+
+3
+00:00:21,960 --> 00:00:29,360
+and what we're doing with the clock we're taking into an or so we have two ores for input we're
+
+4
+00:00:29,360 --> 00:00:34,520
+going to take clock and put it into an or and then negate it and put it into another or I'm
+
+5
+00:00:34,520 --> 00:00:39,560
+going to tie those ores to the odds and the evens or the first ones of every pair and the second
+
+6
+00:00:39,560 --> 00:00:52,760
+ones of every pair so every time we do clock we're going to cycle through our clock so let me do this
+
+7
+00:00:52,760 --> 00:00:56,840
+simulate reset it
+
+8
+00:00:59,360 --> 00:01:08,000
+so every time we're just going to cycle through this so every time I do clock it's going to switch
+
+9
+00:01:08,000 --> 00:01:16,400
+between one and then when I go to zero it'll do the second one one zero one zero one zero one zero
+
+10
+00:01:16,400 --> 00:01:29,360
+and it just keeps walking down okay so let me reset and explain how this works okay so I have
+
+11
+00:01:29,360 --> 00:01:42,020
+this reset all right and it comes in and it is also into the or for set one set two and it's negated
+
+12
+00:01:42,020 --> 00:01:59,240
+into CPU one okay so when I click reset goes high notice that one is on okay if I go low so I reset
+
+13
+00:01:59,360 --> 00:02:04,760
+it one is still on because the output from the first pair is zero and I negate it and it goes
+
+14
+00:02:04,760 --> 00:02:14,420
+into the or now if I go high on one it's going to pass that one to the second one high on the output
+
+15
+00:02:14,420 --> 00:02:22,580
+it'll make step two and then because this is negated so this is a plus one this becomes zero
+
+16
+00:02:22,580 --> 00:02:28,920
+again high pass it down one low on clock
+
+17
+00:02:29,360 --> 00:02:38,060
+passes it out the second part and that goes into step three now we're taking this as an and now
+
+18
+00:02:38,840 --> 00:02:43,040
+it was an or again this would always be one because this is going to stay one
+
+19
+00:02:44,240 --> 00:02:49,460
+so we're making an and and so this one becomes zero and this becomes zero
+
+20
+00:02:50,180 --> 00:02:56,360
+so then we can just go clock clock step four clock clock step five
+
+21
+00:02:58,160 --> 00:02:59,300
+clock clock
+
+22
+00:02:59,300 --> 00:03:04,300
+Step six, clock, clock, step seven, all right?
+
+23
+00:03:05,420 --> 00:03:07,920
+And so we've cycled through all seven.
+
+24
+00:03:09,060 --> 00:03:11,540
+Then what we're gonna wanna do
+
+25
+00:03:11,540 --> 00:03:16,540
+and is we're gonna wanna look at our circuit appearance,
+
+26
+00:03:17,500 --> 00:03:19,320
+which I'll show you a diagram
+
+27
+00:03:19,320 --> 00:03:21,600
+and maybe it'll look something like this.
+
+28
+00:03:24,920 --> 00:03:28,060
+Okay, I have a clock on the left, reset on the right
+
+29
+00:03:28,060 --> 00:03:31,460
+and then I have my seven outputs, all right?
+
+30
+00:03:31,460 --> 00:03:35,920
+And now what I'm gonna do is probably at some point,
+
+31
+00:03:35,920 --> 00:03:38,380
+I'll not change the appearance,
+
+32
+00:03:38,380 --> 00:03:42,500
+but what I'll do is I'll take the output from seven
+
+33
+00:03:42,500 --> 00:03:44,840
+and put it into reset.
+
+34
+00:03:44,840 --> 00:03:47,500
+And that way when seven goes high, reset goes high
+
+35
+00:03:47,500 --> 00:03:52,140
+and it resets the whole thing and we start over, all right?
+
+36
+00:03:52,140 --> 00:03:55,720
+So that's pretty much how the stepper works
+
+37
+00:03:55,720 --> 00:03:56,900
+and drawing it up.
+
+38
+00:03:58,060 --> 00:04:01,420
+Hopefully you walk through it
+
+39
+00:04:01,420 --> 00:04:04,120
+and it makes sense to you on how the stepper works
+
+40
+00:04:04,120 --> 00:04:08,120
+because this is how we're gonna choose what we're doing.
+

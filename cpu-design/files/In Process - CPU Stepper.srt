@@ -1,0 +1,200 @@
+1
+00:00:00,000 --> 00:00:07,260
+Aloha.
+
+2
+00:00:07,260 --> 00:00:10,980
+So what I want to do is show a little bit about how
+
+3
+00:00:10,980 --> 00:00:13,440
+this stepper is going to work and discuss a little bit.
+
+4
+00:00:13,440 --> 00:00:16,800
+So I have my little unit I have with
+
+5
+00:00:16,800 --> 00:00:21,680
+the two memory bits tied together,
+
+6
+00:00:21,680 --> 00:00:25,280
+and what I'm going to show you is how this chain works.
+
+7
+00:00:25,280 --> 00:00:28,080
+So right now the input to the first one is zero.
+
+8
+00:00:28,080 --> 00:00:31,340
+So let me change the input to one and I hit set one.
+
+9
+00:00:31,340 --> 00:00:37,380
+Now, every other memory item is connected to set one.
+
+10
+00:00:37,380 --> 00:00:41,160
+So the first one of every pair is connected to set one.
+
+11
+00:00:41,160 --> 00:00:46,240
+So I'm going to set that so that the output is one,
+
+12
+00:00:46,240 --> 00:00:50,120
+turn my input off, and then I'm going to set two.
+
+13
+00:00:50,120 --> 00:00:53,160
+What set two is going to do is it's tied to
+
+14
+00:00:53,160 --> 00:00:56,120
+the memory bit of every even one,
+
+15
+00:00:56,120 --> 00:00:57,500
+so two, four, six, eight,
+
+16
+00:00:57,500 --> 00:00:59,520
+or the second one of every pair.
+
+17
+00:00:59,520 --> 00:01:02,820
+So what that will do, we'll pass that input one
+
+18
+00:01:02,820 --> 00:01:05,560
+that's stored in the first one,
+
+19
+00:01:05,560 --> 00:01:07,120
+it'll pass it to the output,
+
+20
+00:01:07,120 --> 00:01:08,960
+which will be the first item,
+
+21
+00:01:08,960 --> 00:01:11,940
+and pass it as the input to the next one.
+
+22
+00:01:11,940 --> 00:01:16,900
+So then we'll turn set two off and then just go set one again,
+
+23
+00:01:16,900 --> 00:01:21,640
+which will pass it to the second part,
+
+24
+00:01:21,640 --> 00:01:27,480
+and pass the zero into the second one.
+
+25
+00:01:27,500 --> 00:01:30,520
+So that's set one of the first one,
+
+26
+00:01:30,520 --> 00:01:32,420
+and then I'll hit set two again,
+
+27
+00:01:32,420 --> 00:01:38,060
+and it'll turn off the first item and turn on the second item.
+
+28
+00:01:38,060 --> 00:01:43,560
+I'll turn that off, I'll go set one to pass it down one,
+
+29
+00:01:43,560 --> 00:01:48,120
+set two to turn off the second one and go to the third one.
+
+30
+00:01:48,120 --> 00:01:51,440
+And so I just keep cycling, set one on off,
+
+31
+00:01:51,440 --> 00:01:56,620
+set two on off, move to the next one, set one on off,
+
+32
+00:01:56,620 --> 00:01:57,320
+set two on off, move to the next one, move to the next one, move to the next one.
+
+33
+00:01:57,500 --> 00:01:59,340
+Set one on off, move to the next one, move to the next one, move to the next one.
+
+34
+00:01:59,340 --> 00:02:03,740
+Set one on off, set two on off, move to the last one,
+
+35
+00:02:03,740 --> 00:02:07,100
+and then set one on off, set two on off,
+
+36
+00:02:07,100 --> 00:02:10,420
+sends the zero, so they're all back to zero.
+
+37
+00:02:10,420 --> 00:02:12,460
+Okay, so that's how the stepper works.
+
+38
+00:02:12,460 --> 00:02:14,260
+It's gonna just step through,
+
+39
+00:02:14,260 --> 00:02:16,660
+and what we're gonna do is we're actually gonna tie
+
+40
+00:02:16,660 --> 00:02:19,800
+the output, this last one, back to the input
+
+41
+00:02:19,800 --> 00:02:23,220
+so that we actually just cycle through six.
+
+42
+00:02:23,220 --> 00:02:25,680
+So we're gonna add another one to the left foot.
+
+43
+00:02:25,680 --> 00:02:27,500
+Basically, this is how this works.
+
+44
+00:02:27,500 --> 00:02:30,820
+So that we are able to sequentially step through
+
+45
+00:02:30,820 --> 00:02:36,260
+different items, basically using the set one, set two,
+
+46
+00:02:36,260 --> 00:02:38,700
+set one, set two, set one, set two.
+
+47
+00:02:38,700 --> 00:02:40,780
+Okay, so that's how our stepper's gonna work.
+
+48
+00:02:40,780 --> 00:02:46,380
+And then I'll show you the finished circuit
+
+49
+00:02:46,380 --> 00:02:48,780
+and walk through how that works.
+
+50
+00:02:48,780 --> 00:02:49,620
+Thanks.
+
