@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Circuits: Control Templates</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        // MANDATORY: Configure Tailwind to include the Typography plugin.
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                },
+            },
+            plugins: [
+                require('@tailwindcss/typography'),
+            ],
+        }
+    </script>
+    <style>
+        /* STRICT LIGHT THEME MANDATE: Overrides dark mode settings */
+        html { 
+            font-family: 'Inter', sans-serif; 
+            background-color: #FDFBF8; 
+            color: #1A1A1A; 
+        }
+        @media (prefers-color-scheme: dark) {
+            html {
+                background-color: #FDFBF8 !important; 
+                color: #1A1A1A !important; 
+            }
+        }
+        /* Custom class for Skip Link (visible on focus) */
+        .skip-link {
+            position: absolute;
+            top: -40px;
+            left: 0;
+            background: #1A1A1A;
+            color: white;
+            padding: 8px;
+            z-index: 100;
+            transition: top 0.3s;
+        }
+        .skip-link:focus {
+            top: 0;
+        }
+    </style>
+    
+    </head>
+<body class="bg-[#FDFBF8] text-[#1A1A1A]">
+    <a id="skip-to-content" href="#main-content" class="skip-link" tabindex="0">Skip to Content</a>
+    
+    <header class="bg-white shadow-md p-4 sticky top-0 z-10">
+        <div class="max-w-4xl mx-auto">
+            <h1 class="text-2xl font-bold text-[#1A1A1A]">Circuits: Control Templates</h1>
+        </div>
+    </header>
+
+    <main id="main-content" class="p-4 sm:p-6 lg:p-8 max-w-4xl mx-auto">
+        
+        <h1 class="text-4xl font-extrabold mb-8 text-blue-700">Control Unit and CPU Templates</h1>
+
+        <section class="mb-8 p-6 bg-white rounded-xl shadow-lg">
+            <div class="prose max-w-none">
+                <p>To efficiently develop and test the individual Control Operations, two distinct **templates** were created in the circuit simulation software. For each new operation, a new circuit was created, and the relevant template was copied into it as a starting point. The diagrams for these templates are shown below:</p>
+
+                <h2 class="text-2xl font-bold mt-6 mb-4">Control Unit Template</h2>
+                <p>The primary goal for the Control Unit template is to define the interface with the main CPU. This requires properly setting up the **Stepper** output, the **7 Enable outputs** (for reading from the BUS), and the **10 Set inputs** (for writing to the CPU components) along the periphery.</p>
+                
+                <div class="flex justify-center my-6">
+                    <img src="images/Control_Unit_Template_Circuit.jpg" alt="Template circuit diagram for the Control Unit" class="max-w-full h-auto rounded-lg shadow-md border border-gray-300">
+                </div>
+
+                <h3 class="text-xl font-semibold mt-6 mb-2">Control Unit Appearance</h3>
+                <p>Use the following image, which shows the "Fetch Control Unit" circuit appearance, to guide the creation of the Circuit Appearance for your template. A well-designed template appearance will carry over easily to your individual Control Unit Circuits.</p>
+                
+                <div class="flex justify-center my-6">
+                    <img src="images/Fetch_Control_Unit_Appearance.png" alt="Circuit appearance diagram for the Fetch Control Unit" class="max-w-full h-auto rounded-lg shadow-md border border-gray-300">
+                </div>
+
+                <h2 class="text-2xl font-bold mt-6 mb-4">CPU Template</h2>
+                <p>The CPU Template acts as the test bed. It should include the main CPU layout previously created (minus the completed Control Unit) and any necessary additions for testing individual instructions.</p>
+                <p>For this template, the Control Unit template (as defined above) is inserted into the main CPU circuit. Note that the Control Unit template size may be smaller than the space available in the CPU laid out in the <a href="circuits-layout-cpu.html" class="text-blue-600 hover:text-blue-800">Layout CPU</a> circuit. This is acceptable.</p>
+                
+                <p>It is highly recommended to add **Memory outputs** to the Registers (R0-R7), Program Counter (PC), and Instruction Register (IR) so that you can see the data stored in each of these components at any given time during simulation.</p>
+                
+                <div class="flex justify-center my-6">
+                    <img src="images/CPU_Template_Circuit.jpg" alt="Template circuit diagram for the CPU including the Control Unit template" class="max-w-full h-auto rounded-lg shadow-md border border-gray-300">
+                </div>
+            </div>
+        </section>
+
+        <footer class="mt-8 pt-4 border-t border-gray-300 text-center text-sm text-gray-500">
+            <div class="prose max-w-none mx-auto">
+                <p class="text-xs italic">Ref: This project adapted from "Design a CPU" by Ross McGowan (On Udemy)</p>
+            </div>
+        </footer>
+    </main>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Placeholder for session-only JavaScript logic.
+            let progressState = {}; 
+        });
+    </script>
+</body>
+</html>
