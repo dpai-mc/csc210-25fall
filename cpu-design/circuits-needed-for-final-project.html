@@ -1,11 +1,127 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <title>Circuits: Needed for Final Project
-      
-    </title>
-  </head>
-  <body>
-    <h1> Placeholder page</h1>
-  </body>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RAM Circuits Needed for Final Project</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        // MANDATORY: Configure Tailwind to include the Typography plugin.
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                },
+            },
+            plugins: [
+                require('@tailwindcss/typography'),
+            ],
+        }
+    </script>
+    <style>
+        /* STRICT LIGHT THEME MANDATE: Overrides dark mode settings */
+        html { 
+            font-family: 'Inter', sans-serif; 
+            background-color: #FDFBF8; 
+            color: #1A1A1A; 
+        }
+        @media (prefers-color-scheme: dark) {
+            html {
+                background-color: #FDFBF8 !important; 
+                color: #1A1A1A !important; 
+            }
+        }
+        /* Custom class for Skip Link (visible on focus) */
+        .skip-link {
+            position: absolute;
+            top: -40px;
+            left: 0;
+            background: #1A1A1A;
+            color: white;
+            padding: 8px;
+            z-index: 100;
+            transition: top 0.3s;
+        }
+        .skip-link:focus {
+            top: 0;
+        }
+    </style>
+    
+    </head>
+<body class="bg-[#FDFBF8] text-[#1A1A1A]">
+    <a id="skip-to-content" href="#main-content" class="skip-link" tabindex="0">Skip to Content</a>
+    
+    <header class="bg-white shadow-md p-4 sticky top-0 z-10">
+        <div class="max-w-4xl mx-auto">
+            <h1 class="text-2xl font-bold text-[#1A1A1A]">Required Circuits for Final Project</h1>
+        </div>
+    </header>
+
+    <main id="main-content" class="p-4 sm:p-6 lg:p-8 max-w-4xl mx-auto">
+        
+        <h1 class="text-4xl font-extrabold mb-8 text-blue-700">RAM and CPU Circuits Needed for Final Project</h1>
+
+        <section class="mb-8 p-6 bg-white rounded-xl shadow-lg">
+            <div class="prose max-w-none">
+                <p class="lead">The following is a consolidated list of **circuits that are required** to complete the final 8-bit CPU project:</p>
+
+                <h2 class="text-2xl font-bold mt-6 mb-4">Required RAM Circuits</h2>
+                <p>For the **RAM** section, you need to build the components detailed below (also see the <a href="circuits-ram-summary.html" class="text-blue-600 hover:text-blue-800">RAM Summary</a> page):</p>
+                
+                <ul class="list-disc list-inside space-y-2">
+                    <li><a href="circuits-creating-an-8-bit-register.html" class="text-blue-600 hover:text-blue-800">8-bit Memory Register</a></li>
+                    <li><a href="circuits-building-a-decoder.html" class="text-blue-600 hover:text-blue-800">4x16 Decoder</a></li>
+                    <li><a href="circuits-ram-summary.html" class="text-blue-600 hover:text-blue-800">CPU RAM Buffer, Selectors and Wiring Up</a> (part of the <a href="circuits-ram-summary.html" class="text-blue-600 hover:text-blue-800">RAM Summary</a>)</li>
+                </ul>
+
+                <h2 class="text-2xl font-bold mt-6 mb-4">Basic Memory Building Block</h2>
+                <p>The fundamental component for all memory elements is:</p>
+                <ul class="list-disc list-inside space-y-2">
+                    <li><a href="circuits-1-bit-memory.html" class="text-blue-600 hover:text-blue-800">1-bit Memory Circuit</a></li>
+                </ul>
+
+                <h2 class="text-2xl font-bold mt-6 mb-4">Core CPU Section Summaries</h2>
+                <p>Refer to these summary pages for all other necessary circuits and setup:</p>
+                <ul class="list-disc list-inside space-y-2">
+                    <li><a href="circuits-alu-summary.html" class="text-blue-600 hover:text-blue-800">ALU Summary Page</a> - All necessary Arithmetic Logic Unit circuits and setup are listed here.</li>
+                    <li><a href="circuits-additional-circuits-needed.html" class="text-blue-600 hover:text-blue-800">Additional Circuits Page</a> - All additional circuits required to build the CPU that are not part of the RAM, ALU, or Control Section summary pages.</li>
+                    <li><a href="circuits-control-summary.html" class="text-blue-600 hover:text-blue-800">Control Circuits Page</a> - All necessary circuits for the control section.</li>
+                </ul>
+            </div>
+        </section>
+
+        <section class="mb-8 p-6 bg-white rounded-xl shadow-lg border-t-4 border-yellow-500">
+            <h2 class="text-2xl font-bold mt-0 mb-4 text-gray-800">Important Notes on Registers</h2>
+            <div class="prose max-w-none">
+                <p><strong>Program Counter (PC):</strong></p>
+                <ul>
+                    <li>The PC is the **Program Counter** which holds the address of the next instruction to be processed.</li>
+                    <li>This is simply an **8-bit register** circuit.</li>
+                </ul>
+
+                <p><strong>Instruction Register (IR):</strong></p>
+                <ul>
+                    <li>The IR stands for **Instruction Register** which holds the current instruction being processed.</li>
+                    <li>This is just an **8-bit memory circuit**.</li>
+                </ul>
+            </div>
+        </section>
+
+        <footer class="mt-8 pt-4 border-t border-gray-300 text-center text-sm text-gray-500">
+            <div class="prose max-w-none mx-auto">
+                <p class="text-xs italic">Ref: This project adapted from "Design a CPU" by Ross McGowan (On Udemy)</p>
+            </div>
+        </footer>
+    </main>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Placeholder for session-only JavaScript logic.
+            let progressState = {}; 
+        });
+    </script>
+</body>
 </html>
