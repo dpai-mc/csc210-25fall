@@ -1,20 +1,122 @@
 <!DOCTYPE html>
-<html>
-  <head>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Circuits: Layout CPU</title>
-  </head>
-  <body>
-    <h1>Layout CPU</h1>
-    <p>The first thing you need to do is to create an 8-bit bus. This can be done by creating concentric rectangles using the "Wiring Tool" in the "Base" folder. The wiring tool allows you to create 1/2 a rectangle at a time, so you create one half and then create the 2nd half.</p>
-<p><img id="368849" style="max-width: 320px; max-height: 320px;" src="https://mendocino.instructure.com/courses/19705/files/2510225/preview" alt="2020-04-27_WiringTool.jpg" data-api-endpoint="https://mendocino.instructure.com/api/v1/courses/19705/files/2510225" data-api-returntype="File" /></p>
-<p>I would error on making this too large as opposed to too small.</p>
-<p><img id="368847" src="https://mendocino.instructure.com/courses/19705/files/2510223/preview" alt="8bit BUS" width="640" height="461" data-api-endpoint="https://mendocino.instructure.com/api/v1/courses/19705/files/2510223" data-api-returntype="File" /></p>
-<p>After laying out the BUS, you need to input and attach all of your components. Remember that each 8-bit input and output is going to need to be tied to the BUS using a wiring fan. I used the inner loop on the BUS as bit0 and worked my way outwards so that the outermost loop is bit7. It is important that you do this consistently for each and every component in your CPU.</p>
-<p>For example, here is how you can wire in a Register.</p>
-<p><img id="368848" style="max-width: 320px; max-height: 320px;" src="https://mendocino.instructure.com/courses/19705/files/2510222/preview" alt="2020-04-27_Reg0.jpg" data-api-endpoint="https://mendocino.instructure.com/api/v1/courses/19705/files/2510222" data-api-returntype="File" /></p>
-<p>You can have stubs off the ends where things don't match up to the bus like all of the sets, enables, the clock, ALU op codes, ALU carry out, zero, equals, etc ... for now. Your CPU circuit at this point, might look something like this (I will update to add the RAM on the right-hand). I made mine with a lot of interior space for the Control Circuits but this should give you a good idea. You need these circuits so that you can test your Control Circuits as you put them in.</p>
-<p><img id="368927" src="https://mendocino.instructure.com/courses/19705/files/2510224/preview" alt="2020-04-27_CPU.jpg" width="640" height="469" data-api-endpoint="https://mendocino.instructure.com/api/v1/courses/19705/files/2510224" data-api-returntype="File" /></p>
-<p>The final layout, should match the original configuration with the "Control Unit" removed.</p>
-<p><img id="334945" src="https://mendocino.instructure.com/courses/19705/files/2501477/preview" alt="Conceptual CPU Layout" width="640" height="364" data-api-endpoint="https://mendocino.instructure.com/api/v1/courses/19705/files/2501477" data-api-returntype="File" /></p>
-  </body>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        // MANDATORY: Configure Tailwind to include the Typography plugin.
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                },
+            },
+            plugins: [
+                require('@tailwindcss/typography'),
+            ],
+        }
+    </script>
+    <style>
+        /* STRICT LIGHT THEME MANDATE: Overrides dark mode settings */
+        html { 
+            font-family: 'Inter', sans-serif; 
+            background-color: #FDFBF8; 
+            color: #1A1A1A; 
+        }
+        @media (prefers-color-scheme: dark) {
+            html {
+                background-color: #FDFBF8 !important; 
+                color: #1A1A1A !important; 
+            }
+        }
+        /* Custom class for Skip Link (visible on focus) */
+        .skip-link {
+            position: absolute;
+            top: -40px;
+            left: 0;
+            background: #1A1A1A;
+            color: white;
+            padding: 8px;
+            z-index: 100;
+            transition: top 0.3s;
+        }
+        .skip-link:focus {
+            top: 0;
+        }
+    </style>
+    
+    </head>
+<body class="bg-[#FDFBF8] text-[#1A1A1A]">
+    <a id="skip-to-content" href="#main-content" class="skip-link" tabindex="0">Skip to Content</a>
+    
+    <header class="bg-white shadow-md p-4 sticky top-0 z-10">
+        <div class="max-w-4xl mx-auto">
+            <h1 class="text-2xl font-bold text-[#1A1A1A]">Circuits: Layout CPU</h1>
+        </div>
+    </header>
+
+    <main id="main-content" class="p-4 sm:p-6 lg:p-8 max-w-4xl mx-auto">
+        
+        <h1 class="text-4xl font-extrabold mb-8 text-blue-700">Laying Out the CPU Circuit</h1>
+
+        <section class="mb-8 p-6 bg-white rounded-xl shadow-lg">
+            <div class="prose max-w-none">
+                <p>The first step in setting up the circuit is to create an **8-bit bus**. This is accomplished by creating concentric rectangles using the **"Wiring Tool"** in the "Base" folder. The wiring tool allows you to create 1/2 a rectangle at a time, so you create one half and then the second half.</p>
+                
+                <div class="flex justify-center my-6">
+                    <img src="images/WiringTool.jpg" alt="Example of using the Wiring Tool in the circuit simulation software" class="max-w-xs h-auto rounded-lg shadow-md border border-gray-300">
+                </div>
+
+                <p>It is recommended to **error on making the bus too large** rather than too small.</p>
+
+                <div class="flex justify-center my-6">
+                    <img src="images/8bit_BUS.jpg" alt="Layout of the 8-bit bus using concentric rectangles" class="max-w-full h-auto rounded-lg shadow-md border border-gray-300">
+                </div>
+
+                <h2 class="text-2xl font-bold mt-6 mb-4">Component Input and Wiring</h2>
+                <p>After laying out the BUS, you must input and attach all of your components. Remember that each 8-bit input and output needs to be tied to the BUS using a wiring fan.</p>
+                
+                <p class="font-bold text-gray-700">
+                    **CRITICAL:** It is essential that you wire consistently across all components. For example, use the inner loop on the BUS as **bit0** and work your way outwards so that the outermost loop is **bit7**.
+                </p>
+
+                <p>Here is an example of how a register can be wired into the bus:</p>
+                <div class="flex justify-center my-6">
+                    <img src="images/Reg0_Wiring.jpg" alt="Wiring diagram showing an 8-bit register connected to the bus using a wiring fan" class="max-w-xs h-auto rounded-lg shadow-md border border-gray-300">
+                </div>
+                
+                <p>For now, you can leave stubs off the ends where things don't match up to the bus (e.g., all the sets, enables, clock, ALU op codes, ALU carry out, zero, equals, etc.). You need these basic circuits so you can test your **Control Circuits** as you put them in.</p>
+                
+                <p>Your CPU circuit at this point might look something like the intermediate layout below (which includes a large interior space for the Control Circuits):</p>
+                <div class="flex justify-center my-6">
+                    <img src="images/CPU_Intermediate_Layout.jpg" alt="Intermediate CPU circuit layout showing registers, ALU, and bus with space left for the control unit" class="max-w-full h-auto rounded-lg shadow-md border border-gray-300">
+                </div>
+                
+                <p>The final layout, when complete, should conceptually match the original configuration with the "Control Unit" section removed:</p>
+                <div class="flex justify-center my-6">
+                    <img src="images/CPU_Overview.png" alt="Conceptual layout of the final CPU architecture" class="max-w-full h-auto rounded-lg shadow-md border border-gray-300">
+                </div>
+
+            </div>
+        </section>
+
+        <footer class="mt-8 pt-4 border-t border-gray-300 text-center text-sm text-gray-500">
+            <div class="prose max-w-none mx-auto">
+                <p class="text-xs italic">Ref: This project adapted from "Design a CPU" by Ross McGowan (On Udemy)</p>
+            </div>
+        </footer>
+    </main>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Placeholder for session-only JavaScript logic.
+            let progressState = {}; 
+        });
+    </script>
+</body>
 </html>
