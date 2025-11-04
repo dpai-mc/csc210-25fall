@@ -1,29 +1,124 @@
 <!DOCTYPE html>
-<html>
-  <head>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Circuits: Control Summary</title>
-  </head>
-  <body>
-    <h1>Individual Control Circuits Summary</h1>
-    <p>In doing the Control Section, you need to include the following:</p>
-<ul>
-    <li><a title="Circuits: Layout CPU" href="https://mendocino.instructure.com/courses/19705/pages/g421fd45c9bd3b1e652061060f9dfd507" data-api-endpoint="https://mendocino.instructure.com/api/v1/courses/19705/pages/g421fd45c9bd3b1e652061060f9dfd507" data-api-returntype="Page">Layout CPU</a> - Do This FIRST</li>
-    <li><a title="Circuits: stepper" href="https://mendocino.instructure.com/courses/19705/pages/g9137286ca6ae5da648b3f755f1f18df4" data-api-endpoint="https://mendocino.instructure.com/api/v1/courses/19705/pages/g9137286ca6ae5da648b3f755f1f18df4" data-api-returntype="Page">Stepper</a> - need this to cycle through the inputs/outputs on the BUS</li>
-</ul>
-<p>For each of the following Cycles or Process, I go over each as an independent operation (in a video embedded on each definition page) so that you get a better feel for how the Control Unit functions. So each of the individual cycles or pages linked below, go through these individual processes as standalone circuits. Often, in these, I will make some temporary modification so that I can fix something like the value in Register 0 rather than trying to read it from memory. This is both for simplicity as I don't want to have multiple operations (even though you most always have this happening) going on simultaneously during the explanation.</p>
-<p>Additionally, prior to doing this, I setup a basic "CPU_Template" and a "Control_Template" to make it easier to create and move from one concept to the next:</p>
-<ul>
-    <li><a title="Circuits: Control Templates" href="https://mendocino.instructure.com/courses/19705/pages/circuits-control-templates-2" data-course-type="wikiPages" data-published="true" data-api-endpoint="https://mendocino.instructure.com/api/v1/courses/19705/pages/circuits-control-templates-2" data-api-returntype="Page">Templates</a></li>
-    <li><a title="Circuits: Control - Fetch" href="https://mendocino.instructure.com/courses/19705/pages/circuits-control-fetch" data-api-endpoint="https://mendocino.instructure.com/api/v1/courses/19705/pages/circuits-control-fetch" data-api-returntype="Page">Fetch Cycle</a></li>
-    <li><a title="Circuits: Control - Arith" href="https://mendocino.instructure.com/courses/19705/pages/circuits-control-arith" data-api-endpoint="https://mendocino.instructure.com/api/v1/courses/19705/pages/circuits-control-arith" data-api-returntype="Page">Add 2 numbers</a></li>
-    <li><a title="Circuits: Control - ALU Instruction" href="https://mendocino.instructure.com/courses/19705/pages/circuits-control-alu-instruction" data-api-endpoint="https://mendocino.instructure.com/api/v1/courses/19705/pages/circuits-control-alu-instruction" data-api-returntype="Page">ALU Instruction</a></li>
-    <li><a title="Circuits: Control - Load &amp; Store" href="https://mendocino.instructure.com/courses/19705/pages/circuits-control-load-and-store" data-api-endpoint="https://mendocino.instructure.com/api/v1/courses/19705/pages/circuits-control-load-and-store" data-api-returntype="Page">Load and Store</a></li>
-    <li><a title="Circuits: Control - Data Instruction" href="https://mendocino.instructure.com/courses/19705/pages/circuits-control-data-instruction" data-api-endpoint="https://mendocino.instructure.com/api/v1/courses/19705/pages/circuits-control-data-instruction" data-api-returntype="Page">Data Instructions</a></li>
-    <li><a title="Circuits: Control - Jump Register Instruction" href="https://mendocino.instructure.com/courses/19705/pages/circuits-control-jump-register-instruction" data-api-endpoint="https://mendocino.instructure.com/api/v1/courses/19705/pages/circuits-control-jump-register-instruction" data-api-returntype="Page">Jump Register</a></li>
-    <li><a title="Circuits: Control - Jump Address Instruction" href="https://mendocino.instructure.com/courses/19705/pages/circuits-control-jump-address-instruction" data-api-endpoint="https://mendocino.instructure.com/api/v1/courses/19705/pages/circuits-control-jump-address-instruction" data-api-returntype="Page">Jump Address</a></li>
-    <li><a title="Circuits: Control - Jump IF Instruction" href="https://mendocino.instructure.com/courses/19705/pages/circuits-control-jump-if-instruction" data-api-endpoint="https://mendocino.instructure.com/api/v1/courses/19705/pages/circuits-control-jump-if-instruction" data-api-returntype="Page">Jump If</a></li>
-    <li><a title="Circuits: Control - Clear Flags Instruction" href="https://mendocino.instructure.com/courses/19705/pages/circuits-control-clear-flags-instruction" data-api-endpoint="https://mendocino.instructure.com/api/v1/courses/19705/pages/circuits-control-clear-flags-instruction" data-api-returntype="Page">Clear Flags</a></li>
-</ul>
-<p><a title="Circuits: Final Control Unit Circuit" href="https://mendocino.instructure.com/courses/19705/pages/circuits-final-control-unit-circuit" data-api-endpoint="https://mendocino.instructure.com/api/v1/courses/19705/pages/circuits-final-control-unit-circuit" data-api-returntype="Page">Final Control Unit Circuit</a></p>
-  </body>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        // MANDATORY: Configure Tailwind to include the Typography plugin.
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                },
+            },
+            plugins: [
+                require('@tailwindcss/typography'),
+            ],
+        }
+    </script>
+    <style>
+        /* STRICT LIGHT THEME MANDATE: Overrides dark mode settings */
+        html { 
+            font-family: 'Inter', sans-serif; 
+            background-color: #FDFBF8; 
+            color: #1A1A1A; 
+        }
+        @media (prefers-color-scheme: dark) {
+            html {
+                background-color: #FDFBF8 !important; 
+                color: #1A1A1A !important; 
+            }
+        }
+        /* Custom class for Skip Link (visible on focus) */
+        .skip-link {
+            position: absolute;
+            top: -40px;
+            left: 0;
+            background: #1A1A1A;
+            color: white;
+            padding: 8px;
+            z-index: 100;
+            transition: top 0.3s;
+        }
+        .skip-link:focus {
+            top: 0;
+        }
+    </style>
+    
+    </head>
+<body class="bg-[#FDFBF8] text-[#1A1A1A]">
+    <a id="skip-to-content" href="#main-content" class="skip-link" tabindex="0">Skip to Content</a>
+    
+    <header class="bg-white shadow-md p-4 sticky top-0 z-10">
+        <div class="max-w-4xl mx-auto">
+            <h1 class="text-2xl font-bold text-[#1A1A1A]">Circuits: Control Summary</h1>
+        </div>
+    </header>
+
+    <main id="main-content" class="p-4 sm:p-6 lg:p-8 max-w-4xl mx-auto">
+        
+        <h1 class="text-4xl font-extrabold mb-8 text-blue-700">Individual Control Circuits Summary</h1>
+
+        <section class="mb-8 p-6 bg-white rounded-xl shadow-lg">
+            <h2 class="text-2xl font-bold mt-0 mb-4 text-gray-800">Prerequisite Control Components</h2>
+            <div class="prose max-w-none">
+                <p>To successfully complete the **Control Section**, you must include the following foundational circuits:</p>
+                <ul class="list-disc list-inside space-y-2">
+                    <li><a href="circuits-layout-cpu.html" class="text-blue-600 hover:text-blue-800">Layout CPU</a> - **Do This FIRST** to establish the CPU template.</li>
+                    <li><a href="circuits-stepper.html" class="text-blue-600 hover:text-blue-800">Stepper</a> - Required to cycle through the inputs/outputs on the BUS.</li>
+                </ul>
+            </div>
+        </section>
+
+        <section class="mb-8 p-6 bg-white rounded-xl shadow-lg border-t-4 border-yellow-500">
+            <h2 class="text-2xl font-bold mt-0 mb-4 text-gray-800">Individual Control Cycles and Instructions</h2>
+            <div class="prose max-w-none">
+                <p>The individual cycles and instructions below are presented as **standalone circuits** (often with temporary modifications) to better explain how the Control Unit functions for each specific operation. Additionally, a template was set up prior to diving into these specific instructions:</p>
+                
+                <h3 class="text-xl font-semibold mt-4 mb-2">Templates</h3>
+                <ul class="list-disc list-inside space-y-2">
+                    <li><a href="circuits-control-templates.html" class="text-blue-600 hover:text-blue-800">Control Templates</a> (for both CPU and Control Unit)</li>
+                </ul>
+
+                <h3 class="text-xl font-semibold mt-4 mb-2">Instruction Cycles</h3>
+                <ul class="list-disc list-inside space-y-2">
+                    <li><a href="circuits-control-fetch.html" class="text-blue-600 hover:text-blue-800">Fetch Cycle</a></li>
+                    <li><a href="circuits-control-arith.html" class="text-blue-600 hover:text-blue-800">Add 2 numbers (Arithmetic Example)</a></li>
+                    <li><a href="circuits-control-alu-instruction.html" class="text-blue-600 hover:text-blue-800">ALU Instruction</a></li>
+                    <li><a href="circuits-control-load-and-store.html" class="text-blue-600 hover:text-blue-800">Load and Store</a></li>
+                    <li><a href="circuits-control-data-instruction.html" class="text-blue-600 hover:text-blue-800">Data Instructions</a></li>
+                </ul>
+                
+                <h3 class="text-xl font-semibold mt-4 mb-2">Jump Instructions and Utilities</h3>
+                <ul class="list-disc list-inside space-y-2">
+                    <li><a href="circuits-control-jump-register-instruction.html" class="text-blue-600 hover:text-blue-800">Jump Register</a></li>
+                    <li><a href="circuits-control-jump-address-instruction.html" class="text-blue-600 hover:text-blue-800">Jump Address</a></li>
+                    <li><a href="circuits-control-jump-if-instruction.html" class="text-blue-600 hover:text-blue-800">Jump If</a></li>
+                    <li><a href="circuits-control-clear-flags-instruction.html" class="text-blue-600 hover:text-blue-800">Clear Flags</a></li>
+                </ul>
+                
+                <h3 class="text-xl font-semibold mt-4 mb-2">Final Integrated Circuit</h3>
+                <p class="mt-2"><a href="circuits-final-control-unit-circuit.html" class="text-red-600 hover:text-red-800 font-bold">Final Control Unit Circuit</a></p>
+            </div>
+        </section>
+
+        <footer class="mt-8 pt-4 border-t border-gray-300 text-center text-sm text-gray-500">
+            <div class="prose max-w-none mx-auto">
+                <p class="text-xs italic">Ref: This project adapted from "Design a CPU" by Ross McGowan (On Udemy)</p>
+            </div>
+        </footer>
+    </main>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Placeholder for session-only JavaScript logic.
+            let progressState = {}; 
+        });
+    </script>
+</body>
 </html>
