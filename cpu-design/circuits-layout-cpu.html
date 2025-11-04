@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Circuits: Layout CPU</title>
+  </head>
+  <body>
+    <h1>Layout CPU</h1>
+    <p>The first thing you need to do is to create an 8-bit bus. This can be done by creating concentric rectangles using the "Wiring Tool" in the "Base" folder. The wiring tool allows you to create 1/2 a rectangle at a time, so you create one half and then create the 2nd half.</p>
+<p><img id="368849" style="max-width: 320px; max-height: 320px;" src="https://mendocino.instructure.com/courses/19705/files/2510225/preview" alt="2020-04-27_WiringTool.jpg" data-api-endpoint="https://mendocino.instructure.com/api/v1/courses/19705/files/2510225" data-api-returntype="File" /></p>
+<p>I would error on making this too large as opposed to too small.</p>
+<p><img id="368847" src="https://mendocino.instructure.com/courses/19705/files/2510223/preview" alt="8bit BUS" width="640" height="461" data-api-endpoint="https://mendocino.instructure.com/api/v1/courses/19705/files/2510223" data-api-returntype="File" /></p>
+<p>After laying out the BUS, you need to input and attach all of your components. Remember that each 8-bit input and output is going to need to be tied to the BUS using a wiring fan. I used the inner loop on the BUS as bit0 and worked my way outwards so that the outermost loop is bit7. It is important that you do this consistently for each and every component in your CPU.</p>
+<p>For example, here is how you can wire in a Register.</p>
+<p><img id="368848" style="max-width: 320px; max-height: 320px;" src="https://mendocino.instructure.com/courses/19705/files/2510222/preview" alt="2020-04-27_Reg0.jpg" data-api-endpoint="https://mendocino.instructure.com/api/v1/courses/19705/files/2510222" data-api-returntype="File" /></p>
+<p>You can have stubs off the ends where things don't match up to the bus like all of the sets, enables, the clock, ALU op codes, ALU carry out, zero, equals, etc ... for now. Your CPU circuit at this point, might look something like this (I will update to add the RAM on the right-hand). I made mine with a lot of interior space for the Control Circuits but this should give you a good idea. You need these circuits so that you can test your Control Circuits as you put them in.</p>
+<p><img id="368927" src="https://mendocino.instructure.com/courses/19705/files/2510224/preview" alt="2020-04-27_CPU.jpg" width="640" height="469" data-api-endpoint="https://mendocino.instructure.com/api/v1/courses/19705/files/2510224" data-api-returntype="File" /></p>
+<p>The final layout, should match the original configuration with the "Control Unit" removed.</p>
+<p><img id="334945" src="https://mendocino.instructure.com/courses/19705/files/2501477/preview" alt="Conceptual CPU Layout" width="640" height="364" data-api-endpoint="https://mendocino.instructure.com/api/v1/courses/19705/files/2501477" data-api-returntype="File" /></p>
+  </body>
+</html>
