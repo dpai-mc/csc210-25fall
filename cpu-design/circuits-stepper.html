@@ -1,144 +1,115 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="no-dark">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Circuits: The Stepper Circuit</title>
-    
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        // MANDATORY: Configure Tailwind to include the Typography plugin.
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                    },
-                },
-            },
-            plugins: [
-                require('@tailwindcss/typography'),
-            ],
-        }
-    </script>
-    <style>
-        /* STRICT LIGHT THEME MANDATE: Overrides dark mode settings */
-        html { 
-            font-family: 'Inter', sans-serif; 
-            background-color: #FDFBF8; 
-            color: #1A1A1A; 
-        }
-        @media (prefers-color-scheme: dark) {
-            html {
-                background-color: #FDFBF8 !important; 
-                color: #1A1A1A !important; 
-            }
-        }
-        /* Custom class for Skip Link (visible on focus) */
-        .skip-link {
-            position: absolute;
-            top: -40px;
-            left: 0;
-            background: #1A1A1A;
-            color: white;
-            padding: 8px;
-            z-index: 100;
-            transition: top 0.3s;
-        }
-        .skip-link:focus {
-            top: 0;
-        }
-    </style>
-    
-    </head>
-<body class="bg-[#FDFBF8] text-[#1A1A1A]">
-    <a id="skip-to-content" href="#main-content" class="skip-link" tabindex="0">Skip to Content</a>
-    
-    <header class="bg-white shadow-md p-4 sticky top-0 z-10">
-        <div class="max-w-4xl mx-auto">
-            <h1 class="text-2xl font-bold text-[#1A1A1A]">Circuits: The Stepper Circuit</h1>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>CIRCUITS: Stepper — Interactive Guide</title>
+  <script>(function(){document.documentElement.classList.remove('dark');})();</script>
+  <script src="https://cdn.tailwindcss.com?plugins=typography"></script>
+  <script>
+    tailwind.config={darkMode:'class',theme:{extend:{colors:{background:'#FDFBF8',textprimary:'#1A1A1A',accent:{DEFAULT:'#0EA5E9',600:'#0284C7',700:'#0369A1',800:'#075985'}},fontFamily:{sans:['Inter','ui-sans-serif','system-ui','Segoe UI','Roboto','Helvetica Neue','Arial']}}}}
+  </script>
+  <style>:root{color-scheme:light only}html,body{background:#FDFBF8;color:#1A1A1A}.sr-only-focusable:focus{position:static;width:auto;height:auto;clip:auto}</style>
+</head>
+<body class="min-h-screen antialiased bg-background text-textprimary">
+  <a href="#main-content" class="sr-only sr-only-focusable focus:not-sr-only focus:absolute focus:top-2 focus:left-2 bg-white px-3 py-2 rounded shadow focus:ring-2 focus:ring-accent">Skip to Content</a>
+
+  <header class="border-b border-gray-200 bg-white">
+    <div class="max-w-4xl mx-auto px-4 py-6">
+      <h1 class="text-3xl font-bold tracking-tight">CIRCUITS: Stepper</h1>
+      <p class="mt-1 text-gray-700">A guided walkthrough of the stepper circuit used to sequence CPU control signals.</p>
+    </div>
+  </header>
+
+  <main id="main-content" class="max-w-4xl mx-auto px-4 py-8">
+    <div class="mb-6 border-b border-gray-200" role="tablist" aria-label="Guide sections">
+      <button id="tab-overview" role="tab" aria-controls="panel-overview" aria-selected="true" class="mr-2 inline-flex items-center gap-2 px-4 py-2 rounded-t border-x border-t border-gray-200 bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-accent">Overview</button>
+      <button id="tab-inprocess" role="tab" aria-controls="panel-inprocess" aria-selected="false" class="mr-2 inline-flex items-center gap-2 px-4 py-2 rounded-t border-x border-t border-gray-200 bg-gray-100 text-gray-700 hover:bg-white focus:outline-none focus:ring-2 focus:ring-accent">In-Process Stepper</button>
+      <button id="tab-final" role="tab" aria-controls="panel-final" aria-selected="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-t border-x border-t border-gray-200 bg-gray-100 text-gray-700 hover:bg-white focus:outline-none focus:ring-2 focus:ring-accent">Final Stepper</button>
+    </div>
+
+    <section id="panel-overview" role="tabpanel" aria-labelledby="tab-overview" class="block bg-white rounded-md shadow p-6">
+      <div class="prose max-w-none">
+        <h2>The Stepper Circuit</h2>
+        <p>The "Stepper" allows us to cycle through a set/enable sequence for writing to and reading from the bus. Based on our design, we repeatedly cycle through six distinct steps. The basic unit is two S–R latches (1‑bit memory) in series. Cascading these units passes a 1 down the chain step‑by‑step, energizing outputs in sequence.</p>
+        <figure class="not-prose mt-4 bg-gray-50 border border-gray-200 rounded p-3">
+          <img id="img-basic-unit" src="images/Stepper_Base_Unit.jpg" alt="Basic Unit: two S–R latches in series (image will load from provided URL)" class="w-full h-auto rounded shadow" />
+          <figcaption class="text-sm text-gray-600 mt-2">Basic Unit — two S–R latches in series.</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section id="panel-inprocess" role="tabpanel" aria-labelledby="tab-inprocess" class="hidden bg-white rounded-md shadow p-6">
+      <div class="prose max-w-none">
+        <h2>In‑Process Stepper</h2>
+        <p>This video explains how the two‑latch unit chains and how <strong>Set 1</strong> and <strong>Set 2</strong> propagate the stored value through the sequence.</p>
+      </div>
+      <div class="mt-4">
+        <div class="aspect-w-16 aspect-h-9 rounded overflow-hidden shadow">
+          <iframe id="yt-inprocess" class="w-full h-[360px]" src="https://www.youtube.com/embed/_zgBgKBwXp0?rel=0&modestbranding=1&cc_load_policy=1&enablejsapi=1" title="In‑Process Stepper (YouTube)" aria-label="Embedded video: In‑Process Stepper" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
         </div>
-    </header>
-
-    <main id="main-content" class="p-4 sm:p-6 lg:p-8 max-w-4xl mx-auto">
-        
-        <h1 class="text-4xl font-extrabold mb-8 text-blue-700">The Stepper Circuit: Cycling Control Signals</h1>
-
-        <section class="mb-8 p-6 bg-white rounded-xl shadow-lg">
-            <h2 class="text-2xl font-bold mt-0 mb-4 text-gray-800">Introduction to the Stepper</h2>
-            <div class="prose max-w-none">
-                <p>The **Stepper** circuit is essential for controlling the sequence of operations in the CPU. It cycles through the set-enable steps required for writing and reading data onto and off the bus. Based on our design, we need the stepper to cycle through **six distinct steps repeatedly**.</p>
-
-                <h3 class="text-xl font-semibold mt-6 mb-2">The Basic Unit</h3>
-                <p>The basic unit for the stepper is two **S-R Latches** (1-bit memory) connected in series. This configuration allows the output of the second latch to be set to '1' only when the value set in the first latch is '1' and the set signal for the second latch is '1'. Otherwise, the output is '0'.</p>
-
-                <div class="flex justify-center my-6">
-                    <img src="images/Stepper_Base_Unit.jpg" alt="Two 1-bit memory circuits, S-R Latches, connected in series form the base of the stepper." class="max-w-full h-auto rounded-lg shadow-md border border-gray-300">
-                </div>
-                
-                <p>You should start by building this setup and running a simulation to observe its function. This mechanism allows the input value of '1' to be passed down the chain, step-by-step, thus energizing the outputs in a controlled sequence.</p>
-
-                <div class="p-4 my-6 bg-yellow-100 border-l-4 border-yellow-500 text-sm text-gray-700">
-                    <p class="font-semibold">Accessibility & Viewing Note:</p>
-                    <p>The video player size has been maximized for desktop viewing while remaining fully responsive on smaller screens. Due to project constraints (no external JavaScript libraries), we cannot implement a side-by-side, actively scrolling transcript. The downloadable SRT files provided below each video fulfill the ADA requirement for a full transcript.</p>
-                </div>
-                
-                <h3 class="text-xl font-semibold mt-6 mb-2">In-Process Stepper Explanation (Video)</h3>
-                <div class="mt-4">
-                    <div class="flex justify-center my-4">
-                        <div class="max-w-full" style="width: 700px; max-width: 100%;">
-                            <iframe width="700" height="394" src="https://www.youtube.com/embed/5T8A-tPT1O8?si=VTciMvt9d2MqD0BW" 
-                                    title="In-Process CPU Stepper Circuit Explanation" 
-                                    frameborder="0" 
-                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-                                    referrerpolicy="strict-origin-when-cross-origin" 
-                                    allowfullscreen 
-                                    class="w-full h-auto rounded-lg shadow-xl">
-                            </iframe>
-                        </div>
-                    </div>
-                    <p class="text-sm mt-2 text-center">Video: **In-Process CPU Stepper Circuit Explanation**</p>
-                    <p class="text-sm text-center"><a href="files/In Process - CPU Stepper.srt" class="text-blue-600 hover:text-blue-800">Download Timed Transcript (.srt)</a></p>
-                </div>
-
-                <h3 class="text-xl font-semibold mt-6 mb-2">The Final Stepper and Looping</h3>
-                <p>To achieve the required control flow, we must **cascade or chain** a series of these basic units together. This allows us to cycle through several outputs, ensuring only a single output is logic 'HI' (or '1') at any given time.</p>
-                
-                <p>Ultimately, we set up our stepper to have **six distinct outputs** and configure it to loop continuously through those six steps. The video below demonstrates the final circuit setup.</p>
-                
-                <h3 class="text-xl font-semibold mt-6 mb-2">Final Stepper Circuit Demonstration (Video)</h3>
-                <div class="mt-4">
-                    <div class="flex justify-center my-4">
-                        <div class="max-w-full" style="width: 700px; max-width: 100%;">
-                            <iframe width="700" height="394" src="https://www.youtube.com/embed/SeUKgDWUMDo?si=RSScBGcdAtWBBg_h" 
-                                    title="Final CPU Stepper Circuit Implementation and Looping" 
-                                    frameborder="0" 
-                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-                                    referrerpolicy="strict-origin-when-cross-origin" 
-                                    allowfullscreen 
-                                    class="w-full h-auto rounded-lg shadow-xl">
-                            </iframe>
-                        </div>
-                    </div>
-                    <p class="text-sm mt-2 text-center">Video: **Final CPU Stepper Circuit Implementation and Looping**</p>
-                    <p class="text-sm text-center"><a href="files/CPU Final Stepper.srt" class="text-blue-600 hover:text-blue-800">Download Timed Transcript (.srt)</a></p>
-                </div>
-                
+        <p class="mt-2 text-sm text-gray-600">Captions are enabled by default. A complete, timed transcript is provided below and available for download.</p>
+        <details class="mt-4"><summary class="cursor-pointer font-semibold">Timed transcript</summary>
+          <div class="mt-3">
+            <ul class="list-none pl-0" data-link-yt="yt-inprocess"></ul>
+            <div class="mt-3 flex items-center gap-3">
+              <a class="inline-flex items-center px-3 py-2 text-sm font-medium bg-white border border-gray-300 rounded shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-accent" href="files/in-process-cpu-stepper.vtt" download>Download transcript (.vtt)</a>
+              
             </div>
-        </section>
+          </div>
+        </details>
+      </div>
+    </section>
 
-        <footer class="mt-8 pt-4 border-t border-gray-300 text-center text-sm text-gray-500">
-            <div class="prose max-w-none mx-auto">
-                <p class="text-xs italic">Ref: This project adapted from "Design a CPU" by Ross McGowan (On Udemy)</p>
+    <section id="panel-final" role="tabpanel" aria-labelledby="tab-final" class="hidden bg-white rounded-md shadow p-6">
+      <div class="prose max-w-none">
+        <h2>Final Stepper</h2>
+        <p>This video walks through the completed stepper that cycles through the outputs and loops back to the start.</p>
+        <aside class="not-prose mt-4 p-4 bg-amber-50 border border-amber-200 rounded" aria-label="Build notes">
+          <h3 class="font-semibold">Build Notes &amp; Settings</h3>
+          <ul class="list-disc pl-6 mt-2">
+            <li>Set <code>reset</code> input pull behavior to <strong>Pull Up</strong>.</li>
+            <li>Set <code>clk</code> input pull behavior to <strong>Pull Down</strong>.</li>
+          </ul>
+        </aside>
+        <figure class="not-prose mt-6">
+          <img src="images/stepper-chain.png" alt="Full chained stepper circuit with outputs 1–7 labeled" class="w-full h-auto rounded shadow border border-gray-200" />
+          <figcaption class="text-sm text-gray-600 mt-2">Full chained circuit (outputs 1–7).</figcaption>
+        </figure>
+        <figure class="not-prose mt-6">
+          <img src="images/stepper-appearance.png" alt="Final stepper circuit appearance for integration into the Control Section of the 8‑bit CPU simulation" class="w-full h-auto rounded shadow border border-gray-200" />
+          <figcaption class="text-sm text-gray-600 mt-2">Final stepper circuit appearance for Control Section integration.</figcaption>
+        </figure>
+      </div>
+      <div class="mt-4">
+        <div class="aspect-w-16 aspect-h-9 rounded overflow-hidden shadow">
+          <iframe id="yt-final" class="w-full h-[360px]" src="https://www.youtube.com/embed/R3X5lTluP94?rel=0&modestbranding=1&cc_load_policy=1&enablejsapi=1" title="Final Stepper (YouTube)" aria-label="Embedded video: Final Stepper" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+        </div>
+        <p class="mt-2 text-sm text-gray-600">Captions are enabled by default. A complete, timed transcript is provided below and available for download.</p>
+        <details class="mt-4"><summary class="cursor-pointer font-semibold">Timed transcript</summary>
+          <div class="mt-3">
+            <ul class="list-none pl-0" data-link-yt="yt-final"></ul>
+            <div class="mt-3 flex items-center gap-3">
+              <a class="inline-flex items-center px-3 py-2 text-sm font-medium bg-white border border-gray-300 rounded shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-accent" href="files/cpu-final-stepper.vtt" download>Download transcript (.vtt)</a>
+
             </div>
-        </footer>
-    </main>
-    
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            // Placeholder for session-only JavaScript logic.
-            let progressState = {}; 
-        });
-    </script>
+          </div>
+        </details>
+      </div>
+    </section>
+  </main>
+
+  <footer class="mt-8 border-t border-gray-200"><div class="max-w-4xl mx-auto px-4 py-6 text-sm text-gray-600">Light theme enforced. No data is stored between sessions.</div></footer>
+
+  <script>
+    (function(){
+      const tabs=[{btn:document.getElementById('tab-overview'),panel:document.getElementById('panel-overview')},{btn:document.getElementById('tab-inprocess'),panel:document.getElementById('panel-inprocess')},{btn:document.getElementById('tab-final'),panel:document.getElementById('panel-final')}];
+      function activate(i){tabs.forEach((t,idx)=>{const sel=idx===i;t.btn.setAttribute('aria-selected',sel);t.btn.classList.toggle('bg-white',sel);t.btn.classList.toggle('bg-gray-100',!sel);t.panel.classList.toggle('hidden',!sel);t.panel.classList.toggle('block',sel);});}
+      tabs.forEach((t,i)=>t.btn.addEventListener('click',()=>activate(i)));
+    })();
+    (function(){
+      document.addEventListener('click',function(e){const btn=e.target.closest('button[data-seconds]');if(!btn)return;const ul=btn.closest('ul[data-link-yt]');const targetId=ul&&ul.getAttribute('data-link-yt');const iframe=document.getElementById(targetId);const sec=parseFloat(btn.getAttribute('data-seconds'))||0;if(iframe&&iframe.contentWindow){iframe.contentWindow.postMessage(JSON.stringify({event:'command',func:'seekTo',args:[sec,true]}),'*');iframe.contentWindow.postMessage(JSON.stringify({event:'command',func:'playVideo',args:[]}),'*');}});
+    })();
+  </script>
 </body>
 </html>
