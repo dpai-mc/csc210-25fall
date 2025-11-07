@@ -86,31 +86,7 @@
       </div>
     </section>
 
-    <section id="panel-assets" role="tabpanel" aria-labelledby="tab-assets" class="hidden bg-white rounded-md shadow p-6">
-      <div class="prose max-w-none">
-        <h2>Asset Register (images, files, links)</h2>
-        <p>Relative placeholders below will be swapped for GitHub URLs during content migration.</p>
-      </div>
-      <div class="overflow-x-auto mt-4">
-        <table class="min-w-full text-sm">
-          <thead class="bg-gray-50">
-            <tr>
-              <th class="text-left px-3 py-2 font-semibold">Type</th>
-              <th class="text-left px-3 py-2 font-semibold">Title / Alt</th>
-              <th class="text-left px-3 py-2 font-semibold">Current Relative URL</th>
-              <th class="text-left px-3 py-2 font-semibold">Planned GitHub URL (placeholder)</th>
-            </tr>
-          </thead>
-          <tbody class="divide-y divide-gray-200">
-            <tr><td class="px-3 py-2">Image</td><td class="px-3 py-2">Bus 1 – Inputs/Outputs</td><td class="px-3 py-2 break-all">images/bus1-io.png</td><td class="px-3 py-2 break-all text-gray-500">https://github.com/ORG/REPO/assets/cpu/bus1/bus1-io.png</td></tr>
-            <tr><td class="px-3 py-2">Image</td><td class="px-3 py-2">OR for bit0</td><td class="px-3 py-2 break-all">images/bus1-or-bit0.png</td><td class="px-3 py-2 break-all text-gray-500">https://github.com/ORG/REPO/assets/cpu/bus1/bus1-or-bit0.png</td></tr>
-            <tr><td class="px-3 py-2">Image</td><td class="px-3 py-2">AND for bits 1–7</td><td class="px-3 py-2 break-all">images/bus1-and-bits1-7.png</td><td class="px-3 py-2 break-all text-gray-500">https://github.com/ORG/REPO/assets/cpu/bus1/bus1-and-bits1-7.png</td></tr>
-            <tr><td class="px-3 py-2">Image</td><td class="px-3 py-2">Appearance layout</td><td class="px-3 py-2 break-all">images/bus1-appearance.png</td><td class="px-3 py-2 break-all text-gray-500">https://github.com/ORG/REPO/assets/cpu/bus1/bus1-appearance.png</td></tr>
-            <tr><td class="px-3 py-2">File</td><td class="px-3 py-2">Bus1 Verification Checklist (PDF)</td><td class="px-3 py-2 break-all">files/bus1-verification-checklist.pdf</td><td class="px-3 py-2 break-all text-gray-500">https://github.com/ORG/REPO/files/bus1/bus1-verification-checklist.pdf</td></tr>
-          </tbody>
-        </table>
-      </div>
-    </section>
+    
   </main>
 
   <footer class="mt-8 border-t border-gray-200">
@@ -122,8 +98,8 @@
       const tabs = [
         {btn: document.getElementById('tab-overview'), panel: document.getElementById('panel-overview')},
         {btn: document.getElementById('tab-design'), panel: document.getElementById('panel-design')},
-        {btn: document.getElementById('tab-testing'), panel: document.getElementById('panel-testing')},
-        {btn: document.getElementById('tab-assets'), panel: document.getElementById('panel-assets')}
+        {btn: document.getElementById('tab-testing'), panel: document.getElementById('panel-testing')}
+        
       ];
       function activate(i){
         tabs.forEach((t, idx) => {
