@@ -4,39 +4,12 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>CIRCUITS: Stepper — Interactive Guide</title>
-  <!-- Tailwind CSS with Typography plugin (light theme enforced) -->
-  <script>
-    // Enforce light theme regardless of user preference
-    (function(){
-      const cl = document.documentElement.classList;
-      cl.remove('dark');
-    })();
-  </script>
+  <script>(function(){document.documentElement.classList.remove('dark');})();</script>
   <script src="https://cdn.tailwindcss.com?plugins=typography"></script>
   <script>
-    tailwind.config = {
-      darkMode: 'class', // but we force light
-      theme: {
-        extend: {
-          colors: {
-            background: '#FDFBF8',
-            textprimary: '#1A1A1A',
-            accent: { DEFAULT: '#0EA5E9', 600: '#0284C7', 700: '#0369A1', 800: '#075985' }
-          },
-          fontFamily: {
-            sans: ['Inter', 'ui-sans-serif', 'system-ui', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial']
-          }
-        }
-      }
-    }
+    tailwind.config={darkMode:'class',theme:{extend:{colors:{background:'#FDFBF8',textprimary:'#1A1A1A',accent:{DEFAULT:'#0EA5E9',600:'#0284C7',700:'#0369A1',800:'#075985'}},fontFamily:{sans:['Inter','ui-sans-serif','system-ui','Segoe UI','Roboto','Helvetica Neue','Arial']}}}}
   </script>
-  <style>
-    :root { color-scheme: light only; }
-    html, body { background-color: #FDFBF8; color: #1A1A1A; }
-    .sr-only-focusable:focus{ position: static; width:auto; height:auto; clip:auto; }
-  </style>
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="preconnect" href="https://www.youtube.com"> 
+  <style>:root{color-scheme:light only}html,body{background:#FDFBF8;color:#1A1A1A}.sr-only-focusable:focus{position:static;width:auto;height:auto;clip:auto}</style>
 </head>
 <body class="min-h-screen antialiased bg-background text-textprimary">
   <a href="#main-content" class="sr-only sr-only-focusable focus:not-sr-only focus:absolute focus:top-2 focus:left-2 bg-white px-3 py-2 rounded shadow focus:ring-2 focus:ring-accent">Skip to Content</a>
@@ -49,20 +22,20 @@
   </header>
 
   <main id="main-content" class="max-w-4xl mx-auto px-4 py-8">
-    <!-- Tablist (4 sections) -->
     <div class="mb-6 border-b border-gray-200" role="tablist" aria-label="Guide sections">
       <button id="tab-overview" role="tab" aria-controls="panel-overview" aria-selected="true" class="mr-2 inline-flex items-center gap-2 px-4 py-2 rounded-t border-x border-t border-gray-200 bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-accent">Overview</button>
       <button id="tab-inprocess" role="tab" aria-controls="panel-inprocess" aria-selected="false" class="mr-2 inline-flex items-center gap-2 px-4 py-2 rounded-t border-x border-t border-gray-200 bg-gray-100 text-gray-700 hover:bg-white focus:outline-none focus:ring-2 focus:ring-accent">In-Process Stepper</button>
-      <button id="tab-final" role="tab" aria-controls="panel-final" aria-selected="false" class="mr-2 inline-flex items-center gap-2 px-4 py-2 rounded-t border-x border-t border-gray-200 bg-gray-100 text-gray-700 hover:bg-white focus:outline-none focus:ring-2 focus:ring-accent">Final Stepper</button>
-      <button id="tab-assets" role="tab" aria-controls="panel-assets" aria-selected="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-t border-x border-t border-gray-200 bg-gray-100 text-gray-700 hover:bg-white focus:outline-none focus:ring-2 focus:ring-accent">Assets</button>
+      <button id="tab-final" role="tab" aria-controls="panel-final" aria-selected="false" class="inline-flex items-center gap-2 px-4 py-2 rounded-t border-x border-t border-gray-200 bg-gray-100 text-gray-700 hover:bg-white focus:outline-none focus:ring-2 focus:ring-accent">Final Stepper</button>
     </div>
 
-    <!-- Panels -->
     <section id="panel-overview" role="tabpanel" aria-labelledby="tab-overview" class="block bg-white rounded-md shadow p-6">
       <div class="prose max-w-none">
         <h2>The Stepper Circuit</h2>
-        <p>The "Stepper" allows us to cycle through a set/enable sequence for writing to and reading from the bus. Based on our design, we repeatedly cycle through six distinct steps. The basic unit is two S–R latches (1‑bit memory) in series. This allows the output of the second latch to be <em>1</em> when the value set in the first latch is <em>1</em> and the set for the second latch is <em>1</em>; otherwise, the second latch outputs <em>0</em>. Cascading these units passes a <em>1</em> down the chain step‑by‑step, energizing outputs in sequence.</p>
-        <p>Two 1‑bit CPU memory circuits (S–R latches) in series form the base of our stepper. Chaining many of these together yields a single high output at a time, as demonstrated in the videos below.</p>
+        <p>The "Stepper" allows us to cycle through a set/enable sequence for writing to and reading from the bus. Based on our design, we repeatedly cycle through six distinct steps. The basic unit is two S–R latches (1‑bit memory) in series. Cascading these units passes a 1 down the chain step‑by‑step, energizing outputs in sequence.</p>
+        <figure class="not-prose mt-4 bg-gray-50 border border-gray-200 rounded p-3">
+          <img id="img-basic-unit" src="" alt="Basic Unit: two S–R latches in series (image will load from provided URL)" class="w-full h-auto rounded shadow" />
+          <figcaption class="text-sm text-gray-600 mt-2">Basic Unit — two S–R latches in series. <span class="ml-2" id="basic-unit-note">(Image URL pending)</span></figcaption>
+        </figure>
       </div>
     </section>
 
@@ -76,61 +49,9 @@
           <iframe id="yt-inprocess" class="w-full h-[360px]" src="https://www.youtube.com/embed/_zgBgKBwXp0?rel=0&modestbranding=1&cc_load_policy=1&enablejsapi=1" title="In‑Process Stepper (YouTube)" aria-label="Embedded video: In‑Process Stepper" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
         </div>
         <p class="mt-2 text-sm text-gray-600">Captions are enabled by default. A complete, timed transcript is provided below and available for download.</p>
-        <details class="mt-4">
-          <summary class="cursor-pointer font-semibold">Timed transcript</summary>
+        <details class="mt-4"><summary class="cursor-pointer font-semibold">Timed transcript</summary>
           <div class="mt-3">
-            <ul class="list-none pl-0" data-link-yt="yt-inprocess">
-              <li class="mb-1"><button class="underline text-sky-700 hover:text-sky-900 focus:outline-none focus:ring-2 focus:ring-sky-500 rounded px-0.5" data-seconds="0" aria-label="Play from 00:00">00:00</button> <span class="ml-2">Aloha.</span></li>
-<li class="mb-1"><button class="underline text-sky-700 hover:text-sky-900 focus:outline-none focus:ring-2 focus:ring-sky-500 rounded px-0.5" data-seconds="7" aria-label="Play from 00:07">00:07</button> <span class="ml-2">So what I want to do is show a little bit about how</span></li>
-<li class="mb-1"><button class="underline text-sky-700 hover:text-sky-900 focus:outline-none focus:ring-2 focus:ring-sky-500 rounded px-0.5" data-seconds="10" aria-label="Play from 00:10">00:10</button> <span class="ml-2">this stepper is going to work and discuss a little bit.</span></li>
-<li class="mb-1"><button class="underline text-sky-700 hover:text-sky-900 focus:outline-none focus:ring-2 focus:ring-sky-500 rounded px-0.5" data-seconds="13" aria-label="Play from 00:13">00:13</button> <span class="ml-2">So I have my little unit I have with</span></li>
-<li class="mb-1"><button class="underline text-sky-700 hover:text-sky-900 focus:outline-none focus:ring-2 focus:ring-sky-500 rounded px-0.5" data-seconds="16" aria-label="Play from 00:16">00:16</button> <span class="ml-2">the two memory bits tied together,</span></li>
-<li class="mb-1"><button class="underline text-sky-700 hover:text-sky-900 focus:outline-none focus:ring-2 focus:ring-sky-500 rounded px-0.5" data-seconds="21" aria-label="Play from 00:21">00:21</button> <span class="ml-2">and what I&#x27;m going to show you is how this chain works.</span></li>
-<li class="mb-1"><button class="underline text-sky-700 hover:text-sky-900 focus:outline-none focus:ring-2 focus:ring-sky-500 rounded px-0.5" data-seconds="25" aria-label="Play from 00:25">00:25</button> <span class="ml-2">So right now the input to the first one is zero.</span></li>
-<li class="mb-1"><button class="underline text-sky-700 hover:text-sky-900 focus:outline-none focus:ring-2 focus:ring-sky-500 rounded px-0.5" data-seconds="28" aria-label="Play from 00:28">00:28</button> <span class="ml-2">So let me change the input to one and I hit set one.</span></li>
-<li class="mb-1"><button class="underline text-sky-700 hover:text-sky-900 focus:outline-none focus:ring-2 focus:ring-sky-500 rounded px-0.5" data-seconds="31" aria-label="Play from 00:31">00:31</button> <span class="ml-2">Now, every other memory item is connected to set one.</span></li>
-<li class="mb-1"><button class="underline text-sky-700 hover:text-sky-900 focus:outline-none focus:ring-2 focus:ring-sky-500 rounded px-0.5" data-seconds="37" aria-label="Play from 00:37">00:37</button> <span class="ml-2">So the first one of every pair is connected to set one.</span></li>
-<li class="mb-1"><button class="underline text-sky-700 hover:text-sky-900 focus:outline-none focus:ring-2 focus:ring-sky-500 rounded px-0.5" data-seconds="41" aria-label="Play from 00:41">00:41</button> <span class="ml-2">So I&#x27;m going to set that so that the output is one,</span></li>
-<li class="mb-1"><button class="underline text-sky-700 hover:text-sky-900 focus:outline-none focus:ring-2 focus:ring-sky-500 rounded px-0.5" data-seconds="46" aria-label="Play from 00:46">00:46</button> <span class="ml-2">turn my input off, and then I&#x27;m going to set two.</span></li>
-<li class="mb-1"><button class="underline text-sky-700 hover:text-sky-900 focus:outline-none focus:ring-2 focus:ring-sky-500 rounded px-0.5" data-seconds="50" aria-label="Play from 00:50">00:50</button> <span class="ml-2">What set two is going to do is it&#x27;s tied to</span></li>
-<li class="mb-1"><button class="underline text-sky-700 hover:text-sky-900 focus:outline-none focus:ring-2 focus:ring-sky-500 rounded px-0.5" data-seconds="53" aria-label="Play from 00:53">00:53</button> <span class="ml-2">the memory bit of every even one,</span></li>
-<li class="mb-1"><button class="underline text-sky-700 hover:text-sky-900 focus:outline-none focus:ring-2 focus:ring-sky-500 rounded px-0.5" data-seconds="56" aria-label="Play from 00:56">00:56</button> <span class="ml-2">so two, four, six, eight,</span></li>
-<li class="mb-1"><button class="underline text-sky-700 hover:text-sky-900 focus:outline-none focus:ring-2 focus:ring-sky-500 rounded px-0.5" data-seconds="57" aria-label="Play from 00:57">00:57</button> <span class="ml-2">or the second one of every pair.</span></li>
-<li class="mb-1"><button class="underline text-sky-700 hover:text-sky-900 focus:outline-none focus:ring-2 focus:ring-sky-500 rounded px-0.5" data-seconds="59" aria-label="Play from 00:59">00:59</button> <span class="ml-2">So what that will do, we&#x27;ll pass that input one</span></li>
-<li class="mb-1"><button class="underline text-sky-700 hover:text-sky-900 focus:outline-none focus:ring-2 focus:ring-sky-500 rounded px-0.5" data-seconds="62" aria-label="Play from 01:02">01:02</button> <span class="ml-2">that&#x27;s stored in the first one,</span></li>
-<li class="mb-1"><button class="underline text-sky-700 hover:text-sky-900 focus:outline-none focus:ring-2 focus:ring-sky-500 rounded px-0.5" data-seconds="65" aria-label="Play from 01:05">01:05</button> <span class="ml-2">it&#x27;ll pass it to the output,</span></li>
-<li class="mb-1"><button class="underline text-sky-700 hover:text-sky-900 focus:outline-none focus:ring-2 focus:ring-sky-500 rounded px-0.5" data-seconds="67" aria-label="Play from 01:07">01:07</button> <span class="ml-2">which will be the first item,</span></li>
-<li class="mb-1"><button class="underline text-sky-700 hover:text-sky-900 focus:outline-none focus:ring-2 focus:ring-sky-500 rounded px-0.5" data-seconds="68" aria-label="Play from 01:08">01:08</button> <span class="ml-2">and pass it as the input to the next one.</span></li>
-<li class="mb-1"><button class="underline text-sky-700 hover:text-sky-900 focus:outline-none focus:ring-2 focus:ring-sky-500 rounded px-0.5" data-seconds="71" aria-label="Play from 01:11">01:11</button> <span class="ml-2">So then we&#x27;ll turn set two off and then just go set one again,</span></li>
-<li class="mb-1"><button class="underline text-sky-700 hover:text-sky-900 focus:outline-none focus:ring-2 focus:ring-sky-500 rounded px-0.5" data-seconds="76" aria-label="Play from 01:16">01:16</button> <span class="ml-2">which will pass it to the second part,</span></li>
-<li class="mb-1"><button class="underline text-sky-700 hover:text-sky-900 focus:outline-none focus:ring-2 focus:ring-sky-500 rounded px-0.5" data-seconds="81" aria-label="Play from 01:21">01:21</button> <span class="ml-2">and pass the zero into the second one.</span></li>
-<li class="mb-1"><button class="underline text-sky-700 hover:text-sky-900 focus:outline-none focus:ring-2 focus:ring-sky-500 rounded px-0.5" data-seconds="87" aria-label="Play from 01:27">01:27</button> <span class="ml-2">So that&#x27;s set one of the first one,</span></li>
-<li class="mb-1"><button class="underline text-sky-700 hover:text-sky-900 focus:outline-none focus:ring-2 focus:ring-sky-500 rounded px-0.5" data-seconds="90" aria-label="Play from 01:30">01:30</button> <span class="ml-2">and then I&#x27;ll hit set two again,</span></li>
-<li class="mb-1"><button class="underline text-sky-700 hover:text-sky-900 focus:outline-none focus:ring-2 focus:ring-sky-500 rounded px-0.5" data-seconds="92" aria-label="Play from 01:32">01:32</button> <span class="ml-2">and it&#x27;ll turn off the first item and turn on the second item.</span></li>
-<li class="mb-1"><button class="underline text-sky-700 hover:text-sky-900 focus:outline-none focus:ring-2 focus:ring-sky-500 rounded px-0.5" data-seconds="98" aria-label="Play from 01:38">01:38</button> <span class="ml-2">I&#x27;ll turn that off, I&#x27;ll go set one to pass it down one,</span></li>
-<li class="mb-1"><button class="underline text-sky-700 hover:text-sky-900 focus:outline-none focus:ring-2 focus:ring-sky-500 rounded px-0.5" data-seconds="103" aria-label="Play from 01:43">01:43</button> <span class="ml-2">set two to turn off the second one and go to the third one.</span></li>
-<li class="mb-1"><button class="underline text-sky-700 hover:text-sky-900 focus:outline-none focus:ring-2 focus:ring-sky-500 rounded px-0.5" data-seconds="108" aria-label="Play from 01:48">01:48</button> <span class="ml-2">And so I just keep cycling, set one on off,</span></li>
-<li class="mb-1"><button class="underline text-sky-700 hover:text-sky-900 focus:outline-none focus:ring-2 focus:ring-sky-500 rounded px-0.5" data-seconds="111" aria-label="Play from 01:51">01:51</button> <span class="ml-2">set two on off, move to the next one, set one on off,</span></li>
-<li class="mb-1"><button class="underline text-sky-700 hover:text-sky-900 focus:outline-none focus:ring-2 focus:ring-sky-500 rounded px-0.5" data-seconds="116" aria-label="Play from 01:56">01:56</button> <span class="ml-2">set two on off, move to the next one, move to the next one, move to the next one.</span></li>
-<li class="mb-1"><button class="underline text-sky-700 hover:text-sky-900 focus:outline-none focus:ring-2 focus:ring-sky-500 rounded px-0.5" data-seconds="117" aria-label="Play from 01:57">01:57</button> <span class="ml-2">Set one on off, move to the next one, move to the next one, move to the next one.</span></li>
-<li class="mb-1"><button class="underline text-sky-700 hover:text-sky-900 focus:outline-none focus:ring-2 focus:ring-sky-500 rounded px-0.5" data-seconds="119" aria-label="Play from 01:59">01:59</button> <span class="ml-2">Set one on off, set two on off, move to the last one,</span></li>
-<li class="mb-1"><button class="underline text-sky-700 hover:text-sky-900 focus:outline-none focus:ring-2 focus:ring-sky-500 rounded px-0.5" data-seconds="123" aria-label="Play from 02:03">02:03</button> <span class="ml-2">and then set one on off, set two on off,</span></li>
-<li class="mb-1"><button class="underline text-sky-700 hover:text-sky-900 focus:outline-none focus:ring-2 focus:ring-sky-500 rounded px-0.5" data-seconds="127" aria-label="Play from 02:07">02:07</button> <span class="ml-2">sends the zero, so they&#x27;re all back to zero.</span></li>
-<li class="mb-1"><button class="underline text-sky-700 hover:text-sky-900 focus:outline-none focus:ring-2 focus:ring-sky-500 rounded px-0.5" data-seconds="130" aria-label="Play from 02:10">02:10</button> <span class="ml-2">Okay, so that&#x27;s how the stepper works.</span></li>
-<li class="mb-1"><button class="underline text-sky-700 hover:text-sky-900 focus:outline-none focus:ring-2 focus:ring-sky-500 rounded px-0.5" data-seconds="132" aria-label="Play from 02:12">02:12</button> <span class="ml-2">It&#x27;s gonna just step through,</span></li>
-<li class="mb-1"><button class="underline text-sky-700 hover:text-sky-900 focus:outline-none focus:ring-2 focus:ring-sky-500 rounded px-0.5" data-seconds="134" aria-label="Play from 02:14">02:14</button> <span class="ml-2">and what we&#x27;re gonna do is we&#x27;re actually gonna tie</span></li>
-<li class="mb-1"><button class="underline text-sky-700 hover:text-sky-900 focus:outline-none focus:ring-2 focus:ring-sky-500 rounded px-0.5" data-seconds="136" aria-label="Play from 02:16">02:16</button> <span class="ml-2">the output, this last one, back to the input</span></li>
-<li class="mb-1"><button class="underline text-sky-700 hover:text-sky-900 focus:outline-none focus:ring-2 focus:ring-sky-500 rounded px-0.5" data-seconds="139" aria-label="Play from 02:19">02:19</button> <span class="ml-2">so that we actually just cycle through six.</span></li>
-<li class="mb-1"><button class="underline text-sky-700 hover:text-sky-900 focus:outline-none focus:ring-2 focus:ring-sky-500 rounded px-0.5" data-seconds="143" aria-label="Play from 02:23">02:23</button> <span class="ml-2">So we&#x27;re gonna add another one to the left foot.</span></li>
-<li class="mb-1"><button class="underline text-sky-700 hover:text-sky-900 focus:outline-none focus:ring-2 focus:ring-sky-500 rounded px-0.5" data-seconds="145" aria-label="Play from 02:25">02:25</button> <span class="ml-2">Basically, this is how this works.</span></li>
-<li class="mb-1"><button class="underline text-sky-700 hover:text-sky-900 focus:outline-none focus:ring-2 focus:ring-sky-500 rounded px-0.5" data-seconds="147" aria-label="Play from 02:27">02:27</button> <span class="ml-2">So that we are able to sequentially step through</span></li>
-<li class="mb-1"><button class="underline text-sky-700 hover:text-sky-900 focus:outline-none focus:ring-2 focus:ring-sky-500 rounded px-0.5" data-seconds="150" aria-label="Play from 02:30">02:30</button> <span class="ml-2">different items, basically using the set one, set two,</span></li>
-<li class="mb-1"><button class="underline text-sky-700 hover:text-sky-900 focus:outline-none focus:ring-2 focus:ring-sky-500 rounded px-0.5" data-seconds="156" aria-label="Play from 02:36">02:36</button> <span class="ml-2">set one, set two, set one, set two.</span></li>
-<li class="mb-1"><button class="underline text-sky-700 hover:text-sky-900 focus:outline-none focus:ring-2 focus:ring-sky-500 rounded px-0.5" data-seconds="158" aria-label="Play from 02:38">02:38</button> <span class="ml-2">Okay, so that&#x27;s how our stepper&#x27;s gonna work.</span></li>
-<li class="mb-1"><button class="underline text-sky-700 hover:text-sky-900 focus:outline-none focus:ring-2 focus:ring-sky-500 rounded px-0.5" data-seconds="160" aria-label="Play from 02:40">02:40</button> <span class="ml-2">And then I&#x27;ll show you the finished circuit</span></li>
-<li class="mb-1"><button class="underline text-sky-700 hover:text-sky-900 focus:outline-none focus:ring-2 focus:ring-sky-500 rounded px-0.5" data-seconds="166" aria-label="Play from 02:46">02:46</button> <span class="ml-2">and walk through how that works.</span></li>
-<li class="mb-1"><button class="underline text-sky-700 hover:text-sky-900 focus:outline-none focus:ring-2 focus:ring-sky-500 rounded px-0.5" data-seconds="168" aria-label="Play from 02:48">02:48</button> <span class="ml-2">Thanks.</span></li>
-            </ul>
+            <ul class="list-none pl-0" data-link-yt="yt-inprocess"></ul>
             <div class="mt-3 flex items-center gap-3">
               <a class="inline-flex items-center px-3 py-2 text-sm font-medium bg-white border border-gray-300 rounded shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-accent" href="in-process-cpu-stepper.vtt" download>Download transcript (.vtt)</a>
               <a class="underline text-sky-700 hover:text-sky-900" href="https://youtu.be/_zgBgKBwXp0" target="_blank" rel="noopener">Watch on YouTube</a>
@@ -151,57 +72,23 @@
             <li>Set <code>clk</code> input pull behavior to <strong>Pull Down</strong>.</li>
           </ul>
         </aside>
+        <figure class="not-prose mt-6">
+          <img src="images/stepper-chain.png" alt="Full chained stepper circuit with outputs 1–7 labeled" class="w-full h-auto rounded shadow border border-gray-200" />
+          <figcaption class="text-sm text-gray-600 mt-2">Full chained circuit (outputs 1–7).</figcaption>
+        </figure>
+        <figure class="not-prose mt-6">
+          <img src="images/stepper-appearance.png" alt="Final stepper circuit appearance for integration into the Control Section of the 8‑bit CPU simulation" class="w-full h-auto rounded shadow border border-gray-200" />
+          <figcaption class="text-sm text-gray-600 mt-2">Final stepper circuit appearance for Control Section integration.</figcaption>
+        </figure>
       </div>
       <div class="mt-4">
         <div class="aspect-w-16 aspect-h-9 rounded overflow-hidden shadow">
           <iframe id="yt-final" class="w-full h-[360px]" src="https://www.youtube.com/embed/R3X5lTluP94?rel=0&modestbranding=1&cc_load_policy=1&enablejsapi=1" title="Final Stepper (YouTube)" aria-label="Embedded video: Final Stepper" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
         </div>
         <p class="mt-2 text-sm text-gray-600">Captions are enabled by default. A complete, timed transcript is provided below and available for download.</p>
-        <details class="mt-4">
-          <summary class="cursor-pointer font-semibold">Timed transcript</summary>
+        <details class="mt-4"><summary class="cursor-pointer font-semibold">Timed transcript</summary>
           <div class="mt-3">
-            <ul class="list-none pl-0" data-link-yt="yt-final">
-              <li class="mb-1"><button class="underline text-sky-700 hover:text-sky-900 focus:outline-none focus:ring-2 focus:ring-sky-500 rounded px-0.5" data-seconds="0" aria-label="Play from 00:00">00:00</button> <span class="ml-2">Aloha so here&#x27;s our completed stepper circuit you&#x27;ll see we&#x27;ve made some changes some of the</span></li>
-<li class="mb-1"><button class="underline text-sky-700 hover:text-sky-900 focus:outline-none focus:ring-2 focus:ring-sky-500 rounded px-0.5" data-seconds="13" aria-label="Play from 00:13">00:13</button> <span class="ml-2">changes we made we have an input called reset okay and the reset goes into this or we have a clock</span></li>
-<li class="mb-1"><button class="underline text-sky-700 hover:text-sky-900 focus:outline-none focus:ring-2 focus:ring-sky-500 rounded px-0.5" data-seconds="21" aria-label="Play from 00:21">00:21</button> <span class="ml-2">and what we&#x27;re doing with the clock we&#x27;re taking into an or so we have two ores for input we&#x27;re</span></li>
-<li class="mb-1"><button class="underline text-sky-700 hover:text-sky-900 focus:outline-none focus:ring-2 focus:ring-sky-500 rounded px-0.5" data-seconds="29" aria-label="Play from 00:29">00:29</button> <span class="ml-2">going to take clock and put it into an or and then negate it and put it into another or I&#x27;m</span></li>
-<li class="mb-1"><button class="underline text-sky-700 hover:text-sky-900 focus:outline-none focus:ring-2 focus:ring-sky-500 rounded px-0.5" data-seconds="34" aria-label="Play from 00:34">00:34</button> <span class="ml-2">going to tie those ores to the odds and the evens or the first ones of every pair and the second</span></li>
-<li class="mb-1"><button class="underline text-sky-700 hover:text-sky-900 focus:outline-none focus:ring-2 focus:ring-sky-500 rounded px-0.5" data-seconds="39" aria-label="Play from 00:39">00:39</button> <span class="ml-2">ones of every pair so every time we do clock we&#x27;re going to cycle through our clock so let me do this</span></li>
-<li class="mb-1"><button class="underline text-sky-700 hover:text-sky-900 focus:outline-none focus:ring-2 focus:ring-sky-500 rounded px-0.5" data-seconds="52" aria-label="Play from 00:52">00:52</button> <span class="ml-2">simulate reset it</span></li>
-<li class="mb-1"><button class="underline text-sky-700 hover:text-sky-900 focus:outline-none focus:ring-2 focus:ring-sky-500 rounded px-0.5" data-seconds="59" aria-label="Play from 00:59">00:59</button> <span class="ml-2">so every time we&#x27;re just going to cycle through this so every time I do clock it&#x27;s going to switch</span></li>
-<li class="mb-1"><button class="underline text-sky-700 hover:text-sky-900 focus:outline-none focus:ring-2 focus:ring-sky-500 rounded px-0.5" data-seconds="68" aria-label="Play from 01:08">01:08</button> <span class="ml-2">between one and then when I go to zero it&#x27;ll do the second one one zero one zero one zero one zero</span></li>
-<li class="mb-1"><button class="underline text-sky-700 hover:text-sky-900 focus:outline-none focus:ring-2 focus:ring-sky-500 rounded px-0.5" data-seconds="76" aria-label="Play from 01:16">01:16</button> <span class="ml-2">and it just keeps walking down okay so let me reset and explain how this works okay so I have</span></li>
-<li class="mb-1"><button class="underline text-sky-700 hover:text-sky-900 focus:outline-none focus:ring-2 focus:ring-sky-500 rounded px-0.5" data-seconds="89" aria-label="Play from 01:29">01:29</button> <span class="ml-2">this reset all right and it comes in and it is also into the or for set one set two and it&#x27;s negated</span></li>
-<li class="mb-1"><button class="underline text-sky-700 hover:text-sky-900 focus:outline-none focus:ring-2 focus:ring-sky-500 rounded px-0.5" data-seconds="102" aria-label="Play from 01:42">01:42</button> <span class="ml-2">into CPU one okay so when I click reset goes high notice that one is on okay if I go low so I reset</span></li>
-<li class="mb-1"><button class="underline text-sky-700 hover:text-sky-900 focus:outline-none focus:ring-2 focus:ring-sky-500 rounded px-0.5" data-seconds="119" aria-label="Play from 01:59">01:59</button> <span class="ml-2">it one is still on because the output from the first pair is zero and I negate it and it goes</span></li>
-<li class="mb-1"><button class="underline text-sky-700 hover:text-sky-900 focus:outline-none focus:ring-2 focus:ring-sky-500 rounded px-0.5" data-seconds="124" aria-label="Play from 02:04">02:04</button> <span class="ml-2">into the or now if I go high on one it&#x27;s going to pass that one to the second one high on the output</span></li>
-<li class="mb-1"><button class="underline text-sky-700 hover:text-sky-900 focus:outline-none focus:ring-2 focus:ring-sky-500 rounded px-0.5" data-seconds="134" aria-label="Play from 02:14">02:14</button> <span class="ml-2">it&#x27;ll make step two and then because this is negated so this is a plus one this becomes zero</span></li>
-<li class="mb-1"><button class="underline text-sky-700 hover:text-sky-900 focus:outline-none focus:ring-2 focus:ring-sky-500 rounded px-0.5" data-seconds="142" aria-label="Play from 02:22">02:22</button> <span class="ml-2">again high pass it down one low on clock</span></li>
-<li class="mb-1"><button class="underline text-sky-700 hover:text-sky-900 focus:outline-none focus:ring-2 focus:ring-sky-500 rounded px-0.5" data-seconds="149" aria-label="Play from 02:29">02:29</button> <span class="ml-2">passes it out the second part and that goes into step three now we&#x27;re taking this as an and now</span></li>
-<li class="mb-1"><button class="underline text-sky-700 hover:text-sky-900 focus:outline-none focus:ring-2 focus:ring-sky-500 rounded px-0.5" data-seconds="158" aria-label="Play from 02:38">02:38</button> <span class="ml-2">it was an or again this would always be one because this is going to stay one</span></li>
-<li class="mb-1"><button class="underline text-sky-700 hover:text-sky-900 focus:outline-none focus:ring-2 focus:ring-sky-500 rounded px-0.5" data-seconds="164" aria-label="Play from 02:44">02:44</button> <span class="ml-2">so we&#x27;re making an and and so this one becomes zero and this becomes zero</span></li>
-<li class="mb-1"><button class="underline text-sky-700 hover:text-sky-900 focus:outline-none focus:ring-2 focus:ring-sky-500 rounded px-0.5" data-seconds="170" aria-label="Play from 02:50">02:50</button> <span class="ml-2">so then we can just go clock clock step four clock clock step five</span></li>
-<li class="mb-1"><button class="underline text-sky-700 hover:text-sky-900 focus:outline-none focus:ring-2 focus:ring-sky-500 rounded px-0.5" data-seconds="178" aria-label="Play from 02:58">02:58</button> <span class="ml-2">clock clock</span></li>
-<li class="mb-1"><button class="underline text-sky-700 hover:text-sky-900 focus:outline-none focus:ring-2 focus:ring-sky-500 rounded px-0.5" data-seconds="179" aria-label="Play from 02:59">02:59</button> <span class="ml-2">Step six, clock, clock, step seven, all right?</span></li>
-<li class="mb-1"><button class="underline text-sky-700 hover:text-sky-900 focus:outline-none focus:ring-2 focus:ring-sky-500 rounded px-0.5" data-seconds="185" aria-label="Play from 03:05">03:05</button> <span class="ml-2">And so we&#x27;ve cycled through all seven.</span></li>
-<li class="mb-1"><button class="underline text-sky-700 hover:text-sky-900 focus:outline-none focus:ring-2 focus:ring-sky-500 rounded px-0.5" data-seconds="189" aria-label="Play from 03:09">03:09</button> <span class="ml-2">Then what we&#x27;re gonna wanna do</span></li>
-<li class="mb-1"><button class="underline text-sky-700 hover:text-sky-900 focus:outline-none focus:ring-2 focus:ring-sky-500 rounded px-0.5" data-seconds="191" aria-label="Play from 03:11">03:11</button> <span class="ml-2">and is we&#x27;re gonna wanna look at our circuit appearance,</span></li>
-<li class="mb-1"><button class="underline text-sky-700 hover:text-sky-900 focus:outline-none focus:ring-2 focus:ring-sky-500 rounded px-0.5" data-seconds="197" aria-label="Play from 03:17">03:17</button> <span class="ml-2">which I&#x27;ll show you a diagram</span></li>
-<li class="mb-1"><button class="underline text-sky-700 hover:text-sky-900 focus:outline-none focus:ring-2 focus:ring-sky-500 rounded px-0.5" data-seconds="199" aria-label="Play from 03:19">03:19</button> <span class="ml-2">and maybe it&#x27;ll look something like this.</span></li>
-<li class="mb-1"><button class="underline text-sky-700 hover:text-sky-900 focus:outline-none focus:ring-2 focus:ring-sky-500 rounded px-0.5" data-seconds="204" aria-label="Play from 03:24">03:24</button> <span class="ml-2">Okay, I have a clock on the left, reset on the right</span></li>
-<li class="mb-1"><button class="underline text-sky-700 hover:text-sky-900 focus:outline-none focus:ring-2 focus:ring-sky-500 rounded px-0.5" data-seconds="208" aria-label="Play from 03:28">03:28</button> <span class="ml-2">and then I have my seven outputs, all right?</span></li>
-<li class="mb-1"><button class="underline text-sky-700 hover:text-sky-900 focus:outline-none focus:ring-2 focus:ring-sky-500 rounded px-0.5" data-seconds="211" aria-label="Play from 03:31">03:31</button> <span class="ml-2">And now what I&#x27;m gonna do is probably at some point,</span></li>
-<li class="mb-1"><button class="underline text-sky-700 hover:text-sky-900 focus:outline-none focus:ring-2 focus:ring-sky-500 rounded px-0.5" data-seconds="215" aria-label="Play from 03:35">03:35</button> <span class="ml-2">I&#x27;ll not change the appearance,</span></li>
-<li class="mb-1"><button class="underline text-sky-700 hover:text-sky-900 focus:outline-none focus:ring-2 focus:ring-sky-500 rounded px-0.5" data-seconds="218" aria-label="Play from 03:38">03:38</button> <span class="ml-2">but what I&#x27;ll do is I&#x27;ll take the output from seven</span></li>
-<li class="mb-1"><button class="underline text-sky-700 hover:text-sky-900 focus:outline-none focus:ring-2 focus:ring-sky-500 rounded px-0.5" data-seconds="222" aria-label="Play from 03:42">03:42</button> <span class="ml-2">and put it into reset.</span></li>
-<li class="mb-1"><button class="underline text-sky-700 hover:text-sky-900 focus:outline-none focus:ring-2 focus:ring-sky-500 rounded px-0.5" data-seconds="224" aria-label="Play from 03:44">03:44</button> <span class="ml-2">And that way when seven goes high, reset goes high</span></li>
-<li class="mb-1"><button class="underline text-sky-700 hover:text-sky-900 focus:outline-none focus:ring-2 focus:ring-sky-500 rounded px-0.5" data-seconds="227" aria-label="Play from 03:47">03:47</button> <span class="ml-2">and it resets the whole thing and we start over, all right?</span></li>
-<li class="mb-1"><button class="underline text-sky-700 hover:text-sky-900 focus:outline-none focus:ring-2 focus:ring-sky-500 rounded px-0.5" data-seconds="232" aria-label="Play from 03:52">03:52</button> <span class="ml-2">So that&#x27;s pretty much how the stepper works</span></li>
-<li class="mb-1"><button class="underline text-sky-700 hover:text-sky-900 focus:outline-none focus:ring-2 focus:ring-sky-500 rounded px-0.5" data-seconds="235" aria-label="Play from 03:55">03:55</button> <span class="ml-2">and drawing it up.</span></li>
-<li class="mb-1"><button class="underline text-sky-700 hover:text-sky-900 focus:outline-none focus:ring-2 focus:ring-sky-500 rounded px-0.5" data-seconds="238" aria-label="Play from 03:58">03:58</button> <span class="ml-2">Hopefully you walk through it</span></li>
-<li class="mb-1"><button class="underline text-sky-700 hover:text-sky-900 focus:outline-none focus:ring-2 focus:ring-sky-500 rounded px-0.5" data-seconds="241" aria-label="Play from 04:01">04:01</button> <span class="ml-2">and it makes sense to you on how the stepper works</span></li>
-<li class="mb-1"><button class="underline text-sky-700 hover:text-sky-900 focus:outline-none focus:ring-2 focus:ring-sky-500 rounded px-0.5" data-seconds="244" aria-label="Play from 04:04">04:04</button> <span class="ml-2">because this is how we&#x27;re gonna choose what we&#x27;re doing.</span></li>
-            </ul>
+            <ul class="list-none pl-0" data-link-yt="yt-final"></ul>
             <div class="mt-3 flex items-center gap-3">
               <a class="inline-flex items-center px-3 py-2 text-sm font-medium bg-white border border-gray-300 rounded shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-accent" href="cpu-final-stepper.vtt" download>Download transcript (.vtt)</a>
               <a class="underline text-sky-700 hover:text-sky-900" href="https://youtu.be/R3X5lTluP94" target="_blank" rel="noopener">Watch on YouTube</a>
@@ -210,100 +97,18 @@
         </details>
       </div>
     </section>
-
-    <section id="panel-assets" role="tabpanel" aria-labelledby="tab-assets" class="hidden bg-white rounded-md shadow p-6">
-      <div class="prose max-w-none">
-        <h2>Asset Register (links, videos, images)</h2>
-        <p>Use this table to track all external media. Replace placeholders when new assets are added.</p>
-      </div>
-      <div class="overflow-x-auto mt-4">
-        <table class="min-w-full text-sm">
-          <thead class="bg-gray-50">
-            <tr>
-              <th class="text-left px-3 py-2 font-semibold">Type</th>
-              <th class="text-left px-3 py-2 font-semibold">Title / Alt</th>
-              <th class="text-left px-3 py-2 font-semibold">URL</th>
-              <th class="text-left px-3 py-2 font-semibold">Placeholder for new URL / image</th>
-            </tr>
-          </thead>
-          <tbody class="divide-y divide-gray-200">
-            <tr>
-              <td class="px-3 py-2">Video</td>
-              <td class="px-3 py-2">In‑Process Stepper</td>
-              <td class="px-3 py-2 break-all"><a class="text-sky-700 underline" href="https://youtu.be/_zgBgKBwXp0" target="_blank" rel="noopener">https://youtu.be/_zgBgKBwXp0</a></td>
-              <td class="px-3 py-2 text-gray-500">(add alternate host URL if needed)</td>
-            </tr>
-            <tr>
-              <td class="px-3 py-2">Video</td>
-              <td class="px-3 py-2">Final Stepper</td>
-              <td class="px-3 py-2 break-all"><a class="text-sky-700 underline" href="https://youtu.be/R3X5lTluP94" target="_blank" rel="noopener">https://youtu.be/R3X5lTluP94</a></td>
-              <td class="px-3 py-2 text-gray-500">(add alternate host URL if needed)</td>
-            </tr>
-            <tr>
-              <td class="px-3 py-2">Hyperlink</td>
-              <td class="px-3 py-2">Explaining the Stepper (text link)</td>
-              <td class="px-3 py-2 break-all"><a class="text-sky-700 underline" href="https://youtu.be/_zgBgKBwXp0" target="_blank" rel="noopener">https://youtu.be/_zgBgKBwXp0</a></td>
-              <td class="px-3 py-2 text-gray-500">(placeholder)</td>
-            </tr>
-            <tr>
-              <td class="px-3 py-2">Hyperlink</td>
-              <td class="px-3 py-2">Final Stepper (text link)</td>
-              <td class="px-3 py-2 break-all"><a class="text-sky-700 underline" href="https://youtu.be/R3X5lTluP94" target="_blank" rel="noopener">https://youtu.be/R3X5lTluP94</a></td>
-              <td class="px-3 py-2 text-gray-500">(placeholder)</td>
-            </tr>
-            <tr>
-              <td class="px-3 py-2">Image</td>
-              <td class="px-3 py-2">Stepper Diagram</td>
-              <td class="px-3 py-2 text-gray-500">(none yet)</td>
-              <td class="px-3 py-2 text-gray-500">Add image: <code>images/stepper-diagram.png</code> (alt: "Diagram of the seven-step CPU stepper")</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </section>
   </main>
 
-  <footer class="mt-8 border-t border-gray-200">
-    <div class="max-w-4xl mx-auto px-4 py-6 text-sm text-gray-600">Light theme enforced. No data is stored between sessions.</div>
-  </footer>
+  <footer class="mt-8 border-t border-gray-200"><div class="max-w-4xl mx-auto px-4 py-6 text-sm text-gray-600">Light theme enforced. No data is stored between sessions.</div></footer>
 
   <script>
-    // Accessible Tabs
     (function(){
-      const tabs = [
-        {btn: document.getElementById('tab-overview'), panel: document.getElementById('panel-overview')},
-        {btn: document.getElementById('tab-inprocess'), panel: document.getElementById('panel-inprocess')},
-        {btn: document.getElementById('tab-final'), panel: document.getElementById('panel-final')},
-        {btn: document.getElementById('tab-assets'), panel: document.getElementById('panel-assets')}
-      ];
-      function activate(i){
-        tabs.forEach((t, idx) => {
-          const sel = idx===i;
-          t.btn.setAttribute('aria-selected', sel);
-          t.btn.classList.toggle('bg-white', sel);
-          t.btn.classList.toggle('bg-gray-100', !sel);
-          t.panel.classList.toggle('hidden', !sel);
-          t.panel.classList.toggle('block', sel);
-        });
-      }
-      tabs.forEach((t, i) => t.btn.addEventListener('click', () => activate(i)) );
+      const tabs=[{btn:document.getElementById('tab-overview'),panel:document.getElementById('panel-overview')},{btn:document.getElementById('tab-inprocess'),panel:document.getElementById('panel-inprocess')},{btn:document.getElementById('tab-final'),panel:document.getElementById('panel-final')}];
+      function activate(i){tabs.forEach((t,idx)=>{const sel=idx===i;t.btn.setAttribute('aria-selected',sel);t.btn.classList.toggle('bg-white',sel);t.btn.classList.toggle('bg-gray-100',!sel);t.panel.classList.toggle('hidden',!sel);t.panel.classList.toggle('block',sel);});}
+      tabs.forEach((t,i)=>t.btn.addEventListener('click',()=>activate(i)));
     })();
-
-    // Connect transcript cue clicks to YouTube iframes (requires enablejsapi=1)
     (function(){
-      function onClick(e){
-        const btn = e.target.closest('button[data-seconds]');
-        if(!btn) return;
-        const ul = btn.closest('ul[data-link-yt]');
-        const targetId = ul?.getAttribute('data-link-yt');
-        const iframe = document.getElementById(targetId);
-        const sec = parseFloat(btn.getAttribute('data-seconds')) || 0;
-        if (iframe && iframe.contentWindow) {
-          iframe.contentWindow.postMessage(JSON.stringify({ event: 'command', func: 'seekTo', args: [sec, true] }), '*');
-          iframe.contentWindow.postMessage(JSON.stringify({ event: 'command', func: 'playVideo', args: [] }), '*');
-        }
-      }
-      document.addEventListener('click', onClick);
+      document.addEventListener('click',function(e){const btn=e.target.closest('button[data-seconds]');if(!btn)return;const ul=btn.closest('ul[data-link-yt]');const targetId=ul&&ul.getAttribute('data-link-yt');const iframe=document.getElementById(targetId);const sec=parseFloat(btn.getAttribute('data-seconds'))||0;if(iframe&&iframe.contentWindow){iframe.contentWindow.postMessage(JSON.stringify({event:'command',func:'seekTo',args:[sec,true]}),'*');iframe.contentWindow.postMessage(JSON.stringify({event:'command',func:'playVideo',args:[]}),'*');}});
     })();
   </script>
 </body>
