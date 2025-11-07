@@ -1,160 +1,53 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>CIRCUITS: Bus 1 — Interactive Guide</title>
-  <!-- Enforce strict light theme -->
-  <script>(function(){document.documentElement.classList.remove('dark');})();</script>
-  <script src="https://cdn.tailwindcss.com?plugins=typography"></script>
-  <script>
-    tailwind.config = {
-      darkMode: 'class',
-      theme: {
-        extend: {
-          colors: {
-            background: '#FDFBF8',
-            textprimary: '#1A1A1A',
-            accent: { DEFAULT: '#0EA5E9', 600: '#0284C7', 700: '#0369A1' }
-          },
-          fontFamily: { sans: ['Inter','ui-sans-serif','system-ui','Segoe UI','Roboto','Helvetica Neue','Arial'] }
-        }
-      }
-    }
-  </script>
-  <style>
-    :root { color-scheme: light only; }
-    html, body { background:#FDFBF8; color:#1A1A1A; }
-    .sr-only-focusable:focus{ position:static; width:auto; height:auto; clip:auto; }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bus 1 Circuit Guide</title>
+<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+<style>
+  :root {
+    color-scheme: light only;
+  }
+  body {
+    background-color: #ffffff;
+    color: #111111;
+  }
+  .skip-link {
+    position: absolute;
+    top: -40px;
+    left: 0;
+    background: #000;
+    color: #fff;
+    padding: 8px;
+    z-index: 100;
+  }
+  .skip-link:focus {
+    top: 0;
+  }
+</style>
 </head>
-<body class="min-h-screen antialiased bg-background text-textprimary">
-  <a href="#main-content" class="sr-only sr-only-focusable focus:not-sr-only focus:absolute focus:top-2 focus:left-2 bg-white px-3 py-2 rounded shadow focus:ring-2 focus:ring-accent">Skip to Content</a>
+<body class="bg-white text-gray-900">
+<a href="#main-content" class="skip-link">Skip to Content</a>
+<header class="p-4 border-b border-gray-300">
+  <h1 class="text-2xl font-bold">Bus 1 Circuit Guide</h1>
+</header>
+<main id="main-content" class="p-4 prose max-w-none">
 
-  <header class="border-b border-gray-200 bg-white">
-    <div class="max-w-4xl mx-auto px-4 py-6">
-      <h1 class="text-3xl font-bold tracking-tight">CIRCUITS: Bus 1</h1>
-      <p class="mt-1 text-gray-700">Route a constant <code>0000 0001</code> or pass-through from TMP onto Accumulator B depending on the <em>bus 1</em> control.</p>
-    </div>
-  </header>
+<h1>Bus 1 Circuit</h1>
+<p>This "bus1" circuit is used to put a value of 1 (0000 0001) for Input B into the accumulator whenever the "bus 1" bit is 1. When the "bus 1" bit is 0, we pass the value from TMP to Input B.</p>
+<p>To do this, we are going to start with an 8-bit input coming from TMP, an 8-bit output going to Accumulator B and a 1-bit input for bus 1.</p>
+<p><img alt="Input and outputs for bus-1 circuit" data-api-endpoint="https://mendocino.instructure.com/api/v1/courses/19705/files/2510609" data-api-returntype="File" height="416" id="368806" src="https://mendocino.instructure.com/courses/19705/files/2510609/preview" width="640"/></p>
+<p>To make sure the output for the 0-bit is 1, whenever the bus-1 bit is 1, and the value stored in TMP whenever bus-1 is 0, we can just "OR" the 2 values together and take the output as the output for bit0.</p>
+<p><img alt="OR bit0 with input for bit-1 to get bit0 out" data-api-endpoint="https://mendocino.instructure.com/api/v1/courses/19705/files/2510610" data-api-returntype="File" height="438" id="368807" src="https://mendocino.instructure.com/courses/19705/files/2510610/preview" width="640"/></p>
+<p>For all of the other bit, we want them to be 0 whenever bus 1 is 1 and the value from TMP whenever bus 1 is 0. To do this, we can negate the bus 1 signal and combine that with the individual bits from TMP using an AND gate. This ensures that whenver bus 1 is 1, all bits 1-7 will be zero and whenever bus 1 is 0, all bits 1-7 remain unchanged (1's go through as 1's and 0's go through as 0's since they will be ANDed with a 1).</p>
+<p><img alt="AND bits 1-7 with negation of bit-1 input" data-api-endpoint="https://mendocino.instructure.com/api/v1/courses/19705/files/2510611" data-api-returntype="File" height="421" id="368808" src="https://mendocino.instructure.com/courses/19705/files/2510611/preview" width="640"/></p>
+<p>As always, make sure to test your circuit to ensure that when bus-1 input is 1, output is 0000 0001 and whenever bus-1 input is 0, output is the same as "input from TMP". Lastly, you should change the circuits appearance to make it easier to incorporate into your final CPU.</p>
+<p><img alt="2020-04-27_bus1_4.jpg" data-api-endpoint="https://mendocino.instructure.com/api/v1/courses/19705/files/2510608" data-api-returntype="File" id="368809" src="https://mendocino.instructure.com/courses/19705/files/2510608/preview" style="max-width: 320px; max-height: 320px;"/></p>
 
-  <main id="main-content" class="max-w-4xl mx-auto px-4 py-8">
-    <!-- Tablist: organizing into 4 modules per spec -->
-    <div class="mb-6 border-b border-gray-200" role="tablist" aria-label="Guide sections">
-      <button id="tab-overview" role="tab" aria-controls="panel-overview" aria-selected="true" class="mr-2 inline-flex items-center px-4 py-2 rounded-t border-x border-t border-gray-200 bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-accent">Overview</button>
-      <button id="tab-design" role="tab" aria-controls="panel-design" aria-selected="false" class="mr-2 inline-flex items-center px-4 py-2 rounded-t border-x border-t border-gray-200 bg-gray-100 text-gray-700 hover:bg-white focus:outline-none focus:ring-2 focus:ring-accent">Design & Logic</button>
-      <button id="tab-testing" role="tab" aria-controls="panel-testing" aria-selected="false" class="mr-2 inline-flex items-center px-4 py-2 rounded-t border-x border-t border-gray-200 bg-gray-100 text-gray-700 hover:bg-white focus:outline-none focus:ring-2 focus:ring-accent">Testing & Appearance</button>
-      <button id="tab-assets" role="tab" aria-controls="panel-assets" aria-selected="false" class="inline-flex items-center px-4 py-2 rounded-t border-x border-t border-gray-200 bg-gray-100 text-gray-700 hover:bg-white focus:outline-none focus:ring-2 focus:ring-accent">Assets</button>
-    </div>
-
-    <!-- Overview -->
-    <section id="panel-overview" role="tabpanel" aria-labelledby="tab-overview" class="block bg-white rounded-md shadow p-6">
-      <div class="prose max-w-none">
-        <h2>Bus 1 Circuit</h2>
-        <p>This "bus1" circuit is used to put a value of 1 (0000 0001) for Input B into the accumulator whenever the "bus 1" bit is 1. When the "bus 1" bit is 0, we pass the value from TMP to Input B.</p>
-        <p>We start with an 8-bit input coming from TMP, an 8-bit output going to Accumulator B, and a 1-bit input for bus 1.</p>
-      </div>
-      <!-- Placeholder diagram (relative URL) -->
-      <figure class="not-prose mt-4">
-        <img src="images/2020-04-27_bus1_4.jpg" alt="Bus 1 circuit diagram showing TMP input, bus1 control, and output to Accumulator B" class="w-full max-h-[420px] object-contain rounded shadow" loading="lazy" />
-        <figcaption class="mt-2 text-sm text-gray-600">Placeholder image path; will be replaced by GitHub-hosted asset.</figcaption>
-      </figure>
-    </section>
-
-    <!-- Design & Logic -->
-    <section id="panel-design" role="tabpanel" aria-labelledby="tab-design" class="hidden bg-white rounded-md shadow p-6">
-      <div class="prose max-w-none">
-        <h2>Design &amp; Logic</h2>
-        <p>To guarantee bit 0 is 1 whenever bus 1 is 1—and otherwise equals TMP[0]—we OR the two values and take the OR result as bit0 out. For bits 1–7, we negate the bus 1 signal and AND it with the corresponding TMP bit. This ensures that when bus 1 is 1, bits 1–7 are 0; when bus 1 is 0, bits 1–7 pass through unchanged.</p>
-        <h3>Bit-level Behavior</h3>
-        <ul>
-          <li><strong>bit0 out</strong> = <code>TMP[0] OR bus1</code></li>
-          <li><strong>bits1–7 out</strong> = <code>TMP[i] AND NOT(bus1)</code> for <code>i ∈ [1,7]</code></li>
-        </ul>
-      </div>
-    </section>
-
-    <!-- Testing & Appearance -->
-    <section id="panel-testing" role="tabpanel" aria-labelledby="tab-testing" class="hidden bg-white rounded-md shadow p-6">
-      <div class="prose max-w-none">
-        <h2>Testing &amp; Appearance</h2>
-        <p>Test the circuit to confirm: when bus 1 = 1, output equals 0000 0001; when bus 1 = 0, output equals TMP. Adjust the circuit appearance for integration into the final CPU.</p>
-      </div>
-      <!-- Placeholder for downloadable worksheet or schematic -->
-      <div class="mt-4 not-prose">
-        <a href="files/bus1-verification-checklist.pdf" class="inline-flex items-center px-3 py-2 text-sm font-medium bg-white border border-gray-300 rounded shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-accent" download>
-          Download: Bus1 Verification Checklist (placeholder)
-        </a>
-        <p class="mt-2 text-sm text-gray-600">This file path is a placeholder; all files will be replaced by versions hosted on GitHub.</p>
-      </div>
-    </section>
-
-    <!-- Assets -->
-    <section id="panel-assets" role="tabpanel" aria-labelledby="tab-assets" class="hidden bg-white rounded-md shadow p-6">
-      <div class="prose max-w-none">
-        <h2>Asset Register (images, files, links)</h2>
-        <p>All embedded content uses <strong>relative URLs</strong> now. Images live under <code>images/</code>; files under <code>files/</code>. Canvas links, images, and files will be replaced with GitHub-hosted versions. Use this table to track replacements.</p>
-      </div>
-      <div class="overflow-x-auto mt-4">
-        <table class="min-w-full text-sm">
-          <thead class="bg-gray-50">
-            <tr>
-              <th class="text-left px-3 py-2 font-semibold">Type</th>
-              <th class="text-left px-3 py-2 font-semibold">Title / Alt</th>
-              <th class="text-left px-3 py-2 font-semibold">Current Relative URL</th>
-              <th class="text-left px-3 py-2 font-semibold">Planned GitHub URL (placeholder)</th>
-            </tr>
-          </thead>
-          <tbody class="divide-y divide-gray-200">
-            <tr>
-              <td class="px-3 py-2">Image</td>
-              <td class="px-3 py-2">Bus 1 circuit diagram</td>
-              <td class="px-3 py-2 break-all">images/2020-04-27_bus1_4.jpg</td>
-              <td class="px-3 py-2 text-gray-500 break-all">https://github.com/ORG/REPO/assets/circuits/bus1/2020-04-27_bus1_4.jpg</td>
-            </tr>
-            <tr>
-              <td class="px-3 py-2">File</td>
-              <td class="px-3 py-2">Bus1 Verification Checklist (PDF)</td>
-              <td class="px-3 py-2 break-all">files/bus1-verification-checklist.pdf</td>
-              <td class="px-3 py-2 text-gray-500 break-all">https://github.com/ORG/REPO/files/bus1/bus1-verification-checklist.pdf</td>
-            </tr>
-            <tr>
-              <td class="px-3 py-2">Hyperlink</td>
-              <td class="px-3 py-2">Canvas reference (to be replaced)</td>
-              <td class="px-3 py-2 break-all">(none in page now)</td>
-              <td class="px-3 py-2 text-gray-500 break-all">https://github.com/ORG/REPO/wiki/canvas-replacement-links</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </section>
-  </main>
-
-  <footer class="mt-8 border-t border-gray-200">
-    <div class="max-w-4xl mx-auto px-4 py-6 text-sm text-gray-600">Light theme enforced • No persistent storage • Placeholders for media use <code>images/</code> and <code>files/</code> and will migrate to GitHub.</div>
-  </footer>
-
-  <script>
-    // Accessible tabs
-    (function(){
-      const tabs = [
-        {btn: document.getElementById('tab-overview'), panel: document.getElementById('panel-overview')},
-        {btn: document.getElementById('tab-design'), panel: document.getElementById('panel-design')},
-        {btn: document.getElementById('tab-testing'), panel: document.getElementById('panel-testing')},
-        {btn: document.getElementById('tab-assets'), panel: document.getElementById('panel-assets')}
-      ];
-      function activate(i){
-        tabs.forEach((t, idx) => {
-          const sel = idx===i;
-          t.btn.setAttribute('aria-selected', sel);
-          t.btn.classList.toggle('bg-white', sel);
-          t.btn.classList.toggle('bg-gray-100', !sel);
-          t.panel.classList.toggle('hidden', !sel);
-          t.panel.classList.toggle('block', sel);
-        });
-      }
-      tabs.forEach((t, i) => t.btn.addEventListener('click', () => activate(i)) );
-    })();
-  </script>
+</main>
+<footer class="p-4 border-t border-gray-300 text-sm text-gray-600">
+  &copy; 2025 Bus 1 Circuit Guide
+</footer>
 </body>
 </html>
