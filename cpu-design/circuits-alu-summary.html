@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Circuits: ALU Summary</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        // MANDATORY: Configure Tailwind to include the Typography plugin.
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                },
+            },
+            plugins: [
+                require('@tailwindcss/typography'),
+            ],
+        }
+    </script>
+    <style>
+        /* STRICT LIGHT THEME MANDATE: Overrides dark mode settings */
+        html { 
+            font-family: 'Inter', sans-serif; 
+            background-color: #FDFBF8; 
+            color: #1A1A1A; 
+        }
+        @media (prefers-color-scheme: dark) {
+            html {
+                background-color: #FDFBF8 !important; 
+                color: #1A1A1A !important; 
+            }
+        }
+        /* Custom class for Skip Link (visible on focus) */
+        .skip-link {
+            position: absolute;
+            top: -40px;
+            left: 0;
+            background: #1A1A1A;
+            color: white;
+            padding: 8px;
+            z-index: 100;
+            transition: top 0.3s;
+        }
+        .skip-link:focus {
+            top: 0;
+        }
+    </style>
+    
+    </head>
+<body class="bg-[#FDFBF8] text-[#1A1A1A]">
+    <a id="skip-to-content" href="#main-content" class="skip-link" tabindex="0">Skip to Content</a>
+    
+    <header class="bg-white shadow-md p-4 sticky top-0 z-10">
+        <div class="max-w-4xl mx-auto">
+            <h1 class="text-2xl font-bold text-[#1A1A1A]">Circuits: ALU Summary</h1>
+        </div>
+    </header>
+
+    <main id="main-content" class="p-4 sm:p-6 lg:p-8 max-w-4xl mx-auto">
+        
+        <h1 class="text-4xl font-extrabold mb-8 text-blue-700">Arithmetic Logic Unit (ALU) Summary</h1>
+
+        <section class="mb-8 p-6 bg-white rounded-xl shadow-lg">
+            <div class="prose max-w-none">
+                <p>This flowchart describes a recommended path to the creation of our ALU.</p>
+                
+                <div class="flex justify-center my-6">
+                    <img src="images/ALU_flowchart.jpg" alt="Flowchart describing the recommended path for creating the ALU" class="max-w-full h-auto rounded-lg shadow-md border border-gray-300">
+                </div>
+
+                <h2 class="text-2xl font-bold mt-6 mb-4">ALU Individual Operations</h2>
+                <p>The first 8 boxes of this flowchart are the individual operations that our ALU will be capable of performing. You can create these in any order you wish. The following pages describe how to create a circuit for each operation (NOTE: As you build these, you should make sure to test each one and verify that it works properly):</p>
+                
+                <ul class="list-disc list-inside space-y-2">
+                    <li><a href="circuits-adder.html" class="text-blue-600 hover:text-blue-800">Add two 8 bit values to one another</a></li>
+                    <li><a href="circuits-shift-left-slash-shift-right.html" class="text-blue-600 hover:text-blue-800">Shift Left and Shift Right</a></li>
+                    <li><a href="circuits-and-or-not-functions.html" class="text-blue-600 hover:text-blue-800">NOT Function</a></li>
+                    <li><a href="circuits-and-or-not-functions.html" class="text-blue-600 hover:text-blue-800">AND Function</a></li>
+                    <li><a href="circuits-and-or-not-functions.html" class="text-blue-600 hover:text-blue-800">OR Function</a></li>
+                    <li><a href="circuits-xor-comparator.html" class="text-blue-600 hover:text-blue-800">XOR Comparator</a></li>
+                    <li><a href="circuits-zero-function.html" class="text-blue-600 hover:text-blue-800">Zero Function</a> (tells when all values equal 0 for an 8 bit)</li>
+                </ul>
+
+                <h2 class="text-2xl font-bold mt-6 mb-4">ALU Assembly Overview (Video)</h2>
+                <p>The ALU itself does each of the defined tasks above. In actuality, all of the above functions are performed on every set of inputs, A and B, but we control which result goes to the output based upon the desired operation.</p>
+                
+                <div class="mt-4">
+                    <div class="flex justify-center my-4">
+                        <div class="max-w-full" style="width: 700px; max-width: 100%;">
+                            <iframe width="700" height="394" src="https://www.youtube.com/embed/kfTSLdBfAs0" 
+                                    title="Overview Video for ALU Creation" 
+                                    frameborder="0" 
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                                    referrerpolicy="strict-origin-when-cross-origin" 
+                                    allowfullscreen 
+                                    class="w-full h-auto rounded-lg shadow-xl border border-gray-300">
+                            </iframe>
+                        </div>
+                    </div>
+                    <p class="text-sm mt-2 text-center">Video: **Overview Video for ALU Creation**</p>
+                    <p class="text-sm text-center"><a href="files/ALU_Creation_Transcript.srt" class="text-blue-600 hover:text-blue-800">Download Timed Transcript (.srt) (Placeholder)</a></p>
+                </div>
+                
+                <h2 class="text-2xl font-bold mt-6 mb-4">Completed ALU Circuit Diagram</h2>
+                <p>The circuit diagram for our ALU might look like this once completed, incorporating all the individual operation circuits:</p>
+                
+                <div class="flex justify-center my-6">
+                    <img src="images/ALU_circuit_diagram.jpg" alt="Completed ALU circuit diagram showing all operations combined" class="max-w-full h-auto rounded-lg shadow-md border border-gray-300">
+                </div>
+
+                <h3 class="text-xl font-semibold mt-6 mb-2">ALU Circuit Appearance for CPU Integration</h3>
+                <p>You will want to redraw your circuit for use in the CPU to something similar to this, with the following defined inputs and outputs:</p>
+                
+                <div class="flex justify-center my-6">
+                    <img src="images/ALU_circuit_appearance_old.jpg" alt="ALU circuit appearance for inclusion at higher level" class="max-w-xs h-auto rounded-lg shadow-md border border-gray-300">
+                </div>
+                
+                <ul class="list-disc list-inside space-y-2">
+                    <li>**A and B:** The 8-bit inputs.</li>
+                    <li>**OPM (Operation Mode):** The 3 bits to determine which function you want.</li>
+                    <li>**CI (Carry In):** The carry-in bit.</li>
+                    <li>**CO (Carry Out):** The Carry Out bit.</li>
+                    <li>**AL:** The "A Larger" output flag.</li>
+                    <li>**EQ:** The "Equal" output flag.</li>
+                    <li>**Z:** The "Zero" output flag.</li>
+                    <li>**C:** The 8-bit result or output from the selected operation.</li>
+                </ul>
+
+                <h2 class="text-2xl font-bold mt-6 mb-4">Internal ALU Operations and Control</h2>
+                <p>I wanted to provide a bit more information on how the ALU works internally. In particular, I want to discuss how the 3-to-8 decoder selects the operation we are performing, and how the carry-in/carry-out and shift-in/shift-out works.</p>
+                
+                <p>Functionally, we place an **8-bit Enable circuit** on the output to each of our processing functions (Add, Shift-Right, Shift-Left, ...). We use this to choose which operation we want the ALU to perform (which output we want from the ALU, since it actually performs all 7 operations simultaneously with the current inputs). Note that the **"Is Zero?"** function is attached to the output wire and is always calculated regardless of what operation we are performing.</p>
+                
+                <div class="flex justify-center my-6">
+                    <img src="images/alu-circuit-diagram-internal.png" alt="Internal ALU circuit diagram showing enable circuits and opm decoder" class="max-w-full h-auto rounded-lg shadow-md border border-gray-300">
+                </div>
+
+                <h3 class="text-xl font-semibold mt-6 mb-2">Enable Circuit and Opcode Decoder</h3>
+                <p>The key to the "Enable" circuit is that the single "enable" bit is tied to a **3-to-8 decoder** as shown in the image below. You want to make sure to tie the "output 0, or 000" to the output side of the ADDER circuit. The input to the 3-to-8 decoder is the opcode for our CPU. Right now, we have the input defined as "ABC" so when the values are "000" we want to ADD, "001" we want to SHIFT-RIGHT, "010" - SHIFT LEFT, ... as specified in the lecture. You can see these enable circuit connections better in the following 2 diagrams.</p>
+
+                <h3 class="text-xl font-semibold mt-6 mb-2">Carry/Shift Bits</h3>
+                <p>The **"carry-in"** bit in our ALU also serves as the **"shift-in"** bit for the shift operations. Similarly, the **"carry-out"** bit also serves as the **"shift-out"** bit for shift operations. Since we can only do one operation at a time, we can reuse these two bits in this manner.</p>
+                
+                <p>In order to ensure we get the correct output bit, we **AND** the carry-out or shift-out bit with the "enable" signal from the 3-to-8 decoder. When the operation is not in use, this means a 0 is on this output wire. When the enable signal is 1, then we are using this signal as our carry/shift out bit. Similar to how we used the 8-bit enable to decide which output to send to the ALU output, we can decide which of the carry-out or shift-out bits we want by adding a **"Controlled Buffer"** to the output of the AND gate we added. This controlled buffer will be "Open" when that circuit is enabled. In the blown-up image below, we are sending the result of "A + B" to the output and the carry-out from this operation to the carry-out bit for the ALU.</p>
+                
+                <div class="flex justify-center my-6">
+                    <img src="images/alu-adder-shr-shl-carry-out.png" alt="Detail of ALU showing Adder, Shift Right, and Shift Left carry-out logic" class="max-w-full h-auto rounded-lg shadow-md border border-gray-300">
+                </div>
+                
+                <p>The image below shows the "8-bit Enable" circuit on the output leg for the NOT, AND, OR, and XOR operations.</p>
+                
+                <div class="flex justify-center my-6">
+                    <img src="images/alu-not-and-or-xor.png" alt="Detail of ALU showing 8-bit Enable circuits for NOT, AND, OR, and XOR operations" class="max-w-full h-auto rounded-lg shadow-md border border-gray-300">
+                </div>
+
+                <h3 class="text-xl font-semibold mt-6 mb-2">Final Revised ALU Circuit Appearance</h3>
+                <p>Lastly, I updated the ALU circuit appearance to more clearly identify the 3 inputs to the 3-to-8 decoder by replacing the code work "opm" with "opcode" and specifically identifying which of the 3 is A, B, and C (A is top one, B is middle one, and C is bottom input of the 3).</p>
+                
+                <div class="flex justify-center my-6">
+                    <img src="images/revised-alu-circuit-appearance.png" alt="Revised ALU circuit appearance with clearer opcode labels" class="max-w-xs h-auto rounded-lg shadow-md border border-gray-300">
+                </div>
+                
+            </div>
+        </section>
+
+        <footer class="mt-8 pt-4 border-t border-gray-300 text-center text-sm text-gray-500">
+            <div class="prose max-w-none mx-auto">
+                <p class="text-xs italic">Ref: This project adapted from "Design a CPU" by Ross McGowan (On Udemy)</p>
+            </div>
+        </footer>
+    </main>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Placeholder for session-only JavaScript logic.
+            let progressState = {}; 
+        });
+    </script>
+</body>
+</html>
