@@ -182,7 +182,10 @@
 </head>
 <body>
   <!-- Skip link -->
-  <a href="#main-content" class="sr-only focus:not-sr-only p-3 bg-card rounded">Skip class="title">Week 13: CPU Integration — Instruction Execution Tracer</h1>
+  <a href="#main-content" class="sr-only focus:not-sr-only p-3 bg-card rounded">Skip to main content</a>
+  <header>
+    <div class="container max-w-4xl py-6">
+      <h1 class="title">Week 13: CPU Integration — Instruction Execution Tracer</h1>
       <p class="text-muted mt-2">Bring the pieces together: watch MOV, ADD, and SUB flow through fetch–decode–execute, control signals, and the shared bus.</p>
       <div class="callout rounded p-4 mt-4 shadow" role="note" aria-label="Learning objective">
         <p class="font-semibold">Learning Objective</p>
@@ -1324,11 +1327,11 @@ function renderQuiz(){
         <span>${o}</span>
       </label>`).join("");
 
-    card.innerHTML = `
+    card.innerHTML = '
       <div class="font-semibold mb-2">${idx+1}. ${q.question}</div>
       <div class="grid grid-cols-1 gap-2">${optionsHtml}</div>
       <div class="flex items-center gap-2 mt-3">
-        <button class="btn" data-action="check" data-qid="${q.id}" aria-label="Check answer for question ${idx+1}">Check</buttonanation for question ${idx+1}">Why?</button>
+        <button class="btn" data-action="check" data-qid="${q.id}" aria-label="Check answer for question ${idx+1}">Check</buttonanation for question ${idx+1}">Why?</button>'
 .appendChild(card);
   });
 }
