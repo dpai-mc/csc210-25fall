@@ -1326,9 +1326,11 @@ C3: IMM_OUT, R1_IN</pre></li>
       setText($("#QuizScore"), `Score: ${quizScore}/${quizQuestions.length}`);
     }
 
-    function renderQuiz() {
+function renderQuiz() {
+  // reset score and UI
   quizScore = 0;
   updateQuizScore();
+
   const container = $("#QuizContainer");
   container.innerHTML = "";
 
@@ -1337,19 +1339,38 @@ C3: IMM_OUT, R1_IN</pre></li>
     card.className = "quiz-card";
     card.id = `card-${q.id}`;
 
+    // options
     const optionsHtml = q.options.map((o, i) => `
       <label class="option" for="${q.id}-${i}">
-        <input type="radio" name="${q.id}" id="${q.id}-${i}" value="${i}" aria-label="Option ${i+1}">
+        <input
+          type="radio"
+          name="${q.id}"
+          id="${q.id}-${i}"
+          value="${i}"
+          aria-label="Option ${i + 1}"
+        />
         <span>${o}</span>
       </label>
     `).join("");
 
+    // card content with REAL buttons
     card.innerHTML = `
       <div class="font-semibold mb-2">${idx + 1}. ${q.question}</div>
-      <div class="grid grid-cols-1 gap-2">${optionsHtml}</div>
+      <div class="grid grid-cols-1 gap-2">
+        ${optionsHtml}
+      </div>
+
       <div class="flex items-center gap-2 mt-3">
-        <button type="button" class="btn" data-action="check" data-qid="${q.id}" aria-label="Checkin" data-qid="${q.id}" aria-label="Show explanationiv>
+        <button
+          type="button"
+          class="btn"
+          data-action="check"
+          data-qid="${q.id}"
+          aria-label="t-3 hidden" id="exp-${q.id}">
+        ${q.explanation}
+      </div>
     `;
+
     container.appendChild(card);
   });
 }
