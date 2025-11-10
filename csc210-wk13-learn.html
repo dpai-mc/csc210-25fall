@@ -1,55 +1,34 @@
 
 <!doctype html>
-<!--
-  Single-file Interactive Learning Guide
-  Sources:
-    - [Interactive-Learning-Guide-Specification-final.md](https://mendocinocollege-my.sharepoint.com/personal/dpai_mendocino_edu/Documents/Microsoft%20Copilot%20Chat%20Files/Interactive-Learning-Guide-Specification-final.md?EntityRepresentationId=8ff969d0-8391-4782-a794-c077b59502b1) [1](https://mendocinocollege-my.sharepoint.com/personal/dpai_mendocino_edu/Documents/Microsoft%20Copilot%20Chat%20Files/Interactive-Learning-Guide-Specification-final.md)
-    - [phase3-content-integration-rules.md](https://mendocinocollege-my.sharepoint.com/personal/dpai_mendocino_edu/Documents/Microsoft%20Copilot%20Chat%20Files/phase3-content-integration-rules.md?EntityRepresentationId=6365a9c5-e0a3-4fad-9682-3c22c8983fe6) [2](https://mendocinocollege-my.sharepoint.com/personal/dpai_mendocino_edu/Documents/Microsoft%20Copilot%20Chat%20Files/phase3-content-integration-rules.md)
-    - [wk13-student-facing-content.md](https://mendocinocollege-my.sharepoint.com/personal/dpai_mendocino_edu/Documents/Microsoft%20Copilot%20Chat%20Files/wk13-student-facing-content.md?EntityRepresentationId=78e4066c-1543-4bd8-bdb3-abd7fe9c6358)  (Sections 1–4 integrated; Sections 2 & 3 retained in full as mandated) [3](https://mendocinocollege-my.sharepoint.com/personal/dpai_mendocino_edu/Documents/Microsoft%20Copilot%20Chat%20Files/wk13-student-facing-content.md)
-  Notes:
-    - STRICT LIGHT THEME enforced; no persistence (no localStorage/sessionStorage/cookies).
-    - ARIA-compliant tabbed navigation; keyboard accessible.
--->
 <html lang="en" data-theme="light">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Week 13: CPU Integration — Instruction Execution Tracer</title>
 
-  <!-- FORCE LIGHT THEME; NO DARK MODE -->
+  <!-- Enforce strict light theme -->
   <meta name="color-scheme" content="light">
+
   <style>
-    /*
-      Minimal embedded utility-first CSS subset inspired by Tailwind (no external deps).
-      Only utilities used by this guide are included to keep file size reasonable.
-      Color palette & typography follow the spec:
-        Background: #FDFBF8 (near-white)
-        Text: #1A1A1A (near-black)
-        Primary (headers): #1a365d
-        Accent (interactive): #0694a2
-        Bus Active: #fbbf24
-        Signal Active: #10b981
-        Signal Inactive: #9ca3af
-    */
+    /* ========= THEME / TOKENS ========= */
     :root{
-      --bg: #FDFBF8;
+      --bg: #FDFBF8;          /* near-white background */
       --bg-section:#ffffff;
-      --text:#1A1A1A;
-      --primary:#1a365d;
-      --accent:#0694a2;
-      --muted:#f7fafc;
-      --bus:#fbbf24;
-      --sig-on:#10b981;
-      --sig-off:#9ca3af;
-      --ring:#2563eb;
+      --text:#1A1A1A;         /* near-black text */
+      --primary:#1a365d;      /* headers */
+      --accent:#0694a2;       /* interactive accents */
+      --muted:#f7fafc;        /* soft panels */
+      --bus:#fbbf24;          /* bus highlight */
+      --sig-on:#10b981;       /* signal active */
+      --sig-off:#9ca3af;      /* signal inactive */
+      --ring:#2563eb;         /* focus ring */
     }
-    /* Strict light regardless of user preference */
     html, body { background: var(--bg) !important; color: var(--text) !important; }
     @media (prefers-color-scheme: dark){
       html, body { background: var(--bg) !important; color: var(--text) !important; }
     }
 
-    /* Basic reset / base */
+    /* ========= BASE / UTILITIES ========= */
     *{ box-sizing:border-box; }
     html:focus-within { scroll-behavior: smooth; }
     body{
@@ -60,11 +39,9 @@
     img{ max-width:100%; display:block; }
     button, select{ font: inherit; }
     button{ cursor: pointer; }
-    /* Focus visibility */
     :focus{ outline: none; }
     :focus-visible{ outline: 3px solid var(--ring); outline-offset: 2px; border-radius: 6px; }
 
-    /* Container & layout utilities */
     .container{ max-width: 1200px; margin-inline:auto; padding: 1rem; }
     .max-w-4xl{ max-width: 64rem; }
     .mx-auto{ margin-inline:auto; }
@@ -94,7 +71,7 @@
     .hidden{ display:none !important; }
     .sr-only{ position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0; }
 
-    /* Typography "prose" container (content text styling mandate) */
+    /* ========= PROSE (content text styling mandate) ========= */
     .prose{
       font-size:1.0625rem;
       color: var(--text);
@@ -103,29 +80,18 @@
     .prose h1{ font-size:2rem; margin:1.2em 0 .6em;}
     .prose h2{ font-size:1.5rem; margin:1em 0 .5em;}
     .prose h3{ font-size:1.25rem; margin:.8em 0 .4em;}
+    .prose h4{ font-size:1.1rem; margin:.75em 0 .4em; color:#0f172a; }
     .prose p{ margin:.7em 0; }
     .prose ul, .prose ol{ margin:.8em 0 .8em 1.25em; }
     .prose li{ margin:.3em 0; }
     .prose code, .mono{ font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; background:#fff6; padding:.1em .3em; border-radius:.25rem }
 
-    /* Header */
+    /* ========= HEADER ========= */
     header{ background: var(--bg-section); border-bottom: 1px solid #e5e7eb; }
     .title{ font-size:1.875rem; color: var(--primary); margin:0; }
-
-    /* Callout box */
     .callout{ border-left: 6px solid var(--accent); background: #ecfeff; }
 
-    /* Control panel */
-    .btn{
-      background: var(--accent); color:#fff; border:none; padding:.6rem 1rem; border-radius:.6rem;
-      transition: filter .2s ease, transform .02s ease; font-weight:600;
-    }
-    .btn:disabled{ background: #9ccfd3; cursor:not-allowed; opacity:.7; }
-    .btn.secondary{ background:#e2e8f0; color:#111827; }
-    .btn:active{ transform: translateY(1px); }
-    .badge{ display:inline-block; padding:.2rem .55rem; border-radius:999px; background:#e5f6f7; color:var(--accent); font-weight:600; }
-
-    /* Tabs (ARIA) */
+    /* ========= TABS ========= */
     .tabs{ border-bottom:1px solid #e5e7eb; }
     .tab{
       appearance:none; background:none; border:none; color:#374151; padding:.75rem 1rem; margin:0 .25rem; border-radius:.6rem .6rem 0 0;
@@ -137,10 +103,23 @@
     }
     .tabpanel{ border:1px solid #e5e7eb; border-top:none; padding:1rem; background: var(--bg-section); border-radius: 0 .75rem .75rem .75rem; }
 
-    /* CPU Visualization */
+    /* ========= LAYOUT ========= */
     .cpu-grid{ display:grid; grid-template-columns: 260px 1fr 290px; gap:1rem; }
     .cpu-canvas{ background: var(--muted); border:1px solid #e5e7eb; border-radius:.75rem; padding:1rem; }
+
     .bank{ display:grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap:.75rem; }
+
+    /* Special Registers: wrap to avoid overlap at large widths */
+    .specials-grid{
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0,1fr)); /* PC, IR top; MAR, TMP below; then ACC, FLAGS */
+      gap: .75rem;
+    }
+    @media (max-width: 900px){
+      .specials-grid{ grid-template-columns: 1fr; }
+    }
+
+    /* ========= COMPONENT CARDS ========= */
     .reg, .special, .alu, .mem{
       background: var(--bg-section); border:1px solid #e5e7eb; border-radius:.6rem; padding:.5rem .6rem;
       display:flex; flex-direction:column; gap:.35rem; min-height:64px; position:relative;
@@ -148,11 +127,14 @@
     }
     .reg .label, .special .label, .alu .label, .mem .label{ font-size:.85rem; color:#374151; }
     .reg .val, .special .val, .alu .val, .mem .val{ font-weight:700; color:#111827; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono"; }
+    .alu-op{ font-size:.9rem; font-weight:700; color: var(--accent); }
+
+    /* Visual effects */
     .glow-output{ box-shadow: 0 0 0 3px rgba(251,191,36,.35), 0 0 0 6px rgba(251,191,36,.2); }
     .flash-capture{ animation: flash .4s ease; }
     @keyframes flash{ from{ background:#ecfdf5 } to{ background:var(--bg-section) } }
-    .alu-op{ font-size:.9rem; font-weight:700; color: var(--accent); }
-    /* Data bus */
+
+    /* ========= BUS ========= */
     .bus{
       height: 10px; background: #fef3c7; border:1px solid #fde68a; border-radius:999px; position:relative; margin-block: 1rem; box-shadow: inset 0 0 0 2px rgba(251,191,36,.2);
     }
@@ -162,24 +144,24 @@
     }
     .bus.active .bus-label{ display:block; }
 
-    /* Control signals */
+    /* ========= SIGNALS ========= */
     .signals{ background: var(--bg-section); border:1px solid #e5e7eb; border-radius:.75rem; padding:.75rem; max-height: 560px; overflow:auto; }
     .signal{ display:flex; align-items:center; justify-content:space-between; padding:.35rem .4rem; border-radius:.5rem; }
     .sig-light{ width:14px; height:14px; border-radius:999px; background: var(--sig-off); box-shadow: inset 0 0 0 2px rgba(0,0,0,.05); margin-left:.5rem; }
     .signal.active{ background:#f0fdf4; }
     .signal.active .sig-light{ background: var(--sig-on); }
 
-    /* Execution log */
+    /* ========= LOG ========= */
     .log{ background: var(--bg-section); border:1px solid #e5e7eb; border-radius:.75rem; padding:.75rem; height: 220px; overflow:auto; font-size:.95rem; }
     .log-entry{ border-bottom:1px dashed #e5e7eb; padding:.35rem 0; }
     .log-entry:last-child{ border-bottom:none; }
 
-    /* FLAGS bits */
+    /* ========= FLAGS ========= */
     .flags{ display:flex; gap:.35rem; }
     .flag-bit{ min-width:28px; text-align:center; padding:.2rem .25rem; border-radius:.35rem; border:1px solid #e5e7eb; background:#fff; font-weight:700; }
     .flag-on{ background:#dcfce7; border-color:#86efac; color:#166534; }
 
-    /* Quiz */
+    /* ========= QUIZ ========= */
     .quiz-card{ background: var(--bg-section); border:1px solid #e5e7eb; border-radius:.75rem; padding:1rem; }
     .option{ display:flex; align-items:center; gap:.6rem; padding:.45rem .6rem; border-radius:.6rem; border:1px solid #e5e7eb; }
     .option input{ accent-color: var(--accent); }
@@ -187,7 +169,7 @@
     .incorrect{ background:#fef2f2; border-color:#ef4444; }
     .explanation{ font-size:.95rem; color:#374151; background:#f9fafb; border-left:4px solid var(--accent); padding:.5rem .75rem; border-radius:.4rem; }
 
-    /* Responsive */
+    /* ========= RESPONSIVE BREAKPOINTS ========= */
     @media (max-width: 1024px){
       .cpu-grid{ grid-template-columns: 1fr; }
     }
@@ -200,10 +182,7 @@
 </head>
 <body>
   <!-- Skip link -->
-  <a id="skip" class="sr-only" href="#main-content">Skip to Content</a>
-
->
-      <h1 class="title">Week 13: CPU Integration — Instruction Execution Tracer</h1>
+  <a href="#main-content" class="sr-only focus:not-sr-only p-3 bg-card rounded">Skip class="title">Week 13: CPU Integration — Instruction Execution Tracer</h1>
       <p class="text-muted mt-2">Bring the pieces together: watch MOV, ADD, and SUB flow through fetch–decode–execute, control signals, and the shared bus.</p>
       <div class="callout rounded p-4 mt-4 shadow" role="note" aria-label="Learning objective">
         <p class="font-semibold">Learning Objective</p>
@@ -213,36 +192,17 @@
   </header>
 
   <main id="main-content" class="container max-w-4xl">
-    <!-- Modular Tab Navigation (ARIA) -->
+    <!-- Tabs -->
     <div class="mt-8">
       <div class="tabs" role="tablist" aria-label="Module sections">
-        <button id="tab-overview" class="tab" role="tab" aria-selected="true" aria-controls="panel-overview" tabindex="0">1) Overview & Persona</button>
-        <button id="tab-foundations" class="tab" role="tab" aria-selected="false" aria-controls="panel-foundations" tabindex="-1">2) Foundational Concepts</button>
-        <button id="tab-walkthrough" class="tab" role="tab" aria-selected="false" aria-controls="panel-walkthrough" tabindex="-1">3) Activity Walkthrough</button>
-        <button id="tab-activity" class="tab" role="tab" aria-selected="false" aria-controls="panel-activity" tabindex="-1">4) Interactive Activity</button>
-        <button id="tab-quiz" class="tab" role="tab" aria-selected="false" aria-controls="panel-quiz" tabindex="-1">5) Quiz</button>
+        <button id="tab-foundations" class="tab" role="tab" aria-selected="true" aria-controls="panel-foundations" tabindex="0">1) Foundational Concepts</button>
+        <button id="tab-walkthrough" class="tab" role="tab" aria-selected="false" aria-controls="panel-walkthrough" tabindex="-1">2) Activity Walkthrough</button>
+        <button id="tab-activity" class="tab" role="tab" aria-selected="false" aria-controls="panel-activity" tabindex="-1">3) Interactive Activity</button>
+        <button id="tab-quiz" class="tab" role="tab" aria-selected="false" aria-controls="panel-quiz" tabindex="-1">4) Quiz</button>
       </div>
 
-      <!-- PANEL: 1 Overview & Persona (Section 1.0 full text) -->
-      <section id="panel-overview" class="tabpanel">
-        <div class="prose">
-          <h2>1. Learning Objective &amp; Persona</h2>
-          <h3>Learning Objective:</h3>
-          <p>By completing this interactive module, students will be able to trace the complete execution of MOV, ADD, and SUB instructions through the fetch‑decode‑execute cycle, identifying which control signals activate during each clock cycle and understanding how data flows through the CPU's bus architecture to accomplish each instruction.</p>
-          <h3>Persona &amp; Tone:</h3>
-          <ul>
-            <li><strong>Voice:</strong> Encouraging, clear, and technically precise without being overwhelming</li>
-            <li><strong>Approach:</strong> Guide students like a patient mentor who celebrates their “aha!” moments</li>
-            <li><strong>Complexity:</strong> Assume students have completed Weeks 1–12 and understand individual CPU components (ALU, registers, control unit, memory)</li>
-            <li><strong>Engagement Strategy:</strong> Use concrete visualizations and step‑by‑step revelation to build confidence</li>
-            <li><strong>Language Level:</strong> Upper‑division undergraduate computer science—technical but accessible</li>
-            <li><strong>Motivation Style:</strong> Emphasize that they're witnessing the “magic moment” where components become a computer</li>
-          </ul>
-        </div>
-      </section>
-
-      <!-- PANEL: 2 Foundational Concepts (Section 2.0 — FULL TEXT, unabridged) -->
-      <section id="panel-foundations" class="tabpanel hidden" aria-labelledby="tab-foundations">
+      <!-- PANEL: Foundational Concepts (FULL Section 2 text) -->
+      <section id="panel-foundations" class="tabpanel" aria-labelledby="tab-foundations">
         <div class="prose">
           <h2>2. Foundational Concept Explanation (Student Text)</h2>
 
@@ -396,7 +356,7 @@
         </div>
       </section>
 
-      <!-- PANEL: 3 Activity Walkthrough (Section 3.0 — FULL TEXT, unabridged) -->
+      <!-- PANEL: Activity Walkthrough (FULL Section 3 text) -->
       <section id="panel-walkthrough" class="tabpanel hidden" aria-labelledby="tab-walkthrough">
         <div class="prose">
           <h2>3. Activity Walkthrough &amp; Explanation (Student Text)</h2>
@@ -622,7 +582,7 @@ Cycle 3: IMM_OUT, R1_IN</pre>
         </div>
       </section>
 
-      <!-- PANEL: 4 Interactive Activity (Section 4.0 JSON-driven simulator) -->
+      <!-- PANEL: Interactive Activity -->
       <section id="panel-activity" class="tabpanel hidden" aria-labelledby="tab-activity">
         <div class="grid" style="gap:1.25rem">
           <!-- Control panel -->
@@ -643,11 +603,10 @@ Cycle 3: IMM_OUT, R1_IN</pre>
             </div>
           </section>
 
-          <!-- Main visualization and signals -->
+          <!-- Main visualization + signals -->
           <div class="cpu-grid">
-            <!-- Left: CPU Canvas -->
+            <!-- Canvas -->
             <section class="cpu-canvas" aria-label="CPU visualization">
-              <!-- Registers -->
               <h3 class="text-primary" style="margin:.25rem 0 .5rem">General Registers</h3>
               <div class="bank" id="regBank">
                 <div class="reg" id="R0" aria-live="polite"><div class="label">R0</div><div class="val mono">0x00</div></div>
@@ -656,9 +615,8 @@ Cycle 3: IMM_OUT, R1_IN</pre>
                 <div class="reg" id="R3" aria-live="polite"><div class="label">R3</div><div class="val mono">0x00</div></div>
               </div>
 
-              <!-- Special registers -->
               <h3 class="text-primary mt-6" style="margin:.75rem 0 .5rem">Special Registers</h3>
-              <div class="grid grid-cols-4">
+              <div class="specials-grid">
                 <div class="special" id="PC"><div class="label">PC</div><div class="val mono">0x00</div></div>
                 <div class="special" id="IR"><div class="label">IR</div><div class="val mono">0x00</div></div>
                 <div class="special" id="MAR"><div class="label">MAR</div><div class="val mono">0x00</div></div>
@@ -705,7 +663,7 @@ Cycle 3: IMM_OUT, R1_IN</pre>
               </div>
             </section>
 
-            <!-- Right: Control Signals -->
+            <!-- Signals -->
             <aside class="signals" aria-label="Control signals panel">
               <h3 class="text-primary" style="margin-top:.25rem">Control Signals</h3>
               <div id="SignalsList" class="mt-2" role="list"></div>
@@ -717,7 +675,7 @@ Cycle 3: IMM_OUT, R1_IN</pre>
         </div>
       </section>
 
-      <!-- PANEL: 5 Quiz -->
+      <!-- PANEL: Quiz -->
       <section id="panel-quiz" class="tabpanel hidden" aria-labelledby="tab-quiz">
         <div id="QuizContainer" class="grid grid-cols-1 gap-4"></div>
         <div class="flex items-center gap-3 mt-4">
@@ -728,755 +686,722 @@ Cycle 3: IMM_OUT, R1_IN</pre>
     </div>
   </main>
 
-  <!-- Inline JavaScript (no persistence; session variables only) -->
+  <!-- External JS (all interactivity lives here; no persistence used) -->
   <script>
-  // -------------------------
-  // Data from Section 4.0 (normalized to valid JS objects)
-  // -------------------------
-  const instructionData = {
-    instructions: [
-      {
-        id: "mov_imm",
-        assembly: "MOV R1, #5",
-        binary: "00101101",
-        encoding: { opcode: "001", destination: "01", source: "10", mode: "1" },
-        description: "Move immediate value 5 into register R1",
-        initialState: {
-          PC: "0x10", R0: "0x00", R1: "0x00", R2: "0x00", R3: "0x00",
-          IR: "0x00", MAR: "0x00", TMP: "0x00", ACC: "0x00", FLAGS: "0x00",
-          memory: { "0x10": "0x2D" }
+    // cpu-integration-guide.js
+// All interactivity for the Instruction Execution Tracer
+// No persistence (no localStorage/sessionStorage/cookies)
+
+// -------------------------
+// Data (from Section 4)
+// -------------------------
+const instructionData = {
+  instructions: [
+    {
+      id: "mov_imm",
+      assembly: "MOV R1, #5",
+      binary: "00101101",
+      encoding: { opcode: "001", destination: "01", source: "10", mode: "1" },
+      description: "Move immediate value 5 into register R1",
+      initialState: {
+        PC: "0x10", R0: "0x00", R1: "0x00", R2: "0x00", R3: "0x00",
+        IR: "0x00", MAR: "0x00", TMP: "0x00", ACC: "0x00", FLAGS: "0x00",
+        memory: { "0x10": "0x2D" }
+      },
+      cycles: [
+        {
+          cycleNumber: 1, phase: "FETCH", clockPhase:"full-cycle",
+          activeSignals: ["PC_OUT","MAR_IN","MEM_READ","IR_IN","PC_INC"],
+          busActivity: [
+            { timePoint:"first-half", value:"0x10", source:"PC", description:"PC outputs address onto bus" },
+            { timePoint:"second-half", value:"0x2D", source:"Memory", description:"Memory outputs instruction onto bus" }
+          ],
+          registerUpdates: { MAR:"0x10", IR:"0x2D", PC:"0x11" },
+          logMessage: "Cycle 1: FETCH\n- PC outputs address 0x10 onto bus\n- MAR captures address 0x10\n- Memory reads from address 0x10\n- Instruction 0x2D placed on bus\n- IR captures instruction 0x2D\n- PC increments to 0x11",
+          visualEffects: [
+            { component:"PC", effect:"output-active", timing:"first-half" },
+            { component:"MAR", effect:"capture-data", timing:"first-half" },
+            { component:"Memory", effect:"output-active", timing:"second-half" },
+            { component:"IR", effect:"capture-data", timing:"second-half" },
+            { component:"PC", effect:"increment", timing:"end" }
+          ]
         },
-        cycles: [
-          {
-            cycleNumber: 1, phase: "FETCH", clockPhase:"full-cycle",
-            activeSignals: ["PC_OUT","MAR_IN","MEM_READ","IR_IN","PC_INC"],
-            busActivity: [
-              { timePoint:"first-half", value:"0x10", source:"PC", description:"PC outputs address onto bus" },
-              { timePoint:"second-half", value:"0x2D", source:"Memory", description:"Memory outputs instruction onto bus" }
-            ],
-            registerUpdates: { MAR:"0x10", IR:"0x2D", PC:"0x11" },
-            logMessage: "Cycle 1: FETCH\n- PC outputs address 0x10 onto bus\n- MAR captures address 0x10\n- Memory reads from address 0x10\n- Instruction 0x2D placed on bus\n- IR captures instruction 0x2D\n- PC increments to 0x11",
-            visualEffects: [
-              { component:"PC", effect:"output-active", timing:"first-half" },
-              { component:"MAR", effect:"capture-data", timing:"first-half" },
-              { component:"Memory", effect:"output-active", timing:"second-half" },
-              { component:"IR", effect:"capture-data", timing:"second-half" },
-              { component:"PC", effect:"increment", timing:"end" }
-            ]
-          },
-          {
-            cycleNumber: 2, phase: "DECODE", clockPhase:"full-cycle",
-            activeSignals: [],
-            busActivity: [{ timePoint:"full-cycle", value:"0x2D", source:"none", description:"Bus retains previous value (no active driver)"}],
-            registerUpdates: {},
-            logMessage: "Cycle 2: DECODE\n- Control unit decodes IR = 0x2D\n- Opcode = 001 → MOV instruction\n- Destination = 01 → R1\n- Source = 10 → Value 5\n- Mode = 1 → Immediate mode\n- Preparing to execute: MOV R1, #5",
-            visualEffects: [{ component:"Control Unit", effect:"decode-active", timing:"full-cycle" }],
-            decodedInfo: { operation:"MOV", destinationReg:"R1", sourceValue:"5 (immediate)", addressingMode:"Immediate" }
-          },
-          {
-            cycleNumber: 3, phase: "EXECUTE", clockPhase:"full-cycle",
-            activeSignals: ["IMM_OUT","R1_IN"],
-            busActivity: [{ timePoint:"full-cycle", value:"0x05", source:"Immediate", description:"Control unit drives bus with immediate value" }],
-            registerUpdates: { R1:"0x05" },
-            logMessage: "Cycle 3: EXECUTE\n- Control unit drives bus with immediate value 0x05\n- R1 captures 0x05 from bus\n- Instruction complete!",
-            visualEffects: [
-              { component:"Control Unit", effect:"output-active", timing:"full-cycle" },
-              { component:"R1", effect:"capture-data", timing:"clock-edge" }
-            ],
-            instructionComplete: true
-          }
-        ]
-      },
-      {
-        id: "mov_reg",
-        assembly: "MOV R2, R1",
-        binary: "00110010",
-        encoding: { opcode: "001", destination: "10", source: "01", mode: "0" },
-        description: "Copy register R1 contents into register R2",
-        initialState: {
-          PC:"0x20", R0:"0x00", R1:"0x05", R2:"0x00", R3:"0x00",
-          IR:"0x00", MAR:"0x00", TMP:"0x00", ACC:"0x00", FLAGS:"0x00",
-          memory: { "0x20":"0x32" }
+        {
+          cycleNumber: 2, phase: "DECODE", clockPhase:"full-cycle",
+          activeSignals: [],
+          busActivity: [{ timePoint:"full-cycle", value:"0x2D", source:"none", description:"Bus retains previous value (no active driver)"}],
+          registerUpdates: {},
+          logMessage: "Cycle 2: DECODE\n- Control unit decodes IR = 0x2D\n- Opcode = 001 → MOV instruction\n- Destination = 01 → R1\n- Source = 10 → Value 5\n- Mode = 1 → Immediate mode\n- Preparing to execute: MOV R1, #5",
+          visualEffects: [{ component:"Control Unit", effect:"decode-active", timing:"full-cycle" }],
+          decodedInfo: { operation:"MOV", destinationReg:"R1", sourceValue:"5 (immediate)", addressingMode:"Immediate" }
         },
-        cycles: [
-          {
-            cycleNumber:1, phase:"FETCH", clockPhase:"full-cycle",
-            activeSignals:["PC_OUT","MAR_IN","MEM_READ","IR_IN","PC_INC"],
-            busActivity:[
-              { timePoint:"first-half", value:"0x20", source:"PC", description:"PC outputs address onto bus" },
-              { timePoint:"second-half", value:"0x32", source:"Memory", description:"Memory outputs instruction onto bus" }
-            ],
-            registerUpdates:{ MAR:"0x20", IR:"0x32", PC:"0x21" },
-            logMessage:"Cycle 1: FETCH\n- PC outputs address 0x20 onto bus\n- MAR captures address 0x20\n- Memory reads from address 0x20\n- Instruction 0x32 placed on bus\n- IR captures instruction 0x32\n- PC increments to 0x21",
-            visualEffects:[
-              { component:"PC", effect:"output-active", timing:"first-half" },
-              { component:"MAR", effect:"capture-data", timing:"first-half" },
-              { component:"Memory", effect:"output-active", timing:"second-half" },
-              { component:"IR", effect:"capture-data", timing:"second-half" },
-              { component:"PC", effect:"increment", timing:"end" }
-            ]
-          },
-          {
-            cycleNumber:2, phase:"DECODE", clockPhase:"full-cycle",
-            activeSignals:[],
-            busActivity:[{ timePoint:"full-cycle", value:"0x32", source:"none", description:"Bus retains previous value (no active driver)"}],
-            registerUpdates:{},
-            logMessage:"Cycle 2: DECODE\n- Control unit decodes IR = 0x32\n- Opcode = 001 → MOV instruction\n- Destination = 10 → R2\n- Source = 01 → R1\n- Mode = 0 → Register mode\n- Preparing to execute: MOV R2, R1",
-            visualEffects:[{ component:"Control Unit", effect:"decode-active", timing:"full-cycle" }],
-            decodedInfo:{ operation:"MOV", destinationReg:"R2", sourceValue:"R1 (register)", addressingMode:"Register" }
-          },
-          {
-            cycleNumber:3, phase:"EXECUTE", clockPhase:"full-cycle",
-            activeSignals:["R1_OUT","R2_IN"],
-            busActivity:[{ timePoint:"full-cycle", value:"0x05", source:"R1", description:"R1 outputs its contents onto bus" }],
-            registerUpdates:{ R2:"0x05" },
-            logMessage:"Cycle 3: EXECUTE\n- R1 outputs 0x05 onto bus\n- R2 captures 0x05 from bus\n- Instruction complete!",
-            visualEffects:[
-              { component:"R1", effect:"output-active", timing:"full-cycle" },
-              { component:"R2", effect:"capture-data", timing:"clock-edge" }
-            ],
-            instructionComplete:true
-          }
-        ]
+        {
+          cycleNumber: 3, phase: "EXECUTE", clockPhase:"full-cycle",
+          activeSignals: ["IMM_OUT","R1_IN"],
+          busActivity: [{ timePoint:"full-cycle", value:"0x05", source:"Immediate", description:"Control unit drives bus with immediate value" }],
+          registerUpdates: { R1:"0x05" },
+          logMessage: "Cycle 3: EXECUTE\n- Control unit drives bus with immediate value 0x05\n- R1 captures 0x05 from bus\n- Instruction complete!",
+          visualEffects: [
+            { component:"Control Unit", effect:"output-active", timing:"full-cycle" },
+            { component:"R1", effect:"capture-data", timing:"clock-edge" }
+          ],
+          instructionComplete: true
+        }
+      ]
+    },
+    {
+      id: "mov_reg",
+      assembly: "MOV R2, R1",
+      binary: "00110010",
+      encoding: { opcode: "001", destination: "10", source: "01", mode: "0" },
+      description: "Copy register R1 contents into register R2",
+      initialState: {
+        PC:"0x20", R0:"0x00", R1:"0x05", R2:"0x00", R3:"0x00",
+        IR:"0x00", MAR:"0x00", TMP:"0x00", ACC:"0x00", FLAGS:"0x00",
+        memory: { "0x20":"0x32" }
       },
-      {
-        id: "add",
-        assembly: "ADD R3, R1",
-        binary: "01011010",
-        encoding: { opcode:"010", destination:"11", source:"01", mode:"0" },
-        description: "Add R1 to R3, store result in R3, update flags",
-        initialState:{
-          PC:"0x30", R0:"0x00", R1:"0x03", R2:"0x00", R3:"0x05",
-          IR:"0x00", MAR:"0x00", TMP:"0x00", ACC:"0x00", FLAGS:"0x00",
-          memory: { "0x30":"0x5A" }
+      cycles: [
+        {
+          cycleNumber:1, phase:"FETCH", clockPhase:"full-cycle",
+          activeSignals:["PC_OUT","MAR_IN","MEM_READ","IR_IN","PC_INC"],
+          busActivity:[
+            { timePoint:"first-half", value:"0x20", source:"PC", description:"PC outputs address onto bus" },
+            { timePoint:"second-half", value:"0x32", source:"Memory", description:"Memory outputs instruction onto bus" }
+          ],
+          registerUpdates:{ MAR:"0x20", IR:"0x32", PC:"0x21" },
+          logMessage:"Cycle 1: FETCH\n- PC outputs address 0x20 onto bus\n- MAR captures address 0x20\n- Memory reads from address 0x20\n- Instruction 0x32 placed on bus\n- IR captures instruction 0x32\n- PC increments to 0x21",
+          visualEffects:[
+            { component:"PC", effect:"output-active", timing:"first-half" },
+            { component:"MAR", effect:"capture-data", timing:"first-half" },
+            { component:"Memory", effect:"output-active", timing:"second-half" },
+            { component:"IR", effect:"capture-data", timing:"second-half" },
+            { component:"PC", effect:"increment", timing:"end" }
+          ]
         },
-        cycles:[
-          {
-            cycleNumber:1, phase:"FETCH", clockPhase:"full-cycle",
-            activeSignals:["PC_OUT","MAR_IN","MEM_READ","IR_IN","PC_INC"],
-            busActivity:[
-              { timePoint:"first-half", value:"0x30", source:"PC", description:"PC outputs address onto bus" },
-              { timePoint:"second-half", value:"0x5A", source:"Memory", description:"Memory outputs instruction onto bus" }
-            ],
-            registerUpdates:{ MAR:"0x30", IR:"0x5A", PC:"0x31" },
-            logMessage:"Cycle 1: FETCH\n- PC outputs address 0x30 onto bus\n- MAR captures address 0x30\n- Memory reads from address 0x30\n- Instruction 0x5A placed on bus\n- IR captures instruction 0x5A\n- PC increments to 0x31",
-            visualEffects:[
-              { component:"PC", effect:"output-active", timing:"first-half" },
-              { component:"MAR", effect:"capture-data", timing:"first-half" },
-              { component:"Memory", effect:"output-active", timing:"second-half" },
-              { component:"IR", effect:"capture-data", timing:"second-half" },
-              { component:"PC", effect:"increment", timing:"end" }
-            ]
-          },
-          {
-            cycleNumber:2, phase:"DECODE", clockPhase:"full-cycle",
-            activeSignals:[],
-            busActivity:[{ timePoint:"full-cycle", value:"0x5A", source:"none", description:"Bus retains previous value (no active driver)"}],
-            registerUpdates:{},
-            logMessage:"Cycle 2: DECODE\n- Control unit decodes IR = 0x5A\n- Opcode = 010 → ADD instruction\n- Destination = 11 → R3\n- Source = 01 → R1\n- Mode = 0 → Register mode\n- Preparing to execute: ADD R3, R1",
-            visualEffects:[{ component:"Control Unit", effect:"decode-active", timing:"full-cycle" }],
-            decodedInfo:{ operation:"ADD", destinationReg:"R3", sourceValue:"R1 (register)", addressingMode:"Register" }
-          },
-          {
-            cycleNumber:3, phase:"EXECUTE", subPhase:"Load First Operand", clockPhase:"full-cycle",
-            activeSignals:["R3_OUT","TMP_IN"],
-            busActivity:[{ timePoint:"full-cycle", value:"0x05", source:"R3", description:"R3 outputs its contents onto bus" }],
-            registerUpdates:{ TMP:"0x05" },
-            logMessage:"Cycle 3: EXECUTE (Load First Operand)\n- R3 outputs 0x05 onto bus\n- TMP captures 0x05 from bus\n- First operand staged for ALU",
-            visualEffects:[
-              { component:"R3", effect:"output-active", timing:"full-cycle" },
-              { component:"TMP", effect:"capture-data", timing:"clock-edge" }
-            ]
-          },
-          {
-            cycleNumber:4, phase:"EXECUTE", subPhase:"Load Second Operand", clockPhase:"full-cycle",
-            activeSignals:["R1_OUT","ACC_IN"],
-            busActivity:[{ timePoint:"full-cycle", value:"0x03", source:"R1", description:"R1 outputs its contents onto bus" }],
-            registerUpdates:{ ACC:"0x03" },
-            logMessage:"Cycle 4: EXECUTE (Load Second Operand)\n- R1 outputs 0x03 onto bus\n- ACC captures 0x03 from bus\n- Second operand staged for ALU",
-            visualEffects:[
-              { component:"R1", effect:"output-active", timing:"full-cycle" },
-              { component:"ACC", effect:"capture-data", timing:"clock-edge" }
-            ]
-          },
-          {
-            cycleNumber:5, phase:"EXECUTE", subPhase:"Compute and Store", clockPhase:"full-cycle",
-            activeSignals:["ALU_OP=ADD","ALU_OUT","R3_IN","FLAGS_IN"],
-            busActivity:[{ timePoint:"full-cycle", value:"0x08", source:"ALU", description:"ALU outputs computation result onto bus" }],
-            registerUpdates:{ R3:"0x08", FLAGS:"0x00" },
-            flagUpdates:{ Zero:"0", Carry:"0", Negative:"0", Overflow:"0" },
-            aluOperation:{ operation:"ADD", operand1:"0x05", operand2:"0x03", result:"0x08", computation:"5 + 3 = 8" },
-            logMessage:"Cycle 5: EXECUTE (Compute and Store)\n- ALU performs: 0x05 + 0x03 = 0x08\n- ALU outputs 0x08 onto bus\n- R3 captures 0x08 from bus\n- FLAGS updated: Z=0, C=0, N=0, V=0\n- Instruction complete!",
-            visualEffects:[
-              { component:"ALU", effect:"compute-active", timing:"first-half" },
-              { component:"ALU", effect:"output-active", timing:"second-half" },
-              { component:"R3", effect:"capture-data", timing:"clock-edge" },
-              { component:"FLAGS", effect:"update", timing:"clock-edge" }
-            ],
-            instructionComplete:true
-          }
-        ]
-      },
-      {
-        id:"sub",
-        assembly:"SUB R2, R3",
-        binary:"01110110",
-        encoding:{ opcode:"011", destination:"10", source:"11", mode:"0" },
-        description:"Subtract R3 from R2, store result in R2, update flags",
-        initialState:{
-          PC:"0x40", R0:"0x00", R1:"0x00", R2:"0x08", R3:"0x03",
-          IR:"0x00", MAR:"0x00", TMP:"0x00", ACC:"0x00", FLAGS:"0x00",
-          memory:{ "0x40":"0x76" }
+        {
+          cycleNumber:2, phase:"DECODE", clockPhase:"full-cycle",
+          activeSignals:[],
+          busActivity:[{ timePoint:"full-cycle", value:"0x32", source:"none", description:"Bus retains previous value (no active driver)"}],
+          registerUpdates:{},
+          logMessage:"Cycle 2: DECODE\n- Control unit decodes IR = 0x32\n- Opcode = 001 → MOV instruction\n- Destination = 10 → R2\n- Source = 01 → R1\n- Mode = 0 → Register mode\n- Preparing to execute: MOV R2, R1",
+          visualEffects:[{ component:"Control Unit", effect:"decode-active", timing:"full-cycle" }],
+          decodedInfo:{ operation:"MOV", destinationReg:"R2", sourceValue:"R1 (register)", addressingMode:"Register" }
         },
-        cycles:[
-          {
-            cycleNumber:1, phase:"FETCH", clockPhase:"full-cycle",
-            activeSignals:["PC_OUT","MAR_IN","MEM_READ","IR_IN","PC_INC"],
-            busActivity:[
-              { timePoint:"first-half", value:"0x40", source:"PC", description:"PC outputs address onto bus" },
-              { timePoint:"second-half", value:"0x76", source:"Memory", description:"Memory outputs instruction onto bus" }
-            ],
-            registerUpdates:{ MAR:"0x40", IR:"0x76", PC:"0x41" },
-            logMessage:"Cycle 1: FETCH\n- PC outputs address 0x40 onto bus\n- MAR captures address 0x40\n- Memory reads from address 0x40\n- Instruction 0x76 placed on bus\n- IR captures instruction 0x76\n- PC increments to 0x41",
-            visualEffects:[
-              { component:"PC", effect:"output-active", timing:"first-half" },
-              { component:"MAR", effect:"capture-data", timing:"first-half" },
-              { component:"Memory", effect:"output-active", timing:"second-half" },
-              { component:"IR", effect:"capture-data", timing:"second-half" },
-              { component:"PC", effect:"increment", timing:"end" }
-            ]
-          },
-          {
-            cycleNumber:2, phase:"DECODE", clockPhase:"full-cycle",
-            activeSignals:[],
-            busActivity:[{ timePoint:"full-cycle", value:"0x76", source:"none", description:"Bus retains previous value (no active driver)"}],
-            registerUpdates:{},
-            logMessage:"Cycle 2: DECODE\n- Control unit decodes IR = 0x76\n- Opcode = 011 → SUB instruction\n- Destination = 10 → R2\n- Source = 11 → R3\n- Mode = 0 → Register mode\n- Preparing to execute: SUB R2, R3",
-            visualEffects:[{ component:"Control Unit", effect:"decode-active", timing:"full-cycle" }],
-            decodedInfo:{ operation:"SUB", destinationReg:"R2", sourceValue:"R3 (register)", addressingMode:"Register" }
-          },
-          {
-            cycleNumber:3, phase:"EXECUTE", subPhase:"Load First Operand", clockPhase:"full-cycle",
-            activeSignals:["R2_OUT","TMP_IN"],
-            busActivity:[{ timePoint:"full-cycle", value:"0x08", source:"R2", description:"R2 outputs its contents onto bus" }],
-            registerUpdates:{ TMP:"0x08" },
-            logMessage:"Cycle 3: EXECUTE (Load First Operand)\n- R2 outputs 0x08 onto bus\n- TMP captures 0x08 from bus\n- First operand staged for ALU",
-            visualEffects:[
-              { component:"R2", effect:"output-active", timing:"full-cycle" },
-              { component:"TMP", effect:"capture-data", timing:"clock-edge" }
-            ]
-          },
-          {
-            cycleNumber:4, phase:"EXECUTE", subPhase:"Load Second Operand", clockPhase:"full-cycle",
-            activeSignals:["R3_OUT","ACC_IN"],
-            busActivity:[{ timePoint:"full-cycle", value:"0x03", source:"R3", description:"R3 outputs its contents onto bus" }],
-            registerUpdates:{ ACC:"0x03" },
-            logMessage:"Cycle 4: EXECUTE (Load Second Operand)\n- R3 outputs 0x03 onto bus\n- ACC captures 0x03 from bus\n- Second operand staged for ALU",
-            visualEffects:[
-              { component:"R3", effect:"output-active", timing:"full-cycle" },
-              { component:"ACC", effect:"capture-data", timing:"clock-edge" }
-            ]
-          },
-          {
-            cycleNumber:5, phase:"EXECUTE", subPhase:"Compute and Store", clockPhase:"full-cycle",
-            activeSignals:["ALU_OP=SUB","ALU_OUT","R2_IN","FLAGS_IN"],
-            busActivity:[{ timePoint:"full-cycle", value:"0x05", source:"ALU", description:"ALU outputs computation result onto bus" }],
-            registerUpdates:{ R2:"0x05", FLAGS:"0x00" },
-            flagUpdates:{ Zero:"0", Carry:"0", Negative:"0", Overflow:"0" },
-            aluOperation:{ operation:"SUB", operand1:"0x08", operand2:"0x03", result:"0x05", computation:"8 - 3 = 5" },
-            logMessage:"Cycle 5: EXECUTE (Compute and Store)\n- ALU performs: 0x08 - 0x03 = 0x05\n- ALU outputs 0x05 onto bus\n- R2 captures 0x05 from bus\n- FLAGS updated: Z=0, C=0, N=0, V=0\n- Instruction complete!",
-            visualEffects:[
-              { component:"ALU", effect:"compute-active", timing:"first-half" },
-              { component:"ALU", effect:"output-active", timing:"second-half" },
-              { component:"R2", effect:"capture-data", timing:"clock-edge" },
-              { component:"FLAGS", effect:"update", timing:"clock-edge" }
-            ],
-            instructionComplete:true
-          }
-        ]
-      }
-    ],
-    controlSignals: [
-      { name:"PC_OUT",  description:"Program Counter drives data bus with current address" },
-      { name:"PC_IN",   description:"Program Counter captures value from data bus" },
-      { name:"PC_INC",  description:"Program Counter increments by 1" },
-      { name:"MAR_IN",  description:"Memory Address Register captures address from data bus" },
-      { name:"IR_IN",   description:"Instruction Register captures instruction from data bus" },
-      { name:"MEM_READ",description:"Memory outputs data at MAR address onto data bus" },
-      { name:"MEM_WRITE",description:"Memory stores data from data bus at MAR address" },
-      { name:"R0_OUT",description:"Register R0 drives data bus with its contents" },
-      { name:"R0_IN", description:"Register R0 captures value from data bus" },
-      { name:"R1_OUT",description:"Register R1 drives data bus with its contents" },
-      { name:"R1_IN", description:"Register R1 captures value from data bus" },
-      { name:"R2_OUT",description:"Register R2 drives data bus with its contents" },
-      { name:"R2_IN", description:"Register R2 captures value from data bus" },
-      { name:"R3_OUT",description:"Register R3 drives data bus with its contents" },
-      { name:"R3_IN", description:"Register R3 captures value from data bus" },
-      { name:"TMP_IN",description:"Temporary register captures value from data bus (ALU input A)" },
-      { name:"ACC_IN",description:"Accumulator register captures value from data bus (ALU input B)" },
-      { name:"ALU_OUT",description:"ALU drives data bus with computation result" },
-      { name:"ALU_OP", description:"ALU operation selection (ADD, SUB, AND, OR, NOT, XOR)" , values:["ADD","SUB","AND","OR","NOT","XOR"] },
-      { name:"FLAGS_IN",description:"FLAGS register captures flag values from ALU" },
-      { name:"IMM_OUT",description:"Control unit drives data bus with immediate value from instruction" }
-    ],
-    cpuComponents: [
-      { name:"PC", fullName:"Program Counter", size:"8-bit", description:"Holds address of next instruction to fetch" },
-      { name:"IR", fullName:"Instruction Register", size:"8-bit", description:"Holds current instruction being executed" },
-      { name:"MAR", fullName:"Memory Address Register", size:"8-bit", description:"Holds address for memory operations" },
-      { name:"R0", fullName:"General Purpose Register 0", size:"8-bit", description:"General purpose data storage" },
-      { name:"R1", fullName:"General Purpose Register 1", size:"8-bit", description:"General purpose data storage" },
-      { name:"R2", fullName:"General Purpose Register 2", size:"8-bit", description:"General purpose data storage" },
-      { name:"R3", fullName:"General Purpose Register 3", size:"8-bit", description:"General purpose data storage" },
-      { name:"TMP", fullName:"Temporary Register", size:"8-bit", description:"Holds first operand for ALU (Input A)" },
-      { name:"ACC", fullName:"Accumulator", size:"8-bit", description:"Holds second operand for ALU (Input B)" },
-      { name:"FLAGS", fullName:"Status Flags Register", size:"4-bit", description:"Stores ALU operation results: Zero, Carry, Negative, Overflow",
-        bits: [
-          { name:"Z", position:0, description:"Zero flag: Set when result is zero" },
-          { name:"C", position:1, description:"Carry flag: Set when operation produces carry/borrow" },
-          { name:"N", position:2, description:"Negative flag: Set when result is negative (MSB=1)" },
-          { name:"V", position:3, description:"Overflow flag: Set when signed arithmetic overflows" }
-        ]
+        {
+          cycleNumber:3, phase:"EXECUTE", clockPhase:"full-cycle",
+          activeSignals:["R1_OUT","R2_IN"],
+          busActivity:[{ timePoint:"full-cycle", value:"0x05", source:"R1", description:"R1 outputs its contents onto bus" }],
+          registerUpdates:{ R2:"0x05" },
+          logMessage:"Cycle 3: EXECUTE\n- R1 outputs 0x05 onto bus\n- R2 captures 0x05 from bus\n- Instruction complete!",
+          visualEffects:[
+            { component:"R1", effect:"output-active", timing:"full-cycle" },
+            { component:"R2", effect:"capture-data", timing:"clock-edge" }
+          ],
+          instructionComplete:true
+        }
+      ]
+    },
+    {
+      id: "add",
+      assembly: "ADD R3, R1",
+      binary: "01011010",
+      encoding: { opcode:"010", destination:"11", source:"01", mode:"0" },
+      description: "Add R1 to R3, store result in R3, update flags",
+      initialState:{
+        PC:"0x30", R0:"0x00", R1:"0x03", R2:"0x00", R3:"0x05",
+        IR:"0x00", MAR:"0x00", TMP:"0x00", ACC:"0x00", FLAGS:"0x00",
+        memory: { "0x30":"0x5A" }
       },
-      { name:"ALU", fullName:"Arithmetic Logic Unit", size:"8-bit", description:"Performs arithmetic and logic operations on TMP and ACC inputs" },
-      { name:"Memory", fullName:"RAM (Random Access Memory)", size:"256 bytes", description:"Stores program instructions and data (8-bit addressable)" },
-      { name:"Control Unit", fullName:"Control Unit", description:"Decodes instructions and generates control signals to orchestrate CPU operations" },
-      { name:"Data Bus", fullName:"Data Bus", size:"8-bit", description:"Shared bidirectional pathway for data transfer between components" }
-    ],
-    quizQuestions:[
-      { id:"q1",
-        question:"During the FETCH phase, which component drives the data bus FIRST (in the first half of the cycle)?",
-        options:["Memory","Program Counter (PC)","Instruction Register (IR)","Memory Address Register (MAR)"],
-        correctAnswer:1,
-        explanation:"PC drives the bus first with the instruction address. MAR captures this address, then Memory uses it to read and drive the instruction onto the bus in the second half."
+      cycles:[
+        {
+          cycleNumber:1, phase:"FETCH", clockPhase:"full-cycle",
+          activeSignals:["PC_OUT","MAR_IN","MEM_READ","IR_IN","PC_INC"],
+          busActivity:[
+            { timePoint:"first-half", value:"0x30", source:"PC", description:"PC outputs address onto bus" },
+            { timePoint:"second-half", value:"0x5A", source:"Memory", description:"Memory outputs instruction onto bus" }
+          ],
+          registerUpdates:{ MAR:"0x30", IR:"0x5A", PC:"0x31" },
+          logMessage:"Cycle 1: FETCH\n- PC outputs address 0x30 onto bus\n- MAR captures address 0x30\n- Memory reads from address 0x30\n- Instruction 0x5A placed on bus\n- IR captures instruction 0x5A\n- PC increments to 0x31",
+          visualEffects:[
+            { component:"PC", effect:"output-active", timing:"first-half" },
+            { component:"MAR", effect:"capture-data", timing:"first-half" },
+            { component:"Memory", effect:"output-active", timing:"second-half" },
+            { component:"IR", effect:"capture-data", timing:"second-half" },
+            { component:"PC", effect:"increment", timing:"end" }
+          ]
+        },
+        {
+          cycleNumber:2, phase:"DECODE", clockPhase:"full-cycle",
+          activeSignals:[],
+          busActivity:[{ timePoint:"full-cycle", value:"0x5A", source:"none", description:"Bus retains previous value (no active driver)"}],
+          registerUpdates:{},
+          logMessage:"Cycle 2: DECODE\n- Control unit decodes IR = 0x5A\n- Opcode = 010 → ADD instruction\n- Destination = 11 → R3\n- Source = 01 → R1\n- Mode = 0 → Register mode\n- Preparing to execute: ADD R3, R1",
+          visualEffects:[{ component:"Control Unit", effect:"decode-active", timing:"full-cycle" }],
+          decodedInfo:{ operation:"ADD", destinationReg:"R3", sourceValue:"R1 (register)", addressingMode:"Register" }
+        },
+        {
+          cycleNumber:3, phase:"EXECUTE", subPhase:"Load First Operand", clockPhase:"full-cycle",
+          activeSignals:["R3_OUT","TMP_IN"],
+          busActivity:[{ timePoint:"full-cycle", value:"0x05", source:"R3", description:"R3 outputs its contents onto bus" }],
+          registerUpdates:{ TMP:"0x05" },
+          logMessage:"Cycle 3: EXECUTE (Load First Operand)\n- R3 outputs 0x05 onto bus\n- TMP captures 0x05 from bus\n- First operand staged for ALU",
+          visualEffects:[
+            { component:"R3", effect:"output-active", timing:"full-cycle" },
+            { component:"TMP", effect:"capture-data", timing:"clock-edge" }
+          ]
+        },
+        {
+          cycleNumber:4, phase:"EXECUTE", subPhase:"Load Second Operand", clockPhase:"full-cycle",
+          activeSignals:["R1_OUT","ACC_IN"],
+          busActivity:[{ timePoint:"full-cycle", value:"0x03", source:"R1", description:"R1 outputs its contents onto bus" }],
+          registerUpdates:{ ACC:"0x03" },
+          logMessage:"Cycle 4: EXECUTE (Load Second Operand)\n- R1 outputs 0x03 onto bus\n- ACC captures 0x03 from bus\n- Second operand staged for ALU",
+          visualEffects:[
+            { component:"R1", effect:"output-active", timing:"full-cycle" },
+            { component:"ACC", effect:"capture-data", timing:"clock-edge" }
+          ]
+        },
+        {
+          cycleNumber:5, phase:"EXECUTE", subPhase:"Compute and Store", clockPhase:"full-cycle",
+          activeSignals:["ALU_OP=ADD","ALU_OUT","R3_IN","FLAGS_IN"],
+          busActivity:[{ timePoint:"full-cycle", value:"0x08", source:"ALU", description:"ALU outputs computation result onto bus" }],
+          registerUpdates:{ R3:"0x08", FLAGS:"0x00" },
+          flagUpdates:{ Zero:"0", Carry:"0", Negative:"0", Overflow:"0" },
+          aluOperation:{ operation:"ADD", operand1:"0x05", operand2:"0x03", result:"0x08", computation:"5 + 3 = 8" },
+          logMessage:"Cycle 5: EXECUTE (Compute and Store)\n- ALU performs: 0x05 + 0x03 = 0x08\n- ALU outputs 0x08 onto bus\n- R3 captures 0x08 from bus\n- FLAGS updated: Z=0, C=0, N=0, V=0\n- Instruction complete!",
+          visualEffects:[
+            { component:"ALU", effect:"compute-active", timing:"first-half" },
+            { component:"ALU", effect:"output-active", timing:"second-half" },
+            { component:"R3", effect:"capture-data", timing:"clock-edge" },
+            { component:"FLAGS", effect:"update", timing:"clock-edge" }
+          ],
+          instructionComplete:true
+        }
+      ]
+    },
+    {
+      id:"sub",
+      assembly:"SUB R2, R3",
+      binary:"01110110",
+      encoding:{ opcode:"011", destination:"10", source:"11", mode:"0" },
+      description:"Subtract R3 from R2, store result in R2, update flags",
+      initialState:{
+        PC:"0x40", R0:"0x00", R1:"0x00", R2:"0x08", R3:"0x03",
+        IR:"0x00", MAR:"0x00", TMP:"0x00", ACC:"0x00", FLAGS:"0x00",
+        memory:{ "0x40":"0x76" }
       },
-      { id:"q2",
-        question:"What would happen if both R0_OUT and R1_OUT signals were HIGH simultaneously?",
-        options:["R0's value would be transferred to R1","R1's value would be transferred to R0","Bus contention - both registers would conflict, corrupting data","The bus would show the sum of R0 and R1"],
-        correctAnswer:2,
-        explanation:"This creates bus contention - multiple drivers trying to control the bus simultaneously causes electrical conflict and corrupted data. Only one component may drive the bus at a time."
-      },
-      { id:"q3",
-        question:"Why does the ADD instruction require more cycles than MOV?",
-        options:["ADD uses the ALU which is slower than registers","ADD must load both operands into TMP and ACC before computing","ADD updates the FLAGS register which takes extra time","ADD requires validation that both operands are ready"],
-        correctAnswer:1,
-        explanation:"ADD needs extra cycles to stage operands: one cycle to load TMP, another to load ACC, then a cycle to compute. MOV just transfers data directly via the bus without ALU involvement."
-      },
-      { id:"q4",
-        question:"What is the purpose of the DECODE phase?",
-        options:["To fetch the instruction from memory","To convert binary to assembly language for display","To analyze the instruction and prepare the appropriate control signals","To execute the instruction one micro-operation at a time"],
-        correctAnswer:2,
-        explanation:"During DECODE, the control unit analyzes the instruction bits in IR to determine the operation type, extract operands, and prepare the control signal sequence for execution."
-      },
-      { id:"q5",
-        question:"In the instruction 'ADD R3, R1', which register gets the final result?",
-        options:["R1 (source operand)","R3 (destination operand)","ACC (accumulator)","TMP (temporary register)"],
-        correctAnswer:1,
-        explanation:"R3 is the destination register - it receives the sum. In this instruction format, the destination is both an input (its current value is used) and the output (it gets the result)."
-      },
-      { id:"q6",
-        question:"Why can multiple components READ from the bus simultaneously, but only one can WRITE?",
-        options:["Reading is faster than writing","Reading doesn't require electrical drive - it's just sensing voltage, while writing must actively drive the line","The bus controller prevents multiple reads","Multiple reads would cause bus contention"],
-        correctAnswer:1,
-        explanation:"Reading is passive (sensing voltage) so multiple components can read without conflict. Writing requires actively driving the bus voltage, so multiple writers would create electrical conflict."
-      },
-      { id:"q7",
-        question:"What happens to the Program Counter (PC) during the FETCH phase?",
-        options:["PC stays unchanged until EXECUTE completes","PC is cleared to 0x00","PC increments to point to the next instruction","PC loads the address of the data operand"],
-        correctAnswer:2,
-        explanation:"During FETCH, after PC provides the current instruction address, it increments (PC_INC signal) to point to the next sequential instruction, preparing for the next fetch."
-      },
-      { id:"q8",
-        question:"Which register acts as Input A to the ALU?",
-        options:["R0","ACC (Accumulator)","TMP (Temporary)","IR (Instruction Register)"],
-        correctAnswer:2,
-        explanation:"TMP (Temporary register) provides Input A to the ALU. The first operand is moved into TMP, then the second operand goes into ACC (Input B), then the ALU computes."
-      }
-    ]
+      cycles:[
+        {
+          cycleNumber:1, phase:"FETCH", clockPhase:"full-cycle",
+          activeSignals:["PC_OUT","MAR_IN","MEM_READ","IR_IN","PC_INC"],
+          busActivity:[
+            { timePoint:"first-half", value:"0x40", source:"PC", description:"PC outputs address onto bus" },
+            { timePoint:"second-half", value:"0x76", source:"Memory", description:"Memory outputs instruction onto bus" }
+          ],
+          registerUpdates:{ MAR:"0x40", IR:"0x76", PC:"0x41" },
+          logMessage:"Cycle 1: FETCH\n- PC outputs address 0x40 onto bus\n- MAR captures address 0x40\n- Memory reads from address 0x40\n- Instruction 0x76 placed on bus\n- IR captures instruction 0x76\n- PC increments to 0x41",
+          visualEffects:[
+            { component:"PC", effect:"output-active", timing:"first-half" },
+            { component:"MAR", effect:"capture-data", timing:"first-half" },
+            { component:"Memory", effect:"output-active", timing:"second-half" },
+            { component:"IR", effect:"capture-data", timing:"second-half" },
+            { component:"PC", effect:"increment", timing:"end" }
+          ]
+        },
+        {
+          cycleNumber:2, phase:"DECODE", clockPhase:"full-cycle",
+          activeSignals:[],
+          busActivity:[{ timePoint:"full-cycle", value:"0x76", source:"none", description:"Bus retains previous value (no active driver)"}],
+          registerUpdates:{},
+          logMessage:"Cycle 2: DECODE\n- Control unit decodes IR = 0x76\n- Opcode = 011 → SUB instruction\n- Destination = 10 → R2\n- Source = 11 → R3\n- Mode = 0 → Register mode\n- Preparing to execute: SUB R2, R3",
+          visualEffects:[{ component:"Control Unit", effect:"decode-active", timing:"full-cycle" }],
+          decodedInfo:{ operation:"SUB", destinationReg:"R2", sourceValue:"R3 (register)", addressingMode:"Register" }
+        },
+        {
+          cycleNumber:3, phase:"EXECUTE", subPhase:"Load First Operand", clockPhase:"full-cycle",
+          activeSignals:["R2_OUT","TMP_IN"],
+          busActivity:[{ timePoint:"full-cycle", value:"0x08", source:"R2", description:"R2 outputs its contents onto bus" }],
+          registerUpdates:{ TMP:"0x08" },
+          logMessage:"Cycle 3: EXECUTE (Load First Operand)\n- R2 outputs 0x08 onto bus\n- TMP captures 0x08 from bus\n- First operand staged for ALU",
+          visualEffects:[
+            { component:"R2", effect:"output-active", timing:"full-cycle" },
+            { component:"TMP", effect:"capture-data", timing:"clock-edge" }
+          ]
+        },
+        {
+          cycleNumber:4, phase:"EXECUTE", subPhase:"Load Second Operand", clockPhase:"full-cycle",
+          activeSignals:["R3_OUT","ACC_IN"],
+          busActivity:[{ timePoint:"full-cycle", value:"0x03", source:"R3", description:"R3 outputs its contents onto bus" }],
+          registerUpdates:{ ACC:"0x03" },
+          logMessage:"Cycle 4: EXECUTE (Load Second Operand)\n- R3 outputs 0x03 onto bus\n- ACC captures 0x03 from bus\n- Second operand staged for ALU",
+          visualEffects:[
+            { component:"R3", effect:"output-active", timing:"full-cycle" },
+            { component:"ACC", effect:"capture-data", timing:"clock-edge" }
+          ]
+        },
+        {
+          cycleNumber:5, phase:"EXECUTE", subPhase:"Compute and Store", clockPhase:"full-cycle",
+          activeSignals:["ALU_OP=SUB","ALU_OUT","R2_IN","FLAGS_IN"],
+          busActivity:[{ timePoint:"full-cycle", value:"0x05", source:"ALU", description:"ALU outputs computation result onto bus" }],
+          registerUpdates:{ R2:"0x05", FLAGS:"0x00" },
+          flagUpdates:{ Zero:"0", Carry:"0", Negative:"0", Overflow:"0" },
+          aluOperation:{ operation:"SUB", operand1:"0x08", operand2:"0x03", result:"0x05", computation:"8 - 3 = 5" },
+          logMessage:"Cycle 5: EXECUTE (Compute and Store)\n- ALU performs: 0x08 - 0x03 = 0x05\n- ALU outputs 0x05 onto bus\n- R2 captures 0x05 from bus\n- FLAGS updated: Z=0, C=0, N=0, V=0\n- Instruction complete!",
+          visualEffects:[
+            { component:"ALU", effect:"compute-active", timing:"first-half" },
+            { component:"ALU", effect:"output-active", timing:"second-half" },
+            { component:"R2", effect:"capture-data", timing:"clock-edge" },
+            { component:"FLAGS", effect:"update", timing:"clock-edge" }
+          ],
+          instructionComplete:true
+        }
+      ]
+    }
+  ],
+  controlSignals: [
+    { name:"PC_OUT",  description:"Program Counter drives data bus with current address" },
+    { name:"PC_IN",   description:"Program Counter captures value from data bus" },
+    { name:"PC_INC",  description:"Program Counter increments by 1" },
+    { name:"MAR_IN",  description:"Memory Address Register captures address from data bus" },
+    { name:"IR_IN",   description:"Instruction Register captures instruction from data bus" },
+    { name:"MEM_READ",description:"Memory outputs data at MAR address onto data bus" },
+    { name:"MEM_WRITE",description:"Memory stores data from data bus at MAR address" },
+    { name:"R0_OUT",description:"Register R0 drives data bus with its contents" },
+    { name:"R0_IN", description:"Register R0 captures value from data bus" },
+    { name:"R1_OUT",description:"Register R1 drives data bus with its contents" },
+    { name:"R1_IN", description:"Register R1 captures value from data bus" },
+    { name:"R2_OUT",description:"Register R2 drives data bus with its contents" },
+    { name:"R2_IN", description:"Register R2 captures value from data bus" },
+    { name:"R3_OUT",description:"Register R3 drives data bus with its contents" },
+    { name:"R3_IN", description:"Register R3 captures value from data bus" },
+    { name:"TMP_IN",description:"Temporary register captures value from data bus (ALU input A)" },
+    { name:"ACC_IN",description:"Accumulator register captures value from data bus (ALU input B)" },
+    { name:"ALU_OUT",description:"ALU drives data bus with computation result" },
+    { name:"ALU_OP", description:"ALU operation selection (ADD, SUB, AND, OR, NOT, XOR)" , values:["ADD","SUB","AND","OR","NOT","XOR"] },
+    { name:"FLAGS_IN",description:"FLAGS register captures flag values from ALU" },
+    { name:"IMM_OUT",description:"Control unit drives data bus with immediate value from instruction" }
+  ]
+};
+
+// -------------------------
+// State (session only)
+// -------------------------
+let currentInstruction = null;
+let currentCycleIndex = -1;
+let cpuState = {};
+let quizScore = 0;
+const quizTotal = 8; // fixed based on provided questions
+
+// -------------------------
+// Short DOM helpers
+// -------------------------
+const $ = (sel) => document.querySelector(sel);
+const $$ = (sel) => Array.from(document.querySelectorAll(sel));
+const setText = (el, txt) => { if(el) el.textContent = txt; };
+const hex = (v) => v?.startsWith?.("0x") ? v : "0x" + (Number(v)||0).toString(16).padStart(2,'0').toUpperCase();
+
+// -------------------------
+// Tabs (ARIA)
+// -------------------------
+function initTabs(){
+  const tabs = $$(".tab");
+  const panels = [ "#panel-foundations", "#panel-walkthrough", "#panel-activity", "#panel-quiz" ].map(id=>$(id));
+
+  function activate(index){
+    tabs.forEach((t,i)=>{
+      t.setAttribute("aria-selected", String(i===index));
+      t.tabIndex = i===index ? 0 : -1;
+      panels[i].classList.toggle("hidden", i!==index);
+    });
+    tabs[index].focus();
+  }
+
+  tabs.forEach((tab, idx)=>{
+    tab.addEventListener("click", ()=>activate(idx));
+    tab.addEventListener("keydown", (e)=>{
+      const { key } = e;
+      if(key === "ArrowRight"){ e.preventDefault(); activate((idx+1)%tabs.length); }
+      if(key === "ArrowLeft"){ e.preventDefault(); activate((idx-1+tabs.length)%tabs.length); }
+      if(key === "Home"){ e.preventDefault(); activate(0); }
+      if(key === "End"){ e.preventDefault(); activate(tabs.length-1); }
+    });
+  });
+
+  activate(0);
+}
+
+// -------------------------
+// Signals Panel
+// -------------------------
+function buildSignalsPanel(){
+  const container = $("#SignalsList");
+  container.innerHTML = "";
+  instructionData.controlSignals.forEach(sig=>{
+    const row = document.createElement("div");
+    row.className = "signal";
+    row.setAttribute("role","listitem");
+    row.title = sig.description;
+    row.dataset.name = sig.name;
+    row.innerHTML = `<span class="mono">${sig.name}</span><span class="sig-light" aria-label="${sig.name} indicator"></span>`;
+    container.appendChild(row);
+  });
+}
+function clearSignals(){ $$("#SignalsList .signal").forEach(s=>s.classList.remove("active")); }
+function setSignals(active){
+  clearSignals();
+  (active||[]).forEach(name=>{
+    const normalized = name.includes("=")? "ALU_OP" : name;
+    const row = $(`#SignalsList .signal[data-name="${CSS.escape(normalized)}"]`);
+    if(row) row.classList.add("active");
+  });
+}
+
+// -------------------------
+// Instruction dropdown
+// -------------------------
+function populateInstructionSelect(){
+  const sel = $("#instructionSelect");
+  sel.innerHTML = "";
+  instructionData.instructions.forEach(i=>{
+    const opt = document.createElement("option");
+    opt.value = i.id;
+    opt.textContent = `${i.assembly} — ${i.description}`;
+    sel.appendChild(opt);
+  });
+}
+
+// -------------------------
+// Visualization helpers
+// -------------------------
+function setPhase(phase){ setText($("#phaseBadge"), phase); }
+function setCycle(n){ setText($("#cycleCounter"), `Cycle: ${n}`); }
+function setBus(value){
+  const bus = $("#DataBus");
+  const label = $("#BusLabel");
+  if(!value){
+    bus.classList.remove("active");
+    setText(label,"");
+  }else{
+    bus.classList.add("active");
+    setText(label, value);
+  }
+}
+function setRegister(id, value, effect){
+  const el = document.getElementById(id);
+  if(!el) return;
+  const valEl = el.querySelector(".val");
+  if(valEl) valEl.textContent = hex(value);
+  if(effect==="capture-data"){ el.classList.add("flash-capture"); setTimeout(()=>el.classList.remove("flash-capture"), 400); }
+  if(effect==="output-active"){ el.classList.add("glow-output"); setTimeout(()=>el.classList.remove("glow-output"), 500); }
+  if(id==="FLAGS"){
+    updateFlagsFromString((value||"0x00").replace(/^0x/i,""));
+  }
+}
+function updateFlagsFromString(hexFlags){
+  const val = parseInt(hexFlags, 16) || 0;
+  const bits = [
+    {el:"#FZ", on: (val & (1<<0))!==0},
+    {el:"#FC", on: (val & (1<<1))!==0},
+    {el:"#FN", on: (val & (1<<2))!==0},
+    {el:"#FV", on: (val & (1<<3))!==0},
+  ];
+  bits.forEach(b=>{
+    const el = $(b.el);
+    el.classList.toggle("flag-on", b.on);
+  });
+}
+function updateInstructionHeader(){
+  setText($("#InstAsm"), currentInstruction.assembly);
+  setText($("#InstBin"), currentInstruction.binary);
+  const enc = currentInstruction.encoding;
+  setText($("#InstDec"), `op=${enc.opcode} dst=${enc.destination} src=${enc.source} mode=${enc.mode}`);
+}
+function updateCPUVisualization(isReset=false){
+  // Registers
+  ["R0","R1","R2","R3","PC","IR","MAR","TMP","ACC"].forEach(r=>{
+    setRegister(r, cpuState[r] || "0x00");
+  });
+  updateFlagsFromString((cpuState.FLAGS || "0x00").replace(/^0x/i,""));
+
+  // Memory & ALU visuals
+  $("#MemAddr").textContent = Object.keys(cpuState.memory||{})[0] || "0x00";
+  $("#MemData").textContent = Object.values(cpuState.memory||{})[0] || "0x00";
+  $("#ALUResult").textContent = "0x00";
+  $("#ALUOp").textContent = "—";
+
+  if(isReset){ $$(".reg,.special,.alu,.mem").forEach(el=>el.classList.remove("glow-output","flash-capture")); }
+}
+
+// -------------------------
+// Logging
+// -------------------------
+function clearLog(){ $("#ExecLog").innerHTML = ""; }
+function appendToLog(message){
+  const div = document.createElement("div");
+  div.className = "log-entry";
+  div.textContent = message;
+  $("#ExecLog").appendChild(div);
+  $("#ExecLog").scrollTop = $("#ExecLog").scrollHeight;
+}
+
+// -------------------------
+// Effects
+// -------------------------
+function mapComponentId(name){
+  const map = {
+    "PC":"PC","MAR":"MAR","IR":"IR","R0":"R0","R1":"R1","R2":"R2","R3":"R3",
+    "TMP":"TMP","ACC":"ACC","Memory":"Memory","ALU":"ALU","Control Unit":"IR","Immediate":"IR"
   };
-
-  // -------------------------
-  // State (session only)
-  // -------------------------
-  let currentInstruction = null;
-  let currentCycleIndex = -1;
-  let cpuState = {};
-  let quizScore = 0;
-  let quizTotal = instructionData.quizQuestions.length;
-
-  // -------------------------
-  // DOM Helpers
-  // -------------------------
-  const $ = (sel) => document.querySelector(sel);
-  const $$ = (sel) => Array.from(document.querySelectorAll(sel));
-  const setText = (el, txt) => { if(el) el.textContent = txt; };
-
-  function hex(v){ return v?.startsWith?.("0x") ? v : "0x" + (Number(v)||0).toString(16).padStart(2,'0').toUpperCase(); }
-
-  // -------------------------
-  // Tabs (ARIA): keyboard left/right & activation
-  // -------------------------
-  (function initTabs(){
-    const tabs = $$(".tab");
-    const panels = [ "#panel-overview", "#panel-foundations", "#panel-walkthrough", "#panel-activity", "#panel-quiz" ].map(id=>$(id));
-
-    function activate(index){
-      tabs.forEach((t,i)=>{
-        t.setAttribute("aria-selected", String(i===index));
-        t.tabIndex = i===index ? 0 : -1;
-        panels[i].classList.toggle("hidden", i!==index);
-      });
-      tabs[index].focus();
-    }
-    tabs.forEach((tab, idx)=>{
-      tab.addEventListener("click", ()=>activate(idx));
-      tab.addEventListener("keydown", (e)=>{
-        const { key } = e;
-        if(key === "ArrowRight"){ e.preventDefault(); activate((idx+1)%tabs.length); }
-        if(key === "ArrowLeft"){ e.preventDefault(); activate((idx-1+tabs.length)%tabs.length); }
-        if(key === "Home"){ e.preventDefault(); activate(0); }
-        if(key === "End"){ e.preventDefault(); activate(tabs.length-1); }
-      });
-    });
-    activate(0);
-  })();
-
-  // -------------------------
-  // Build Control Signals Panel
-  // -------------------------
-  function buildSignalsPanel(){
-    const container = $("#SignalsList");
-    container.innerHTML = "";
-    instructionData.controlSignals.forEach(sig=>{
-      const row = document.createElement("div");
-      row.className = "signal";
-      row.setAttribute("role","listitem");
-      row.title = sig.description;
-      row.dataset.name = sig.name;
-      row.innerHTML = `<span class="mono">${sig.name}</span><span class="sig-light" aria-label="${sig.name} indicator"></span>`;
-      container.appendChild(row);
-    });
-  }
-
-  // -------------------------
-  // Populate Instruction Dropdown
-  // -------------------------
-  function populateInstructionSelect(){
-    const sel = $("#instructionSelect");
-    sel.innerHTML = "";
-    instructionData.instructions.forEach(i=>{
-      const opt = document.createElement("option");
-      opt.value = i.id;
-      opt.textContent = `${i.assembly} — ${i.description}`;
-      sel.appendChild(opt);
-    });
-  }
-
-  // -------------------------
-  // Reset Simulation
-  // -------------------------
-  function resetSimulation(){
-    const id = $("#instructionSelect").value || instructionData.instructions[0].id;
-    currentInstruction = instructionData.instructions.find(x=>x.id===id);
-    currentCycleIndex = -1; // before first
-    // clone initial state
-    cpuState = JSON.parse(JSON.stringify(currentInstruction.initialState));
-    // Update UI
-    updateCPUVisualization(true);
-    updateInstructionHeader();
-    setPhase("Ready");
-    setCycle(0);
-    clearSignals();
-    clearLog();
-    setBus(null);
-    $("#nextBtn").disabled = false;
-  }
-
-  function updateInstructionHeader(){
-    setText($("#InstAsm"), currentInstruction.assembly);
-    setText($("#InstBin"), currentInstruction.binary);
-    const enc = currentInstruction.encoding;
-    setText($("#InstDec"), `op=${enc.opcode} dst=${enc.destination} src=${enc.source} mode=${enc.mode}`);
-  }
-
-  function setPhase(phase){
-    setText($("#phaseBadge"), phase);
-  }
-  function setCycle(n){
-    setText($("#cycleCounter"), `Cycle: ${n}`);
-  }
-
-  // -------------------------
-  // Signals activation
-  // -------------------------
-  function clearSignals(){
-    $$("#SignalsList .signal").forEach(s=>s.classList.remove("active"));
-  }
-  function setSignals(active){
-    clearSignals();
-    (active||[]).forEach(name=>{
-      const row = $(`#SignalsList .signal[data-name="${CSS.escape(name.includes("=")? "ALU_OP" : name)}"]`);
-      if(row) row.classList.add("active");
-    });
-  }
-
-  // -------------------------
-  // Bus
-  // -------------------------
-  function setBus(value){
-    const bus = $("#DataBus");
-    const label = $("#BusLabel");
-    if(!value){
-      bus.classList.remove("active");
-      setText(label,"");
+  return map[name] || name;
+}
+function applyVisualEffects(effects){
+  (effects||[]).forEach(e=>{
+    if(e.component==="ALU"){
+      if(e.effect==="compute-active"){ $("#ALUOp").textContent = "…"; }
+    }else if(e.component==="FLAGS" && e.effect==="update"){
+      // handled via register update
     }else{
-      bus.classList.add("active");
-      setText(label, value);
-    }
-  }
-
-  // -------------------------
-  // Registers & Components
-  // -------------------------
-  function setRegister(id, value, effect){
-    const el = document.getElementById(id);
-    if(!el) return;
-    const valEl = el.querySelector(".val");
-    if(valEl) valEl.textContent = hex(value);
-    if(effect==="capture-data"){ el.classList.add("flash-capture"); setTimeout(()=>el.classList.remove("flash-capture"), 400); }
-    if(effect==="output-active"){ el.classList.add("glow-output"); setTimeout(()=>el.classList.remove("glow-output"), 500); }
-    if(id==="FLAGS"){
-      // FLAGS string like 0x00 -> simple mapping kept as demo; update individual bits if provided separately later
-    }
-  }
-
-  function updateFlagsFromString(hexFlags){
-    // For simplicity, treat FLAGS string as 0x00..0x0F and set bits Z C N V in order (Z LSB at position 0).
-    const val = parseInt(hexFlags, 16) || 0;
-    const bits = [
-      {el:"#FZ", on: (val & (1<<0))!==0},
-      {el:"#FC", on: (val & (1<<1))!==0},
-      {el:"#FN", on: (val & (1<<2))!==0},
-      {el:"#FV", on: (val & (1<<3))!==0},
-    ];
-    bits.forEach(b=>{
-      const el = $(b.el);
-      el.classList.toggle("flag-on", b.on);
-    });
-  }
-
-  function updateCPUVisualization(isReset=false){
-    // General registers
-    ["R0","R1","R2","R3","PC","IR","MAR","TMP","ACC"].forEach(r=>{
-      setRegister(r, cpuState[r] || "0x00");
-    });
-    updateFlagsFromString((cpuState.FLAGS || "0x00").replace(/^0x/i,""));
-    // Memory & ALU visual
-    $("#MemAddr").textContent = Object.keys(cpuState.memory||{})[0] || "0x00";
-    $("#MemData").textContent = Object.values(cpuState.memory||{})[0] || "0x00";
-    $("#ALUResult").textContent = "0x00";
-    $("#ALUOp").textContent = "—";
-    if(isReset){
-      // Shake off effects
-      $$(".reg,.special,.alu,.mem").forEach(el=>{ el.classList.remove("glow-output","flash-capture"); });
-    }
-  }
-
-  // -------------------------
-  // Execution Log
-  // -------------------------
-  function clearLog(){ $("#ExecLog").innerHTML = ""; }
-  function appendToLog(message){
-    const div = document.createElement("div");
-    div.className = "log-entry";
-    div.textContent = message;
-    $("#ExecLog").appendChild(div);
-    $("#ExecLog").scrollTop = $("#ExecLog").scrollHeight;
-  }
-
-  // -------------------------
-  // Visual Effects
-  // -------------------------
-  function applyVisualEffects(effects){
-    (effects||[]).forEach(e=>{
-      if(e.component==="ALU"){
-        if(e.effect==="compute-active"){ $("#ALUOp").textContent = "…"; }
-        if(e.effect==="output-active"){ /* handled via bus label */ }
-      }else if(e.component==="FLAGS" && e.effect==="update"){
-        // already updated in registerUpdates
-      }else{
-        const id = mapComponentId(e.component);
-        const effect = (e.effect==="output-active") ? "glow-output" : (e.effect==="capture-data") ? "flash-capture" : null;
-        if(effect){
-          const el = document.getElementById(id);
-          if(el){
-            el.classList.add(effect);
-            setTimeout(()=>el.classList.remove(effect), effect==="glow-output"? 500 : 400);
-          }
+      const id = mapComponentId(e.component);
+      const effect = (e.effect==="output-active") ? "glow-output" : (e.effect==="capture-data") ? "flash-capture" : null;
+      if(effect){
+        const el = document.getElementById(id);
+        if(el){
+          el.classList.add(effect);
+          setTimeout(()=>el.classList.remove(effect), effect==="glow-output"? 500 : 400);
         }
       }
-    });
-  }
-
-  function mapComponentId(name){
-    const map = {
-      "PC":"PC","MAR":"MAR","IR":"IR","R0":"R0","R1":"R1","R2":"R2","R3":"R3",
-      "TMP":"TMP","ACC":"ACC","Memory":"Memory","ALU":"ALU","Control Unit":"IR" // map CU visual effects to IR box
-    };
-    return map[name] || name;
-  }
-
-  // -------------------------
-  // Next Cycle
-  // -------------------------
-  function nextCycle(){
-    const cycles = currentInstruction.cycles;
-    const nextIndex = currentCycleIndex + 1;
-    if(nextIndex >= cycles.length){ $("#nextBtn").disabled = true; return; }
-    currentCycleIndex = nextIndex;
-    const c = cycles[currentCycleIndex];
-
-    setPhase(c.phase + (c.subPhase? ` — ${c.subPhase}`:""));
-    setCycle(c.cycleNumber);
-    setSignals(c.activeSignals);
-
-    // Bus animation timing (first-half / second-half / full-cycle)
-    (async function(){
-      // Pre-clear effects
-      setBus(null);
-      // first-half
-      const first = c.busActivity?.find(b=>b.timePoint==="first-half");
-      if(first){ setBus(first.value); emitSourceEffect(first.source, "output-active"); await wait(300); }
-      // second-half
-      const second = c.busActivity?.find(b=>b.timePoint==="second-half");
-      if(second){ setBus(second.value); emitSourceEffect(second.source, "output-active"); await wait(300); }
-      // full-cycle (single)
-      const full = c.busActivity?.find(b=>b.timePoint==="full-cycle");
-      if(full){ setBus(full.value); emitSourceEffect(full.source, "output-active"); await wait(300); }
-
-      // Register updates
-      if(c.registerUpdates){
-        Object.entries(c.registerUpdates).forEach(([k,v])=>{
-          cpuState[k] = v;
-          setRegister(k, v, "capture-data");
-          if(k==="FLAGS"){ updateFlagsFromString(v.replace(/^0x/i,"")); }
-        });
-      }
-
-      // ALU op (if described)
-      if(c.aluOperation){
-        $("#ALUOp").textContent = c.aluOperation.operation;
-        $("#ALUResult").textContent = c.aluOperation.result;
-      }
-
-      // Memory visualization sync (MAR->Memory)
-      $("#MemAddr").textContent = cpuState.MAR || $("#MemAddr").textContent;
-      $("#MemData").textContent = (c.busActivity?.find(b=>b.source==="Memory")?.value) || $("#MemData").textContent;
-
-      // Visual effects
-      applyVisualEffects(c.visualEffects);
-
-      // Log
-      appendToLog(c.logMessage);
-
-      // Complete?
-      if(c.instructionComplete){
-        appendToLog("✅ Instruction complete.");
-        $("#nextBtn").disabled = true;
-      }
-    })();
-  }
-
-  function emitSourceEffect(source, effect){
-    const id = mapComponentId(source);
-    const el = document.getElementById(id);
-    if(!el) return;
-    el.classList.add(effect==="output-active" ? "glow-output":"flash-capture");
-    setTimeout(()=>el.classList.remove(effect==="output-active" ? "glow-output":"flash-capture"), 500);
-  }
-
-  function wait(ms){ return new Promise(res=>setTimeout(res, ms)); }
-
-  // -------------------------
-  // Quiz
-  // -------------------------
-  function initQuiz(){
-    quizScore = 0;
-    const container = $("#QuizContainer");
-    container.innerHTML = "";
-    instructionData.quizQuestions.forEach((q, idx)=>{
-      const card = document.createElement("div");
-      card.className = "quiz-card";
-      card.id = `card-${q.id}`;
-      const opts = q.options.map((o,i)=>`
-        <label class="option" for="${q.id}-${i}">
-          <input type="radio" name="${q.id}" id="${q.id}-${i}" value="${i}" aria-label="Option ${i+1}">
-          <span>${o}</span>
-        </label>`).join("");
-      card.innerHTML = `
-        <div class="font-semibold mb-2">${idx+1}. ${q.question}</div>
-        <div class="grid grid-cols-1 gap-2">${opts}</div>
-        <div class="flex items-center gap-2 mt-3">
-          <button class="btn" data-action="check" data-qid="${q.id}" aria-label="Check answer for question ${idx+1}">abel="Show explanation for question ${idx+1}">Why `;
-      container.appendChild(card);
-    });
-    updateQuizScore();
-  }
-
-  function updateQuizScore(){
-    setText($("#QuizScore"), `Score: ${quizScore}/${quizTotal}`);
-  }
-
-  function handleQuizClick(e){
-    const btn = e.target.closest("button");
-    if(!btn) return;
-    const qid = btn.dataset.qid;
-    const q = instructionData.quizQuestions.find(x=>x.id===qid);
-    if(btn.dataset.action==="check"){
-      const sel = document.querySelector(`input[name="${qid}"]:checked`);
-      if(!sel){ alert("Please select an option."); return; }
-      const chosen = Number(sel.value);
-      const optLabels = $$("#card-"+qid+" .option");
-      optLabels.forEach((l,i)=>{
-        l.classList.remove("correct","incorrect");
-        if(i===q.correctAnswer) l.classList.add("correct");
-        else if(i===chosen) l.classList.add("incorrect");
-      });
-      if(chosen===q.correctAnswer){
-        quizScore++;
-        updateQuizScore();
-      }
-      // reveal explanation
-      document.getElementById("exp-"+qid).classList.remove("hidden");
-      btn.disabled = true;
-    }else if(btn.dataset.action==="explain"){
-      document.getElementById("exp-"+qid).classList.toggle("hidden");
     }
+  });
+}
+function emitSourceEffect(source, effect){
+  const id = mapComponentId(source);
+  const el = document.getElementById(id);
+  if(!el) return;
+  el.classList.add(effect==="output-active" ? "glow-output":"flash-capture");
+  setTimeout(()=>el.classList.remove(effect==="output-active" ? "glow-output":"flash-capture"), 500);
+}
+const wait = (ms)=> new Promise(res=>setTimeout(res, ms));
+
+// -------------------------
+// Simulation control
+// -------------------------
+function resetSimulation(){
+  const id = $("#instructionSelect").value || instructionData.instructions[0].id;
+  currentInstruction = instructionData.instructions.find(x=>x.id===id);
+  currentCycleIndex = -1; // before first
+  cpuState = JSON.parse(JSON.stringify(currentInstruction.initialState));
+  updateCPUVisualization(true);
+  updateInstructionHeader();
+  setPhase("Ready");
+  setCycle(0);
+  clearSignals();
+  clearLog();
+  setBus(null);
+  $("#nextBtn").disabled = false;
+}
+
+async function nextCycle(){
+  const cycles = currentInstruction.cycles;
+  const nextIndex = currentCycleIndex + 1;
+  if(nextIndex >= cycles.length){ $("#nextBtn").disabled = true; return; }
+  currentCycleIndex = nextIndex;
+  const c = cycles[currentCycleIndex];
+
+  setPhase(c.phase + (c.subPhase? ` — ${c.subPhase}`:""));
+  setCycle(c.cycleNumber);
+  setSignals(c.activeSignals);
+
+  // Bus activity animation
+  setBus(null);
+  const first = c.busActivity?.find(b=>b.timePoint==="first-half");
+  if(first){ setBus(first.value); emitSourceEffect(first.source, "output-active"); await wait(300); }
+  const second = c.busActivity?.find(b=>b.timePoint==="second-half");
+  if(second){ setBus(second.value); emitSourceEffect(second.source, "output-active"); await wait(300); }
+  const full = c.busActivity?.find(b=>b.timePoint==="full-cycle");
+  if(full){ setBus(full.value); emitSourceEffect(full.source, "output-active"); await wait(300); }
+
+  // Register updates
+  if(c.registerUpdates){
+    Object.entries(c.registerUpdates).forEach(([k,v])=>{
+      cpuState[k] = v;
+      setRegister(k, v, "capture-data");
+    });
   }
 
-  // -------------------------
-  // Event wiring
-  // -------------------------
-  function wireEvents(){
-    $("#instructionSelect").addEventListener("change", resetSimulation);
-    $("#resetBtn").addEventListener("click", resetSimulation);
-    $("#nextBtn").addEventListener("click", nextCycle);
-    $("#QuizContainer").addEventListener("click", handleQuizClick);
-    $("#QuizRestart").addEventListener("click", initQuiz);
+  // ALU details
+  if(c.aluOperation){
+    $("#ALUOp").textContent = c.aluOperation.operation;
+    $("#ALUResult").textContent = c.aluOperation.result;
   }
 
-  // -------------------------
-  // Init
-  // -------------------------
-  (function init(){
-    buildSignalsPanel();
-    populateInstructionSelect();
-    wireEvents();
-    resetSimulation();
-    initQuiz();
-  })();
+  // Memory visor sync
+  $("#MemAddr").textContent = cpuState.MAR || $("#MemAddr").textContent;
+  const memSrc = c.busActivity?.find(b=>b.source==="Memory")?.value;
+  if(memSrc){ $("#MemData").textContent = memSrc; }
 
-  // Accessibility: announce cycle counter updates via aria-live already set.
+  // Effects & Log
+  applyVisualEffects(c.visualEffects);
+  appendToLog(c.logMessage);
+
+  if(c.instructionComplete){
+    appendToLog("✅ Instruction complete.");
+    $("#nextBtn").disabled = true;
+  }
+}
+
+// -------------------------
+// Quiz
+// -------------------------
+const quizQuestions = [
+  { id:"q1",
+    question:"During the FETCH phase, which component drives the data bus FIRST (in the first half of the cycle)?",
+    options:["Memory","Program Counter (PC)","Instruction Register (IR)","Memory Address Register (MAR)"],
+    correctAnswer:1,
+    explanation:"PC drives the bus first with the instruction address. MAR captures this address, then Memory uses it to read and drive the instruction onto the bus in the second half."
+  },
+  { id:"q2",
+    question:"What would happen if both R0_OUT and R1_OUT signals were HIGH simultaneously?",
+    options:["R0's value would be transferred to R1","R1's value would be transferred to R0","Bus contention - both registers would conflict, corrupting data","The bus would show the sum of R0 and R1"],
+    correctAnswer:2,
+    explanation:"This creates bus contention - multiple drivers trying to control the bus simultaneously causes electrical conflict and corrupted data. Only one component may drive the bus at a time."
+  },
+  { id:"q3",
+    question:"Why does the ADD instruction require more cycles than MOV?",
+    options:["ADD uses the ALU which is slower than registers","ADD must load both operands into TMP and ACC before computing","ADD updates the FLAGS register which takes extra time","ADD requires validation that both operands are ready"],
+    correctAnswer:1,
+    explanation:"ADD needs extra cycles to stage operands: one cycle to load TMP, another to load ACC, then a cycle to compute. MOV just transfers data directly via the bus without ALU involvement."
+  },
+  { id:"q4",
+    question:"What is the purpose of the DECODE phase?",
+    options:["To fetch the instruction from memory","To convert binary to assembly language for display","To analyze the instruction and prepare the appropriate control signals","To execute the instruction one micro-operation at a time"],
+    correctAnswer:2,
+    explanation:"During DECODE, the control unit analyzes the instruction bits in IR to determine the operation type, extract operands, and prepare the control signal sequence for execution."
+  },
+  { id:"q5",
+    question:"In the instruction 'ADD R3, R1', which register gets the final result?",
+    options:["R1 (source operand)","R3 (destination operand)","ACC (accumulator)","TMP (temporary register)"],
+    correctAnswer:1,
+    explanation:"R3 is the destination register - it receives the sum. In this instruction format, the destination is both an input (its current value is used) and the output (it gets the result)."
+  },
+  { id:"q6",
+    question:"Why can multiple components READ from the bus simultaneously, but only one can WRITE?",
+    options:["Reading is faster than writing","Reading doesn't require electrical drive - it's just sensing voltage, while writing must actively drive the line","The bus controller prevents multiple reads","Multiple reads would cause bus contention"],
+    correctAnswer:1,
+    explanation:"Reading is passive (sensing voltage) so multiple components can read without conflict. Writing requires actively driving the bus voltage, so multiple writers would create electrical conflict."
+  },
+  { id:"q7",
+    question:"What happens to the Program Counter (PC) during the FETCH phase?",
+    options:["PC stays unchanged until EXECUTE completes","PC is cleared to 0x00","PC increments to point to the next instruction","PC loads the address of the data operand"],
+    correctAnswer:2,
+    explanation:"During FETCH, after PC provides the current instruction address, it increments (PC_INC signal) to point to the next sequential instruction, preparing for the next fetch."
+  },
+  { id:"q8",
+    question:"Which register acts as Input A to the ALU?",
+    options:["R0","ACC (Accumulator)","TMP (Temporary)","IR (Instruction Register)"],
+    correctAnswer:2,
+    explanation:"TMP (Temporary register) provides Input A to the ALU. The first operand is moved into TMP, then the second operand goes into ACC (Input B), then the ALU computes."
+  }
+];
+
+function updateQuizScore(){
+  setText($("#QuizScore"), `Score: ${quizScore}/${quizTotal}`);
+}
+
+function renderQuiz(){
+  quizScore = 0;
+  updateQuizScore();
+  const container = $("#QuizContainer");
+  container.innerHTML = "";
+
+  quizQuestions.forEach((q, idx)=>{
+    const card = document.createElement("div");
+    card.className = "quiz-card";
+    card.id = `card-${q.id}`;
+
+    const optionsHtml = q.options.map((o,i)=>`
+      <label class="option" for="${q.id}-${i}">
+        <input type="radio" name="${q.id}" id="${q.id}-${i}" value="${i}" aria-label="Option ${i+1}">
+        <span>${o}</span>
+      </label>`).join("");
+
+    card.innerHTML = `
+      <div class="font-semibold mb-2">${idx+1}. ${q.question}</div>
+      <div class="grid grid-cols-1 gap-2">${optionsHtml}</div>
+      <div class="flex items-center gap-2 mt-3">
+        <button class="btn" data-action="check" data-qid="${q.id}" aria-label="Check answer for question ${idx+1}">Check</buttonanation for question ${idx+1}">Why?</button>
+.appendChild(card);
+  });
+}
+
+function onQuizClick(e){
+  const btn = e.target.closest("button");
+  if(!btn) return;
+  const action = btn.dataset.action;
+  const qid = btn.dataset.qid;
+  const qIndex = quizQuestions.findIndex(q=>q.id===qid);
+  const q = quizQuestions[qIndex];
+  if(!q) return;
+
+  if(action==="check"){
+    const chosenEl = document.querySelector(`input[name="${qid}"]:checked`);
+    if(!chosenEl){ alert("Please select an option."); return; }
+    const chosen = Number(chosenEl.value);
+    const optLabels = $$("#card-"+qid+" .option");
+
+    // Reset any existing states
+    optLabels.forEach(l=>l.classList.remove("correct","incorrect"));
+
+    // Mark correct & chosen
+    optLabels.forEach((l,i)=>{
+      if(i===q.correctAnswer) l.classList.add("correct");
+      if(i===chosen && i!==q.correctAnswer) l.classList.add("incorrect");
+    });
+
+    // Update score only once per question (idempotent check)
+    if(!btn.dataset.scored){
+      if(chosen===q.correctAnswer){ quizScore++; updateQuizScore(); }
+      btn.dataset.scored = "true";
+    }
+
+    // Always show explanation after checking
+    const exp = document.getElementById(`exp-${qid}`);
+    exp.classList.remove("hidden");
+  }
+  else if(action==="explain"){
+    const exp = document.getElementById(`exp-${qid}`);
+    exp.classList.toggle("hidden");
+    // Toggle aria-label for better accessibility
+    const idxHuman = quizQuestions.findIndex(x=>x.id===qid)+1;
+    btn.setAttribute("aria-label", `${exp.classList.contains("hidden")? "Show":"Hide"} explanation for question ${idxHuman}`);
+  }
+}
+
+// -------------------------
+// Wiring & Init
+// -------------------------
+function wireEvents(){
+  $("#instructionSelect").addEventListener("change", resetSimulation);
+  $("#resetBtn").addEventListener("click", resetSimulation);
+  $("#nextBtn").addEventListener("click", nextCycle);
+  $("#QuizContainer").addEventListener("click", onQuizClick);
+  $("#QuizRestart").addEventListener("click", renderQuiz);
+}
+
+function init(){
+  initTabs();
+  buildSignalsPanel();
+  populateInstructionSelect();
+  wireEvents();
+  resetSimulation();
+  renderQuiz();
+}
+
+// Fire after DOM is ready
+document.addEventListener("DOMContentLoaded", init);
+
 
   </script>
+
+
 </body>
 </html>
