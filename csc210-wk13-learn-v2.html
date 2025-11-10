@@ -1,0 +1,1737 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="utf-8" />
+  <title>Week 13: CPU Integration — Instruction Execution Tracer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="color-scheme" content="light">
+  <style>
+    :root {
+      --bg: #FDFBF8;
+      --bg-section: #ffffff;
+      --text: #1A1A1A;
+      --primary: #1a365d;
+      --accent: #0694a2;
+      --muted: #f7fafc;
+      --bus: #fbbf24;
+      --sig-on: #10b981;
+      --sig-off: #9ca3af;
+      --ring: #2563eb;
+    }
+    html, body {
+      background: var(--bg) !important;
+      color: var(--text) !important;
+    }
+    @media (prefers-color-scheme: dark) {
+      html, body {
+        background: var(--bg) !important;
+        color: var(--text) !important;
+      }
+    }
+    * { box-sizing: border-box; }
+    html:focus-within { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+    a { color: var(--accent); text-decoration: underline; }
+    img { max-width: 100%; display: block; }
+    button, select { font: inherit; }
+    button { cursor: pointer; }
+    :focus { outline: none; }
+    :focus-visible {
+      outline: 3px solid var(--ring);
+      outline-offset: 2px;
+      border-radius: 6px;
+    }
+    .container { max-width: 1200px; margin-inline: auto; padding: 1rem; }
+    .max-w-4xl { max-width: 64rem; }
+    .mt-2 { margin-top: .5rem }
+    .mt-4 { margin-top: 1rem }
+    .mt-6 { margin-top: 1.5rem }
+    .mt-8 { margin-top: 2rem }
+    .mt-12 { margin-top: 3rem }
+    .mb-0 { margin-bottom: 0 }
+    .p-3 { padding: .75rem }
+    .p-4 { padding: 1rem }
+    .rounded { border-radius: .5rem }
+    .shadow { box-shadow: 0 1px 2px rgba(0,0,0,.06), 0 1px 4px rgba(0,0,0,.08); }
+    .bg-card { background: var(--bg-section); }
+    .bg-muted { background: var(--muted);}
+    .text-primary { color: var(--primary); }
+    .text-muted { color: #4b5563; }
+    .badge {
+      display: inline-block;
+      padding: .2rem .55rem;
+      border-radius: 999px;
+      background: #e5f6f7;
+      color: var(--accent);
+      font-weight: 600;
+    }
+    .btn {
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      padding: .6rem 1rem;
+      border-radius: .6rem;
+      font-weight: 600;
+    }
+    .btn.secondary {
+      background: #e2e8f0;
+      color: #111827;
+    }
+    .btn:disabled {
+      background: #9ccfd3;
+      opacity: .7;
+      cursor: not-allowed;
+    }
+    .tabs { border-bottom: 1px solid #e5e7eb; }
+    .tab {
+      appearance: none;
+      background: none;
+      border: none;
+      color: #374151;
+      padding: .75rem 1rem;
+      margin: 0 .25rem;
+      border-radius: .6rem .6rem 0 0;
+      position: relative;
+      top: 1px;
+      font-weight: 600;
+    }
+    .tab[aria-selected="true"] {
+      color: var(--primary);
+      background: var(--bg-section);
+      box-shadow: 0 -1px 0 #e5e7eb inset, 1px 0 0 #e5e7eb inset, -1px 0 0 #e5e7eb inset;
+    }
+    .tabpanel {
+      border: 1px solid #e5e7eb;
+      border-top: none;
+      padding: 1rem;
+      background: var(--bg-section);
+      border-radius: 0 .75rem .75rem .75rem;
+    }
+    .hidden { display: none !important; }
+    .cpu-grid {
+      display: grid;
+      grid-template-columns: 260px 1fr 290px;
+      gap: 1rem;
+    }
+    .cpu-canvas {
+      background: var(--muted);
+      border: 1px solid #e5e7eb;
+      border-radius: .75rem;
+      padding: 1rem;
+    }
+    .bank {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0,1fr));
+      gap: .75rem;
+    }
+    .specials-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0,1fr));
+      gap: .75rem;
+    }
+    @media (max-width: 900px) {
+      .specials-grid { grid-template-columns: 1fr; }
+    }
+    .reg, .special, .alu, .mem {
+      background: var(--bg-section);
+      border: 1px solid #e5e7eb;
+      border-radius: .6rem;
+      padding: .5rem .6rem;
+      display: flex;
+      flex-direction: column;
+      gap: .35rem;
+      min-height: 64px;
+      position: relative;
+    }
+    .reg .label, .special .label, .alu .label, .mem .label {
+      font-size: .85rem;
+      color: #374151;
+    }
+    .reg .val, .special .val, .alu .val, .mem .val {
+      font-weight: 700;
+      color: #111827;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    }
+    .glow-output {
+      box-shadow: 0 0 0 3px rgba(251,191,36,.35), 0 0 0 6px rgba(251,191,36,.2);
+    }
+    @keyframes flash {
+      from { background: #ecfdf5 }
+      to { background: var(--bg-section) }
+    }
+    .flash-capture { animation: flash .4s ease; }
+    .alu-op { font-weight: 700; color: var(--accent); }
+    .bus {
+      height: 10px;
+      background: #fef3c7;
+      border: 1px solid #fde68a;
+      border-radius: 999px;
+      position: relative;
+      margin-block: 1rem;
+      box-shadow: inset 0 0 0 2px rgba(251,191,36,.2);
+    }
+    .bus.active { background: var(--bus); }
+    .bus-label {
+      position: absolute;
+      top: -28px;
+      right: 10px;
+      background: #fff;
+      border: 1px solid #e5e7eb;
+      border-radius: .5rem;
+      padding: .15rem .5rem;
+      font-weight: 700;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono";
+      display: none;
+    }
+    .bus.active .bus-label { display: block; }
+    header {
+      background: var(--bg-section);
+      border-bottom: 1px solid #e5e7eb;
+    }
+    .title { font-size: 1.875rem; color: var(--primary); margin: 0; }
+    .callout {
+      border-left: 6px solid var(--accent);
+      background: #ecfeff;
+    }
+    .signals {
+      background: var(--bg-section);
+      border: 1px solid #e5e7eb;
+      border-radius: .75rem;
+      padding: .75rem;
+      max-height: 560px;
+      overflow: auto;
+    }
+    .signal {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: .35rem .4rem;
+      border-radius: .5rem;
+    }
+    .sig-light {
+      width: 14px;
+      height: 14px;
+      border-radius: 999px;
+      background: var(--sig-off);
+      box-shadow: inset 0 0 0 2px rgba(0,0,0,.05);
+      margin-left: .5rem;
+    }
+    .signal.active { background: #f0fdf4; }
+    .signal.active .sig-light { background: var(--sig-on); }
+    .log {
+      background: var(--bg-section);
+      border: 1px solid #e5e7eb;
+      border-radius: .75rem;
+      padding: .75rem;
+      height: 220px;
+      overflow: auto;
+      font-size: .95rem;
+    }
+    .log-entry {
+      border-bottom: 1px dashed #e5e7eb;
+      padding: .35rem 0;
+    }
+    .log-entry:last-child { border-bottom: none; }
+    .flags { display: flex; gap: .35rem; }
+    .flag-bit {
+      min-width: 28px;
+      text-align: center;
+      padding: .2rem .25rem;
+      border-radius: .35rem;
+      border: 1px solid #e5e7eb;
+      background: #fff;
+      font-weight: 700;
+    }
+    .flag-on {
+      background: #dcfce7;
+      border-color: #86efac;
+      color: #166534;
+    }
+    .quiz-card {
+      background: var(--bg-section);
+      border: 1px solid #e5e7eb;
+      border-radius: .75rem;
+      padding: 1rem;
+    }
+    .option {
+      display: flex;
+      align-items: center;
+      gap: .6rem;
+      padding: .45rem .6rem;
+      border-radius: .6rem;
+      border: 1px solid #e5e7eb;
+    }
+    .option input { accent-color: var(--accent); }
+    .correct { background: #ecfdf5; border-color: #10b981; }
+    .incorrect { background: #fef2f2; border-color: #ef4444; }
+    .explanation {
+      font-size: .95rem;
+      color: #374151;
+      background: #f9fafb;
+      border-left: 4px solid var(--accent);
+      padding: .5rem .75rem;
+      border-radius: .4rem;
+    }
+    @media (max-width: 1024px) {
+      .cpu-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 768px) {
+      .tabs { display: flex; overflow: auto; }
+      .tab { white-space: nowrap; }
+      .log { height: 200px; }
+    }
+  </style>
+</head>
+<body>
+  #main-contentSkip to Content</a>
+  <header>
+    <div class="container">
+      <h1 class="title">Week 13: CPU Integration — Instruction Execution Tracer</h1>
+      <p class="text-muted mt-2">Bring the pieces together: watch MOV, ADD, and SUB flow through fetch–decode–execute, control signals, and the shared bus.</p>
+      <div class="callout rounded p-4 mt-4 shadow" role="note" aria-label="Learning objective">
+        <p class="font-semibold">Learning Objective</p>
+        <p class="mb-0">By completing this interactive module, students will be able to trace the complete execution of MOV, ADD, and SUB instructions through the fetch–decode–execute cycle, identifying which control signals activate during each clock cycle and how data flows through the CPU’s bus architecture to accomplish each instruction.</p>
+      </div>
+    </div>
+  </header>
+  <main id="main-content" class="container max-w-4xl">
+    <div class="mt-8">
+      <div class="tabs" role="tablist" aria-label="Module sections">
+        <button id="tab-foundations" class="tab" role="tab" aria-selected="true" aria-controls="panel-foundations" tabindex="0">1) Foundational Concepts</button>
+        <button id="tab-walkthrough" class="tab" role="tab" aria-selected="false" aria-controls="panel-walkthrough" tabindex="-1">2) Activity Walkthrough</button>
+        <button id="tab-activity" class="tab" role="tab" aria-selected="false" aria-controls="panel-activity" tabindex="-1">3) Interactive Activity</button>
+        <button id="tab-quiz" class="tab" role="tab" aria-selected="false" aria-controls="panel-quiz" tabindex="-1">4) Quiz</button>
+      </div>
+      <!-- PANEL: 1 Foundational Concepts (FULL Section 2 text) -->
+      <section id="panel-foundations" class="tabpanel" aria-labelledby="tab-foundations">
+        <div class="prose">
+          <h2>2. Foundational Concept Explanation (Student Text)</h2>
+
+          <h3>Understanding CPU Integration: From Components to Computer</h3>
+          <p>
+            Welcome to the most exciting week of the course! For the past 12 weeks, you've been building individual
+            pieces of a CPU: the ALU that performs arithmetic, the register file that stores data, the control unit
+            that generates commands, and the memory system that holds programs. Each component works perfectly in
+            isolation. But a pile of working parts doesn't make a computer—integration does.
+          </p>
+          <p>
+            This week, you're crossing the threshold from component designer to system architect. You'll discover that
+            making parts work together requires solving challenges that don't exist when parts work alone: timing
+            coordination, bus arbitration, and signal sequencing. When you're done, your CPU will execute its first
+            programs, and you'll have built something truly remarkable.
+          </p>
+
+          <h3>The Central Challenge: Coordination Through Time</h3>
+          <p>
+            Imagine an orchestra. Each musician is skilled, each instrument sounds beautiful alone. But without a
+            conductor coordinating the timing, you get noise instead of music. Your CPU faces the same challenge:
+          </p>
+          <ul>
+            <li>The ALU can add numbers instantly—but needs operands to arrive at the right time</li>
+            <li>The registers can store data reliably—but need to know when to capture and when to release</li>
+            <li>The memory can retrieve instructions—but needs addresses to be stable when it reads</li>
+            <li>The bus can carry data—but only if exactly one component drives it at any moment</li>
+          </ul>
+          <p>
+            The clock is your conductor, and control signals are the conductor's cues. Each instruction executes as a
+            choreographed sequence of micro‑operations, with every signal activating at precisely the right moment.
+          </p>
+
+          <h3>The Three Instructions That Prove Integration</h3>
+          <p>
+            For Checkpoint 6, you'll implement three instructions that test different aspects of your integrated CPU:
+          </p>
+          <ol>
+            <li>
+              <strong>MOV (Move Data)</strong>
+              <p>
+                This is your “Hello World” instruction—the simplest operation that proves your bus works. MOV copies
+                data from one place to another without involving the ALU:
+              </p>
+              <p><code>MOV R1, #5</code> → Place the immediate value 5 into register R1</p>
+              <p><code>MOV R2, R1</code> → Copy the contents of R1 into R2</p>
+              <p>
+                <em>Why MOV matters:</em> It tests that data can travel from any component (immediate value generator,
+                or a register) through the bus to any register. If MOV works, your bus architecture is sound.
+              </p>
+            </li>
+            <li>
+              <strong>ADD (Addition)</strong>
+              <p>
+                This instruction engages the full datapath—data flows from registers through the ALU and back to
+                registers:
+              </p>
+              <p><code>ADD R3, R1</code> → Add R1's value to R3, store result in R3, update FLAGS</p>
+              <p>
+                <em>Why ADD matters:</em> It tests that the ALU integrates correctly, that operands can be staged
+                (loaded into TMP and ACC registers), that results can be written back, and that flags update. If ADD
+                works, your computational core is functional.
+              </p>
+            </li>
+            <li>
+              <strong>SUB (Subtraction)</strong>
+              <p>
+                This instruction verifies that your control unit can select different ALU operations:
+              </p>
+              <p><code>SUB R2, R3</code> → Subtract R3's value from R2, store result in R2, update FLAGS</p>
+              <p>
+                <em>Why SUB matters:</em> It tests that the control unit can generate different control signal patterns
+                for different operations. If SUB works, you can add more instructions systematically.
+              </p>
+            </li>
+          </ol>
+
+          <h3>The Fetch‑Decode‑Execute Cycle: The Heartbeat of Computing</h3>
+          <p>Every instruction, regardless of complexity, flows through three phases:</p>
+
+          <h4>Phase 1: FETCH (Get the Instruction)</h4>
+          <ul>
+            <li>PC (Program Counter) outputs the current address onto the bus</li>
+            <li>MAR (Memory Address Register) captures this address</li>
+            <li>Memory reads from the address in MAR and outputs the instruction onto the bus</li>
+            <li>IR (Instruction Register) captures the instruction</li>
+            <li>PC increments to point to the next instruction</li>
+          </ul>
+          <p>
+            <em>Why it takes a full clock cycle:</em> Each of these steps requires time for signals to propagate. You
+            can't capture data in MAR until PC has finished driving the bus. You can't read memory until MAR's address
+            is stable. Timing matters!
+          </p>
+
+          <h4>Phase 2: DECODE (Understand the Instruction)</h4>
+          <ul>
+            <li>The instruction bits in IR are fed to the control unit's decoder</li>
+            <li>The decoder identifies the operation (MOV, ADD, SUB, etc.)</li>
+            <li>The decoder extracts the operands (which registers, what values)</li>
+            <li>The control unit prepares the appropriate sequence of control signals</li>
+          </ul>
+          <p>
+            <em>Why it takes a clock cycle:</em> The decoder is a combinational circuit with propagation delay. More
+            importantly, we need clean clock boundaries between fetch and execute phases for reliable timing.
+          </p>
+
+          <h4>Phase 3: EXECUTE (Do the Operation)</h4>
+          <p>
+            The control unit generates the specific sequence of control signals needed to perform the operation. This
+            phase varies by instruction:
+          </p>
+          <ul>
+            <li>MOV might execute in 1 cycle (just a bus transfer)</li>
+            <li>ADD might need 2 cycles (load operands, then compute)</li>
+            <li>More complex instructions might need even more cycles</li>
+          </ul>
+
+          <h3>Bus Architecture: The Shared Highway</h3>
+          <p>
+            Your CPU uses a single shared data bus that connects all components. Think of it as a highway where only
+            one car can drive in a given lane at any moment:
+          </p>
+          <pre class="mono" aria-label="CPU to bus sketch">[PC] [R0] [R1] [R2] [R3] [ALU] [Memory]
+ └────┴────┴────┴────┴────────┴────────┘
+            8-bit Data Bus (shared)</pre>
+
+          <h4>The Critical Rule: Only One Driver</h4>
+          <p>
+            At any given moment, exactly one component may “drive” (output data onto) the bus. If multiple components
+            try to drive simultaneously, you get bus contention—electrical conflict that corrupts data and can damage
+            hardware in real circuits.
+          </p>
+
+          <h4>How We Enforce the Rule: Tri‑State Buffers</h4>
+          <p>Each component connects to the bus through a tri‑state buffer with three states:</p>
+          <ul>
+            <li>HIGH (1): Output drives the bus to logic 1</li>
+            <li>LOW (0): Output drives the bus to logic 0</li>
+            <li>High‑Impedance (Z): Output is disconnected from the bus</li>
+          </ul>
+          <p>
+            Control signals like <code>R0_OUT</code>, <code>R1_OUT</code>, <code>ALU_OUT</code> enable specific
+            tri‑state buffers. Your control unit must ensure only one <code>xxx_OUT</code> signal is active at any time.
+          </p>
+
+          <h4>Reading from the Bus: Always Available</h4>
+          <p>
+            Multiple components can read from the bus simultaneously (it's like many people reading the same billboard).
+            Input control signals like <code>R0_IN</code>, <code>R1_IN</code> determine which components capture the bus
+            data when the clock edge arrives.
+          </p>
+
+          <h3>Timing: The Invisible Choreography</h3>
+          <p>
+            Integration introduces timing constraints that don't exist for isolated components. Consider what happens
+            when you execute <code>MOV R1, R0</code>:
+          </p>
+          <ul>
+            <li>
+              <strong>Setup Time:</strong> R0 must drive the bus and the data must be stable before the clock edge
+              triggers R1 to capture it. If R1 tries to capture while the bus is still changing, it might get corrupted
+              data.
+            </li>
+            <li>
+              <strong>Hold Time:</strong> After the clock edge, R0 must continue driving the bus briefly to ensure R1
+              has enough time to reliably latch the data.
+            </li>
+            <li>
+              <strong>Propagation Delay:</strong> When <code>R0_OUT</code> activates, it takes time for the tri‑state
+              buffer to respond, for the signal to travel across the bus, and for R1's input to settle. These delays
+              are nanoseconds in real hardware but must be respected in your design.
+            </li>
+          </ul>
+
+          <h4>Clock Phases Help Manage Timing:</h4>
+          <p>We often divide each clock cycle into two phases:</p>
+          <ul>
+            <li><strong>Phase 1:</strong> Setup (component outputs data onto bus)</li>
+            <li><strong>Phase 2:</strong> Capture (receiving components latch data on clock edge)</li>
+          </ul>
+          <p>This gives signals time to stabilize before captures occur.</p>
+
+          <h3>Micro‑Operations: The Atomic Steps</h3>
+          <p>
+            Each instruction breaks down into micro‑operations (μOps)—single, indivisible actions. For example,
+            <code>ADD R3, R1</code> might decompose into:
+          </p>
+          <ul>
+            <li><strong>Fetch μOps:</strong> <code>PC_OUT, MAR_IN, MEM_READ, IR_IN, PC_INC</code></li>
+            <li><strong>Decode μOps:</strong> (Internal to control unit)</li>
+            <li>
+              <strong>Execute μOps:</strong>
+              <ul>
+                <li>Load first operand: <code>R3_OUT, TMP_IN</code></li>
+                <li>Load second operand: <code>R1_OUT, ACC_IN</code></li>
+                <li>Compute and store: <code>ALU_OP=ADD, ALU_OUT, R3_IN, FLAGS_IN</code></li>
+              </ul>
+            </li>
+          </ul>
+          <p>
+            Your control unit is essentially a micro‑operation sequencer, activating the right signals in the right
+            order.
+          </p>
+
+          <h3>Why Start with Just Three Instructions?</h3>
+          <p>
+            You might wonder: “Why not implement all 10+ instructions at once?” Here's why the incremental approach is
+            smarter:
+          </p>
+          <ol>
+            <li>
+              <strong>MOV Tests the Foundation</strong><br />
+              Before adding computational complexity, we verify that data can move anywhere in the system. If MOV
+              doesn't work, nothing else will.
+            </li>
+            <li>
+              <strong>ADD Tests the Full Datapath</strong><br />
+              ADD engages every subsystem: fetch from memory, decode in control unit, route through registers, compute
+              in ALU, write back to registers, update flags. If ADD works, you know all subsystems communicate
+              correctly.
+            </li>
+            <li>
+              <strong>SUB Tests Control Flexibility</strong><br />
+              SUB uses the same datapath as ADD but requires different control signals (different ALU operation). If
+              SUB works, you've proven the control unit can generate different signal patterns for different
+              operations—the foundation for adding more instructions.
+            </li>
+            <li>
+              <strong>Debugging is Easier</strong><br />
+              With only three instructions, you have fewer places for bugs to hide. Once these three work perfectly,
+              adding more instructions becomes mechanical: design the encoding, create the micro‑operation sequence,
+              update the control unit, test, document, repeat.
+            </li>
+          </ol>
+
+          <h3>What “Working” Means</h3>
+          <ul>
+            <li>Load a program into memory (a sequence of instructions)</li>
+            <li>Set PC to the program's starting address</li>
+            <li>Start the clock</li>
+            <li>Watch the CPU automatically fetch, decode, and execute each instruction in sequence</li>
+            <li>Verify that registers contain the expected values after execution</li>
+            <li>Confirm that no manual intervention was needed</li>
+          </ul>
+          <p>
+            This is the definition of a stored‑program computer—the architecture that underlies every computer from your
+            phone to supercomputers. When you achieve this, you've recreated one of the most important inventions in
+            human history.
+          </p>
+
+          <h3>The Integration Mindset</h3>
+          <ul>
+            <li>
+              <strong>Think in Sequences, Not Components</strong><br />
+              Instead of asking “Does my ALU work?”, ask “Does data flow from registers through ALU back to registers
+              in the correct sequence?”
+            </li>
+            <li>
+              <strong>Timing is Everything</strong><br />
+              A correct circuit with incorrect timing is a broken circuit. Every signal must activate at the right
+              moment relative to the clock and to other signals.
+            </li>
+            <li>
+              <strong>One Step at a Time</strong><br />
+              Don't try to integrate everything at once. Follow the staged integration approach: first make
+              register‑to‑register transfers work, then add ALU, then add memory, finally add the control unit.
+            </li>
+            <li>
+              <strong>Bugs are Information</strong><br />
+              When something doesn't work, it's telling you something specific about timing, signal routing, or
+              sequencing. Systematic debugging (which you'll practice in the activity) turns frustration into learning.
+            </li>
+            <li>
+              <strong>You're Building Real Technology</strong><br />
+              This isn't a toy or a simulation of how CPUs work—this <em>IS</em> how CPUs work. The principles you're
+              applying this week are identical to those used in designing ARM, Intel, and AMD processors. The scale is
+              different (8‑bit vs 64‑bit, MHz vs GHz), but the architecture is the same.
+            </li>
+          </ul>
+          <p>
+            Now let's see these concepts in action. The interactive activity will let you step through each instruction
+            cycle by cycle, watching exactly what happens at each moment in time. You'll develop an intuitive
+            understanding of how instruction execution works—not from memorizing steps, but from experiencing the flow
+            of data through your CPU.
+          </p>
+          <p><strong>Ready to bring your CPU to life? Let's begin.</strong></p>
+        </div>
+      </section>
+      <!-- PANEL: 2 Activity Walkthrough & Explanation (FULL Section 3 text) -->
+      <section id="panel-walkthrough" class="tabpanel hidden" aria-labelledby="tab-walkthrough">
+        <div class="prose">
+          <h2>3. Activity Walkthrough &amp; Explanation (Student Text)</h2>
+
+          <h3>How to Use the CPU Instruction Execution Tracer</h3>
+          <p>
+            You're about to use an interactive tool that simulates the execution of MOV, ADD, and SUB instructions in
+            your integrated CPU. This isn't a passive demonstration—you'll actively step through each clock cycle,
+            predict what should happen next, and see if your prediction matches reality. This process builds the deep
+            understanding you need to debug your own CPU implementation.
+          </p>
+
+          <h3>What This Activity Teaches You</h3>
+          <ul>
+            <li>Visualize data flow through the bus architecture during instruction execution</li>
+            <li>Identify which control signals activate during each cycle of each instruction</li>
+            <li>Understand timing relationships between signal activation and data capture</li>
+            <li>Recognize patterns that apply across all instructions (fetch is always the same!)</li>
+            <li>Debug integration issues by knowing what “correct” execution looks like</li>
+          </ul>
+
+          <h3>The Interface: Your CPU Dashboard</h3>
+          <ol>
+            <li>
+              <strong>CPU Component View (Top)</strong>
+              <p>Visual representation of your CPU showing:</p>
+              <ul>
+                <li>Registers: R0, R1, R2, R3, PC, IR, MAR, TMP, ACC, FLAGS</li>
+                <li>ALU: With operation indicator</li>
+                <li>Memory: Showing current address and data</li>
+                <li>Data Bus: Highlighted when active, showing current value</li>
+              </ul>
+            </li>
+            <li>
+              <strong>Control Signal Panel (Right Side)</strong>
+              <p>Lists all control signals with indicators:</p>
+              <ul>
+                <li>Green: Signal is active (HIGH)</li>
+                <li>Gray: Signal is inactive (LOW)</li>
+              </ul>
+              <p>Examples: <code>PC_OUT</code>, <code>MAR_IN</code>, <code>MEM_READ</code>, <code>IR_IN</code>, <code>R0_OUT</code>, <code>R1_IN</code>, <code>ALU_OP</code>, etc.</p>
+            </li>
+            <li>
+              <strong>Cycle Counter and Phase Indicator (Top Left)</strong>
+              <ul>
+                <li>Current cycle number (1, 2, 3...)</li>
+                <li>Current phase (FETCH, DECODE, EXECUTE)</li>
+                <li>Clock state (rising edge, stable high, falling edge, stable low)</li>
+              </ul>
+            </li>
+            <li>
+              <strong>Instruction Display (Top Center)</strong>
+              <ul>
+                <li>Current instruction in assembly (e.g., “MOV R1, #5”)</li>
+                <li>Binary encoding (e.g., “00101101”)</li>
+                <li>Decoded fields (opcode, destination, source, mode)</li>
+              </ul>
+            </li>
+            <li>
+              <strong>Execution Log (Bottom)</strong>
+              <ul>
+                <li>Scrolling text log showing:</li>
+                <li>What happened in each cycle</li>
+                <li>Which micro‑operations executed</li>
+                <li>Register value changes</li>
+                <li>Flag updates</li>
+              </ul>
+            </li>
+          </ol>
+
+          <h3>How to Step Through an Instruction</h3>
+          <ol>
+            <li>
+              <strong>Step 1: Select an Instruction</strong>
+              <p>Use the dropdown menu to choose:</p>
+              <ul>
+                <li><code>MOV R1, #5</code> (move immediate value 5 into R1)</li>
+                <li><code>MOV R2, R1</code> (copy R1 into R2)</li>
+                <li><code>ADD R3, R1</code> (add R1 to R3, store in R3)</li>
+                <li><code>SUB R2, R3</code> (subtract R3 from R2, store in R2)</li>
+              </ul>
+            </li>
+            <li>
+              <strong>Step 2: Initialize the Simulation</strong>
+              <p>Click “Reset” to set up the initial state:</p>
+              <ul>
+                <li>PC is set to <code>0x10</code> (where the instruction is stored)</li>
+                <li>The instruction is loaded into memory at that address</li>
+                <li>All registers are cleared (or set to demo values for arithmetic instructions)</li>
+                <li>Control signals are all LOW</li>
+              </ul>
+            </li>
+            <li>
+              <strong>Step 3: Predict Before Each Cycle</strong>
+              <p>Before clicking “Next Cycle,” ask yourself:</p>
+              <ul>
+                <li>What phase are we in? (Fetch, Decode, or Execute?)</li>
+                <li>What needs to happen this cycle?</li>
+                <li>Which control signals should activate?</li>
+                <li>What data should appear on the bus?</li>
+                <li>Which registers should capture data?</li>
+              </ul>
+            </li>
+            <li>
+              <strong>Step 4: Step Through and Observe</strong>
+              <p>Click “Next Cycle” and watch:</p>
+              <ul>
+                <li>Control signals light up green when they activate</li>
+                <li>Data appears on the bus (highlighted in yellow)</li>
+                <li>Registers flash when they capture new data</li>
+                <li>The execution log explains what happened</li>
+              </ul>
+            </li>
+            <li>
+              <strong>Step 5: Verify Your Understanding</strong>
+              <p>After each cycle, check:</p>
+              <ul>
+                <li>Did the signals match your prediction?</li>
+                <li>Do you understand WHY those particular signals activated?</li>
+                <li>Can you explain what would happen if a different signal had activated instead?</li>
+              </ul>
+            </li>
+            <li>
+              <strong>Step 6: Complete the Instruction</strong>
+              <p>Continue stepping until the instruction completes (usually 3–4 cycles). Then examine:</p>
+              <ul>
+                <li>Did the final register values match expectations?</li>
+                <li>Did FLAGS update correctly (for ADD/SUB)?</li>
+                <li>Did PC increment to point to the next instruction?</li>
+              </ul>
+            </li>
+          </ol>
+
+          <h3>Detailed Walkthrough: <code>MOV R1, #5</code></h3>
+          <p><strong>Initial State:</strong></p>
+          <ul>
+            <li>PC = <code>0x10</code></li>
+            <li>Memory[<code>0x10</code>] = <code>0x2D</code> (the encoded instruction for <code>MOV R1, #5</code>)</li>
+            <li>R1 = <code>0x00</code></li>
+            <li>All control signals LOW</li>
+          </ul>
+
+          <p><strong>CYCLE 1: FETCH PHASE</strong></p>
+          <p>
+            <em>Before you click:</em> Predict: “We need to fetch the instruction from memory. PC should output its
+            address, MAR should capture it, memory should read, and IR should capture the instruction.”
+          </p>
+          <p><strong>Click “Next Cycle” and observe:</strong></p>
+          <ul>
+            <li>
+              <em>Active Control Signals (green):</em>
+              <code>PC_OUT</code> — PC drives bus with address <code>0x10</code>;
+              <code>MAR_IN</code> — MAR captures address from bus;
+              <code>MEM_READ</code> — Memory outputs data at address <code>0x10</code>;
+              <code>IR_IN</code> — IR captures instruction from bus;
+              <code>PC_INC</code> — PC increments to <code>0x11</code>
+            </li>
+            <li>
+              <em>Data Bus Sequence:</em> First half of cycle: shows <code>0x10</code> (address). Second half: shows
+              <code>0x2D</code> (instruction).
+            </li>
+            <li><em>Register Updates:</em> <code>MAR ← 0x10</code>; <code>IR ← 0x2D</code>; <code>PC ← 0x11</code></li>
+            <li><em>Execution Log:</em> “Cycle 1: FETCH …”</li>
+          </ul>
+          <p>
+            <em>Reflect:</em> Notice that the bus carried two different values in one cycle (address, then data).
+            This is safe because different components drove it at different times. MAR captured the address before
+            memory started driving the bus with data.
+          </p>
+
+          <p><strong>CYCLE 2: DECODE PHASE</strong></p>
+          <p>
+            <em>Before you click:</em> Predict: “The control unit needs to interpret the instruction. No bus activity or
+            register changes—just internal processing.”
+          </p>
+          <p><strong>Click “Next Cycle” and observe:</strong></p>
+          <ul>
+            <li><em>Active Control Signals:</em> None visible externally (decoding happens inside control unit)</li>
+            <li><em>Data Bus:</em> No activity (shows previous value <code>0x2D</code> but no component is driving)</li>
+            <li><em>Control Unit Internal Activity (log):</em> Opcode = MOV; Dest = R1; Source encodes immediate value 5; Mode = Immediate</li>
+          </ul>
+          <p>
+            <em>Reflect:</em> This cycle seems “quiet” but it's critical. The control unit is analyzing the instruction
+            bits and setting up the control signals it will generate in the next cycle.
+          </p>
+
+          <p><strong>CYCLE 3: EXECUTE PHASE</strong></p>
+          <p>
+            <em>Before you click:</em> Predict: “For MOV immediate, the control unit needs to place the immediate value
+            (5) onto the bus, and R1 needs to capture it.”
+          </p>
+          <p><strong>Click “Next Cycle” and observe:</strong></p>
+          <ul>
+            <li><em>Active Control Signals (green):</em> <code>IMM_OUT</code> (immediate value onto bus), <code>R1_IN</code> (R1 captures)</li>
+            <li><em>Data Bus:</em> shows <code>0x05</code></li>
+            <li><em>Register Updates:</em> <code>R1 ← 0x05</code></li>
+          </ul>
+          <p>
+            <em>Reflect:</em> This is the payoff cycle. Data moved from the instruction encoding into a register.
+            Notice that only two control signals needed to activate, and they could both be active simultaneously
+            because <code>IMM_OUT</code> is driving the bus while <code>R1_IN</code> is reading—no contention.
+          </p>
+
+          <p><strong>Instruction Complete!</strong></p>
+          <ul>
+            <li><em>Total cycles:</em> 3 (1 fetch + 1 decode + 1 execute)</li>
+            <li>
+              <em>Final State:</em> PC = <code>0x11</code> (ready for next instruction), R1 = <code>0x05</code>, all
+              other registers unchanged
+            </li>
+          </ul>
+
+          <h3>What to Look for in ADD and SUB Instructions</h3>
+          <p><strong>ADD R3, R1</strong> (assuming R3=<code>0x05</code>, R1=<code>0x03</code>):</p>
+          <p>Fetch and decode are identical to MOV, but execute phase is longer:</p>
+          <ul>
+            <li><em>Cycle 3: Load First Operand</em> — <code>R3_OUT, TMP_IN</code> (bus shows <code>0x05</code>)</li>
+            <li><em>Cycle 4: Load Second Operand</em> — <code>R1_OUT, ACC_IN</code> (bus shows <code>0x03</code>)</li>
+            <li>
+              <em>Cycle 5: Compute and Store</em> — <code>ALU_OP=ADD, ALU_OUT, R3_IN, FLAGS_IN</code>;
+              ALU computes <code>0x05 + 0x03 = 0x08</code>; R3 captures result; FLAGS updated (Z=0, C=0, N=0, V=0)
+            </li>
+          </ul>
+          <p><em>Total cycles:</em> 5 (1 fetch + 1 decode + 3 execute)</p>
+          <p><em>Key Observation:</em> operands must be staged (TMP and ACC) before the ALU can operate on them.</p>
+
+          <p><strong>SUB R2, R3</strong> (assuming R2=<code>0x08</code>, R3=<code>0x03</code>):</p>
+          <ul>
+            <li>Cycle structure mirrors ADD, but with <code>ALU_OP=SUB</code></li>
+            <li>ALU computes <code>0x08 - 0x03 = 0x05</code>; result stored in R2; FLAGS updated appropriately</li>
+          </ul>
+          <p>
+            <em>Key Observation:</em> The datapath is the same; only the ALU operation code changes. This is why
+            implementing SUB after ADD is straightforward—you're reusing the same infrastructure with a different
+            control signal value.
+          </p>
+
+          <h3>Common Patterns to Recognize</h3>
+          <ol>
+            <li>
+              <strong>Fetch is Always the Same</strong> — <code>PC_OUT → MAR_IN → MEM_READ → IR_IN → PC_INC</code>
+            </li>
+            <li><strong>Decode is Always Silent</strong> — you'll never see external control signals during decode</li>
+            <li>
+              <strong>Execute Varies by Instruction Type</strong> — data movement (MOV) uses direct bus transfers;
+              arithmetic (ADD, SUB) stages operands then computes
+            </li>
+            <li>
+              <strong>Only One Component Drives the Bus at a Time</strong> — you'll never see two
+              <code>xxx_OUT</code> signals active simultaneously (golden rule)
+            </li>
+            <li><strong>Captures Happen on Clock Edges</strong> — <code>xxx_IN</code> must be active at the edge</li>
+          </ol>
+
+          <h3>Using This Understanding for Your Implementation</h3>
+          <ol>
+            <li>
+              <strong>Create a Control Signal Truth Table</strong>
+              <pre class="mono">MOV R1, #5
+Cycle 1: PC_OUT, MAR_IN, MEM_READ, IR_IN, PC_INC
+Cycle 2: (decode - internal)
+Cycle 3: IMM_OUT, R1_IN</pre>
+            </li>
+            <li><strong>Implement Each Micro‑Operation</strong> — state machine where each state is a cycle with a specific output pattern</li>
+            <li><strong>Test Incrementally</strong> — verify fetch → decode → execute</li>
+            <li><strong>Debug Systematically</strong> — compare control signals to the simulator; check ordering, timing, and contention</li>
+          </ol>
+
+          <h3>Challenge Questions to Test Your Understanding</h3>
+          <ul>
+            <li>
+              <strong>Prediction Challenge:</strong> If you execute <code>MOV R0, #3</code> followed immediately by
+              <code>ADD R2, R0</code>, how many total clock cycles are required? What is the value in R2 at the end?
+            </li>
+            <li>
+              <strong>Debugging Challenge:</strong> Suppose <code>ADD R1, R2</code> produces the wrong result. You
+              observe that during Cycle 3 (load first operand), both <code>R1_OUT</code> and <code>R2_OUT</code> are
+              active simultaneously. What is the problem, and how would you fix it?
+            </li>
+            <li>
+              <strong>Design Challenge:</strong> You want to implement a new instruction <code>INC R1</code> (increment
+              R1 by 1). Sketch the execute phase: which control signals would activate in which cycles?
+            </li>
+            <li>
+              <strong>Timing Challenge:</strong> Why can't we perform fetch in a single cycle with all control signals
+              active simultaneously (<code>PC_OUT</code>, <code>MAR_IN</code>, <code>MEM_READ</code>, <code>IR_IN</code>,
+              <code>PC_INC</code> all at once)?
+            </li>
+          </ul>
+
+          <h3>Tips for Getting the Most from This Activity</h3>
+          <ul>
+            <li><strong>Don't Rush:</strong> This isn't about clicking through quickly. After each cycle, ask “Why these signals?”</li>
+            <li><strong>Experiment:</strong> Try running the same instruction multiple times. Execution is deterministic.</li>
+            <li><strong>Compare:</strong> Run MOV with immediate mode, then register mode. What's different in the execute phase?</li>
+            <li><strong>Predict:</strong> After you've seen an instruction once, reset and try to predict each cycle before clicking.</li>
+            <li><strong>Take Notes:</strong> Sketch control signal sequences. They become your reference.</li>
+            <li><strong>Relate to Your Design:</strong> Map each control signal to your Logisim implementation.</li>
+          </ul>
+
+          <h3>What Comes Next</h3>
+          <ul>
+            <li>Design your instruction encoding scheme</li>
+            <li>Create timing diagrams for your three instructions</li>
+            <li>Build the integrated CPU in Logisim</li>
+            <li>Test using the same patterns you practiced here</li>
+            <li>Debug confidently because you know what correct execution looks like</li>
+          </ul>
+          <p><strong>The simulator gave you the “answer key.” Now it's your turn to build the hardware that produces these exact behaviors. You've got this!</strong></p>
+        </div>
+      </section>
+      <!-- PANEL: 3 Interactive Activity -->
+      <section id="panel-activity" class="tabpanel hidden" aria-labelledby="tab-activity">
+        <div class="grid" style="gap:1.25rem">
+          <!-- Control panel -->
+          <section class="bg-card rounded shadow p-4" aria-label="Control panel">
+            <div class="flex items-center justify-between gap-3 flex-wrap">
+              <div class="flex items-center gap-3">
+                <label for="instructionSelect" class="font-semibold">Instruction:</label>
+                <select id="instructionSelect" aria-label="Select instruction" class="p-2 rounded border" style="border:1px solid #e5e7eb; background:#fff; min-width:260px"></select>
+              </div>
+              <div class="flex items-center gap-2">
+                <span id="phaseBadge" class="badge" aria-live="polite">Ready</span>
+                <span id="cycleCounter" class="badge" aria-live="polite">Cycle: 0</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <button id="resetBtn" class="btn secondary" aria-label="Reset simulation">Reset</button>
+                <button id="nextBtn" class="btn" aria-label="Advance to next cycle">Next Cycle</button>
+              </div>
+            </div>
+          </section>
+          <!-- Main visualization + signals -->
+          <div class="cpu-grid">
+            <!-- Canvas -->
+            <section class="cpu-canvas" aria-label="CPU visualization">
+              <h3 class="text-primary" style="margin:.25rem 0 .5rem">General Registers</h3>
+              <div class="bank" id="regBank">
+                <div class="reg" id="R0" aria-live="polite"><div class="label">R0</div><div class="val mono">0x00</div></div>
+                <div class="reg" id="R1" aria-live="polite"><div class="label">R1</div><div class="val mono">0x00</div></div>
+                <div class="reg" id="R2" aria-live="polite"><div class="label">R2</div><div class="val mono">0x00</div></div>
+                <div class="reg" id="R3" aria-live="polite"><div class="label">R3</div><div class="val mono">0x00</div></div>
+              </div>
+              <h3 class="text-primary mt-6" style="margin:.75rem 0 .5rem">Special Registers</h3>
+              <div class="specials-grid">
+                <div class="special" id="PC"><div class="label">PC</div><div class="val mono">0x00</div></div>
+                <div class="special" id="IR"><div class="label">IR</div><div class="val mono">0x00</div></div>
+                <div class="special" id="MAR"><div class="label">MAR</div><div class="val mono">0x00</div></div>
+                <div class="special" id="TMP"><div class="label">TMP (ALU A)</div><div class="val mono">0x00</div></div>
+                <div class="special" id="ACC"><div class="label">ACC (ALU B)</div><div class="val mono">0x00</div></div>
+                <div class="special" id="FLAGS">
+                  <div class="label">FLAGS</div>
+                  <div class="val">
+                    <div class="flags" aria-label="Flags Z C N V" aria-live="polite">
+                      <span id="FZ" class="flag-bit">Z</span>
+                      <span id="FC" class="flag-bit">C</span>
+                      <span id="FN" class="flag-bit">N</span>
+                      <span id="FV" class="flag-bit">V</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- ALU & Memory -->
+              <div class="grid grid-cols-2 mt-6">
+                <div class="alu" id="ALU" aria-live="polite">
+                  <div class="label">ALU</div>
+                  <div class="val">Result: <span id="ALUResult" class="mono">0x00</span></div>
+                  <div class="alu-op">Op: <span id="ALUOp">—</span></div>
+                </div>
+                <div class="mem" id="Memory" aria-live="polite">
+                  <div class="label">Memory</div>
+                  <div class="val">Addr: <span id="MemAddr" class="mono">0x00</span> • Data: <span id="MemData" class="mono">0x00</span></div>
+                </div>
+              </div>
+              <!-- Data Bus -->
+              <div class="bus mt-6" id="DataBus" aria-label="Data bus" aria-live="polite">
+                <div class="bus-label mono" id="BusLabel"></div>
+              </div>
+              <!-- Instruction display -->
+              <div class="bg-card rounded p-3 shadow" aria-live="polite">
+                <div class="grid grid-cols-3">
+                  <div><strong>Instruction:</strong> <span id="InstAsm" class="mono">—</span></div>
+                  <div><strong>Binary:</strong> <span id="InstBin" class="mono">—</span></div>
+                  <div><strong>Decoded:</strong> <span id="InstDec" class="mono">—</span></div>
+                </div>
+              </div>
+            </section>
+            <!-- Signals -->
+            <aside class="signals" aria-label="Control signals panel">
+              <h3 class="text-primary" style="margin-top:.25rem">Control Signals</h3>
+              <div id="SignalsList" class="mt-2" role="list"></div>
+            </aside>
+          </div>
+          <!-- Execution Log -->
+          <section class="log" aria-label="Execution log" id="ExecLog" aria-live="polite"></section>
+        </div>
+      </section>
+      <!-- PANEL: 4 Quiz -->
+      <section id="panel-quiz" class="tabpanel hidden" aria-labelledby="tab-quiz">
+        <div id="QuizContainer" class="grid grid-cols-1 gap-4"></div>
+        <div class="flex items-center gap-3 mt-4">
+          <div class="badge" id="QuizScore" aria-live="polite">Score: 0/0</div>
+          <button class="btn secondary" id="QuizRestart" aria-label="Restart quiz">Restart Quiz</button>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <!-- JavaScript will go here (see next chunk if needed) -->
+  <script>
+    // ... (Place your JavaScript here, or in a separate chunk if provided)
+
+/* =========================================================================
+   CPU Integration — Instruction Execution Tracer
+   - All interactivity is here; no persistence (no localStorage/sessionStorage/cookies)
+   - Strict light theme assumed by CSS (already in HTML head)
+   - Keyboard-accessible tabbed interface, ARIA-friendly updates
+   ========================================================================= */
+
+/* -------------------------------------------------------------------------
+   Data (from Section 4)
+   ------------------------------------------------------------------------- */
+const instructionData = {
+  instructions: [
+    {
+      id: "mov_imm",
+      assembly: "MOV R1, #5",
+      binary: "00101101",
+      encoding: { opcode: "001", destination: "01", source: "10", mode: "1" },
+      description: "Move immediate value 5 into register R1",
+      initialState: {
+        PC: "0x10", R0: "0x00", R1: "0x00", R2: "0x00", R3: "0x00",
+        IR: "0x00", MAR: "0x00", TMP: "0x00", ACC: "0x00", FLAGS: "0x00",
+        memory: { "0x10": "0x2D" }
+      },
+      cycles: [
+        {
+          cycleNumber: 1,
+          phase: "FETCH",
+          clockPhase: "full-cycle",
+          activeSignals: ["PC_OUT", "MAR_IN", "MEM_READ", "IR_IN", "PC_INC"],
+          busActivity: [
+            { timePoint: "first-half",  value: "0x10", source: "PC",     description: "PC outputs address onto bus" },
+            { timePoint: "second-half", value: "0x2D", source: "Memory", description: "Memory outputs instruction onto bus" }
+          ],
+          registerUpdates: { MAR: "0x10", IR: "0x2D", PC: "0x11" },
+          logMessage: "Cycle 1: FETCH — PC_OUT→MAR_IN; MEM_READ; IR_IN; PC_INC",
+          visualEffects: [
+            { component: "PC",     effect: "output-active",  timing: "first-half"  },
+            { component: "MAR",    effect: "capture-data",    timing: "first-half"  },
+            { component: "Memory", effect: "output-active",  timing: "second-half" },
+            { component: "IR",     effect: "capture-data",    timing: "second-half" }
+          ]
+        },
+        {
+          cycleNumber: 2,
+          phase: "DECODE",
+          clockPhase: "full-cycle",
+          activeSignals: [],
+          busActivity: [{ timePoint: "full-cycle", value: "0x2D", source: "none", description: "Bus holds previous value" }],
+          registerUpdates: {},
+          logMessage: "Cycle 2: DECODE — internal control decode; prepare signal sequence",
+          visualEffects: [{ component: "Control Unit", effect: "decode-active", timing: "full-cycle" }],
+          decodedInfo: { operation: "MOV", destinationReg: "R1", sourceValue: "5 (immediate)", addressingMode: "Immediate" }
+        },
+        {
+          cycleNumber: 3,
+          phase: "EXECUTE",
+          clockPhase: "full-cycle",
+          activeSignals: ["IMM_OUT", "R1_IN"],
+          busActivity: [{ timePoint: "full-cycle", value: "0x05", source: "Immediate", description: "CU drives bus with immediate" }],
+          registerUpdates: { R1: "0x05" },
+          logMessage: "Cycle 3: EXECUTE — IMM_OUT; R1_IN; instruction complete",
+          visualEffects: [
+            { component: "Control Unit", effect: "output-active", timing: "full-cycle" },
+            { component: "R1",           effect: "capture-data",   timing: "clock-edge" }
+          ],
+          instructionComplete: true
+        }
+      ]
+    },
+    {
+      id: "mov_reg",
+      assembly: "MOV R2, R1",
+      binary: "00110010",
+      encoding: { opcode: "001", destination: "10", source: "01", mode: "0" },
+      description: "Copy register R1 into R2",
+      initialState: {
+        PC: "0x20", R0: "0x00", R1: "0x05", R2: "0x00", R3: "0x00",
+        IR: "0x00", MAR: "0x00", TMP: "0x00", ACC: "0x00", FLAGS: "0x00",
+        memory: { "0x20": "0x32" }
+      },
+      cycles: [
+        {
+          cycleNumber: 1, phase: "FETCH", clockPhase: "full-cycle",
+          activeSignals: ["PC_OUT","MAR_IN","MEM_READ","IR_IN","PC_INC"],
+          busActivity: [
+            { timePoint: "first-half",  value: "0x20", source: "PC"     },
+            { timePoint: "second-half", value: "0x32", source: "Memory" }
+          ],
+          registerUpdates: { MAR: "0x20", IR: "0x32", PC: "0x21" },
+          logMessage: "Cycle 1: FETCH — PC_OUT→MAR_IN; MEM_READ; IR_IN; PC_INC",
+          visualEffects: [
+            { component: "PC",     effect: "output-active", timing: "first-half"  },
+            { component: "MAR",    effect: "capture-data",   timing: "first-half"  },
+            { component: "Memory", effect: "output-active", timing: "second-half" },
+            { component: "IR",     effect: "capture-data",   timing: "second-half" }
+          ]
+        },
+        {
+          cycleNumber: 2, phase: "DECODE", clockPhase: "full-cycle",
+          activeSignals: [], busActivity: [{ timePoint: "full-cycle", value: "0x32", source: "none" }],
+          registerUpdates: {}, logMessage: "Cycle 2: DECODE — MOV R2,R1",
+          visualEffects: [{ component: "Control Unit", effect: "decode-active", timing: "full-cycle" }],
+          decodedInfo: { operation: "MOV", destinationReg: "R2", sourceValue: "R1 (register)", addressingMode: "Register" }
+        },
+        {
+          cycleNumber: 3, phase: "EXECUTE", clockPhase: "full-cycle",
+          activeSignals: ["R1_OUT","R2_IN"],
+          busActivity: [{ timePoint: "full-cycle", value: "0x05", source: "R1" }],
+          registerUpdates: { R2: "0x05" },
+          logMessage: "Cycle 3: EXECUTE — R1_OUT; R2_IN; instruction complete",
+          visualEffects: [
+            { component: "R1", effect: "output-active", timing: "full-cycle" },
+            { component: "R2", effect: "capture-data",   timing: "clock-edge" }
+          ],
+          instructionComplete: true
+        }
+      ]
+    },
+    {
+      id: "add",
+      assembly: "ADD R3, R1",
+      binary: "01011010",
+      encoding: { opcode: "010", destination: "11", source: "01", mode: "0" },
+      description: "Add R1 to R3; store in R3; update flags",
+      initialState: {
+        PC: "0x30", R0: "0x00", R1: "0x03", R2: "0x00", R3: "0x05",
+        IR: "0x00", MAR: "0x00", TMP: "0x00", ACC: "0x00", FLAGS: "0x00",
+        memory: { "0x30": "0x5A" }
+      },
+      cycles: [
+        {
+          cycleNumber: 1, phase: "FETCH", clockPhase: "full-cycle",
+          activeSignals: ["PC_OUT","MAR_IN","MEM_READ","IR_IN","PC_INC"],
+          busActivity: [
+            { timePoint: "first-half",  value: "0x30", source: "PC"     },
+            { timePoint: "second-half", value: "0x5A", source: "Memory" }
+          ],
+          registerUpdates: { MAR: "0x30", IR: "0x5A", PC: "0x31" },
+          logMessage: "Cycle 1: FETCH",
+          visualEffects: [
+            { component: "PC",     effect: "output-active", timing: "first-half"  },
+            { component: "MAR",    effect: "capture-data",   timing: "first-half"  },
+            { component: "Memory", effect: "output-active", timing: "second-half" },
+            { component: "IR",     effect: "capture-data",   timing: "second-half" }
+          ]
+        },
+        {
+          cycleNumber: 2, phase: "DECODE", clockPhase: "full-cycle",
+          activeSignals: [], busActivity: [{ timePoint: "full-cycle", value: "0x5A", source: "none" }],
+          registerUpdates: {}, logMessage: "Cycle 2: DECODE — ADD R3,R1",
+          visualEffects: [{ component: "Control Unit", effect: "decode-active", timing: "full-cycle" }],
+          decodedInfo: { operation: "ADD", destinationReg: "R3", sourceValue: "R1 (register)", addressingMode: "Register" }
+        },
+        {
+          cycleNumber: 3, phase: "EXECUTE", subPhase: "Load First Operand", clockPhase: "full-cycle",
+          activeSignals: ["R3_OUT","TMP_IN"],
+          busActivity: [{ timePoint: "full-cycle", value: "0x05", source: "R3" }],
+          registerUpdates: { TMP: "0x05" },
+          logMessage: "Cycle 3: EXECUTE — R3_OUT→TMP_IN"
+        },
+        {
+          cycleNumber: 4, phase: "EXECUTE", subPhase: "Load Second Operand", clockPhase: "full-cycle",
+          activeSignals: ["R1_OUT","ACC_IN"],
+          busActivity: [{ timePoint: "full-cycle", value: "0x03", source: "R1" }],
+          registerUpdates: { ACC: "0x03" },
+          logMessage: "Cycle 4: EXECUTE — R1_OUT→ACC_IN"
+        },
+        {
+          cycleNumber: 5, phase: "EXECUTE", subPhase: "Compute and Store", clockPhase: "full-cycle",
+          activeSignals: ["ALU_OP=ADD","ALU_OUT","R3_IN","FLAGS_IN"],
+          busActivity: [{ timePoint: "full-cycle", value: "0x08", source: "ALU" }],
+          registerUpdates: { R3: "0x08", FLAGS: "0x00" },
+          flagUpdates: { Zero: "0", Carry: "0", Negative: "0", Overflow: "0" },
+          aluOperation: { operation: "ADD", operand1: "0x05", operand2: "0x03", result: "0x08", computation: "5+3=8" },
+          logMessage: "Cycle 5: EXECUTE — ADD; ALU_OUT→R3_IN; FLAGS_IN; complete",
+          visualEffects: [
+            { component: "ALU",   effect: "compute-active", timing: "first-half"  },
+            { component: "ALU",   effect: "output-active",  timing: "second-half" },
+            { component: "R3",    effect: "capture-data",   timing: "clock-edge"  },
+            { component: "FLAGS", effect: "update",         timing: "clock-edge"  }
+          ],
+          instructionComplete: true
+        }
+      ]
+    },
+    {
+      id: "sub",
+      assembly: "SUB R2, R3",
+      binary: "01110110",
+      encoding: { opcode: "011", destination: "10", source: "11", mode: "0" },
+      description: "Subtract R3 from R2; store in R2; update flags",
+      initialState: {
+        PC: "0x40", R0: "0x00", R1: "0x00", R2: "0x08", R3: "0x03",
+        IR: "0x00", MAR: "0x00", TMP: "0x00", ACC: "0x00", FLAGS: "0x00",
+        memory: { "0x40": "0x76" }
+      },
+      cycles: [
+        {
+          cycleNumber: 1, phase: "FETCH", clockPhase: "full-cycle",
+          activeSignals: ["PC_OUT","MAR_IN","MEM_READ","IR_IN","PC_INC"],
+          busActivity: [
+            { timePoint: "first-half",  value: "0x40", source: "PC"     },
+            { timePoint: "second-half", value: "0x76", source: "Memory" }
+          ],
+          registerUpdates: { MAR: "0x40", IR: "0x76", PC: "0x41" },
+          logMessage: "Cycle 1: FETCH",
+          visualEffects: [
+            { component: "PC",     effect: "output-active", timing: "first-half"  },
+            { component: "MAR",    effect: "capture-data",   timing: "first-half"  },
+            { component: "Memory", effect: "output-active", timing: "second-half" },
+            { component: "IR",     effect: "capture-data",   timing: "second-half" }
+          ]
+        },
+        {
+          cycleNumber: 2, phase: "DECODE", clockPhase: "full-cycle",
+          activeSignals: [], busActivity: [{ timePoint: "full-cycle", value: "0x76", source: "none" }],
+          registerUpdates: {}, logMessage: "Cycle 2: DECODE — SUB R2,R3",
+          visualEffects: [{ component: "Control Unit", effect: "decode-active", timing: "full-cycle" }],
+          decodedInfo: { operation: "SUB", destinationReg: "R2", sourceValue: "R3 (register)", addressingMode: "Register" }
+        },
+        {
+          cycleNumber: 3, phase: "EXECUTE", subPhase: "Load First Operand", clockPhase: "full-cycle",
+          activeSignals: ["R2_OUT","TMP_IN"],
+          busActivity: [{ timePoint: "full-cycle", value: "0x08", source: "R2" }],
+          registerUpdates: { TMP: "0x08" },
+          logMessage: "Cycle 3: EXECUTE — R2_OUT→TMP_IN"
+        },
+        {
+          cycleNumber: 4, phase: "EXECUTE", subPhase: "Load Second Operand", clockPhase: "full-cycle",
+          activeSignals: ["R3_OUT","ACC_IN"],
+          busActivity: [{ timePoint: "full-cycle", value: "0x03", source: "R3" }],
+          registerUpdates: { ACC: "0x03" },
+          logMessage: "Cycle 4: EXECUTE — R3_OUT→ACC_IN"
+        },
+        {
+          cycleNumber: 5, phase: "EXECUTE", subPhase: "Compute and Store", clockPhase: "full-cycle",
+          activeSignals: ["ALU_OP=SUB","ALU_OUT","R2_IN","FLAGS_IN"],
+          busActivity: [{ timePoint: "full-cycle", value: "0x05", source: "ALU" }],
+          registerUpdates: { R2: "0x05", FLAGS: "0x00" },
+          flagUpdates: { Zero: "0", Carry: "0", Negative: "0", Overflow: "0" },
+          aluOperation: { operation: "SUB", operand1: "0x08", operand2: "0x03", result: "0x05" },
+          logMessage: "Cycle 5: EXECUTE — SUB; ALU_OUT→R2_IN; FLAGS_IN; complete",
+          visualEffects: [
+            { component: "ALU",   effect: "compute-active", timing: "first-half"  },
+            { component: "ALU",   effect: "output-active",  timing: "second-half" },
+            { component: "R2",    effect: "capture-data",   timing: "clock-edge"  },
+            { component: "FLAGS", effect: "update",         timing: "clock-edge"  }
+          ],
+          instructionComplete: true
+        }
+      ]
+    }
+  ],
+
+  controlSignals: [
+    { name: "PC_OUT",   description: "Program Counter drives data bus with current address" },
+    { name: "PC_IN",    description: "Program Counter captures value from data bus" },
+    { name: "PC_INC",   description: "Program Counter increments by 1" },
+    { name: "MAR_IN",   description: "Memory Address Register captures address from data bus" },
+    { name: "IR_IN",    description: "Instruction Register captures instruction from data bus" },
+    { name: "MEM_READ", description: "Memory outputs data at MAR address onto data bus" },
+    { name: "MEM_WRITE",description: "Memory stores data from data bus at MAR address" },
+    { name: "R0_OUT",   description: "Register R0 drives data bus with its contents" },
+    { name: "R0_IN",    description: "Register R0 captures value from data bus" },
+    { name: "R1_OUT",   description: "Register R1 drives data bus with its contents" },
+    { name: "R1_IN",    description: "Register R1 captures value from data bus" },
+    { name: "R2_OUT",   description: "Register R2 drives data bus with its contents" },
+    { name: "R2_IN",    description: "Register R2 captures value from data bus" },
+    { name: "R3_OUT",   description: "Register R3 drives data bus with its contents" },
+    { name: "R3_IN",    description: "Register R3 captures value from data bus" },
+    { name: "TMP_IN",   description: "Temporary register captures value from data bus (ALU input A)" },
+    { name: "ACC_IN",   description: "Accumulator register captures value from data bus (ALU input B)" },
+    { name: "ALU_OUT",  description: "ALU drives data bus with computation result" },
+    { name: "ALU_OP",   description: "ALU operation selection (ADD, SUB, AND, OR, NOT, XOR)" },
+    { name: "FLAGS_IN", description: "FLAGS register captures flag values from ALU" },
+    { name: "IMM_OUT",  description: "Control unit drives data bus with immediate value from instruction" }
+  ]
+};
+
+/* -------------------------------------------------------------------------
+   Quiz questions (Section 4)
+   ------------------------------------------------------------------------- */
+const quizQuestions = [
+  {
+    id: "q1",
+    question: "During the FETCH phase, which component drives the data bus FIRST (in the first half of the cycle)?",
+    options: ["Memory", "Program Counter (PC)", "Instruction Register (IR)", "Memory Address Register (MAR)"],
+    correctAnswer: 1,
+    explanation: "PC drives the bus first with the instruction address; MAR captures it; memory drives the instruction on the second half."
+  },
+  {
+    id: "q2",
+    question: "What would happen if both R0_OUT and R1_OUT signals were HIGH simultaneously?",
+    options: ["R0's value would be transferred to R1", "R1's value would be transferred to R0", "Bus contention - both registers would conflict, corrupting data", "The bus would show the sum of R0 and R1"],
+    correctAnswer: 2,
+    explanation: "Multiple writers create contention. Only one component may drive the bus at a time."
+  },
+  {
+    id: "q3",
+    question: "Why does the ADD instruction require more cycles than MOV?",
+    options: ["ADD uses the ALU which is slower than registers", "ADD must load both operands into TMP and ACC before computing", "ADD updates the FLAGS register which takes extra time", "ADD requires validation that both operands are ready"],
+    correctAnswer: 1,
+    explanation: "ADD stages operands first (TMP then ACC) then computes. MOV is a single bus transfer."
+  },
+  {
+    id: "q4",
+    question: "What is the purpose of the DECODE phase?",
+    options: ["To fetch the instruction from memory", "To convert binary to assembly language for display", "To analyze the instruction and prepare the appropriate control signals", "To execute the instruction one micro-operation at a time"],
+    correctAnswer: 2,
+    explanation: "During DECODE, the control unit analyzes IR and prepares the control signal sequence."
+  },
+  {
+    id: "q5",
+    question: "In the instruction 'ADD R3, R1', which register gets the final result?",
+    options: ["R1 (source operand)", "R3 (destination operand)", "ACC (accumulator)", "TMP (temporary register)"],
+    correctAnswer: 1,
+    explanation: "R3 is the destination register and receives the sum."
+  },
+  {
+    id: "q6",
+    question: "Why can multiple components READ from the bus simultaneously, but only one can WRITE?",
+    options: ["Reading is faster than writing", "Reading doesn't require electrical drive - it's just sensing voltage, while writing must actively drive the line", "The bus controller prevents multiple reads", "Multiple reads would cause bus contention"],
+    correctAnswer: 1,
+    explanation: "Reads are passive sensing; writes drive the line and would conflict if multiple drivers are active."
+  },
+  {
+    id: "q7",
+    question: "What happens to the Program Counter (PC) during the FETCH phase?",
+    options: ["PC stays unchanged until EXECUTE completes", "PC is cleared to 0x00", "PC increments to point to the next instruction", "PC loads the address of the data operand"],
+    correctAnswer: 2,
+    explanation: "PC increments (PC_INC) after supplying the instruction address."
+  },
+  {
+    id: "q8",
+    question: "Which register acts as Input A to the ALU?",
+    options: ["R0", "ACC (Accumulator)", "TMP (Temporary)", "IR (Instruction Register)"],
+    correctAnswer: 2,
+    explanation: "TMP is ALU input A; ACC is input B."
+  }
+];
+
+/* -------------------------------------------------------------------------
+   State (session only) & Short DOM helpers
+   ------------------------------------------------------------------------- */
+let currentInstruction = null;
+let currentCycleIndex = -1;
+let cpuState = {};
+let quizScore = 0;
+
+const $  = (sel) => document.querySelector(sel);
+const $$ = (sel) => Array.from(document.querySelectorAll(sel));
+const setText = (el, txt) => { if (el) el.textContent = txt; };
+const hex = (v) => v?.startsWith?.("0x") ? v : "0x" + (Number(v)||0).toString(16).padStart(2,'0').toUpperCase();
+
+/* -------------------------------------------------------------------------
+   Tabs (ARIA)
+   ------------------------------------------------------------------------- */
+function initTabs() {
+  const tabs = $$(".tab");
+  const panels = ["#panel-foundations", "#panel-walkthrough", "#panel-activity", "#panel-quiz"].map(id => $(id));
+
+  function activate(index) {
+    tabs.forEach((t, i) => {
+      t.setAttribute("aria-selected", String(i === index));
+      t.tabIndex = i === index ? 0 : -1;
+      panels[i].classList.toggle("hidden", i !== index);
+    });
+    tabs[index].focus();
+  }
+
+  tabs.forEach((tab, idx) => {
+    tab.addEventListener("click", () => activate(idx));
+    tab.addEventListener("keydown", (e) => {
+      const { key } = e;
+      if (key === "ArrowRight") { e.preventDefault(); activate((idx + 1) % tabs.length); }
+      if (key === "ArrowLeft")  { e.preventDefault(); activate((idx - 1 + tabs.length) % tabs.length); }
+      if (key === "Home")       { e.preventDefault(); activate(0); }
+      if (key === "End")        { e.preventDefault(); activate(tabs.length - 1); }
+    });
+  });
+
+  activate(0);
+}
+
+/* -------------------------------------------------------------------------
+   Control Signals Panel
+   ------------------------------------------------------------------------- */
+function buildSignalsPanel() {
+  const container = $("#SignalsList");
+  container.innerHTML = "";
+  instructionData.controlSignals.forEach(sig => {
+    const row = document.createElement("div");
+    row.className = "signal";
+    row.setAttribute("role", "listitem");
+    row.title = sig.description;
+    row.dataset.name = sig.name;
+    row.innerHTML = `
+      <span class="mono">${sig.name}</span>
+      <span class="sig-light" aria-label="${sig.name} indicator"></span>
+    `;
+    container.appendChild(row);
+  });
+}
+function clearSignals() {
+  $$("#SignalsList .signal").forEach(s => s.classList.remove("active"));
+}
+function setSignals(active) {
+  clearSignals();
+  (active || []).forEach(name => {
+    const normalized = name.includes("=") ? "ALU_OP" : name;
+    const row = $(`#SignalsList .signal[data-name="${CSS.escape(normalized)}"]`);
+    if (row) row.classList.add("active");
+  });
+}
+
+/* -------------------------------------------------------------------------
+   Instruction selection & Visualization
+   ------------------------------------------------------------------------- */
+function populateInstructionSelect() {
+  const sel = $("#instructionSelect");
+  sel.innerHTML = "";
+  instructionData.instructions.forEach(i => {
+    const opt = document.createElement("option");
+    opt.value = i.id;
+    opt.textContent = `${i.assembly} — ${i.description}`;
+    sel.appendChild(opt);
+  });
+}
+
+function setPhase(phase) { setText($("#phaseBadge"), phase); }
+function setCycle(n)     { setText($("#cycleCounter"), `Cycle: ${n}`); }
+
+function setBus(value) {
+  const bus = $("#DataBus");
+  const label = $("#BusLabel");
+  if (!value) {
+    bus.classList.remove("active");
+    setText(label, "");
+  } else {
+    bus.classList.add("active");
+    setText(label, value);
+  }
+}
+
+function setRegister(id, value, effect) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  const valEl = el.querySelector(".val");
+  if (valEl) valEl.textContent = hex(value);
+
+  if (effect === "capture-data") {
+    el.classList.add("flash-capture");
+    setTimeout(() => el.classList.remove("flash-capture"), 400);
+  }
+  if (effect === "output-active") {
+    el.classList.add("glow-output");
+    setTimeout(() => el.classList.remove("glow-output"), 500);
+  }
+  if (id === "FLAGS") {
+    updateFlagsFromString((value || "0x00").replace(/^0x/i, ""));
+  }
+}
+
+function updateFlagsFromString(hexFlags) {
+  const val = parseInt(hexFlags, 16) || 0;
+  const bits = [
+    { el: "#FZ", on: (val & (1 << 0)) !== 0 },
+    { el: "#FC", on: (val & (1 << 1)) !== 0 },
+    { el: "#FN", on: (val & (1 << 2)) !== 0 },
+    { el: "#FV", on: (val & (1 << 3)) !== 0 }
+  ];
+  bits.forEach(b => {
+    const e = $(b.el);
+    if (e) e.classList.toggle("flag-on", b.on);
+  });
+}
+
+function updateInstructionHeader() {
+  setText($("#InstAsm"), currentInstruction.assembly);
+  setText($("#InstBin"), currentInstruction.binary);
+  const enc = currentInstruction.encoding;
+  setText($("#InstDec"), `op=${enc.opcode} dst=${enc.destination} src=${enc.source} mode=${enc.mode}`);
+}
+
+function updateCPUVisualization(isReset = false) {
+  ["R0","R1","R2","R3","PC","IR","MAR","TMP","ACC"].forEach(r => {
+    setRegister(r, cpuState[r] || "0x00");
+  });
+  updateFlagsFromString((cpuState.FLAGS || "0x00").replace(/^0x/i,""));
+
+  $("#MemAddr").textContent = Object.keys(cpuState.memory || {})[0] || "0x00";
+  $("#MemData").textContent = Object.values(cpuState.memory || {})[0] || "0x00";
+  $("#ALUResult").textContent = "0x00";
+  $("#ALUOp").textContent = "—";
+
+  if (isReset) {
+    $$(".reg,.special,.alu,.mem").forEach(el => el.classList.remove("glow-output","flash-capture"));
+  }
+}
+
+/* -------------------------------------------------------------------------
+   Logging
+   ------------------------------------------------------------------------- */
+function clearLog() { $("#ExecLog").innerHTML = ""; }
+
+function appendToLog(message) {
+  const div = document.createElement("div");
+  div.className = "log-entry";
+  div.textContent = message;
+  $("#ExecLog").appendChild(div);
+  $("#ExecLog").scrollTop = $("#ExecLog").scrollHeight;
+}
+
+/* -------------------------------------------------------------------------
+   Effects
+   ------------------------------------------------------------------------- */
+function mapComponentId(name) {
+  const map = {
+    "PC": "PC", "MAR": "MAR", "IR": "IR", "R0": "R0", "R1": "R1", "R2": "R2", "R3": "R3",
+    "TMP": "TMP", "ACC": "ACC", "Memory": "Memory", "ALU": "ALU",
+    "Control Unit": "IR", "Immediate": "IR" // Visualize CU/immediate using IR box
+  };
+  return map[name] || name;
+}
+
+function applyVisualEffects(effects) {
+  (effects || []).forEach(e => {
+    if (e.component === "ALU" && e.effect === "compute-active") {
+      $("#ALUOp").textContent = "…";
+    } else {
+      const id = mapComponentId(e.component);
+      const el = document.getElementById(id);
+      if (!el) return;
+      const effectClass = (e.effect === "output-active") ? "glow-output" : "flash-capture";
+      el.classList.add(effectClass);
+      setTimeout(() => el.classList.remove(effectClass), effectClass === "glow-output" ? 500 : 400);
+    }
+  });
+}
+
+function emitSourceEffect(source, effect) {
+  const id = mapComponentId(source);
+  const el = document.getElementById(id);
+  if (!el) return;
+  const cls = (effect === "output-active") ? "glow-output" : "flash-capture";
+  el.classList.add(cls);
+  setTimeout(() => el.classList.remove(cls), 500);
+}
+
+const wait = (ms) => new Promise(res => setTimeout(res, ms));
+
+/* -------------------------------------------------------------------------
+   Simulation control
+   ------------------------------------------------------------------------- */
+function resetSimulation() {
+  const id = $("#instructionSelect").value || instructionData.instructions[0].id;
+  currentInstruction = instructionData.instructions.find(x => x.id === id);
+  currentCycleIndex = -1; // before first cycle
+  cpuState = JSON.parse(JSON.stringify(currentInstruction.initialState));
+
+  updateCPUVisualization(true);
+  updateInstructionHeader();
+  setPhase("Ready");
+  setCycle(0);
+  clearSignals();
+  clearLog();
+  setBus(null);
+  $("#nextBtn").disabled = false;
+}
+
+async function nextCycle() {
+  const cycles = currentInstruction.cycles;
+  const nextIndex = currentCycleIndex + 1;
+  if (nextIndex >= cycles.length) { $("#nextBtn").disabled = true; return; }
+
+  currentCycleIndex = nextIndex;
+  const c = cycles[currentCycleIndex];
+
+  setPhase(c.phase + (c.subPhase ? ` — ${c.subPhase}` : ""));
+  setCycle(c.cycleNumber);
+  setSignals(c.activeSignals);
+
+  // Bus activity animation
+  setBus(null);
+  const first  = c.busActivity?.find(b => b.timePoint === "first-half");
+  const second = c.busActivity?.find(b => b.timePoint === "second-half");
+  const full   = c.busActivity?.find(b => b.timePoint === "full-cycle");
+
+  if (first)  { setBus(first.value);  emitSourceEffect(first.source,  "output-active"); await wait(300); }
+  if (second) { setBus(second.value); emitSourceEffect(second.source, "output-active"); await wait(300); }
+  if (full)   { setBus(full.value);   emitSourceEffect(full.source,   "output-active"); await wait(300); }
+
+  // Register updates
+  if (c.registerUpdates) {
+    Object.entries(c.registerUpdates).forEach(([k, v]) => {
+      cpuState[k] = v;
+      setRegister(k, v, "capture-data");
+    });
+  }
+
+  // ALU details
+  if (c.aluOperation) {
+    $("#ALUOp").textContent = c.aluOperation.operation;
+    $("#ALUResult").textContent = c.aluOperation.result;
+  }
+
+  // Memory visualization sync
+  $("#MemAddr").textContent = cpuState.MAR || $("#MemAddr").textContent;
+  const memFromBus = c.busActivity?.find(b => b.source === "Memory")?.value;
+  if (memFromBus) $("#MemData").textContent = memFromBus;
+
+  // Visual effects & log
+  applyVisualEffects(c.visualEffects);
+  appendToLog(c.logMessage);
+
+  if (c.instructionComplete) {
+    appendToLog("✅ Instruction complete.");
+    $("#nextBtn").disabled = true;
+  }
+}
+
+/* -------------------------------------------------------------------------
+   Quiz
+   ------------------------------------------------------------------------- */
+function updateQuizScore() {
+  setText($("#QuizScore"), `Score: ${quizScore}/${quizQuestions.length}`);
+}
+
+function renderQuiz() {
+  quizScore = 0;
+  updateQuizScore();
+  const container = $("#QuizContainer");
+  container.innerHTML = "";
+
+  quizQuestions.forEach((q, idx) => {
+    const card = document.createElement("div");
+    card.className = "quiz-card";
+    card.id = `card-${q.id}`;
+
+    const optionsHtml = q.options.map((o, i) => `
+      <label class="option" for="${q.id}-${i}">
+        <input type="radio" name="${q.id}" id="${q.id}-${i}" value="${i}" aria-label="Option ${i+1}">
+        <span>${o}</span>
+      </label>
+    `).join("");
+
+    card.innerHTML = `
+      <div class="font-semibold mb-2">${idx + 1}. ${q.question}</div>
+      <div class="grid grid-cols-1 gap-2">${optionsHtml}</div>
+      <div class="flex items-center gap-2 mt-3">
+        checkCheck</button>
+        explainWhy?</button>
+      </div>
+      <div class="explanation mt-3 hidden" id="exp-${q.id}">${q.explanation}</div>
+    `;
+
+    container.appendChild(card);
+  });
+}
+
+function onQuizClick(e) {
+  const btn = e.target.closest("button");
+  if (!btn) return;
+
+  const action = btn.dataset.action;
+  const qid = btn.dataset.qid;
+  const qIndex = quizQuestions.findIndex(q => q.id === qid);
+  const q = quizQuestions[qIndex];
+  if (!q) return;
+
+  if (action === "check") {
+    const selected = document.querySelector(`input[name="${qid}"]:checked`);
+    if (!selected) { alert("Please select an option."); return; }
+    const chosen = Number(selected.value);
+
+    const optLabels = $$( `#card-${qid} .option` );
+    optLabels.forEach(l => l.classList.remove("correct","incorrect"));
+    optLabels.forEach((l, i) => {
+      if (i === q.correctAnswer) l.classList.add("correct");
+      if (i === chosen && i !== q.correctAnswer) l.classList.add("incorrect");
+    });
+
+    if (!btn.dataset.scored) {
+      if (chosen === q.correctAnswer) { quizScore++; updateQuizScore(); }
+      btn.dataset.scored = "true";
+    }
+
+    // Always reveal explanation after checking
+    const exp = document.getElementById(`exp-${qid}`);
+    exp.classList.remove("hidden");
+  }
+  else if (action === "explain") {
+    const exp = document.getElementById(`exp-${qid}`);
+    exp.classList.toggle("hidden");
+    const idxHuman = quizQuestions.findIndex(x => x.id === qid) + 1;
+    btn.setAttribute("aria-label", `${exp.classList.contains("hidden") ? "Show" : "Hide"} explanation for question ${idxHuman}`);
+  }
+}
+
+/* -------------------------------------------------------------------------
+   Events & Init
+   ------------------------------------------------------------------------- */
+function wireEvents() {
+  $("#instructionSelect").addEventListener("change", resetSimulation);
+  $("#resetBtn").addEventListener("click", resetSimulation);
+  $("#nextBtn").addEventListener("click", nextCycle);
+
+  $("#QuizContainer").addEventListener("click", onQuizClick);
+  $("#QuizRestart").addEventListener("click", renderQuiz);
+}
+
+function init() {
+  initTabs();
+  buildSignalsPanel();
+  populateInstructionSelect();
+  wireEvents();
+  resetSimulation();
+  renderQuiz();
+}
+
+document.addEventListener("DOMContentLoaded", init);
+</script>
+
+</body>
+</html>
