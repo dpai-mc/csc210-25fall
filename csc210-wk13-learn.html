@@ -1327,71 +1327,135 @@ C3: IMM_OUT, R1_IN</pre></li>
     }
 
 function renderQuiz() {
+  // reset score UI
   quizScore = 0;
   updateQuizScore();
-  const container = $("#QuizContainer");
+
+  const container = document.getElementById("QuizContainer");
   container.innerHTML = "";
 
   quizQuestions.forEach((q, idx) => {
+    // card wrapper
     const card = document.createElement("div");
     card.className = "quiz-card";
     card.id = `card-${q.id}`;
 
-    const optionsHtml = q.options.map((o, i) => `
-      <label class="option" for="${q.id}-${i}">
-        <input type="radio" name="${q.id}" id="${q.id}-${i}" value="${i}" aria-label="Option ${i+1}">
-        <span>${o}</span>
-      </label>
-    `).join("");
+    // title
+    const title = document.createElement("div");
+    title.className = "font-semibold mb-2";
+    title.textContent = `${idx + 1}. ${q.question}`;
+    card.appendChild(title);
 
-    card.innerHTML = `
-      <div class="font-semibold mb-2">${idx + 1}. ${q.question}</div>
-      <div class="grid grid-cols-1 gap-2">${optionsHtml}</div>
-      <div class="flex items-center gap-2 mt-3">
-        <button type="button" class="btn" data-action="check   </div>
-      <div class="explanation mt-3 hidden" id="exp-${q.id}">${q.explanation}</div>
-    `;
+    // options list
+    const optionsWrap = document.createElement("div");
+    optionsWrap.className = "grid grid-cols-1 gap-2";
+    q.options.forEach((opt, i) => {
+      const label = document.createElement("label");
+      label.className = "option";
+      label.setAttribute("for", `${q.id}-${i}`);
+
+      const input = document.createElement("input");
+      input.type = "radio";
+      input.name = q.id;                      // group by question id
+      input.id = `${q.id}-${i}`;
+      input.value = String(i);
+      input.setAttribute("aria-label", `Option ${i + 1}`);
+
+      const text = document.createElement("span");
+      text.textContent = opt;
+
+      label.appendChild(input);
+      label.appendChild(text);
+      optionsWrap.appendChild(label);
+    });
+    card.appendChild(optionsWrap);
+
+    // controls row
+    const controls = document.createElement("div");
+    controls.className = "flex items-center gap-2 mt-3";
+
+    const btnCheck = document.createElement("button");
+    btnCheck.type = "button";
+    btnCheck.className = "btn";
+    btnCheck.dataset.action = "check";
+    btnCheck.dataset.qid = q.id;
+    btnCheck.setAttribute("aria-label", `Check answer for question ${idx + 1}`);
+    btnCheck.textContent = "Check";
+
+    const btnWhy = document.createElement("button");
+    btnWhy.type = "button";
+    btnWhy.className = "btn secondary";
+    btnWhy.dataset.action = "explain";
+    btnWhy.dataset.qid = q.id;
+    btnWhy.setAttribute("aria-label", `Show explanation for question ${idx + 1}`);
+    btnWhy.textContent = "Why?";
+
+    controls.appendChild(btnCheck);
+    controls.appendChild(btnWhy);
+    card.appendChild(controls);
+
+    // explanation (hidden by default)
+    const exp = document.createElement("div");
+    exp.className = "explanation mt-3 hidden"; // relies on .hidden { display:none !important; }
+    exp.id = `exp-${q.id}`;
+    // If your explanations contain markup, use innerHTML. If plain text, use textContent.
+    exp.innerHTML = q.explanation;
+    card.appendChild(exp);
+
+    // mount card
     container.appendChild(card);
   });
 }
        
-    function onQuizClick(e) {
-      const btn = e.target.closest("button");
-      if (!btn) return;
+function onQuizClick(e) {
+  const btn = e.target.closest("button");
+  if (!btn) return;
 
-      const action = btn.dataset.action;
-      const qid = btn.dataset.qid;
-      const qIndex = quizQuestions.findIndex(q => q.id === qid);
-      const q = quizQuestions[qIndex];
-      if (!q) return;
+  const action = btn.dataset.action;
+  const qid = btn.dataset.qid;
+  const q = quizQuestions.find(x => x.id === qid);
+  if (!q) return;
 
-      if (action === "check") {
-        const selected = document.querySelector(`input[name="${qid}"]:checked`);
-        if (!selected) { alert("Please select an option."); return; }
-        const chosen = Number(selected.value);
+  if (action === "check") {
+    const chosenInput = document.querySelector(`input[name="${qid}"]:checked`);
+    if (!chosenInput) { alert("Please select an option."); return; }
 
-        const labels = $$( `#card-${qid} .option` );
-        labels.forEach(l => l.classList.remove("correct","incorrect"));
-        labels.forEach((l, i) => {
-          if (i === q.correctAnswer) l.classList.add("correct");
-          if (i === chosen && i !== q.correctAnswer) l.classList.add("incorrect");
-        });
+    const chosen = Number(chosenInput.value);
+    const labels = Array.from(document.querySelectorAll(`#card-${qid} .option`));
 
-        if (!btn.dataset.scored) {
-          if (chosen === q.correctAnswer) { quizScore++; updateQuizScore(); }
-          btn.dataset.scored = "true";
-        }
+    // reset visual state
+    labels.forEach(l => l.classList.remove("correct", "incorrect"));
 
-        // Always reveal explanation after checking
-        document.getElementById(`exp-${qid}`).classList.remove("hidden");
+    // mark correct, and mark chosen if wrong
+    labels.forEach((l, i) => {
+      if (i === q.correctAnswer) l.classList.add("correct");
+      if (i === chosen && i !== q.correctAnswer) l.classList.add("incorrect");
+    });
+
+    // score exactly once per question
+    if (!btn.dataset.scored) {
+      if (chosen === q.correctAnswer) {
+        quizScore++;
+        updateQuizScore();
       }
-      else if (action === "explain") {
-        const exp = document.getElementById(`exp-${qid}`);
-        exp.classList.toggle("hidden");
-        const idxHuman = quizQuestions.findIndex(x => x.id === qid) + 1;
-        btn.setAttribute("aria-label", `${exp.classList.contains("hidden") ? "Show" : "Hide"} explanation for question ${idxHuman}`);
-      }
+      btn.dataset.scored = "true";
     }
+
+    // reveal explanation
+    const exp = document.getElementById(`exp-${qid}`);
+    if (exp) exp.classList.remove("hidden");
+  }
+
+  if (action === "explain") {
+    const exp = document.getElementById(`exp-${qid}`);
+    if (!exp) return;
+    const nowHidden = exp.classList.toggle("hidden");
+    btn.setAttribute(
+      "aria-label",
+      `${nowHidden ? "Show" : "Hide"} explanation for question ${quizQuestions.findIndex(x => x.id === qid) + 1}`
+    );
+  }
+}
 
     /* -----------------------------
        Events & Init
@@ -1400,7 +1464,6 @@ function renderQuiz() {
       $("#instructionSelect").addEventListener("change", resetSimulation);
       $("#resetBtn").addEventListener("click", resetSimulation);
       $("#nextBtn").addEventListener("click", nextCycle);
-
       $("#QuizContainer").addEventListener("click", onQuizClick);
       $("#QuizRestart").addEventListener("click", renderQuiz);
     }
