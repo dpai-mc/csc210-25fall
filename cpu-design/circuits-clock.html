@@ -1,52 +1,175 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <title>CPU Clock Simulation</title>
-  </head>
-  <body>
-    <h1>CPU Clock Simulation</h1>
-    <p>In order to keep track of things, the CPU uses a clock for synchronization. This synchronization ensures that the CPU uses the correct information when performing actions. Logisim does not have a clock function built in so we need to create a CPU clock simulation using circuits as best we can.</p>
-<p>Please review all tabs before proceeding on.</p>
-<div class="enhanceable_content tabs">
-    <ul>
-        <li><a href="#tab1">Manual Clock</a></li>
-        <li><a href="#tab2">Our Circuit</a></li>
-    </ul>
-    <div id="tab1">
-        <h2>Manual Clock</h2>
-        In this instance, we are going to create a circuit so that we can manually run our CPU. This "Master Clock" will actually have to cycle 4 times for our CPU clock to go through 1 complete cycle. To better understand this, let's consider that we want to move a value from register one, R1, to register two, R2, across the bus as illustrated in the diagram below:
-        <p><img id="364836" style="max-width: 320px; max-height: 320px;" src="https://mendocino.instructure.com/courses/19708/files/2503233/preview" alt="2Registers.png" data-api-endpoint="https://mendocino.instructure.com/api/v1/courses/19708/files/2503233" data-api-returntype="File" /></p>
-        <p>Now to move something from R1 to R2, we have to do the following, in this specific order:</p>
-        <ol>
-            <li>Set R1 "enable" to hi - this puts the value in R1 on the Bus</li>
-            <li>Set R2 "set" to hi - this takes the value from the Bus and puts it into R2</li>
-            <li>Set R2 "set" to low - this saves the value in R2 and makes it so it cannot be changed</li>
-            <li>Set R1 "enable" to low - this takes the value from R1 off of the Bus</li>
-        </ol>
-        <p>How this might look from a cycle standpoint is shown below with the Enable signal starting before the Set and continuing until after the Set.</p>
-        <p><img id="364838" style="max-width: 320px; max-height: 320px;" src="https://mendocino.instructure.com/courses/19708/files/2503232/preview" alt="RegisterTimingSetup.png" data-api-endpoint="https://mendocino.instructure.com/api/v1/courses/19708/files/2503232" data-api-returntype="File" /></p>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>CPU Clock Simulation – Manual Clock & Our Circuit</title>
+
+  <!-- Tailwind CSS with Typography plugin (CDN) -->
+  <script src="https://cdn.tailwindcsstypography</script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            background: '#FDFBF8',
+            text: '#1A1A1A',
+            accent: { DEFAULT: '#0ea5e9', 600: '#0284c7', 700: '#0369a1' }
+          },
+          fontFamily: { sans: ['Inter','ui-sans-serif','system-ui','Segoe UI','Arial'] }
+        }
+      }
+    }
+  </script>
+  <!-- Inter font -->
+  <link rel="preconnect" href="https://fonts.googleapis.comf="link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet"/>
+
+eme */
+    html { color-scheme: light; }
+    body { background:#FDFBF8; color:#1A1A1A; }
+
+    /* Visible-on-focus Skip link */
+    .skip-link{position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden}
+    .skip-link:focus{position:static;width:auto;height:auto;padding:.5rem .75rem;background:#0ea5e9;color:#fff;border-radius:.375rem}
+  </style>
+</head>
+<body class="font-sans antialiased">
+  <a href="#main" class="skip-link">header class="border-b border-slate-200 bg-white">
+    <div class="mx-auto max-w-4xl px-4 py-6">
+      <h1 class="text-2xl sm:text-3xl font-semibold">CPU Clock Simulation</h1>
+      <p class="text-slate-600">Manual four-phase clock (Logisim) and final circuit</p>
     </div>
-    <div id="tab2">
-        <h2>Our Circuit</h2>
-        <p>Since we have to encapsulate the "R2 set" signal within the "R1 enable" signal, we can break this into pieces. For simplicity, we are going to break this into 4 equal width sections as shown below. This will mean that we need 4 cycles in our simulation to do a transfer from R1 to R2. In a real CPU, you can generally do this in 1 clock cycle by using a delay value which is an offset between the 2 signals for R1 enable and R2 set.</p>
-        <p><img id="364837" style="max-width: 320px; max-height: 320px;" src="https://mendocino.instructure.com/courses/19708/files/2503230/preview" alt="RegisterTimingBreakdown.png" data-api-endpoint="https://mendocino.instructure.com/api/v1/courses/19708/files/2503230" data-api-returntype="File" /></p>
-        <p>The actual "Clock" cycle, clk, will be off for 2 and on for 2 of the quarter cycles as depicted in the figure below.</p>
-        <p><img id="365048" style="max-width: 320px; max-height: 320px;" src="https://mendocino.instructure.com/courses/19708/files/2503236/preview" alt="ClkTiming1.png" data-api-endpoint="https://mendocino.instructure.com/api/v1/courses/19708/files/2503236" data-api-returntype="File" /></p>
-        <p>A forcing function or our manual&nbsp; control, will be designated as "clk-in" and will occur once on each quarter. There is a singular change in clk-s, clk-e and clk at each change in clk-in, this make clk-in the actual control for the overall synchronization for the CPU clock.</p>
-        <p><img id="365049" style="max-width: 320px; max-height: 320px;" src="https://mendocino.instructure.com/courses/19708/files/2503234/preview" alt="ClkTiming2.png" data-api-endpoint="https://mendocino.instructure.com/api/v1/courses/19708/files/2503234" data-api-returntype="File" /></p>
-        <p>To implement this circuit, we are going to use a J-K Flip-Flop memory circuit and an input bit, as clk-in, as our forcing functions. We will then NAND the outputs from the Flip-Flop with our input bit to get our clock set and enable signals. This circuit is shown below and as you cycle the input bit (labeled clk-in), the outputs cycle through the 4 states we require, enable bit on, set bit on, set bit off, enable bit off. You should also note that the "clk" output only changes whenever the "clk-in" bit goes from 0 to 1 and does nothing when the "clk-in" goes from 1 to 0. Note that the inputs, J and K, to the flip-flop are set to a constant of 1. Once you build this circuit, please run the simulation to ensure that the circuit cycles through the patterns as previously described.</p>
-        <p><img id="365050" src="https://mendocino.instructure.com/courses/19708/files/2503231/preview" alt="Circuit to manually simulate a clock" width="640" height="255" data-api-endpoint="https://mendocino.instructure.com/api/v1/courses/19708/files/2503231" data-api-returntype="File" /></p>
-        <p>NOTE: In this circuit, I used the J-K Flip-Flop that is part of Logisim in the "Memory" folder. For more information on J-K Flip-Flops, what they do, how they function and what their circuit diagrams look like, please refer to the following resources. Please note that there are many different equivalent circuits that work identically as shown in these references:</p>
-        <ul>
-            <li><a title="Link" href="https://circuitglobe.com/jk-flip-flop.html" target="_blank" rel="noopener">J-K Flip-Flop at Circuit Globe</a></li>
-            <li><a title="Link" href="https://circuitdigest.com/electronic-circuits/jk-flip-flop-truth-table-working/" target="_blank" rel="noopener">J-K Flip-Flop at Circuit Digest</a></li>
-        </ul>
-        <p>Once you have completed the circuit, you should redraw it so that it is usable. Possibly something similar the image provided below would be appropriate. When you make this image, make sure that all of your inputs and outputs are properly identified based upon what they represent (NOTE: In my image, I swapped the locations of clk-set and clk-enable in my Circuit appearance from what I show in the detailed circuit diagram above).</p>
-        <p>&nbsp;</p>
-        <p>&nbsp;</p>
-        <p><img id="365051" style="max-width: 320px; max-height: 320px;" src="https://mendocino.instructure.com/courses/19708/files/2503235/preview" alt="Clock_Circuit_redraw.png" data-api-endpoint="https://mendocino.instructure.com/api/v1/courses/19708/files/2503235" data-api-returntype="File" /></p>
-        <p>&nbsp;</p>
+  </header>
+
+  <main id="main" class="mx-auto max-w-4xl px-4 py-8">
+    <!-- Tablist with two tabs: Manual Clock / Our Circuit -->
+    <div class="mb-6 overflow-x-auto">
+      <div id="tablist" role="tablist" aria-label="Clock topics"
+           class="inline-flex min-w-full gap-1 rounded-lg bg-white p-1 shadow ring-1 ring-slate-200">
+        <button id="tab-manual" role="tab" aria-controls="panel-manual" aria-selected="true" tabindex="0"
+                class="rounded-md px-3 py-2 text-sm font-medium text-slate-800
+                       focus:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2
+                       data-[active=true]:bg-accent data-[active=true]:text-white">
+          Manual Clock
+        </button>
+        <button id="tab-circuit" role="tab" aria-controls="panel-circuit" aria-selected="false" tabindex="-1"
+                class="rounded-md px-3 py-2 text-sm font-medium text-slate-700
+                       focus:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2">
+          Our Circuit
+        </button>
+      </div>
     </div>
-</div>
-  </body>
+
+    <!-- Manual Clock Panel -->
+    <section id="panel-manual" role="tabpanel" aria-labelledby="tab-manual"
+             class="prose prose-slate max-w-none" tabindex="-1">
+      <h2>Manual Clock</h2>
+
+      <p>
+        In this instance, we are going to create a circuit so that we can manually run our CPU. This “Master Clock”
+        will actually have to cycle 4 times for our CPU clock to go through 1 complete cycle. To better understand this,
+        consider moving a value from register one, R1, to register two, R2, across the bus as illustrated below.
+      </p>
+
+      <figure>
+        <img src="images/2Registers.png"
+             alt="Diagram showing two registers R1 and R2 connected to a shared bus used to transfer values."
+             class="rounded-md border border-slate-200" />
+        <figcaption>Transferring a value from R1 to R2 over the bus.</figcaption the value in R1 on the Bus.</li>
+        <li>Set R2 “set” to high — this takes the value from the Bus and puts it into R2.</li>
+        <li>Set R2 “set” to low — this saves the value in R2 and makes it so it cannot be changed.</li>
+        <li>Set R1 “enable” to low — this takes the value from R1 off of the Bus.</li>
+      </ol>
+
+      <figure>
+        <img src="images/RegisterTimingSetup.png"
+             alt="Timing diagram where the R1 enable signal starts before the R2 set signal and continues until after the set."
+             class="rounded-md border border-slate-200" />
+        <figcaption>Signal timing for a single transfer from R1 to R2.</figcaption>
+ions. This means that we need 4 cycles in our simulation to transfer
+        from R1 to R2. In a real CPU, this is generally one clock cycle by using a delay offset between the two signals.
+      </p>
+
+      <figure>
+        <img src="images/RegisterTimingBreakdown.png"
+             alt="Timing breakdown into four equal quarter cycles for enable and set signals."
+             class="rounded-md border border-slate-200" />
+        <figcaption>Four quarter‑cycles make one full operation.</figcaption>
+           class="rounded-md border border-slate-200" />
+        <figcaption>The <code>clk</code> signal is low for two quarters and high forlk changes once per quarter with clk-in as the forcing function."
+             class="rounded-md border border-slate-200" />
+        <figcaption><code>clk-in</code> acts as the forcing function for overall synchronization.</figcaption>
+ex="-1">
+      <h2>Our Circuit</h2>
+
+      <p>
+        To implement this circuit, we are going to use a J–K Flip‑Flop memory circuit and an input bit (as
+        <code>clk-in</code>) as our forcing functions. We will then NAND the outputs from the Flip‑Flop with our input
+        bit to get our clock set and enable signals. As you cycle the input bit (<em>clk‑in</em>), the outputs cycle
+        through the four required states: enable on, set on, set off, enable off.
+      </p>
+
+      <p>
+        Note that the inputs, J and K, to the flip‑flop are set to a constant of 1. The <code>clk</code> output only
+        changes when <code>clk-in</code> goes from 0 → 1 and does nothing when it goes from 1 → 0. Once you build this
+        circuit, run the simulation to ensure that it cycles through the patterns as described.
+      </p>
+
+      <figure>
+        <img src="images/manual-clock-circuit.png"
+             alt="Placeholder schematic of the manual four-phase clock using a J–K flip‑flop, NAND gates, and an input bit labeled clk‑in."
+             class="rounded-md border border-dashed border-slate-300 bg-slate-50" />
+        <figcaption><strong>Placeholder:</strong> Manual clock circuit diagramflope
+        </a>
+        &nbsp;|&nbsp;
+        <a class="text-accent hover:underline" href="https://circuitdigest.com/electronic-circuits/jk-flip-flop-truth-table-working/" target="_blank </p>
+
+      <figure>
+        <img src="images/Clock_Circuit_redraw.png"
+             alt="Redrawn appearance of the clock circuit with clearly labeled inputs and outputs, including clk, clk‑set, and clk‑enable."
+             class="rounded-md border border-slate-200" />
+        <figcaption>Redrawn, usable schematic with properly identified inputs and.</p>
+    </footer>
+  </main>
+
+  <script>
+    // Session-only enhancement (no persistent storage)
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // Accessible two-tab switcher
+    const tablist = document.getElementById('tablist');
+    const tabs = Array.from(tablist.querySelectorAll('[role="tab"]'));
+    const panels = tabs.map(t => document.getElementById(t.getAttribute('aria-controls')));
+
+    function activateTab(tab){
+      tabs.forEach((t,i)=>{
+        const selected = t === tab;
+        t.setAttribute('aria-selected', String(selected));
+        t.dataset.active = selected;
+        t.tabIndex = selected ? 0 : -1;
+        panels[i].classList.toggle('hidden', !selected);
+      });
+      tab.focus();
+    }
+
+    tablist.addEventListener('click', (e)=>{
+      const tab = e.target.closest('[role="tab"]');
+      if (!tab) return;
+      activateTab(tab);
+    });
+
+    tablist.addEventListener('keydown', (e)=>{
+      const idx = tabs.findIndex(t => t.getAttribute('aria-selected') === 'true');
+      if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+        e.preventDefault();
+        const dir = e.key === 'ArrowRight' ? 1 : -1;
+        activateTab(tabs[(idx + dir + tabs.length) % tabs.length]);
+      } else if (e.key === 'Home') {
+        e.preventDefault(); activateTab(tabs[0]);
+      } else if (e.key === 'End') {
+        e.preventDefault(); activateTab(tabs[tabs.length - 1]);
+      }
+    });
+  </script>
+</body>
 </html>
