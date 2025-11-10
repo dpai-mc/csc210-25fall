@@ -1327,34 +1327,33 @@ C3: IMM_OUT, R1_IN</pre></li>
     }
 
     function renderQuiz() {
-      quizScore = 0;
-      updateQuizScore();
-      const container = $("#QuizContainer");
-      container.innerHTML = "";
+  quizScore = 0;
+  updateQuizScore();
+  const container = $("#QuizContainer");
+  container.innerHTML = "";
 
-      quizQuestions.forEach((q, idx) => {
-        const card = document.createElement("div");
-        card.className = "quiz-card";
-        card.id = `card-${q.id}`;
+  quizQuestions.forEach((q, idx) => {
+    const card = document.createElement("div");
+    card.className = "quiz-card";
+    card.id = `card-${q.id}`;
 
-        const optionsHtml = q.options.map((o, i) => `
-          <label class="option" for="${q.id}-${i}">
-            <input type="radio" name="${q.id}" id="${q.id}-${i}" value="${i}" aria-label="Option ${i+1}">
-            <span>${o}</span>
-          </label>
-        `).join("");
+    const optionsHtml = q.options.map((o, i) => `
+      <label class="option" for="${q.id}-${i}">
+        <input type="radio" name="${q.id}" id="${q.id}-${i}" value="${i}" aria-label="Option ${i+1}">
+        <span>${o}</span>
+      </label>
+    `).join("");
 
-        // FIXED: real buttons with data attributes and accessible labels
-       card.innerHTML = `
+    card.innerHTML = `
       <div class="font-semibold mb-2">${idx + 1}. ${q.question}</div>
       <div class="grid grid-cols-1 gap-2">${optionsHtml}</div>
       <div class="flex items-center gap-2 mt-3">
         <button type="button" class="btn" data-action="check" data-qid="${q.id}" aria-label="Checkin" data-qid="${q.id}" aria-label="Show explanationiv>
     `;
     container.appendChild(card);
-      });
-    }
-
+  });
+}
+       
     function onQuizClick(e) {
       const btn = e.target.closest("button");
       if (!btn) return;
@@ -1418,5 +1417,3 @@ C3: IMM_OUT, R1_IN</pre></li>
   </script>
 </body>
 </html>
-
-
