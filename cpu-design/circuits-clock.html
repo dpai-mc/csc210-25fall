@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>CPU Clock Simulation</title>
+  </head>
+  <body>
+    <h1>CPU Clock Simulation</h1>
+    <p>In order to keep track of things, the CPU uses a clock for synchronization. This synchronization ensures that the CPU uses the correct information when performing actions. Logisim does not have a clock function built in so we need to create a CPU clock simulation using circuits as best we can.</p>
+<p>Please review all tabs before proceeding on.</p>
+<div class="enhanceable_content tabs">
+    <ul>
+        <li><a href="#tab1">Manual Clock</a></li>
+        <li><a href="#tab2">Our Circuit</a></li>
+    </ul>
+    <div id="tab1">
+        <h2>Manual Clock</h2>
+        In this instance, we are going to create a circuit so that we can manually run our CPU. This "Master Clock" will actually have to cycle 4 times for our CPU clock to go through 1 complete cycle. To better understand this, let's consider that we want to move a value from register one, R1, to register two, R2, across the bus as illustrated in the diagram below:
+        <p><img id="364836" style="max-width: 320px; max-height: 320px;" src="https://mendocino.instructure.com/courses/19708/files/2503233/preview" alt="2Registers.png" data-api-endpoint="https://mendocino.instructure.com/api/v1/courses/19708/files/2503233" data-api-returntype="File" /></p>
+        <p>Now to move something from R1 to R2, we have to do the following, in this specific order:</p>
+        <ol>
+            <li>Set R1 "enable" to hi - this puts the value in R1 on the Bus</li>
+            <li>Set R2 "set" to hi - this takes the value from the Bus and puts it into R2</li>
+            <li>Set R2 "set" to low - this saves the value in R2 and makes it so it cannot be changed</li>
+            <li>Set R1 "enable" to low - this takes the value from R1 off of the Bus</li>
+        </ol>
+        <p>How this might look from a cycle standpoint is shown below with the Enable signal starting before the Set and continuing until after the Set.</p>
+        <p><img id="364838" style="max-width: 320px; max-height: 320px;" src="https://mendocino.instructure.com/courses/19708/files/2503232/preview" alt="RegisterTimingSetup.png" data-api-endpoint="https://mendocino.instructure.com/api/v1/courses/19708/files/2503232" data-api-returntype="File" /></p>
+    </div>
+    <div id="tab2">
+        <h2>Our Circuit</h2>
+        <p>Since we have to encapsulate the "R2 set" signal within the "R1 enable" signal, we can break this into pieces. For simplicity, we are going to break this into 4 equal width sections as shown below. This will mean that we need 4 cycles in our simulation to do a transfer from R1 to R2. In a real CPU, you can generally do this in 1 clock cycle by using a delay value which is an offset between the 2 signals for R1 enable and R2 set.</p>
+        <p><img id="364837" style="max-width: 320px; max-height: 320px;" src="https://mendocino.instructure.com/courses/19708/files/2503230/preview" alt="RegisterTimingBreakdown.png" data-api-endpoint="https://mendocino.instructure.com/api/v1/courses/19708/files/2503230" data-api-returntype="File" /></p>
+        <p>The actual "Clock" cycle, clk, will be off for 2 and on for 2 of the quarter cycles as depicted in the figure below.</p>
+        <p><img id="365048" style="max-width: 320px; max-height: 320px;" src="https://mendocino.instructure.com/courses/19708/files/2503236/preview" alt="ClkTiming1.png" data-api-endpoint="https://mendocino.instructure.com/api/v1/courses/19708/files/2503236" data-api-returntype="File" /></p>
+        <p>A forcing function or our manual&nbsp; control, will be designated as "clk-in" and will occur once on each quarter. There is a singular change in clk-s, clk-e and clk at each change in clk-in, this make clk-in the actual control for the overall synchronization for the CPU clock.</p>
+        <p><img id="365049" style="max-width: 320px; max-height: 320px;" src="https://mendocino.instructure.com/courses/19708/files/2503234/preview" alt="ClkTiming2.png" data-api-endpoint="https://mendocino.instructure.com/api/v1/courses/19708/files/2503234" data-api-returntype="File" /></p>
+        <p>To implement this circuit, we are going to use a J-K Flip-Flop memory circuit and an input bit, as clk-in, as our forcing functions. We will then NAND the outputs from the Flip-Flop with our input bit to get our clock set and enable signals. This circuit is shown below and as you cycle the input bit (labeled clk-in), the outputs cycle through the 4 states we require, enable bit on, set bit on, set bit off, enable bit off. You should also note that the "clk" output only changes whenever the "clk-in" bit goes from 0 to 1 and does nothing when the "clk-in" goes from 1 to 0. Note that the inputs, J and K, to the flip-flop are set to a constant of 1. Once you build this circuit, please run the simulation to ensure that the circuit cycles through the patterns as previously described.</p>
+        <p><img id="365050" src="https://mendocino.instructure.com/courses/19708/files/2503231/preview" alt="Circuit to manually simulate a clock" width="640" height="255" data-api-endpoint="https://mendocino.instructure.com/api/v1/courses/19708/files/2503231" data-api-returntype="File" /></p>
+        <p>NOTE: In this circuit, I used the J-K Flip-Flop that is part of Logisim in the "Memory" folder. For more information on J-K Flip-Flops, what they do, how they function and what their circuit diagrams look like, please refer to the following resources. Please note that there are many different equivalent circuits that work identically as shown in these references:</p>
+        <ul>
+            <li><a title="Link" href="https://circuitglobe.com/jk-flip-flop.html" target="_blank" rel="noopener">J-K Flip-Flop at Circuit Globe</a></li>
+            <li><a title="Link" href="https://circuitdigest.com/electronic-circuits/jk-flip-flop-truth-table-working/" target="_blank" rel="noopener">J-K Flip-Flop at Circuit Digest</a></li>
+        </ul>
+        <p>Once you have completed the circuit, you should redraw it so that it is usable. Possibly something similar the image provided below would be appropriate. When you make this image, make sure that all of your inputs and outputs are properly identified based upon what they represent (NOTE: In my image, I swapped the locations of clk-set and clk-enable in my Circuit appearance from what I show in the detailed circuit diagram above).</p>
+        <p>&nbsp;</p>
+        <p>&nbsp;</p>
+        <p><img id="365051" style="max-width: 320px; max-height: 320px;" src="https://mendocino.instructure.com/courses/19708/files/2503235/preview" alt="Clock_Circuit_redraw.png" data-api-endpoint="https://mendocino.instructure.com/api/v1/courses/19708/files/2503235" data-api-returntype="File" /></p>
+        <p>&nbsp;</p>
+    </div>
+</div>
+  </body>
+</html>
