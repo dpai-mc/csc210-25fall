@@ -48,7 +48,27 @@
         .skip-link:focus {
             top: 0;
         }
+        
+        /* Custom Styles for Synchronized Transcript */
+        #scrolling-transcript .transcript-line.active {
+            background-color: #BFDBFE; /* Tailwind blue-200 */
+            color: #1E40AF; /* Tailwind blue-800 */
+            font-weight: 600;
+            padding: 2px 4px;
+            border-radius: 4px;
+        }
+        #scrolling-transcript .transcript-line {
+            cursor: pointer;
+            transition: background-color 0.2s;
+            margin-bottom: 0.5rem;
+            line-height: 1.5;
+        }
+        #scrolling-transcript .transcript-line:hover {
+            background-color: #EBF8FF; /* Tailwind blue-50 */
+        }
     </style>
+    
+    <script src="https://www.youtube.com/iframe_api"></script>
     
     </head>
 <body class="bg-[#FDFBF8] text-[#1A1A1A]">
@@ -85,13 +105,14 @@
                     <li><a href="circuits-zero-function.html" class="text-blue-600 hover:text-blue-800">Zero Function</a> (tells when all values equal 0 for an 8 bit)</li>
                 </ul>
 
-                <h2 class="text-2xl font-bold mt-6 mb-4">ALU Assembly Overview (Video)</h2>
-                <p>The ALU itself does each of the defined tasks above. In actuality, all of the above functions are performed on every set of inputs, A and B, but we control which result goes to the output based upon the desired operation.</p>
+                <h2 class="text-2xl font-bold mt-6 mb-4">ALU Assembly Overview (Video & Transcript)</h2>
+                <p>The ALU itself does each of the defined tasks above. In actuality, all of the above functions are performed on every set of inputs, A and B, but we control which result goes to the output based upon the desired operation. The video below is accompanied by a synchronized, scrolling transcript for maximum accessibility.</p>
                 
-                <div class="mt-4">
+                <div class="mt-4 grid grid-cols-1 lg:grid-cols-2 gap-6">
                     <div class="flex justify-center my-4">
-                        <div class="w-full max-w-2xl aspect-video rounded-lg shadow-xl border border-gray-300 overflow-hidden">
-                            <iframe src="https://www.youtube.com/embed/kfTSLdBfAs0" 
+                        <div class="w-full max-w-lg aspect-video rounded-lg shadow-xl border border-gray-300 overflow-hidden">
+                            <iframe id="alu-video" 
+                                    src="https://www.youtube.com/embed/kfTSLdBfAs0?enablejsapi=1" 
                                     title="Overview Video for ALU Creation" 
                                     frameborder="0" 
                                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
@@ -101,10 +122,74 @@
                             </iframe>
                         </div>
                     </div>
-                    <p class="text-sm mt-2 text-center">Video: **Overview Video for ALU Creation**</p>
-                    <p class="text-sm text-center"><a href="files/ALU-Overview.srt" class="text-blue-600 hover:text-blue-800">Download Timed Transcript (.srt)</a></p>
+
+                    <div>
+                        <h3 class="text-xl font-semibold mb-2 text-blue-700">Synchronized Transcript</h3>
+                        <div id="scrolling-transcript" class="h-80 overflow-y-scroll p-4 bg-gray-50 rounded-lg shadow-inner border border-gray-200" aria-live="polite" tabindex="0">
+                            <p class="transcript-line" data-start-time="0.000">Aloha in this video I want to talk a little bit about setting up your ALU so when you look at</p>
+                            <p class="transcript-line" data-start-time="15.960">your ALU you're gonna start with three inputs you're gonna have an a input which is eight</p>
+                            <p class="transcript-line" data-start-time="21.600">bits you're gonna be input eight bits also so you have two 8-bit inputs and then you're gonna</p>
+                            <p class="transcript-line" data-start-time="26.640">have a carry-in bit that you're gonna use and in this we're gonna have seven basic functions</p>
+                            <p class="transcript-line" data-start-time="34.720">that we're gonna be able to do and they're the adder so when we add two 8-bit numbers together</p>
+                            <p class="transcript-line" data-start-time="40.320">I'm gonna be able to shift right and left we're gonna be able to do a not function and and</p>
+                            <p class="transcript-line" data-start-time="46.240">functioned and or function and a exclusive or function so those are the basic functions we're</p>
+                            <p class="transcript-line" data-start-time="53.400">gonna do and how we're gonna wire them up is a</p>
+                            <p class="transcript-line" data-start-time="56.640">input gets wired to everything so some of these have one input some have two some have three and</p>
+                            <p class="transcript-line" data-start-time="62.400">depending upon which function it is is how many inputs it has but everything has a so when it</p>
+                            <p class="transcript-line" data-start-time="69.000">only has one it has it uses a okay so B input we need for the adder at the bottom and then we need</p>
+                            <p class="transcript-line" data-start-time="77.520">for an and because we need to and two 8-bit numbers together we need to or two eight things</p>
+                            <p class="transcript-line" data-start-time="86.640">not is only one input shift left and shift right again there's only one input we're only shifting</p>
+                            <p class="transcript-line" data-start-time="93.840">one 8-bit number left or right okay carry in bits we need for shift left shift right and for our</p>
+                            <p class="transcript-line" data-start-time="102.960">adder we have a carry-in okay so then what we do is we take all the outputs we have an 8-bit output</p>
+                            <p class="transcript-line" data-start-time="110.720">which is the result of the function and we plump every single one of these</p>
+                            <p class="transcript-line" data-start-time="116.640">or we wire every single one of these to that same 8-bit output pin if you will</p>
+                            <p class="transcript-line" data-start-time="123.840">okay so all eight bits go to the same pin and I'll discuss in a second</p>
+                            <p class="transcript-line" data-start-time="127.760">how you determine which one you're going to get okay we have our zero function which is on the</p>
+                            <p class="transcript-line" data-start-time="133.200">output so we want to check if it's all zeros or not and that's where we put our zero function</p>
+                            <p class="transcript-line" data-start-time="137.840">on the output we have our larger and our equals you know is a larger than b or equal to b</p>
+                            <p class="transcript-line" data-start-time="146.640">that output comes off our comparative exclusive or and then for shift left shift right and adder</p>
+                            <p class="transcript-line" data-start-time="154.400">we have a carry out value it's a bit each one of those circles there is a one bit output</p>
+                            <p class="transcript-line" data-start-time="162.400">okay now what we need to do is figure out how do I determine which output I have</p>
+                            <p class="transcript-line" data-start-time="169.200">and so to do that we need a decoder and in this case we need a three by eight decoder previously</p>
+                            <p class="transcript-line" data-start-time="174.960">we had a four by</p>
+                            <p class="transcript-line" data-start-time="176.880">16 decoder and now we need a three by eight decoder so we're gonna have three separate one</p>
+                            <p class="transcript-line" data-start-time="182.400">bit inputs that give us eight possible combinations and then based upon which</p>
+                            <p class="transcript-line" data-start-time="187.520">combination we have we'll determine which of the seven outputs we have the eighth decoder won't be</p>
+                            <p class="transcript-line" data-start-time="196.080">connected to anything the eighth this last um bit output won't be connected to anything</p>
+                            <p class="transcript-line" data-start-time="206.080">notice</p>
+                            <p class="transcript-line" data-start-time="206.640">that when we're doing the adder whichever circuit whichever decoder that's plumbed to</p>
+                            <p class="transcript-line" data-start-time="213.680">we also plumb the carry out to that same with whichever is shift right and shift left</p>
+                            <p class="transcript-line" data-start-time="220.800">so that whenever we've selected the to do this operation we're going to get</p>
+                            <p class="transcript-line" data-start-time="225.360">this output okay so the decoder works how it works is that we're basically going to put in here</p>
+                            <p class="transcript-line" data-start-time="235.120">and enable</p>
+                            <p class="transcript-line" data-start-time="237.600">um 8-bit enable and we're only going to pass it through when the decoder wire that the specific</p>
+                            <p class="transcript-line" data-start-time="246.480">decoder wire is enabled okay so basically it's going to stop everything from going to output</p>
+                            <p class="transcript-line" data-start-time="251.600">except for the one we choose so the reality is we're always doing all seven of these</p>
+                            <p class="transcript-line" data-start-time="259.120">okay our circuits always doing all seven of these we use the decoder to determine which one we want</p>
+                            <p class="transcript-line" data-start-time="264.720">to get for our outputs</p>
+                            <p class="transcript-line" data-start-time="267.600">okay so if we look at how that works we have our output from our function whether it's an</p>
+                            <p class="transcript-line" data-start-time="273.840">end function in or function and adder function this is our output and we're going to put it</p>
+                            <p class="transcript-line" data-start-time="279.440">through an 8-bit buffer and that buffer is going to be driven by the decoder to select which one we want</p>
+                            <p class="transcript-line" data-start-time="285.520">so what we do with the 8-bit buffer is we only pass the input through the buffer if the buffer</p>
+                            <p class="transcript-line" data-start-time="290.720">is enabled so in this case the buffer is enabled with a single bit line that comes off the decoder</p>
+                            <p class="transcript-line" data-start-time="296.240">so whatever output we want from the decoder we're going to take that one bit line and connect it</p>
+                            <p class="transcript-line" data-start-time="300.960">to the enable on the buffer so if the enable is a one and we have our output from our function</p>
+                            <p class="transcript-line" data-start-time="307.280">the output will go through so what that means is all of the outputs get connected and the ones that</p>
+                            <p class="transcript-line" data-start-time="313.200">are not enabled are still putting zero to the output so the output of the buffer is the one that's</p>
+                            <p class="transcript-line" data-start-time="318.560">chosen will have its value and the other ones will have a zero value and so when you put them all</p>
+                            <p class="transcript-line" data-start-time="323.040">together they're going to be adding all these outputs so the only output that will not be zero</p>
+                            <p class="transcript-line" data-start-time="328.640">will be the one that is chosen because all of the other ones have been zeroed out okay so it will</p>
+                            <p class="transcript-line" data-start-time="332.960">pass the chosen output now for the carry out it's essentially the same thing except we don't have</p>
+                            <p class="transcript-line" data-start-time="338.900">remember carry out is 1-bit not 8-bit and the 1-bit enables an and the gate so what we do for this</p>
+                            <p class="transcript-line" data-start-time="347.360">is we take a two bit two input and gate each with one bit we take the carry-out and the end gate in</p>
+                            <p class="transcript-line" data-start-time="351.920">and the the 1-bit available demonstrate the same thing except carry out value and the decoder</p>
+                            <p class="transcript-line" data-start-time="355.760">selection value okay and when the decoder is one we grab that carry out if the carry out is zero</p>
+                            <p class="transcript-line" data-start-time="363.640">we pass zero which is nothing we don't do anything to carry out is one then we can pass the one now</p>
+                            <p class="transcript-line" data-start-time="368.900">because you know when we pass like this what we always want to do is</p>
+                        </div>
+                    </div>
                 </div>
-                
+
                 <h2 class="text-2xl font-bold mt-6 mb-4">Completed ALU Circuit Diagram</h2>
                 <p>The circuit diagram for our ALU might look like this once completed, incorporating all the individual operation circuits:</p>
                 
@@ -175,9 +260,87 @@
     </main>
     
     <script>
+        // Placeholder for session-only JavaScript logic.
+        let progressState = {}; 
+
         document.addEventListener('DOMContentLoaded', () => {
-            // Placeholder for session-only JavaScript logic.
-            let progressState = {}; 
+            const transcriptContainer = document.getElementById('scrolling-transcript');
+            const lines = Array.from(transcriptContainer.querySelectorAll('.transcript-line'));
+
+            // Function to handle clicking on a transcript line
+            transcriptContainer.addEventListener('click', (event) => {
+                const line = event.target.closest('.transcript-line');
+                if (line && window.player) {
+                    const time = parseFloat(line.getAttribute('data-start-time'));
+                    // Seek to the time and play the video
+                    window.player.seekTo(time, true);
+                    window.player.playVideo();
+                }
+            });
+
+            // This function is called by the YouTube Iframe API when it loads.
+            window.onYouTubeIframeAPIReady = function() {
+                window.player = new YT.Player('alu-video', {
+                    events: {
+                        'onReady': onPlayerReady,
+                        'onStateChange': onPlayerStateChange
+                    }
+                });
+            }
+
+            function onPlayerReady(event) {
+                // Start synchronization loop
+                setInterval(syncTranscript, 100); 
+            }
+
+            function onPlayerStateChange(event) {
+                // If the video is paused (state 2) or ended (state 0), stop active highlighting
+                if (event.data === YT.PlayerState.PAUSED || event.data === YT.PlayerState.ENDED) {
+                    // Optional: remove all active classes when paused
+                    lines.forEach(line => line.classList.remove('active'));
+                }
+            }
+            
+            function syncTranscript() {
+                if (!window.player || window.player.getPlayerState() !== YT.PlayerState.PLAYING) {
+                    return;
+                }
+
+                const currentTime = window.player.getCurrentTime();
+                
+                let activeLine = null;
+                // Find the line whose start time is less than or equal to the current time, 
+                // and whose next line's start time is greater than the current time.
+                for (let i = 0; i < lines.length; i++) {
+                    const startTime = parseFloat(lines[i].getAttribute('data-start-time'));
+                    const nextLineTime = i + 1 < lines.length ? parseFloat(lines[i + 1].getAttribute('data-start-time')) : Infinity;
+                    
+                    if (currentTime >= startTime && currentTime < nextLineTime) {
+                        activeLine = lines[i];
+                        break;
+                    }
+                }
+
+                if (activeLine) {
+                    // Only update if the active line has actually changed
+                    if (!activeLine.classList.contains('active')) {
+                        lines.forEach(line => line.classList.remove('active'));
+                        activeLine.classList.add('active');
+                        
+                        // Scroll the container to the new active line
+                        const containerHeight = transcriptContainer.clientHeight;
+                        const lineHeight = activeLine.offsetHeight + parseFloat(getComputedStyle(activeLine).marginBottom);
+                        
+                        // Calculate scroll position to keep the active line roughly centered/in view
+                        const scrollPosition = activeLine.offsetTop - (containerHeight / 2) + (lineHeight / 2);
+
+                        transcriptContainer.scrollTo({
+                            top: scrollPosition,
+                            behavior: 'smooth'
+                        });
+                    }
+                }
+            }
         });
     </script>
 </body>
