@@ -260,8 +260,8 @@
     </main>
     
     <script>
-        // Placeholder for session-only JavaScript logic.
         let progressState = {}; 
+        let syncInterval = null; // New variable to hold the interval ID
 
         document.addEventListener('DOMContentLoaded', () => {
             const transcriptContainer = document.getElementById('scrolling-transcript');
@@ -275,6 +275,9 @@
                     // Seek to the time and play the video
                     window.player.seekTo(time, true);
                     window.player.playVideo();
+                    
+                    // Immediately update transcript highlighting and scrolling after seeking
+                    syncTranscript(time);
                 }
             });
 
@@ -289,34 +292,43 @@
             }
 
             function onPlayerReady(event) {
-                // Start synchronization loop
-                // Adding a slight delay (300ms) to allow the player to fully initialize before syncing
-                setTimeout(() => {
-                    setInterval(syncTranscript, 100);
-                }, 300);
+                // Run an initial sync to highlight the first line at time 0.
+                syncTranscript(0); 
             }
 
             function onPlayerStateChange(event) {
-                // If the video is paused (state 2) or ended (state 0), stop active highlighting
-                if (event.data === YT.PlayerState.PAUSED || event.data === YT.PlayerState.ENDED) {
-                    // Optional: remove all active classes when paused
-                    // lines.forEach(line => line.classList.remove('active'));
+                // YT.PlayerState.PLAYING = 1
+                // YT.PlayerState.PAUSED = 2
+                // YT.PlayerState.ENDED = 0
+                
+                if (event.data === YT.PlayerState.PLAYING) {
+                    // Start the synchronization loop only when playing
+                    if (syncInterval === null) {
+                        syncInterval = setInterval(syncTranscript, 100);
+                    }
+                } else {
+                    // Stop the synchronization loop if paused, ended, or buffering
+                    if (syncInterval !== null) {
+                        clearInterval(syncInterval);
+                        syncInterval = null;
+                    }
                 }
             }
             
-            function syncTranscript() {
-                if (!window.player || window.player.getPlayerState() !== YT.PlayerState.PLAYING) {
+            // Refactored syncTranscript to take an optional time override
+            function syncTranscript(timeOverride = null) {
+                if (!window.player) {
                     return;
                 }
-
-                const currentTime = window.player.getCurrentTime();
+                
+                const currentTime = timeOverride !== null ? timeOverride : window.player.getCurrentTime();
                 
                 let activeLine = null;
                 // Find the line whose start time is less than or equal to the current time, 
                 // and whose next line's start time is greater than the current time.
                 for (let i = 0; i < lines.length; i++) {
                     const startTime = parseFloat(lines[i].getAttribute('data-start-time'));
-                    // Use a 0.2 second buffer for the end time to ensure a line doesn't disappear too quickly
+                    // Use a slight buffer for the next line's time to ensure smooth transition
                     const nextLineTime = i + 1 < lines.length ? parseFloat(lines[i + 1].getAttribute('data-start-time')) : Infinity;
                     
                     if (currentTime >= startTime && currentTime < nextLineTime) {
@@ -331,7 +343,6 @@
                         lines.forEach(line => line.classList.remove('active'));
                         activeLine.classList.add('active');
                         
-                        // **FIXED: Adjusted scrolling logic to avoid jumping**
                         // Calculate a scroll position that brings the active line into the top-ish area of the container
                         const newScrollTop = activeLine.offsetTop - (transcriptContainer.clientHeight * 0.2); // 20% from top
 
