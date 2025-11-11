@@ -75,12 +75,12 @@
     <a id="skip-to-content" href="#main-content" class="skip-link" tabindex="0">Skip to Content</a>
     
     <header class="bg-white shadow-md p-4 sticky top-0 z-10">
-        <div class="max-w-6xl mx-auto">
+        <div class="max-w-7xl mx-auto">
             <h1 class="text-2xl font-bold text-[#1A1A1A]">Circuits: ALU Summary</h1>
         </div>
     </header>
 
-    <main id="main-content" class="p-4 sm:p-6 lg:p-8 max-w-6xl mx-auto">
+    <main id="main-content" class="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto">
         
         <h1 class="text-4xl font-extrabold mb-8 text-blue-700">Arithmetic Logic Unit (ALU) Summary</h1>
 
@@ -290,14 +290,17 @@
 
             function onPlayerReady(event) {
                 // Start synchronization loop
-                setInterval(syncTranscript, 100); 
+                // Adding a slight delay (300ms) to allow the player to fully initialize before syncing
+                setTimeout(() => {
+                    setInterval(syncTranscript, 100);
+                }, 300);
             }
 
             function onPlayerStateChange(event) {
                 // If the video is paused (state 2) or ended (state 0), stop active highlighting
                 if (event.data === YT.PlayerState.PAUSED || event.data === YT.PlayerState.ENDED) {
                     // Optional: remove all active classes when paused
-                    lines.forEach(line => line.classList.remove('active'));
+                    // lines.forEach(line => line.classList.remove('active'));
                 }
             }
             
@@ -313,6 +316,7 @@
                 // and whose next line's start time is greater than the current time.
                 for (let i = 0; i < lines.length; i++) {
                     const startTime = parseFloat(lines[i].getAttribute('data-start-time'));
+                    // Use a 0.2 second buffer for the end time to ensure a line doesn't disappear too quickly
                     const nextLineTime = i + 1 < lines.length ? parseFloat(lines[i + 1].getAttribute('data-start-time')) : Infinity;
                     
                     if (currentTime >= startTime && currentTime < nextLineTime) {
@@ -327,15 +331,13 @@
                         lines.forEach(line => line.classList.remove('active'));
                         activeLine.classList.add('active');
                         
-                        // Scroll the container to the new active line
-                        const containerHeight = transcriptContainer.clientHeight;
-                        const lineHeight = activeLine.offsetHeight + parseFloat(getComputedStyle(activeLine).marginBottom);
-                        
-                        // Calculate scroll position to keep the active line roughly centered/in view
-                        const scrollPosition = activeLine.offsetTop - (containerHeight / 2) + (lineHeight / 2);
+                        // **FIXED: Adjusted scrolling logic to avoid jumping**
+                        // Calculate a scroll position that brings the active line into the top-ish area of the container
+                        const newScrollTop = activeLine.offsetTop - (transcriptContainer.clientHeight * 0.2); // 20% from top
 
                         transcriptContainer.scrollTo({
-                            top: scrollPosition,
+                            // Ensure scroll position is clamped to 0 or greater
+                            top: Math.max(0, newScrollTop),
                             behavior: 'smooth'
                         });
                     }
