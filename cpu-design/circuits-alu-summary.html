@@ -261,11 +261,14 @@
     
     <script>
         let progressState = {}; 
-        let syncInterval = null; // New variable to hold the interval ID
+        let syncInterval = null; 
 
         document.addEventListener('DOMContentLoaded', () => {
             const transcriptContainer = document.getElementById('scrolling-transcript');
             const lines = Array.from(transcriptContainer.querySelectorAll('.transcript-line'));
+            
+            // **FIXED:** Explicitly set the scroll position to 0 on load to ensure the transcript starts at the top.
+            transcriptContainer.scrollTop = 0; 
 
             // Function to handle clicking on a transcript line
             transcriptContainer.addEventListener('click', (event) => {
@@ -292,8 +295,8 @@
             }
 
             function onPlayerReady(event) {
-                // Run an initial sync to highlight the first line at time 0.
-                syncTranscript(0); 
+                // The explicit 'transcriptContainer.scrollTop = 0' on DOMContentLoaded
+                // ensures we start at the top, so no initial sync call is needed here.
             }
 
             function onPlayerStateChange(event) {
