@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Circuits: XOR Comparator</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        // MANDATORY: Configure Tailwind to include the Typography plugin.
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                },
+            },
+            plugins: [
+                require('@tailwindcss/typography'),
+            ],
+        }
+    </script>
+    <style>
+        /* STRICT LIGHT THEME MANDATE: Overrides dark mode settings */
+        html { 
+            font-family: 'Inter', sans-serif; 
+            background-color: #FDFBF8; 
+            color: #1A1A1A; 
+        }
+        @media (prefers-color-scheme: dark) {
+            html {
+                background-color: #FDFBF8 !important; 
+                color: #1A1A1A !important; 
+            }
+        }
+        /* Custom class for Skip Link (visible on focus) */
+        .skip-link {
+            position: absolute;
+            top: -40px;
+            left: 0;
+            background: #1A1A1A;
+            color: white;
+            padding: 8px;
+            z-index: 100;
+            transition: top 0.3s;
+        }
+        .skip-link:focus {
+            top: 0;
+        }
+        /* Custom styling for tables in the prose context */
+        .prose table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1em;
+            margin-bottom: 1em;
+        }
+        .prose th, .prose td {
+            border: 1px solid #e5e7eb;
+            padding: 0.5em 0.75em;
+            text-align: left;
+        }
+        .prose th {
+            background-color: #f3f4f6;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body class="bg-[#FDFBF8] text-[#1A1A1A]">
+    <a id="skip-to-content" href="#main-content" class="skip-link" tabindex="0">Skip to Content</a>
+    
+    <header class="bg-white shadow-md p-4 sticky top-0 z-10">
+        <div class="max-w-7xl mx-auto">
+            <h1 class="text-2xl font-bold text-[#1A1A1A]">Circuits: XOR Comparator</h1>
+        </div>
+    </header>
+
+    <main id="main-content" class="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto">
+        
+        <h1 class="text-4xl font-extrabold mb-8 text-blue-700">Circuits: XOR Comparator</h1>
+
+        <section class="mb-8 p-6 bg-white rounded-xl shadow-lg">
+            <div class="prose max-w-none">
+                <h2 class="text-3xl font-bold mt-0 mb-4">XOR Comparator Functionality</h2>
+                <p>For this function, we need to create a circuit that performs **three different operations** simultaneously on two 8-bit inputs:</p>
+                <ol class="list-decimal list-inside space-y-2">
+                    <li>Output the results from a bit-wise **Exclusive OR (XOR)** for the two 8-bit inputs. This results in an **8-bit output**.</li>
+                    <li>Output if the two 8-bit inputs are **equal**. This is a **1-bit output** (**1** if equal, **0** if not equal).</li>
+                    <li>Output if input "**a**" is **larger** than input "**b**" over all 8 bits. This is a **1-bit output** (**1** if "a" is larger, **0** if equal or less than "b").</li>
+                </ol>
+                <p>We will work our way up to the final 8-bit version by progressing through the steps below.</p>
+            </div>
+        </section>
+
+        <div class="mb-8">
+            <nav class="flex overflow-x-auto whitespace-nowrap border-b border-gray-300" role="tablist" aria-label="XOR Comparator Steps">
+                <button 
+                    id="tab-comparing-2-bits-button" 
+                    class="tab-button px-4 py-2 text-lg font-medium border-b-2 border-blue-700 text-blue-700 bg-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-700"
+                    role="tab" 
+                    aria-controls="tab-comparing-2-bits" 
+                    aria-selected="true"
+                    data-tab-content="tab-comparing-2-bits"
+                >
+                    Comparing 2 bits
+                </button>
+                
+                <button 
+                    id="tab-recognizing-higher-bits-button" 
+                    class="tab-button px-4 py-2 text-lg font-medium border-b-2 border-transparent text-[#1A1A1A] hover:border-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-700"
+                    role="tab" 
+                    aria-controls="tab-recognizing-higher-bits" 
+                    aria-selected="false"
+                    data-tab-content="tab-recognizing-higher-bits"
+                >
+                    Recognizing Higher Bits
+                </button>
+
+                <button 
+                    id="tab-chaining-for-8-bits-button" 
+                    class="tab-button px-4 py-2 text-lg font-medium border-b-2 border-transparent text-[#1A1A1A] hover:border-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-700"
+                    role="tab" 
+                    aria-controls="tab-chaining-for-8-bits" 
+                    aria-selected="false"
+                    data-tab-content="tab-chaining-for-8-bits"
+                >
+                    Chaining for 8 bits
+                </button>
+            </nav>
+
+            <div id="tab-comparing-2-bits" class="tab-content p-6 bg-white rounded-b-xl shadow-lg border border-t-0 border-gray-300" role="tabpanel" tabindex="0">
+                <h2 class="text-2xl font-bold">Two-bit XOR Gate Properties</h2>
+                <div class="prose max-w-none">
+                    <p>The first step is to review the truth table for an **XOR Gate**:</p>
+                    <div class="flex justify-center my-6">
+                        <img src="images/xor-truth-table.png" alt="XOR Truth Table showing that output is 1 only when inputs are different" class="max-w-xs h-auto rounded-lg shadow-md border border-gray-300" />
+                    </div>
+                    <p>Next, we look at the **XOR Comparator** circuit. In the circuit below, the value for "Equal" will be a **1** only when the output from the XOR gate is **0**. This means we use a **NOT gate** on the XOR output to get our Equal status.</p>
+                    <div class="flex justify-center my-6">
+                        <img src="images/xor-comparator-2-bit-circuit.png" alt="2-bit XOR Comparator Circuit Diagram showing NOT gate on XOR output to determine if inputs are equal" class="max-w-md h-auto rounded-lg shadow-md border border-gray-300" />
+                    </div>
+                </div>
+            </div>
+
+            <div id="tab-recognizing-higher-bits" class="tab-content hidden p-6 bg-white rounded-b-xl shadow-lg border border-t-0 border-gray-300" role="tabpanel" tabindex="0">
+                <h2 class="text-2xl font-bold">Chaining for "Is Larger" and "Is Even"</h2>
+                <div class="prose max-w-none">
+                    <p>To determine if 'a' is larger than 'b', we must process the bits from **most significant (Bit 7) to least significant (Bit 0)**. We use two additional inputs to chain these single-bit comparators:</p>
+                    <ul class="list-disc list-inside space-y-1">
+                        <li>**pl** (Prior Is Larger): Input from the next higher bit comparison.</li>
+                        <li>**pe** (Prior Is Equal): Input from the next higher bit comparison.</li>
+                    </ul>
+                    <p>For the **most significant bit (MSB)**, these inputs will be constant values: **pl** will be **0 (Ground)** and **pe** will be **1 (Constant 1)**.</p>
+                    <p>The **"Is Larger"** output is calculated using the following logic gates:
+                        $$ L = (a \cdot \neg b \cdot pe) + pl $$
+                        This means 'a is larger' if:
+                        <ul class="list-circle list-inside ml-5">
+                            <li>'a' is 1, 'b' is 0, **AND** the prior bits were equal (pe=1). **OR**</li>
+                            <li>A prior, more significant bit already determined 'a is larger' (pl=1).</li>
+                        </ul>
+                    </p>
+                    <p>The diagram below shows the logic circuit for this single-bit comparator, which we will chain together.</p>
+                    <div class="flex justify-center my-6">
+                        <img src="images/single-bit-comparator-with-chaining.png" alt="Single-bit XOR Comparator with chaining inputs for prior larger (pl) and prior equal (pe)" class="max-w-xl h-auto rounded-lg shadow-md border border-gray-300" />
+                    </div>
+                </div>
+            </div>
+
+            <div id="tab-chaining-for-8-bits" class="tab-content hidden p-6 bg-white rounded-b-xl shadow-lg border border-t-0 border-gray-300" role="tabpanel" tabindex="0">
+                <h2 class="text-2xl font-bold">The Complete 8-bit XOR Comparator</h2>
+                <div class="prose max-w-none">
+                    <p>To create the full 8-bit comparator, you chain **eight** of the single-bit comparator circuits from the previous step. The connection is done from **Bit 7** (MSB) down to **Bit 0** (LSB).</p>
+                    <ul class="list-disc list-inside space-y-1">
+                        <li>The **'l'** (is larger) output of bit $N$ connects to the **'pl'** (prior is larger) input of bit $N-1$.</li>
+                        <li>The **'e'** (is equal) output of bit $N$ connects to the **'pe'** (prior is equal) input of bit $N-1$.</li>
+                    </ul>
+                    <p>The **final outputs** are taken from the least significant bit (Bit 0):</p>
+                    <ul class="list-disc list-inside space-y-1">
+                        <li>The final **"is larger"** evaluation is the **'l'** output from the Bit **0** comparison.</li>
+                        <li>The final **"is equal"** evaluation is the **'e'** output from the Bit **0** comparison.</li>
+                    </ul>
+                    <p>The bit-wise XOR result comes from the **'o'** (XOR result) output of all 8 components, forming the final 8-bit output.</p>
+                    <p>The diagram below illustrates the complete 8-bit circuit. Notice how the constant inputs for "is larger" (**Ground**) and "is equal" (**Constant 1**) are applied to the most significant bit (Bit 7), and the final outputs are taken from the least significant bit (Bit 0).</p>
+                    <div class="flex justify-center my-6">
+                        <img src="images/8-bit-xor-comparator-chained-circuit.png" alt="8-bit XOR comparator chained circuit with is larger and is equal evaluation" class="max-w-4xl h-auto rounded-lg shadow-md border border-gray-300" />
+                    </div>
+                    <p>After verifying your chained circuit works, create a new circuit appearance for easy integration into the ALU. A possible representation is shown below:</p>
+                    <div class="flex justify-center my-6">
+                        <img src="images/xor-comparator-circuit-appearance.png" alt="Circuit appearance for the 8-bit XOR Comparator" class="max-w-xs h-auto rounded-lg shadow-md border border-gray-300" />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <footer class="mt-8 pt-4 border-t border-gray-300 text-center text-sm text-gray-500">
+            <div class="prose max-w-none mx-auto">
+                <p class="text-xs italic">Ref: This project adapted from "Design a CPU" by Ross McGowan (On Udemy)</p>
+            </div>
+        </footer>
+    </main>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const tabButtons = document.querySelectorAll('.tab-button');
+            const tabContents = document.querySelectorAll('.tab-content');
+
+            const activateTab = (activeTabId) => {
+                // Deactivate all tabs
+                tabButtons.forEach(button => {
+                    button.setAttribute('aria-selected', 'false');
+                    button.classList.remove('border-blue-700', 'text-blue-700', 'bg-white');
+                    button.classList.add('border-transparent', 'text-[#1A1A1A]', 'hover:border-gray-500');
+                });
+
+                // Hide all content
+                tabContents.forEach(content => {
+                    content.classList.add('hidden');
+                });
+
+                // Activate the selected tab and show its content
+                const activeTabButton = document.querySelector(`[data-tab-content="${activeTabId}"]`);
+                const activeTabContent = document.getElementById(activeTabId);
+
+                if (activeTabButton && activeTabContent) {
+                    activeTabButton.setAttribute('aria-selected', 'true');
+                    activeTabButton.classList.add('border-blue-700', 'text-blue-700', 'bg-white');
+                    activeTabButton.classList.remove('border-transparent', 'text-[#1A1A1A]', 'hover:border-gray-500');
+                    activeTabContent.classList.remove('hidden');
+                    activeTabContent.focus(); // Set focus to the active tab panel for accessibility
+                }
+            };
+
+            // Set up event listeners for tab buttons
+            tabButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const contentId = button.getAttribute('data-tab-content');
+                    activateTab(contentId);
+                });
+            });
+
+            // Initial check: Activate the first tab if no other is active
+            if (document.querySelector('.tab-button[aria-selected="true"]')) {
+                // Tab one is set to active by default in the HTML, no action needed here.
+            } else if (tabButtons.length > 0) {
+                 // Fallback if initial HTML state is incorrect
+                activateTab(tabButtons[0].getAttribute('data-tab-content'));
+            }
+        });
+    </script>
+</body>
+</html>
