@@ -105,10 +105,10 @@
                 <p>The circuit descriptions required for each stage are provided on the following linked pages. Complete these foundational components before proceeding to the final assembly:</p>
                 
                 <ol class="list-decimal list-inside space-y-2 pl-4">
-                    <li><a title="Circuits: 1-bit Memory" href="circuits-1-bit-memory.html" class="text-blue-600 hover:text-blue-800">Circuits: 1-bit Memory</a>: The fundamental building block (typically an S-R Latch or D Flip-Flop).</li>
-                    <li><a title="Circuits: Creating an 8-bit Register" href="circuits-creating-an-8-bit-register.html" class="text-blue-600 hover:text-blue-800">Circuits: Creating an 8-bit Register</a>: Combining eight 1-bit memory circuits to store one byte of data.</li>
-                    <li><a title="Circuits: Building a Decoder" href="circuits-building-a-decoder.html" class="text-blue-600 hover:text-blue-800">Circuits: Building a Decoder</a>: Used to select a specific register (memory location) based on an address input.</li>
-                    <li><a title="Circuits: Building the 16x8 RAM" href="circuits-building-the-16x8-ram.html" class="text-blue-600 hover:text-blue-800">Circuits: Building the 16x8 RAM</a>: Assembling 16 8-bit Registers with a Decoder to create a small RAM block.</li>
+                    <li><a title="Circuits: 1-bit Memory" href="circuits-1-bit-memory.html" class="text-blue-600 hover:text-blue-800">Circuits: 1-bit Memory</a>: The fundamental memory block.</li>
+                    <li><a title="Circuits: Creating an 8-bit Register" href="circuits-creating-an-8-bit-register.html" class="text-blue-600 hover:text-blue-800">Circuits: Creating an 8-bit Register</a>: Stores one byte of data.</li>
+                    <li><a title="Circuits: Building a Decoder" href="circuits-building-a-decoder.html" class="text-blue-600 hover:text-blue-800">Circuits: Building a Decoder</a>: Used for address selection.</li>
+                    <li><a title="Circuits: Building the 16x8 RAM" href="circuits-building-the-16x8-ram.html" class="text-blue-600 hover:text-blue-800">Circuits: Building the 16x8 RAM</a>: Intermediate RAM block.</li>
                 </ol>
             </div>
         </section>
@@ -119,14 +119,14 @@
             <div role="tablist" aria-label="RAM Implementation Steps" class="flex flex-wrap border-b border-gray-300 mb-4">
                 <button role="tab" aria-controls="tab-1" id="tab-btn-1" class="tab-button active p-4 text-lg text-gray-700 hover:bg-gray-100 transition duration-150 ease-in-out" onclick="switchTab(1)">1. Controlled Buffer</button>
                 <button role="tab" aria-controls="tab-2" id="tab-btn-2" class="tab-button p-4 text-lg text-gray-700 hover:bg-gray-100 transition duration-150 ease-in-out" onclick="switchTab(2)">2. RAM Matrix Overview</button>
-                <button role="tab" aria-controls="tab-3" id="tab-btn-3" class="tab-button p-4 text-lg text-gray-700 hover:bg-gray-100 transition duration-150 ease-in-out" onclick="switchTab(3)">3. Selection Wiring</button>
-                <button role="tab" aria-controls="tab-4" id="tab-btn-4" class="tab-button p-4 text-lg text-gray-700 hover:bg-gray-100 transition duration-150 ease-in-out" onclick="switchTab(4)">4. Final Wiring</button>
+                <button role="tab" aria-controls="tab-3" id="tab-btn-3" class="tab-button p-4 text-lg text-gray-700 hover:bg-gray-100 transition duration-150 ease-in-out" onclick="switchTab(3)">3. The Addressable RAM Byte</button>
+                <button role="tab" aria-controls="tab-4" id="tab-btn-4" class="tab-button p-4 text-lg text-gray-700 hover:bg-gray-100 transition duration-150 ease-in-out" onclick="switchTab(4)">4. Final 256x8 Wiring</button>
             </div>
 
             <div class="prose max-w-none">
                 <div id="tab-1" role="tabpanel" aria-labelledby="tab-btn-1" class="tab-content-panel active p-4 bg-gray-50 rounded-lg">
                     <h3 class="text-2xl font-semibold mb-3 text-blue-700">1. Adding the Controlled Buffer</h3>
-                    <p>To begin, you will be taking your **8-bit Register** and **adding a Controlled Buffer** to the output side of the register. This buffer (or **T-Gate**) is necessary to prevent the data from being output onto the bus at all times.</p>
+                    <p>To begin, you will be taking your **8-bit Register** and **adding a Controlled Buffer (T-Gate)** to the output side of the register. This buffer is essential to prevent the data from being output onto the shared data bus at all times.</p>
                     <div class="flex justify-center my-4">
                         <img src="images/Register_with_Controlled_Buffer.png" alt="Logisim diagram of an 8-bit register circuit with an 8-bit Controlled Buffer (T-Gate) added to the output path." class="max-w-md h-auto rounded-lg shadow-md border border-gray-300" />
                     </div>
@@ -139,34 +139,40 @@
                     <div class="flex justify-center my-4">
                         <img src="images/RAM_Matrix_Conceptual_Diagram.png" alt="Conceptual diagram of the 16x16 matrix structure of the 256x8 RAM, showing rows selected by the Row Decoder and columns selected by the Column Decoder." class="max-w-xl h-auto rounded-lg shadow-md border border-gray-300" />
                     </div>
-                    <p>To select a specific byte within this matrix (which corresponds to a unique memory address), we need to select both its **row** and its **column** simultaneously. This is where the address decoder comes into play.</p>
+                    <p>To select a specific byte within this matrix (which corresponds to a unique memory address), we need to select both its **row** and its **column** simultaneously. The full 8-bit address is split: four bits for the Row Decoder and four bits for the Column Decoder.</p>
                 </div>
 
                 <div id="tab-3" role="tabpanel" aria-labelledby="tab-btn-3" class="tab-content-panel p-4 bg-gray-50 rounded-lg">
-                    <h3 class="text-2xl font-semibold mb-3 text-red-700">3. Adding Selection to our Register Byte</h3>
-                    <p>For each individual 8-bit register in the matrix, two main control lines will determine if it is selected for a read or write operation:</p>
+                    <h3 class="text-2xl font-semibold mb-3 text-red-700">3. The Addressable RAM Byte</h3>
+                    <p>Before assembling the full matrix, you must integrate the selection logic into the 8-bit register/buffer circuit. This completed unit will be the reusable **RAM Byte** component.</p>
+                    <p>For a byte to be activated (either for a **read** or a **write** operation), it must be selected by **both** the Row Decoder and the Column Decoder. We achieve this with a 2-input **AND gate**:</p>
                     <ul class="list-disc list-inside space-y-1 pl-4 mt-2">
-                        <li>The **Set** line (from the row selection)</li>
-                        <li>The **Enable** line (from the column selection)</li>
+                        <li>**Input 1:** The **Row Selection** signal (coming from the Row Decoder). This is typically the **Set** signal for writing data.</li>
+                        <li>**Input 2:** The **Column Selection** signal (coming from the Column Decoder). This is typically the **Enable** signal for reading data.</li>
                     </ul>
+                    <p>The **output of this AND gate** is then wired to two places:</p>
+                    <ol class="list-decimal list-inside space-y-1 pl-4 mt-2">
+                        <li>The **Set** pin of the 8-bit Register (Allows data on the bus to be written into the register).</li>
+                        <li>The **Enable** pin of the Controlled Buffer (Allows data in the register to be read out onto the bus).</li>
+                    </ol>
+                    <p>This combined control ensures the register is only selected for reading or writing when its specific row and column address bits are both active (1), making it a truly addressable unit.</p>
                     <div class="flex justify-center my-4">
                         <img src="images/Register_SetEnable_AND_Wiring.png" alt="Logisim wiring diagram showing an AND gate combining the Set signal (from Row Decoder) and the Enable signal (from Column Decoder) before connecting to the register's Set pin and the Controlled Buffer's Enable pin." class="max-w-md h-auto rounded-lg shadow-md border border-gray-300" />
                     </div>
-                    <p>We use an **AND gate** to combine the selection signal from the **Row Decoder** (the **Set** input) and the selection signal from the **Column Decoder** (the **Enable** input). The output of this AND gate is then connected to both the register's **Set** pin and the **Controlled Buffer's Enable** pin.</p>
-                    <p>This ensures that a byte is only active when both its row and column addresses are selected.</p>
                 </div>
 
                 <div id="tab-4" role="tabpanel" aria-labelledby="tab-btn-4" class="tab-content-panel p-4 bg-gray-50 rounded-lg">
-                    <h3 class="text-2xl font-semibold mb-3 text-purple-700">4. Wiring Up Your RAM</h3>
-                    <p>Once you have the foundation, the wiring involves connecting the control signals, data lines, and address lines across the entire matrix:</p>
+                    <h3 class="text-2xl font-semibold mb-3 text-purple-700">4. Final 256x8 Wiring and Assembly</h3>
+                    <p>Once your addressable RAM Byte (from step 3) is built and verified, you will use it to construct the full **256x8** memory. The assembly involves connecting the common bus and the address decoders to the matrix of your new RAM Byte components:</p>
+                    <ul class="list-disc list-inside space-y-1 pl-4 mt-2">
+                        <li>**Data Bus:** The 8-bit input (Data In) and 8-bit output (Data Out) lines are connected in parallel to **all 256** RAM Byte components.</li>
+                        <li>**Address Lines:** The 8-bit address input is split: 4 bits to the **Row Decoder** (16 outputs) and 4 bits to the **Column Decoder** (16 outputs).</li>
+                        <li>**Selection Wires:** The 16 outputs of the Row Decoder are connected to the Row Selection input of every byte in that row. The 16 outputs of the Column Decoder are connected to the Column Selection input of every byte in that column.</li>
+                    </ul>
+                    <p>This creates the necessary 16x16 mesh where only one byte's internal AND gate is active for any given 8-bit address.</p>
                     <div class="flex justify-center my-4">
                         <img src="images/RAM_Full_Wiring_Schematic.png" alt="Detailed Logisim schematic showing the full wiring setup for RAM, including the split address lines, decoders, and the common 8-bit data bus." class="max-w-xl h-auto rounded-lg shadow-md border border-gray-300" />
                     </div>
-                    <ul class="list-disc list-inside space-y-1 pl-4 mt-2">
-                        <li>**Data Bus:** The common 8-bit input (data to be written) and 8-bit output (data to be read) lines run through all 256 memory registers.</li>
-                        <li>**Address Lines:** The 8-bit address input is split into two 4-bit sets. Four bits go to the **Row Decoder** (to select one of 16 rows), and the other four bits go to the **Column Decoder** (to select one of 16 columns).</li>
-                        <li>**Control Lines:** The outputs of the two decoders are connected via the AND gate to the corresponding Set/Enable inputs of the single, target register.</li>
-                    </ul>
                 </div>
             </div>
         </section>
@@ -174,7 +180,7 @@
             <div class="prose max-w-none">
                 <h2 class="text-3xl font-bold mt-0 mb-4">Implementing the Full 256x8 RAM (The Final Component)</h2>
 
-                <p>Once you have built and verified the **16x8 RAM**, you use it as a component (or subcircuit) to build the full **256x8 RAM** unit required for the CPU. A possible circuit appearance for the 16x8 RAM component is shown below:</p>
+                <p>Once you have built and verified the **16x8 RAM** (which serves as a helpful intermediate step), you will use it as a component (or subcircuit) to build the full **256x8 RAM** unit required for the CPU. A possible circuit appearance for the 16x8 RAM component is shown below:</p>
                 <div class="flex justify-center my-6">
                     <img src="images/16x8-RAM-appearance.png" alt="Circuit Appearance for 16x8 RAM component" class="max-w-md h-auto rounded-lg shadow-md border border-gray-300" />
                 </div>
@@ -184,11 +190,6 @@
                 <p>The image below shows a conceptual layout of the 256x8 RAM matrix utilizing the 4x16 decoders for addressing:</p>
                 <div class="flex justify-center my-6">
                     <img src="images/256x8-ram-decoders.png" alt="Partial 256x8 RAM layout showing connection of two 4x16 Decoders to select individual bytes of RAM" class="max-w-xl h-auto rounded-lg shadow-md border border-gray-300" />
-                </div>
-                
-                <h3 class="text-xl font-semibold mt-8 mb-4">Supplementary Diagram: Address Line Tunnels</h3>
-                <div class="flex justify-center my-6">
-                    <img src="images/RAM_Address_Tunnel_Diagram.png" alt="Supplementary Diagram showing the use of tunnels to split the 8-bit address into two 4-bit lines for the decoders." class="max-w-md h-auto rounded-lg shadow-md border border-gray-300" />
                 </div>
 
                 <p>The wiring and detailed explanation for this circuit is provided in the video below, which guides you through the process of chaining the decoders and memory blocks.</p>
@@ -224,11 +225,6 @@
                     <img src="images/final-256x8-RAM-appearance.png" alt="Final Circuit Appearance for the Completed 256x8 RAM component" class="max-w-md h-auto rounded-lg shadow-md border border-gray-300" />
                 </div>
                 
-                <h3 class="text-xl font-semibold mt-8 mb-4">Supplementary Diagram: Testing Inputs</h3>
-                <div class="flex justify-center my-6">
-                    <img src="images/RAM_Testing_Setup.png" alt="Supplementary Diagram showing a temporary testing setup for the RAM component using manual input pins." class="max-w-md h-auto rounded-lg shadow-md border border-gray-300" />
-                </div>
-                
                 <div class="p-4 bg-red-50 border border-red-300 rounded-lg mt-6">
                     <h4 class="text-lg font-bold text-red-700">⚠️ IMPORTANT NOTE FOR COURSE COMPLETION ⚠️</h4>
                     <p>In this diagram, the full potential of 256 bytes is shown. **For the purposes of this course, you should only "wire up" the first 2 rows of 16 bytes each for a total of 32 bytes and not the full 16 x 16 matrix of 256 bytes.** Implementing and testing the first 32 bytes is acceptable and sufficient for the final project.</p>
@@ -262,6 +258,10 @@
                 selectedPanel.classList.add('active');
             }
         }
+        // Initialize the first tab as active on load
+        document.addEventListener('DOMContentLoaded', () => {
+            switchTab(1);
+        });
     </script>
 </body>
 </html>
