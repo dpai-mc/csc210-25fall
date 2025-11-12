@@ -117,76 +117,81 @@
                 <div class="prose max-w-none">
                     <p>The first thing we want to do is to look at the truth table for an **XOR Gate**, which gives us our primary XOR result:</p>
                     <div class="flex justify-center my-6">
-                        <img src="images/xor-truth-table.png" alt="XOR Truth Table showing that output is 1 only when inputs are different" class="max-w-xs h-auto rounded-lg shadow-md border border-gray-300" />
+                        <img src="images/xor-truth-table.jpg" alt="XOR Truth Table showing that output is 1 only when inputs are different" class="max-w-xs h-auto rounded-lg shadow-md border border-gray-300" />
                     </div>
 
-                    <p>To get the **"Is Equal"** output, we need a 1 when inputs are the same, which is the exact opposite of XOR. This function is called **XNOR** (Exclusive NOR).</p>
+                    <p>The truth table shows that when the two inputs are the same, the output is 0 and when they are different the output is 1. This is the definition of the exclusive OR. Now we want to consider if we can check if the 2 bits are equal or not and if they are equal, we want an output of 1. If they are not equal we want an output of 0. If we consider the truth table provided, we can see that the XOR gate produces the exact opposite of what we want to find out of the 2 inputs are equal. So to get an equals evaluation, we can branch off the output and add a NOT gate to this new circuit to get the equals bit.</p>
                     <div class="flex justify-center my-6">
-                        <img src="images/xnor-truth-table.png" alt="XNOR Truth Table showing that output is 1 only when inputs are the same" class="max-w-xs h-auto rounded-lg shadow-md border border-gray-300" />
+                        <img src="images/xor-equals-1bit.jpg" alt="XNOR Truth Table showing that output is 1 only when inputs are the same" class="max-w-xs h-auto rounded-lg shadow-md border border-gray-300" />
                     </div>
 
-                    <p>Next, we look at the basic **XOR Comparator circuit** for two bits. The value for "Equal" (or XNOR) is achieved by using a **NOT gate** on the XOR output.</p>
+                    <p>The third function that we want to perform is to output a 1 if a is larger than b and a 0 otherwise. We can do this by adding an AND gate that takes as inputs, a and the output from our XOR gate. When the XOR result is 0, the two values, a and b, are the same so "a" cannot be larger than b (so the "a larger" result will be 0). When the XOR gate result is 1, the two values of "a" and "b" are different, one is 1 and the other is 0. "a" is larger when it is 1 and "b" is 0. We can get this result by putting the value of "a" into the AND gate with the output from the XOR (If we wanted to check if "b" is larger, we would use "b" and the XOR result as the inputs to the AND gate). This is shown in the diagram below.
+
+</p>
                     <div class="flex justify-center my-6">
-                        <img src="images/xor-comparator-2-bit-circuit.png" alt="2-bit XOR Comparator Circuit Diagram showing NOT gate on XOR output to determine if inputs are equal" class="max-w-md h-auto rounded-lg shadow-md border border-gray-300" />
+                        <img src="images/xor-aLarger-1bit.jpg" alt="2-bit XOR Comparator Circuit Diagram showing NOT gate on XOR output to determine if inputs are equal" class="max-w-md h-auto rounded-lg shadow-md border border-gray-300" />
                     </div>
 
-                    <p>To complete the function for a single bit, we need to add the logic for **"Is Larger"**. For a single bit, 'a' is larger than 'b' only if 'a' is 1 and 'b' is 0. This is a simple **AND NOT** operation ($\mathbf{a \cdot \neg b}$).</p>
-                    <div class="flex justify-center my-6">
-                        <img src="images/2-bit-comparator-le.png" alt="The complete 2-bit comparator with XOR result, Is Equal (E), and Is Larger (L) outputs" class="max-w-lg h-auto rounded-lg shadow-md border border-gray-300" />
-                    </div>
+                    <p>You should create this circuit and test it to verify that for each of the 4 possible input combinations, you get the correct values for the output, equals and larger bits.</p>
+                    
                 </div>
             </div>
 
             <div id="tab-recognizing-higher-bits" class="tab-content hidden p-6 bg-white rounded-b-xl shadow-lg border border-t-0 border-gray-300" role="tabpanel" tabindex="0">
-                <h2 class="text-2xl font-bold">Chaining for "Is Larger" and "Is Equal"</h2>
+                <h2 class="text-2xl font-bold">Extending to Higher Order bits</h2>
                 <div class="prose max-w-none">
-                    <p>To compare two multi-bit numbers, we must process the bits from **most significant (Bit 7) to least significant (Bit 0)**. We need to create a single-bit comparator that can be **chained** to its neighbors.</p>
+                    <p>For each bit combination, we have the output from the XOR plus the "equals" bit and the "a larger" bit. In an 8-bit function, we need to account for the results from the other bits in our evaluation of equals and larger (The output is bit-by-bit result so the result for any one bit location set is not impacted by other results). In evaluating the larger and equals, it is easiest to work from the higher value bits to the lower ones. Doing the evaluation in this order simplifies the overall comparison process.</p>
                     
-                    <p>This single-bit comparator requires two additional inputs to enable chaining from the previous, more significant bit:</p>
+                    <p>To do this, we first should consider that we have 3 possible conditions from the higher to the next lower bit that are:</p>
                     <ul class="list-disc list-inside space-y-1">
-                        <li>**pl** (Prior Is Larger): Input from the next higher bit comparison. If this is 1, the result is already decided.</li>
-                        <li>**pe** (Prior Is Equal): Input from the next higher bit comparison. If this is 0, the result is already decided.</li>
+                        <li>The higher order bit for "a" is larger so continued evaluation is not required (since higher bit for "a" is larger,  comparisions are done)</li>
+                        <li>The higher order bit for "a" equals that for "b" - so "a" may be larger, equals or smaller than "b"</li>
+                        <li>The higher order bit for "a" is less than for "b" - so "a" is not larger or equals and comparisons are done.</li>
                     </ul>
 
-                    <h3 class="text-xl font-semibold mt-4 mb-2">The 'Is Larger' Logic ($L$)</h3>
-                    <p>The core logic for the **"Is Larger"** output ($L$) for the current bit comparison must account for the prior bit's status. The formula is:</p>
-                    <p class="text-xl font-mono p-3 bg-gray-100 rounded">
-                        $$ L = (a \cdot \neg b \cdot pe) + pl $$
+                    <h3 class="text-xl font-semibold mt-4 mb-2">Let's take the first case</h3>
+                    <p> In each of the cases, you should test and verify that the results match what they should for all possible combinations of inputs.</p>
+                    <p>We can take the result from the higher order bit for "a larger" and OR that with the "a larger" for the current bit so that if the higher order is larger, then the value this comparison will pass down is also "a larger" regardless of what the evaluation for the current set of bits is.
                     </p>
-                    <p>This is implemented using an **OR** gate driven by two paths:</p>
+                    
                     <div class="flex justify-center my-6">
-                        <img src="images/is-larger-logic-detail.png" alt="Detailed logic circuit for the Is Larger (L) output using AND and OR gates to combine current bit comparison (a and not b) with the prior is equal (pe) and prior is larger (pl) inputs" class="max-w-xl h-auto rounded-lg shadow-md border border-gray-300" />
+                        <img src="images/xor-aLarger-cascade.jpg" alt="Detailed logic circuit for the Is Larger (L) output using AND and OR gates to combine current bit comparison (a and not b) with the prior is equal (pe) and prior is larger (pl) inputs" class="max-w-xl h-auto rounded-lg shadow-md border border-gray-300" />
                     </div>
 
-                    <h3 class="text-xl font-semibold mt-4 mb-2">The Complete Single-Bit Component</h3>
-                    <p>The final single-bit comparator integrates the XOR output, the XNOR (Is Equal) logic, and the new chaining logic for 'Is Larger' (L) and 'Is Equal' (E). We also need the current 'Is Equal' (E) output to feed the next less significant bit's 'Prior Is Equal' (pe) input.</p>
+                    <h3 class="text-xl font-semibold mt-4 mb-2">Case 2</h3>
+                    <p>In case 2, the higher order is not larger but it may be equal to. The first thing we want to do is to evaluate the "equals" portion of the circuit. To do that, we want to AND the "prior equals" being passed down with the current bit position evaluation of equals as shown below. This will return equals ONLY when the prior bit is equals and the current bit is equals. Whenever the prior bit is larger or small, then the prior equals will be 0 and the AND ensures that what will get passed down to the next bit location is not equals.</p>
                     <div class="flex justify-center my-6">
-                        <img src="images/single-bit-comparator-with-chaining.png" alt="Single-bit XOR Comparator with chaining inputs for prior larger (pl) and prior equal (pe)" class="max-w-xl h-auto rounded-lg shadow-md border border-gray-300" />
+                        <img src="images/xor-aEquals-cascade.png" alt="Single-bit XOR Comparator with chaining inputs for prior larger (pl) and prior equal (pe)" class="max-w-xl h-auto rounded-lg shadow-md border border-gray-300" />
                     </div>
                     
-                    <p>Once your single-bit circuit is functional, create an appearance for it to use as a component:</p>
+                    <h3 class="text-xl font-semibold mt-4 mb-2">Case 3</h3>
+                    <p>The complicating case is when the prior bit is equals, it means that the prior bit is not larger so we need to only check the current bit if the prior bit is equals. If we think about the 3 possible combinations, when the prior bit is equals, then the current bit comparison can determine that "a" is larger. To do this, we need to modify our original 2 input AND gate on the  "is Larger" leg of the circuit to a 3 input AND gate to include the "prior equals" result. When the prior equals is "1" or they are equal, the "is Larger" will be evaluated based upon the current bit position.</p>
+
+</p>
                     <div class="flex justify-center my-6">
-                        <img src="images/single-bit-component-appearance.png" alt="Circuit appearance of the single-bit comparator component with inputs A, B, pl, pe and outputs O, l, e" class="max-w-xs h-auto rounded-lg shadow-md border border-gray-300" />
+                        <img src="images/xor-aEquals-cascade-final.png" alt="Circuit appearance of the single-bit comparator component with inputs A, B, pl, pe and outputs O, l, e" class="max-w-xs h-auto rounded-lg shadow-md border border-gray-300" />
                     </div>
+                    <p>Again, make sure to build each of these cases and test them in your project to understand and verify that the circuits work as intended. Make sure to modify the circuit appearance of your final version to make it easier to include in the 8-bit chained result you will need for the ALU.</p>
                 </div>
             </div>
 
             <div id="tab-chaining-for-8-bits" class="tab-content hidden p-6 bg-white rounded-b-xl shadow-lg border border-t-0 border-gray-300" role="tabpanel" tabindex="0">
                 <h2 class="text-2xl font-bold">The Complete 8-bit XOR Comparator</h2>
                 <div class="prose max-w-none">
-                    <p>To create the full 8-bit comparator, you chain **eight** of the single-bit comparator circuits from the previous step. The connections for **"is larger"** and **"is equal"** are from the **Most Significant Bit (MSB) down to the Least Significant Bit (LSB)**.</p>
-                    <ul class="list-disc list-inside space-y-2">
-                        <li>The constant inputs for **Bit 7 (MSB)** are: **pl** = **Ground (0)** and **pe** = **Constant 1**. (Since there is no "prior" bit, we assume they were equal and not larger).</li>
-                        <li>The outputs from Bit $N$ (l and e) connect directly to the **pl** and **pe** inputs of Bit $N-1$.</li>
-                    </ul>
-                    <p>A detail of the chaining connections between two components is shown below:</p>
+                    <p>To complete the 8-bit evaluation, we need to chain the "a-larger" and "equals" bits from the higher order bits into the next lower level (from 7 to 6 to 5 ... to 0). We also need to take the individual outputs from each bit and place them in the appropriate position for the 8-bit XOR result out. You will need to seed the beginning comparisons for "is larger" and "is even". Since we do these from bit-7 to bit-0, then the input for the 7th bit comparator needs to be 0 for "prior a larger" and 1 for "prior equals". You can test this in your XOR with LE for 1-bit by replacing these inputs with the appropriate constants as indicated in this image.</p>
+                    
                     <div class="flex justify-center my-6">
-                        <img src="images/chaining-detail-diagram.png" alt="Detail diagram showing l and e outputs of one comparator feeding the pl and pe inputs of the next lower comparator" class="max-w-2xl h-auto rounded-lg shadow-md border border-gray-300" />
+                        <img src="images/xor-testing.png" alt="Detail diagram showing l and e outputs of one comparator feeding the pl and pe inputs of the next lower comparator" class="max-w-2xl h-auto rounded-lg shadow-md border border-gray-300" />
                     </div>
                     
-                    <p>The final outputs for the comparison flags are taken from the evaluation outputs of the **Bit 0** comparison (the LSB).</p>
+                    <p>Because we need to pass values from the XOR comparison from one-bit placement to the next, how you make your 1-bit XOR comparator with "is larger" and "is even" evaluators, it is imperative that you think about where you have the prior inputs and the outputs for passing to the next bit. As you will see below, I choose to setup my 8-bit XOR comparator with bits 0 through 7 stacked from bottom-to-top. Since we evaluate "is larger" and "is even" from left-to-right in our 8-bit inputs (bits 7 to 0), I need to place my "prior" values at the top of my circuit appearance and the outputs at the bottom to pass as inputs to the XOR bit comparator just below it.</p>
                     <div class="flex justify-center my-6">
-                        <img src="images/8-bit-xor-comparator-chained-circuit.png" alt="8-bit XOR comparator chained circuit with is larger and is equal evaluation" class="max-w-4xl h-auto rounded-lg shadow-md border border-gray-300" />
+                        <img src="images/xor-1bit-appearance.png" alt="8-bit XOR comparator chained circuit with is larger and is equal evaluation" class="max-w-4xl h-auto rounded-lg shadow-md border border-gray-300" />
+                    </div>
+
+                    <p>I realize that this description might be confusing so the following image shows how my 8-bit "a XOR b with 'is larger' and 'is even' bits" is laid out in my solution. In this image, the single bit XOR evaluations between a and b are from the bottom to the top. The evaluations for "is larger" and "is even" are from the Top to the Bottom so the constants of 1 for "is even" and ground (0) for "is larger" are the inputs to the bit 7 comparison with the evaluation output from the bit 0 comparison.</p>
+                    <div class="flex justify-center my-6">
+                        <img src="images/xor-8bit-chaining-circuit.png" alt="8-bit XOR comparator chained circuit with is larger and is equal evaluation" class="max-w-4xl h-auto rounded-lg shadow-md border border-gray-300" />
                     </div>
                     
                     <h3 class="text-xl font-semibold mt-6 mb-2">Component Pin Definitions</h3>
@@ -197,7 +202,7 @@
 
                     <p class="mt-6">Make sure to create a new circuit appearance after chaining and verifying that it works, for integration into higher level assemblies. One possible representation is shown below:</p>
                     <div class="flex justify-center my-6">
-                        <img src="images/xor-comparator-circuit-appearance.png" alt="Circuit appearance for the 8-bit XOR Comparator" class="max-w-xs h-auto rounded-lg shadow-md border border-gray-300" />
+                        <img src="images/xor-comparator-circuit-appearance.jpg" alt="Circuit appearance for the 8-bit XOR Comparator" class="max-w-xs h-auto rounded-lg shadow-md border border-gray-300" />
                     </div>
                 </div>
             </div>
