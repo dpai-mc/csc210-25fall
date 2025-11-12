@@ -95,7 +95,7 @@
         <section class="mb-8 p-6 bg-white rounded-xl shadow-lg">
             <div class="prose max-w-none">
                 <h2 class="text-3xl font-bold mt-0 mb-4">Development Flowchart</h2>
-                <p>To create the Random Access Memory (RAM) circuit, we must work through a hierarchical flow, building foundational components first and then assembling them into the final **256x8** memory unit. The overall process is described by the following flowchart:</p>
+                <p>To create the Random Access Memory (RAM) circuit, we must work through a hierarchical flow, building foundational components first and then assembling them into the final 16x16 memory unit. The overall process is described by the following flowchart:</p>
                 
                 <div class="flex justify-center my-6">
                     <img src="images/RAM_flowchart.jpg" alt="RAM Development Flowchart showing steps from 1-bit memory to 256x8 RAM" class="max-w-xl h-auto rounded-lg shadow-md border border-gray-300" />
@@ -108,8 +108,12 @@
                     <li><a title="Circuits: 1-bit Memory" href="circuits-1-bit-memory.html" class="text-blue-600 hover:text-blue-800">Circuits: 1-bit Memory</a>: The fundamental memory block.</li>
                     <li><a title="Circuits: Creating an 8-bit Register" href="circuits-creating-an-8-bit-register.html" class="text-blue-600 hover:text-blue-800">Circuits: Creating an 8-bit Register</a>: Stores one byte of data.</li>
                     <li><a title="Circuits: Building a Decoder" href="circuits-building-a-decoder.html" class="text-blue-600 hover:text-blue-800">Circuits: Building a Decoder</a>: Used for address selection.</li>
-                    <li><a title="Circuits: Building the 16x8 RAM" href="circuits-building-the-16x8-ram.html" class="text-blue-600 hover:text-blue-800">Circuits: Building the 16x8 RAM</a>: Intermediate RAM block.</li>
                 </ol>
+                <p>After completing the circuits above, we need to modify our 8 bit register to create a memory byte. These changes include:</p>
+                <ul>
+                    <li>Adding a Controlled Buffer to output of the CPU Enable subsection</li>
+                    <li>Adding a selection circuit to choose which of the individual Bytes in RAM we have</li>
+                </ul>
             </div>
         </section>
 
@@ -120,49 +124,60 @@
                 <button role="tab" aria-controls="tab-1" id="tab-btn-1" class="tab-button active p-4 text-lg text-gray-700 hover:bg-gray-100 transition duration-150 ease-in-out" onclick="switchTab(1)">1. Controlled Buffer</button>
                 <button role="tab" aria-controls="tab-2" id="tab-btn-2" class="tab-button p-4 text-lg text-gray-700 hover:bg-gray-100 transition duration-150 ease-in-out" onclick="switchTab(2)">2. RAM Matrix Overview</button>
                 <button role="tab" aria-controls="tab-3" id="tab-btn-3" class="tab-button p-4 text-lg text-gray-700 hover:bg-gray-100 transition duration-150 ease-in-out" onclick="switchTab(3)">3. The Addressable RAM Byte</button>
-                <button role="tab" aria-controls="tab-4" id="tab-btn-4" class="tab-button p-4 text-lg text-gray-700 hover:bg-gray-100 transition duration-150 ease-in-out" onclick="switchTab(4)">4. Final 256x8 Wiring</button>
+                <button role="tab" aria-controls="tab-4" id="tab-btn-4" class="tab-button p-4 text-lg text-gray-700 hover:bg-gray-100 transition duration-150 ease-in-out" onclick="switchTab(4)">4. Wiring up your RAM</button>
             </div>
 
             <div class="prose max-w-none">
                 <div id="tab-1" role="tabpanel" aria-labelledby="tab-btn-1" class="tab-content-panel active p-4 bg-gray-50 rounded-lg">
                     <h3 class="text-2xl font-semibold mb-3 text-blue-700">1. Adding the Controlled Buffer</h3>
-                    <p>To begin, you will be taking your **8-bit Register** and **adding a Controlled Buffer (T-Gate)** to the output side of the register. This buffer is essential to prevent the data from being output onto the shared data bus at all times.</p>
+                    <p>Because all of the individual RAM bytes are all attached to the same input and output circuits, it is necessary to have a controlled buffer on the output side of each Byte of RAM. We can do this by updating our original 8 bit register to include a controlled Buffer that is controlled by the enable bit. We do this because the enable bit is the one that allows what is stored in the RAM Byte to be placed on the Output wire as shown:</p>
                     <div class="flex justify-center my-4">
                         <img src="images/Register_with_Controlled_Buffer.jpg" alt="Logisim diagram of an 8-bit register circuit with an 8-bit Controlled Buffer (T-Gate) added to the output path." class="max-w-md h-auto rounded-lg shadow-md border border-gray-300" />
                     </div>
-                    <p>The buffer only allows the 8 bits of data to pass through to the output (the BUS) when its **Enable** pin is set to **1 (High)**. This control mechanism is crucial for the overall CPU design, as only one component should be outputting data to the BUS at any given time.</p>
+                    <p>The buffer only allows the 8 bits of data to pass through to the output (the BUS) when its Enable pin is set to 1 (High). This control mechanism is crucial for the overall CPU design, as only one component should be outputting data to the BUS at any given time.</p>
                 </div>
 
                 <div id="tab-2" role="tabpanel" aria-labelledby="tab-btn-2" class="tab-content-panel p-4 bg-gray-50 rounded-lg">
                     <h3 class="text-2xl font-semibold mb-3 text-green-700">2. RAM as Matrix of Bytes - Overview</h3>
-                    <p>The final RAM unit is an array of memory, organized as a **matrix of bytes**. Our **256x8 RAM** is essentially a **16x16 matrix**, where each cell holds one 8-bit register (one byte).</p>
+                    <p>The final RAM unit is an array of memory, organized as a matrix of bytes. Our 256 bytes of RAM is essentially a 16x16 matrix, where each cell holds one 8-bit register (one byte). We can identify the row and column being selected in our matrix by using the first 4-bits to define the row and the last 4-bits to define the column as depicted in the figure below.</p>
                     <div class="flex justify-center my-4">
                         <img src="images/RAM_Matrix_Conceptual_Diagram.png" alt="Conceptual diagram of the 16x16 matrix structure of the 256x8 RAM, showing rows selected by the Row Decoder and columns selected by the Column Decoder." class="max-w-xl h-auto rounded-lg shadow-md border border-gray-300" />
                     </div>
-                    <p>To select a specific byte within this matrix (which corresponds to a unique memory address), we need to select both its **row** and its **column** simultaneously. The full 8-bit address is split: four bits for the Row Decoder and four bits for the Column Decoder.</p>
+                    
                 </div>
 
                 <div id="tab-3" role="tabpanel" aria-labelledby="tab-btn-3" class="tab-content-panel p-4 bg-gray-50 rounded-lg">
                     <h3 class="text-2xl font-semibold mb-3 text-red-700">3. The Addressable RAM Byte</h3>
-                    <p>Before assembling the full matrix, you must integrate the selection logic into the 8-bit register/buffer circuit. This completed unit will be the reusable **RAM Byte** component.</p>
-                    <p>For a byte to be activated (either for a **read** or a **write** operation), it must be selected by **both** the Row Decoder and the Column Decoder. We achieve this with a 2-input **AND gate**:</p>
-                    <ul class="list-disc list-inside space-y-1 pl-4 mt-2">
-                        <li>**Input 1:** The **Row Selection** signal (coming from the Row Decoder). This is typically the **Set** signal for writing data.</li>
-                        <li>**Input 2:** The **Column Selection** signal (coming from the Column Decoder). This is typically the **Enable** signal for reading data.</li>
-                    </ul>
-                    <p>The **output of this AND gate** is then wired to two places:</p>
-                    <ol class="list-decimal list-inside space-y-1 pl-4 mt-2">
-                        <li>The **Set** pin of the 8-bit Register (Allows data on the bus to be written into the register).</li>
-                        <li>The **Enable** pin of the Controlled Buffer (Allows data in the register to be read out onto the bus).</li>
-                    </ol>
-                    <p>This combined control ensures the register is only selected for reading or writing when its specific row and column address bits are both active (1), making it a truly addressable unit.</p>
+                    <p>Before assembling the full matrix, you must integrate the selection logic into the 8-bit register/buffer circuit. This completed unit will be the reusable RAM Byte component.</p>
+                    <p>For a byte to be activated (either for a read or a write operation), it must be selected by <strong>both</strong> the Row Decoder and the Column Decoder. We achieve this with a 2-input AND gate:</p>
                     <div class="flex justify-center my-4">
-                        <img src="images/Register_SetEnable_AND_Wiring.png" alt="Logisim wiring diagram showing an AND gate combining the Set signal (from Row Decoder) and the Enable signal (from Column Decoder) before connecting to the register's Set pin and the Controlled Buffer's Enable pin." class="max-w-md h-auto rounded-lg shadow-md border border-gray-300" />
+                        <img src="images/ram-and-for-h-v.jpg" alt="2-input AND gate using horizontal, h, and vertical, v, selectors for row and column, respectively." class="max-w-xl h-auto rounded-lg shadow-md border border-gray-300" />
+                    </div>
+                   <p>After adding this Selector Gate, we then need to be able to "set" the value. We do this by ANDing the selector result with the "set" bit. This is how we will "set" the value stored in this Byte of RAM.</p>
+                    <div class="flex justify-center my-4">
+                        <img src="images/ram-and-h-v-set.jpg" alt="2-input AND gate adding the 'set' bit to the selector result." class="max-w-xl h-auto rounded-lg shadow-md border border-gray-300" />
+                    </div>
+
+
+                   <p>In addition to being able to "set" the value, we need to be able to "enable" or retrieve what is stored in this byte. We do this by ANDing the same selector result with the "enable" bit.</p>
+                    <div class="flex justify-center my-4">
+                        <img src="images/ram-and-h-v-set-enable.jpg" alt="2-input AND gate adding the 'enable' bit to the selector plus set result." class="max-w-xl h-auto rounded-lg shadow-md border border-gray-300" />
+                    </div>
+
+                    <p>The last thing that we need to add to this circuit is a way to "Reset" the values stored in RAM. This will allow us to fill all elements of RAM with all zero's or all one's or whatever we want. To do this, we will add a "Reset" bit to the "Set" circuit. To allow the Reset bit to work whenever it is set to 1, we take the output of the Selector after the "set" and OR it with the "Reset" bit. This means that we can "Set" the value stored in the RAM byte whenever it is selected through "h" and "v" or whenever "Reset" is set to 1.</p>
+                    <div class="flex justify-center my-4">
+                        <img src="images/ram-and-h-v-set-enable-reset.jpg" alt="2-input AND gate adding the 'enable' bit to the selector plus set result." class="max-w-xl h-auto rounded-lg shadow-md border border-gray-300" />
+                    </div>
+                    <p>We can now wire up our RAM Byte by connecting the "set" circuit to the "s" input of our 8-bit register and the "enable" circuit to the "e" input. We also can place another controlled buffer on the output just as we did in the 8-bit register mod as shown below:</p>
+
+
+                    <div class="flex justify-center my-4">
+                        <img src="images/cpu-ram-byte.jpg" alt="Logisim wiring diagram showing an AND gate combining the Set signal (from Row Decoder) and the Enable signal (from Column Decoder) before connecting to the register's Set pin and the Controlled Buffer's Enable pin." class="max-w-md h-auto rounded-lg shadow-md border border-gray-300" />
                     </div>
                 </div>
 
                 <div id="tab-4" role="tabpanel" aria-labelledby="tab-btn-4" class="tab-content-panel p-4 bg-gray-50 rounded-lg">
-                    <h3 class="text-2xl font-semibold mb-3 text-purple-700">4. Final 256x8 Wiring and Assembly</h3>
+                    <h3 class="text-2xl font-semibold mb-3 text-purple-700">4. Final 256 Byte Wiring and Assembly</h3>
                     <p>Once your addressable RAM Byte (from step 3) is built and verified, you will use it to construct the full **256x8** memory. The assembly involves connecting the common bus and the address decoders to the matrix of your new RAM Byte components:</p>
                     <ul class="list-disc list-inside space-y-1 pl-4 mt-2">
                         <li>**Data Bus:** The 8-bit input (Data In) and 8-bit output (Data Out) lines are connected in parallel to **all 256** RAM Byte components.</li>
