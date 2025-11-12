@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Adder Circuit</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        // MANDATORY: Configure Tailwind to include the Typography plugin.
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                },
+            },
+            plugins: [
+                require('@tailwindcss/typography'),
+            ],
+        }
+    </script>
+    <style>
+        /* STRICT LIGHT THEME MANDATE: Overrides dark mode settings */
+        html { 
+            font-family: 'Inter', sans-serif; 
+            background-color: #FDFBF8; 
+            color: #1A1A1A; 
+        }
+        @media (prefers-color-scheme: dark) {
+            html {
+                background-color: #FDFBF8 !important; 
+                color: #1A1A1A !important; 
+            }
+        }
+        /* Custom class for Skip Link (visible on focus) */
+        .skip-link {
+            position: absolute;
+            top: -40px;
+            left: 0;
+            background: #1A1A1A;
+            color: white;
+            padding: 8px;
+            z-index: 100;
+            transition: top 0.3s;
+        }
+        .skip-link:focus {
+            top: 0;
+        }
+
+        /* Responsive styling for image-heavy tables */
+        .half-adder-table-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr 4fr;
+            gap: 1rem;
+            align-items: center;
+            padding: 1rem 0;
+            border-bottom: 1px solid #E5E7EB; /* gray-200 */
+        }
+        .half-adder-table-header {
+            font-weight: 700;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #1A1A1A;
+        }
+    </style>
+</head>
+<body class="bg-[#FDFBF8] text-[#1A1A1A]">
+    <a id="skip-to-content" href="#main-content" class="skip-link" tabindex="0">Skip to Content</a>
+    
+    <header class="bg-white shadow-md p-4 sticky top-0 z-10">
+        <div class="max-w-7xl mx-auto">
+            <h1 class="text-2xl font-bold text-[#1A1A1A]">Adder Circuit</h1>
+        </div>
+    </header>
+
+    <main id="main-content" class="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto">
+        
+        <h1 class="text-4xl font-extrabold mb-8 text-blue-700">Adder Circuit</h1>
+
+        <section class="mb-8 p-6 bg-white rounded-xl shadow-lg">
+            <div class="prose max-w-none">
+                <h2 class="text-3xl font-bold mt-0 mb-4">Adders: Overview and Requirements</h2>
+                <p>This video on computer addition includes a discussion on gates and also on the **"half-adder"** and **"full-adder"** digital circuits. These circuits are what we are interested in here as it will describe how to implement multiple full adders together to achieve the ability to add 8 bits together.</p>
+                <p class="mb-6"><a href="https://www.youtube.com/watch?v=VBDoT8o4q00" class="text-blue-600 hover:text-blue-800 font-semibold" target="_blank" rel="noopener">💻 - See How Computers Add Numbers In One Lesson</a></p>
+                
+                <p>For your final circuit, you should end up with one that includes:</p>
+                <ul class="list-disc list-inside space-y-1">
+                    <li>Two inputs, **a** and **b**, each **8-bits** long</li>
+                    <li>A 1 bit input, **cin** (Carry In)</li>
+                    <li>A 1 bit output, **cout** (Carry Out)</li>
+                    <li>An 8 bit output, **sum**</li>
+                </ul>
+                <p class="mt-4 font-semibold">Please review all tabs before proceeding on.</p>
+            </div>
+        </section>
+
+        <section id="the-half-adder" class="mb-8 p-6 bg-white rounded-xl shadow-lg">
+            <h2 class="text-2xl font-bold mt-0 mb-4 text-blue-700">The Half Adder</h2>
+            <div class="prose max-w-none">
+                <p>A half adder will add 2 bits together with **no carry in**. So, in essence, a half adder would be appropriate for adding just the right most bits of two binary numbers together. To create a half-adder, you need one **XOR gate** for the "Sum" of the 2 bits and one **AND gate** for the "Carry" out to the next column to the left. </p>
+                
+                <h3 class="text-xl font-semibold mt-6 mb-2">Half-Adder Truth Table with Results</h3>
+
+                <div class="half-adder-table-header grid grid-cols-3">
+                    <div>A</div>
+                    <div>B</div>
+                    <div>Result (Sum & Carry Out)</div>
+                </div>
+
+                <div class="half-adder-table-body">
+                    <div class="half-adder-table-row">
+                        <div class="text-center font-mono text-lg">0</div>
+                        <div class="text-center font-mono text-lg">0</div>
+                        <div class="flex justify-center"><img src="https://mendocino.instructure.com/courses/19705/files/2424411/preview" alt="Half Adder result for A=0, B=0, showing Sum=0, Carry=0" class="max-w-full h-auto rounded shadow-sm" /></div>
+                    </div>
+                    <div class="half-adder-table-row">
+                        <div class="text-center font-mono text-lg">0</div>
+                        <div class="text-center font-mono text-lg">1</div>
+                        <div class="flex justify-center"><img src="https://mendocino.instructure.com/courses/19705/files/2424404/preview" alt="Half Adder result for A=0, B=1, showing Sum=1, Carry=0" class="max-w-full h-auto rounded shadow-sm" /></div>
+                    </div>
+                    <div class="half-adder-table-row">
+                        <div class="text-center font-mono text-lg">1</div>
+                        <div class="text-center font-mono text-lg">0</div>
+                        <div class="flex justify-center"><img src="https://mendocino.instructure.com/courses/19705/files/2424403/preview" alt="Half Adder result for A=1, B=0, showing Sum=1, Carry=0" class="max-w-full h-auto rounded shadow-sm" /></div>
+                    </div>
+                    <div class="half-adder-table-row">
+                        <div class="text-center font-mono text-lg">1</div>
+                        <div class="text-center font-mono text-lg">1</div>
+                        <div class="flex justify-center"><img src="https://mendocino.instructure.com/courses/19705/files/2424409/preview" alt="Half Adder result for A=1, B=1, showing Sum=0, Carry=1" class="max-w-full h-auto rounded shadow-sm" /></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="a-full-adder" class="mb-8 p-6 bg-white rounded-xl shadow-lg">
+            <h2 class="text-2xl font-bold mt-0 mb-4 text-blue-700">A Full Adder</h2>
+            <div class="prose max-w-none">
+                <p>A **full adder** is used to account for the **"Carry-in"** bit. Since a half-adder is good for adding 2 bits together, what we do is take the output from the sum of the half-adder and use that as 1 input to a second half-adder. The 2nd input to the second half-adder will be the carry-in bit.</p>
+                <p>To build this, we would start with a half-adder and spread things out a bit. </p>
+
+                <div class="flex justify-center my-6">
+                    <img src="https://mendocino.instructure.com/courses/19705/files/2424405/preview" alt="Full Adder Stage 1 Circuit Diagram" class="max-w-full h-auto rounded-lg shadow-md border border-gray-300" />
+                </div>
+                
+                <p>To get the final sum for the full-adder, we would take the output for the sum of A+B and put that into a second XOR gate along with the "carry in" bit to get the final sum. The carry out is then determined by an OR gate that takes the carry output from the first half-adder (A+B) and the carry output from the second half-adder (Sum of A+B plus C-in). </p>
+                
+                <div class="flex justify-center my-6">
+                    <img src="https://mendocino.instructure.com/courses/19705/files/2424406/preview" alt="Full Adder Stage 2 Circuit Diagram" class="max-w-full h-auto rounded-lg shadow-md border border-gray-300" />
+                </div>
+
+                <p>When completed, your 1-bit full adder might look like the diagram below. </p>
+
+                <div class="flex justify-center my-6">
+                    <img src="https://mendocino.instructure.com/courses/19705/files/2424407/preview" alt="Redrawn 1-bit Full Adder Circuit" class="max-w-xs h-auto rounded-lg shadow-md border border-gray-300" />
+                </div>
+
+                <h3 class="text-xl font-semibold mt-6 mb-2">Full-Adder Truth Table</h3>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm text-left text-[#1A1A1A] border border-gray-300">
+                        <thead class="text-xs text-white uppercase bg-blue-700">
+                            <tr>
+                                <th scope="col" class="px-3 py-2 text-center">A</th>
+                                <th scope="col" class="px-3 py-2 text-center">B</th>
+                                <th scope="col" class="px-3 py-2 text-center">Cin</th>
+                                <th scope="col" class="px-3 py-2 text-center">Sum</th>
+                                <th scope="col" class="px-3 py-2 text-center">Cout</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="bg-white border-b hover:bg-gray-50">
+                                <td class="px-3 py-2 text-center font-mono">0</td>
+                                <td class="px-3 py-2 text-center font-mono">0</td>
+                                <td class="px-3 py-2 text-center font-mono">0</td>
+                                <td class="px-3 py-2 text-center font-mono">0</td>
+                                <td class="px-3 py-2 text-center font-mono">0</td>
+                            </tr>
+                            <tr class="bg-gray-50 border-b hover:bg-gray-100">
+                                <td class="px-3 py-2 text-center font-mono">0</td>
+                                <td class="px-3 py-2 text-center font-mono">0</td>
+                                <td class="px-3 py-2 text-center font-mono">1</td>
+                                <td class="px-3 py-2 text-center font-mono">1</td>
+                                <td class="px-3 py-2 text-center font-mono">0</td>
+                            </tr>
+                            <tr class="bg-white border-b hover:bg-gray-50">
+                                <td class="px-3 py-2 text-center font-mono">0</td>
+                                <td class="px-3 py-2 text-center font-mono">1</td>
+                                <td class="px-3 py-2 text-center font-mono">0</td>
+                                <td class="px-3 py-2 text-center font-mono">1</td>
+                                <td class="px-3 py-2 text-center font-mono">0</td>
+                            </tr>
+                            <tr class="bg-gray-50 border-b hover:bg-gray-100">
+                                <td class="px-3 py-2 text-center font-mono">0</td>
+                                <td class="px-3 py-2 text-center font-mono">1</td>
+                                <td class="px-3 py-2 text-center font-mono">1</td>
+                                <td class="px-3 py-2 text-center font-mono">0</td>
+                                <td class="px-3 py-2 text-center font-mono">1</td>
+                            </tr>
+                            <tr class="bg-white border-b hover:bg-gray-50">
+                                <td class="px-3 py-2 text-center font-mono">1</td>
+                                <td class="px-3 py-2 text-center font-mono">0</td>
+                                <td class="px-3 py-2 text-center font-mono">0</td>
+                                <td class="px-3 py-2 text-center font-mono">1</td>
+                                <td class="px-3 py-2 text-center font-mono">0</td>
+                            </tr>
+                            <tr class="bg-gray-50 border-b hover:bg-gray-100">
+                                <td class="px-3 py-2 text-center font-mono">1</td>
+                                <td class="px-3 py-2 text-center font-mono">0</td>
+                                <td class="px-3 py-2 text-center font-mono">1</td>
+                                <td class="px-3 py-2 text-center font-mono">0</td>
+                                <td class="px-3 py-2 text-center font-mono">1</td>
+                            </tr>
+                            <tr class="bg-white border-b hover:bg-gray-50">
+                                <td class="px-3 py-2 text-center font-mono">1</td>
+                                <td class="px-3 py-2 text-center font-mono">1</td>
+                                <td class="px-3 py-2 text-center font-mono">0</td>
+                                <td class="px-3 py-2 text-center font-mono">0</td>
+                                <td class="px-3 py-2 text-center font-mono">1</td>
+                            </tr>
+                            <tr class="bg-gray-50 hover:bg-gray-100">
+                                <td class="px-3 py-2 text-center font-mono">1</td>
+                                <td class="px-3 py-2 text-center font-mono">1</td>
+                                <td class="px-3 py-2 text-center font-mono">1</td>
+                                <td class="px-3 py-2 text-center font-mono">1</td>
+                                <td class="px-3 py-2 text-center font-mono">1</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <section id="8-bit-adder" class="mb-8 p-6 bg-white rounded-xl shadow-lg">
+            <h2 class="text-2xl font-bold mt-0 mb-4 text-blue-700">8-bit Adder</h2>
+            <div class="prose max-w-none">
+                <p>To create an 8-bit adder, you will need to put **8 full-adders in series**. The **carry-out** (`cout`) from each full-adder will connect directly to the **carry-in** (`cin`) of the next full-adder to the left. The `cin` for the right-most adder (bit 0) is the overall circuit's `cin` input, and the `cout` from the left-most adder (bit 7) is the overall circuit's `cout` output.</p>
+                <p>This ripple-carry adder will produce an 8-bit sum from the addition and possibly a single bit carry-out if the sum of the original two 8-bit values is too large to fit in an 8-bit result. The diagram below shows the correct output for adding `10000001` to `10000001`.</p>
+                
+                <div class="flex justify-center my-6">
+                    <img src="https://mendocino.instructure.com/courses/19705/files/2424408/preview" alt="Circuit diagram of the 8-bit Adder" class="max-w-full h-auto rounded-lg shadow-md border border-gray-300" />
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
+                    <div class="md:col-span-1">
+                        <p>Once you have your 8-bit adder working, you will also want to redraw this for use in the ALU as something similar to that shown in the adjacent diagram, just remembering that the **a, b and sum are all 8-bit values** while the **carry-in (cin) and carry-out (cout) are single bit values**.</p>
+                    </div>
+                    <div class="md:col-span-1 flex justify-center items-center">
+                        <img src="https://mendocino.instructure.com/courses/19705/files/2424410/preview" alt="Redrawn 8-bit Adder Circuit Appearance for ALU integration" class="max-w-full h-auto rounded-lg shadow-md border border-gray-300" />
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <footer class="mt-8 pt-4 border-t border-gray-300 text-center text-sm text-gray-500">
+            <div class="prose max-w-none mx-auto">
+                <p class="text-xs italic">Ref: This project adapted from "Design a CPU" by Ross McGowan (On Udemy)</p
