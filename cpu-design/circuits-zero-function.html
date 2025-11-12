@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Circuits: Zero Function</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        // MANDATORY: Configure Tailwind to include the Typography plugin.
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                },
+            },
+            plugins: [
+                require('@tailwindcss/typography'),
+            ],
+        }
+    </script>
+    <style>
+        /* STRICT LIGHT THEME MANDATE: Overrides dark mode settings */
+        html { 
+            font-family: 'Inter', sans-serif; 
+            background-color: #FDFBF8; 
+            color: #1A1A1A; 
+        }
+        @media (prefers-color-scheme: dark) {
+            html {
+                background-color: #FDFBF8 !important; 
+                color: #1A1A1A !important; 
+            }
+        }
+        /* Custom class for Skip Link (visible on focus) */
+        .skip-link {
+            position: absolute;
+            top: -40px;
+            left: 0;
+            background: #1A1A1A;
+            color: white;
+            padding: 8px;
+            z-index: 100;
+            transition: top 0.3s;
+        }
+        .skip-link:focus {
+            top: 0;
+        }
+    </style>
+</head>
+<body class="bg-[#FDFBF8] text-[#1A1A1A]">
+    <a id="skip-to-content" href="#main-content" class="skip-link" tabindex="0">Skip to Content</a>
+    
+    <header class="bg-white shadow-md p-4 sticky top-0 z-10">
+        <div class="max-w-7xl mx-auto">
+            <h1 class="text-2xl font-bold text-[#1A1A1A]">Circuits: Zero Function</h1>
+        </div>
+    </header>
+
+    <main id="main-content" class="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto">
+        
+        <h1 class="text-4xl font-extrabold mb-8 text-blue-700">Zero Function</h1>
+
+        <section class="mb-8 p-6 bg-white rounded-xl shadow-lg">
+            <div class="prose max-w-none">
+                <h2 class="text-3xl font-bold mt-0 mb-4">Zero Function</h2>
+                
+                <p>The **Zero function** is a circuit that is used to identify when all **8-bits** of the output are **0**. This means that the circuit returns **1** when all of the inputs are **0** and **0** when any of the inputs are **1**.</p>
+                
+                <p>An **8 input OR gate** would return **0** when all inputs are **0** and **1** when any of the inputs are **1**. So, a Zero function is simply a **NOTted OR Gate**.</p>
+                
+                <p class="text-xl font-semibold mt-6 p-3 bg-yellow-50 rounded-lg border border-yellow-200">
+                    **Remember, 8 bits in, 1 bit out for this Function.**
+                </p>
+                
+                </div>
+        </section>
+
+    </main>
+    
+    <footer class="mt-8 pt-4 border-t border-gray-300 text-center text-sm text-gray-500">
+        <div class="prose max-w-none mx-auto">
+            <p class="text-xs italic">A simple, required component for the CPU's Arithmetic Logic Unit (ALU) flags.</p>
+        </div>
+    </footer>
+</body>
+</html>
