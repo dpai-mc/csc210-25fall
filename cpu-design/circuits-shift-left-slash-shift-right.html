@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shift Left / Shift Right Page</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        // MANDATORY: Configure Tailwind to include the Typography plugin.
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                },
+            },
+            plugins: [
+                require('@tailwindcss/typography'),
+            ],
+        }
+    </script>
+    <style>
+        /* STRICT LIGHT THEME MANDATE: Overrides dark mode settings */
+        html { 
+            font-family: 'Inter', sans-serif; 
+            background-color: #FDFBF8; 
+            color: #1A1A1A; 
+        }
+        @media (prefers-color-scheme: dark) {
+            html {
+                background-color: #FDFBF8 !important; 
+                color: #1A1A1A !important; 
+            }
+        }
+        /* Custom class for Skip Link (visible on focus) */
+        .skip-link {
+            position: absolute;
+            top: -40px;
+            left: 0;
+            background: #1A1A1A;
+            color: white;
+            padding: 8px;
+            z-index: 100;
+            transition: top 0.3s;
+        }
+        .skip-link:focus {
+            top: 0;
+        }
+    </style>
+</head>
+<body class="bg-[#FDFBF8] text-[#1A1A1A]">
+    <a id="skip-to-content" href="#main-content" class="skip-link" tabindex="0">Skip to Content</a>
+    
+    <header class="bg-white shadow-md p-4 sticky top-0 z-10">
+        <div class="max-w-7xl mx-auto">
+            <h1 class="text-2xl font-bold text-[#1A1A1A]">Shift Left / Shift Right Page</h1>
+        </div>
+    </header>
+
+    <main id="main-content" class="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto">
+        
+        <h1 class="text-4xl font-extrabold mb-8 text-blue-700">Shift Left / Shift Right Page</h1>
+
+        <section class="mb-8 p-6 bg-white rounded-xl shadow-lg">
+            <div class="prose max-w-none">
+                <h2 class="text-3xl font-bold mt-0 mb-4">Shift Operations Overview</h2>
+                <p>In a shift, we move all of the bits one place to the left or to the right. The bits that move out of the 8-bit value are effectively removed from the number, and the bits that move in to fill the empty bits are generally zeros.</p>
+                <p>For example:</p>
+                <ul class="list-disc list-inside space-y-1">
+                    <li>If you have **10101010** and you **shift right**, the values become `x1010101`. A `0` moves off to the right, and the "x" (the resulting blank bit at position 7) is typically filled with a `0`.</li>
+                    <li>If you have the same number, **10101010**, and you **shift left**, the values become `0101010x`. A `1` moves off to the left, and the "x" (the resulting blank bit at position 0) is typically filled with a `0`.</li>
+                </ul>
+            </div>
+        </section>
+
+        <div class="mb-8">
+            <nav class="flex overflow-x-auto whitespace-nowrap border-b border-gray-300" role="tablist" aria-label="Shift Operations">
+                <button 
+                    id="tab-shift-left-button" 
+                    class="tab-button px-4 py-2 text-lg font-medium border-b-2 border-blue-700 text-blue-700 bg-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-700"
+                    role="tab" 
+                    aria-controls="tab-shift-left" 
+                    aria-selected="true"
+                    data-tab-content="tab-shift-left"
+                >
+                    Shift Left Function
+                </button>
+                
+                <button 
+                    id="tab-shift-right-button" 
+                    class="tab-button px-4 py-2 text-lg font-medium border-b-2 border-transparent text-[#1A1A1A] hover:border-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-700"
+                    role="tab" 
+                    aria-controls="tab-shift-right" 
+                    aria-selected="false"
+                    data-tab-content="tab-shift-right"
+                >
+                    Shift Right Function
+                </button>
+            </nav>
+
+            <div id="tab-shift-left" class="tab-content p-6 bg-white rounded-b-xl shadow-lg border border-t-0 border-gray-300" role="tabpanel" tabindex="0">
+                <h2 class="sr-only">Shift Left Function</h2>
+                <div class="prose max-w-none">
+                    <p>To make a **"Shift Left"** function, where the bits move to the left and a zero typically fills the vacated **Bit 0** position, you could do the following:</p>
+                    <ul class="list-disc list-inside space-y-1">
+                        <li>Start with two 8-bit Registers.</li>
+                        <li>Take the output from the first register and map it to the input of the 2nd register, shifted by one position to the left.
+                            <ul class="list-circle list-inside ml-5">
+                                <li>map output **Bit 0** to input **Bit 1**</li>
+                                <li>map output **Bit 1** to input **Bit 2**</li>
+                                <li>... up to output **Bit 6** to input **Bit 7**</li>
+                            </ul>
+                        </li>
+                        <li>The most significant bit (**Bit 7**) of the first register is the **"Shift Out"** value.</li>
+                        <li>The least significant bit (**Bit 0**) of the second register is the **"Shift In"** value, which is typically wired to a constant **0** for a logical shift.</li>
+                    </ul>
+                    <p>A diagram of the circuit appearance might look like the one below:</p>
+                    <div class="flex justify-center my-6">
+                        <img src="images/shift-left-circuit.png" alt="Shift Left Circuit Appearance Diagram" class="max-w-xs h-auto rounded-lg shadow-md border border-gray-300" />
+                    </div>
+                </div>
+            </div>
+
+            <div id="tab-shift-right" class="tab-content hidden p-6 bg-white rounded-b-xl shadow-lg border border-t-0 border-gray-300" role="tabpanel" tabindex="0">
+                <h2 class="sr-only">Shift Right Function</h2>
+                <div class="prose max-w-none">
+                    <p>To make a **"Shift Right"** function, where the bits move to the right and a zero or the sign bit fills the vacated **Bit 7** position, you could do the following:</p>
+                    <ul class="list-disc list-inside space-y-1">
+                        <li>Start with two 8-bit Registers.</li>
+                        <li>Take the output from the first register and map it to the input of the 2nd register, shifted by one position to the right.
+                            <ul class="list-circle list-inside ml-5">
+                                <li>map output **Bit 1** to input **Bit 0**</li>
+                                <li>map output **Bit 2** to input **Bit 1**</li>
+                                <li>... up to output **Bit 7** to input **Bit 6**</li>
+                            </ul>
+                        </li>
+                        <li>The least significant bit (**Bit 0**) of the first register is the **"Shift Out"** value.</li>
+                        <li>The most significant bit (**Bit 7**) of the second register is the **"Shift In"** value, which is typically wired to a constant **0** for a logical shift.</li>
+                        <li>**Key Mapping**: Reg1:Bit1 maps to Reg2:Bit0, Reg1:Bit2 maps to Reg2:Bit1, and so on.</li>
+                    </ul>
+                    <p>A diagram of the circuit appearance might look like the one below:</p>
+                    <div class="flex justify-center my-6">
+                        <img src="images/shift-right-circuit.png" alt="Shift Right Circuit Appearance Diagram" class="max-w-xs h-auto rounded-lg shadow-md border border-gray-300" />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <footer class="mt-8 pt-4 border-t border-gray-300 text-center text-sm text-gray-500">
+            <div class="prose max-w-none mx-auto">
+                <p class="text-xs italic">Ref: This project adapted from "Design a CPU" by Ross McGowan (On Udemy)</p>
+            </div>
+        </footer>
+    </main>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const tabButtons = document.querySelectorAll('.tab-button');
+            const tabContents = document.querySelectorAll('.tab-content');
+
+            const activateTab = (activeTabId) => {
+                // Deactivate all tabs
+                tabButtons.forEach(button => {
+                    button.setAttribute('aria-selected', 'false');
+                    button.classList.remove('border-blue-700', 'text-blue-700', 'bg-white');
+                    button.classList.add('border-transparent', 'text-[#1A1A1A]', 'hover:border-gray-500');
+                });
+
+                // Hide all content
+                tabContents.forEach(content => {
+                    content.classList.add('hidden');
+                });
+
+                // Activate the selected tab and show its content
+                const activeTabButton = document.querySelector(`[data-tab-content="${activeTabId}"]`);
+                const activeTabContent = document.getElementById(activeTabId);
+
+                if (activeTabButton && activeTabContent) {
+                    activeTabButton.setAttribute('aria-selected', 'true');
+                    activeTabButton.classList.add('border-blue-700', 'text-blue-700', 'bg-white');
+                    activeTabButton.classList.remove('border-transparent', 'text-[#1A1A1A]', 'hover:border-gray-500');
+                    activeTabContent.classList.remove('hidden');
+                    activeTabContent.focus(); // Set focus to the active tab panel for accessibility
+                }
+            };
+
+            // Set up event listeners for tab buttons
+            tabButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const contentId = button.getAttribute('data-tab-content');
+                    activateTab(contentId);
+                });
+            });
+
+            // Initial check: Activate the first tab if no other is active
+            if (document.querySelector('.tab-button[aria-selected="true"]')) {
+                // Tab one is set to active by default in the HTML, no action needed here.
+            } else if (tabButtons.length > 0) {
+                 // Fallback if initial HTML state is incorrect
+                activateTab(tabButtons[0].getAttribute('data-tab-content'));
+            }
+        });
+    </script>
+</body>
+</html>
