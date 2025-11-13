@@ -4,114 +4,125 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Circuits: 1-bit Memory</title>
+    
+    <!-- Load Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        // MANDATORY: Configure Tailwind to use the Inter font.
+        // FIX: Removed 'require' call as it caused 'ReferenceError: require is not defined' in the browser environment.
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        // Strict Light Theme Colors
+                        'page-bg': '#FDFBF8',
+                        'text-primary': '#1A1A1A',
+                        'accent-blue': '#2563EB',
+                        'code-gray': '#4B5563',
+                    }
+                },
+            },
+            // The plugins array, which contained the problematic 'require', has been removed for browser compatibility.
+        }
+    </script>
     <style>
-        /* 3.1 Color Palette Custom Override for soft background */
-        body {
-            background-color: #FDFBF8; /* Primary page background; soft, non-stark white. */
-            color: #1A1A1A; /* Main body text */
+        /* AESTHETIC MANDATE: Apply strict light theme colors */
+        html { 
+            font-family: 'Inter', sans-serif; 
+            background-color: #FDFBF8; 
+            color: #1A1A1A; 
         }
-        /* Custom class for Skip to Content link (2.5 Accessibility) */
-        .skip-link:focus {
-            clip: auto;
-            height: auto;
-            width: auto;
-            margin: 0;
-            padding: 0.5rem 1rem;
-            position: absolute;
-            top: 1rem;
-            left: 1rem;
-            z-index: 100;
-            background-color: #FDFBF8; /* Matches body background */
-            border: 2px solid #2563EB; /* Matches Accent color */
-            border-radius: 0.25rem;
-            text-decoration: none;
-        }
+        
+        /* ACCESSIBILITY MANDATE: Skip Link Styling - hidden until focused */
         .skip-link {
-            /* Standard screen-reader-only implementation */
             position: absolute;
-            overflow: hidden;
-            clip: rect(0 0 0 0);
-            height: 1px;
-            width: 1px;
-            margin: -1px;
-            padding: 0;
-            border: 0;
+            top: 0;
+            left: -999px;
+            z-index: 9999;
+            padding: 0.5rem 1rem;
+            background-color: #FDFBF8;
+            color: #2563EB;
+            border: 2px solid #2563EB;
+            border-radius: 0.375rem;
+            transition: all 0.2s;
         }
-        /* 3.2 Typography: Ensure Inter is used as per requirement. */
-        /* Tailwind's font-sans is configured to use system fonts including Inter. */
-        .prose a {
-            color: #2563EB; /* 3.1 Accent/Links */
+        .skip-link:focus {
+            left: 0.5rem;
+            top: 0.5rem;
+            clip: auto;
+            overflow: visible;
         }
-        .prose :where(h1,h2,h3):not(:where([class~="not-prose"] *)) {
-            color: #1A1A1A; /* 3.1 Text (Body) */
+
+        /* CODE styling */
+        .prose code {
+            color: #4B5563; /* code-gray */
+            background-color: #E5E7EB; /* light gray background */
+            padding: 0.2rem 0.4rem;
+            border-radius: 0.375rem;
+            font-weight: 500;
         }
     </style>
 </head>
+<body class="min-h-screen antialiased bg-page-bg text-text-primary">
 
-<body class="font-sans antialiased text-gray-900 leading-relaxed min-h-screen">
-    <a href="#main-content" class="skip-link text-blue-600">Skip to Content</a>
+    <!-- ACCESSIBILITY MANDATE: Skip to main content link -->
+    <a href="#main-content" class="skip-link font-medium">Skip to main content</a>
 
+    <!-- HTML5 SEMANTIC MANDATE: Main wrapper -->
     <main id="main-content" class="container mx-auto px-4 sm:px-6 lg:px-8 py-10">
-        <div class="prose max-w-none prose-lg text-gray-900">
-            <h1 class="text-4xl font-extrabold mb-4 text-center">Circuits: 1-bit Memory</h1>
+        <article class="max-w-4xl mx-auto">
+            <header class="mb-8 border-b border-gray-200 pb-4">
+                <!-- HTML5 SEMANTIC MANDATE: H1 must be unique and represent the page title -->
+                <h1 class="text-4xl font-extrabold text-text-primary">1-bit Memory</h1>
+            </header>
 
-            <section class="mt-8 pt-4 border-t border-gray-300">
-                <h2 class="text-2xl font-semibold mb-3">Simplest S-R Latch</h2>
-                <p>A S-R Latch (Set-Reset) is a simple and common way to store bits in volatile memory. The basic design is usually shown using 2-NOR gates as depicted here:</p>
-                <figure class="my-6">
-                    <img src="https://mendocino.instructure.com/courses/19705/files/2431564/download" alt="Circuit diagram of a Simple S-R Latch using two NOR gates." class="max-w-full h-auto rounded shadow-lg mx-auto" loading="lazy" />
-                    <figcaption class="text-sm text-gray-600 mt-2 text-center">SR Latch using NOR gates.</figcaption>
-                </figure>
-                <p>If we look at "Q" as the output or stored bit, then it is SET to 1, when S=1 and R=0. After setting, S is set to 0 and R is still 0 which "HOLDS" the value of 1 in Memory (In this application, Q is what is stored and Q' is of no interest to us except in understanding what the circuit is doing).</p>
-                <p>To Reset, with S=0, we set R = 1. This sets our output Q to 0. After setting to 0, S and R are set to 0 which "HOLDS" the value of 1 in Memory.</p>
+            <section class="prose prose-lg max-w-none text-text-primary">
+                <p>A <code class="code-gray">1-bit memory circuit</code> is the basis for all storage in our CPU. It is often created using two cross-coupled <code class="code-gray">NOR gates</code> (or two cross-coupled <code class="code-gray">NAND gates</code>). The basic circuit is called a "<code class="code-gray">Set-Reset</code> (S-R) Latch."</p>
 
-                <p>You can also replace the 2 NOR gates with 2 NAND gates and you will get circuit that does the same job. One of the best places to review this is by reading the <a href="https://en.wikipedia.org/wiki/Flip-flop_(electronics)#Simple_set-reset_latches" target="_blank" rel="noopener">Wikipedia page on flip-flops</a> (this type of circuit is a flip-flop), paying special attention to the "Simple set-reset latches" portion.</p>
-                <p>This is an alternative view of an <a href="http://electronics-course.com/sr-nand-latch" target="_blank" rel="noopener">S-R Latch using NAND Gates</a>. You should build both the NOR and NAND versions of this in our circuit simulation software to test our how both work to store a bit.</p>
-            </section>
-
-            <section class="mt-8 pt-4 border-t border-gray-300">
-                <h2 class="text-2xl font-semibold mb-3">The Gated S-R Latch</h2>
-                <p>For our CPU Design project, we want to use a **"Gated S-R Latch"** as shown here:</p>
-                <figure class="my-6">
-                    <img src="https://mendocino.instructure.com/courses/19705/files/2431575/download" alt="Circuit diagram of a Gated S-R Latch using four NAND gates." class="max-w-full h-auto rounded shadow-lg mx-auto" loading="lazy" />
-                    <figcaption class="text-sm text-gray-600 mt-2 text-center">Gated S-R Latch.</figcaption>
-                </figure>
-                <p>For the Gated latch, since we need to use NAND gates in front of the S-R Latch, it becomes easier to implement the S-R Latch as NAND gates instead of NOR gates, hence, we will use a circuit comprised of 4 NAND gates to store a bit in memory. This Gated S-R Latch is much easier to operate. Basically, when enable, **e**, is set to 0, the bit stored in Q is held at its value. So, when enable is 0, Q remains the same no matter what S does. When **e** is set to 1, then Q is set/takes the value of whatever S is at that moment in time.</p>
-                <p class="text-gray-600 italic">To store a bit, you do the following:</p>
-                <ul class="list-disc list-inside ml-4">
-                    <li>Set S to the value you want to store</li>
-                    <li>Set e to 1</li>
-                    <li>Return e to 0, Value in Q is now fixed and held in Q until the next time e is set to 1.</li>
+                <!-- HTML5 SEMANTIC MANDATE: H2 for major section -->
+                <h2 class="text-3xl font-bold mt-8 mb-4">Set-Reset (S-R) Latch</h2>
+                <p>The <code class="code-gray">S-R Latch</code> is a fundamental sequential logic circuit. It has two inputs, Set (S) and Reset (R), and two complementary outputs, Q and Q-not. The circuit stores a single bit of information.</p>
+                <p>The standard <code class="code-gray">S-R Latch</code> truth table (using <code class="code-gray">NOR gates</code>) is:</p>
+                <ul>
+                    <li>S=<code class="code-gray">0</code>, R=<code class="code-gray">0</code>: Hold state (Memory)</li>
+                    <li>S=<code class="code-gray">1</code>, R=<code class="code-gray">0</code>: Set Q to <code class="code-gray">1</code></li>
+                    <li>S=<code class="code-gray">0</code>, R=<code class="code-gray">1</code>: Reset Q to <code class="code-gray">0</code></li>
+                    <li>S=<code class="code-gray">1</code>, R=<code class="code-gray">1</code>: Invalid/Forbidden state</li>
                 </ul>
-            </section>
-
-            <section class="mt-8 pt-4 border-t border-gray-300">
-                <h2 class="text-2xl font-semibold mb-3">The Final 1-bit Memory Circuit</h2>
-                <p>As mentioned in the learning platform, we can rename our inputs and remove the Q' output since we don't use it. Our revised 1-bit NAND S-R latch, is simplified with our 2 inputs and a single output bit. There are also some settings you should set for the input pins. These are to make sure the bit is only a 2 state bit and that the behavior is "pull down" (see video in the <a title="Week 4 Learning Platform: Sequential Logic and Memory" href="https://mendocino.instructure.com/courses/19705/pages/week-4-learning-platform-sequential-logic-and-memory" data-course-type="wikiPages" data-published="false" data-api-endpoint="https://mendocino.instructure.com/api/v1/courses/19705/pages/week-4-learning-platform-sequential-logic-and-memory" data-api-returntype="Page">Week 4 Learning Platform: Sequential Logic and Memory</a> Learning Platform for this discussion).</p>
-
-                <figure class="my-6">
-                    <img src="https://mendocino.instructure.com/courses/19705/files/2431626/preview" alt="S-R Latch circuit simplified for Logisim with only two inputs and one output." class="max-w-full h-auto rounded shadow-lg mx-auto" loading="lazy" />
-                    <figcaption class="text-sm text-gray-600 mt-2 text-center">Simplified S-R Latch for Logisim.</figcaption>
+                <p>In Logisim, the <code class="code-gray">S-R Latch</code> is often simplified with a clock or enable input to control when the inputs affect the output (this is called a Gated Latch or a <code class="code-gray">D-Latch</code>, but for simplicity, we are focusing on the S-R core using the Logisim Platform for this discussion).</p>
+                
+                <figure class="my-8 rounded-lg shadow-xl overflow-hidden bg-white p-4">
+                    <!-- ASSET MANDATE: Image URL converted to relative path -->
+                    <img src="images/sr-latch-simplified.png" 
+                         alt="S-R Latch circuit simplified for Logisim with only two inputs and one output." 
+                         class="max-w-full h-auto mx-auto object-contain rounded" 
+                         onerror="this.onerror=null; this.src='https://placehold.co/600x400/CCCCCC/1A1A1A?text=Image+Not+Found'" 
+                         loading="lazy" />
+                    <figcaption class="text-sm text-gray-600 mt-3 text-center">Simplified S-R Latch for Logisim.</figcaption>
                 </figure>
 
-                <p>For my final circuit appearance for the 1-bit memory circuit, I just used a square to represent the circuit.</p>
+                <p>For my final circuit appearance for the <code class="code-gray">1-bit memory circuit</code>, I just used a square to represent the circuit.</p>
 
-                <figure class="my-6">
-                    <img src="https://mendocino.instructure.com/courses/19705/files/2431625/preview" alt="Final 1-bit memory circuit represented as a simple square block." class="max-w-full h-auto rounded shadow-lg mx-auto" loading="lazy" />
-                    <figcaption class="text-sm text-gray-600 mt-2 text-center">Final 1-bit Memory Circuit Appearance.</figcaption>
+                <figure class="my-8 rounded-lg shadow-xl overflow-hidden bg-white p-4">
+                    <!-- ASSET MANDATE: Image URL converted to relative path -->
+                    <img src="images/1-bit-memory-circuit-appearance.png" 
+                         alt="Final 1-bit memory circuit represented as a simple square block." 
+                         class="max-w-full h-auto mx-auto object-contain rounded" 
+                         onerror="this.onerror=null; this.src='https://placehold.co/400x400/CCCCCC/1A1A1A?text=Image+Not+Found'" 
+                         loading="lazy" />
+                    <figcaption class="text-sm text-gray-600 mt-3 text-center">Final 1-bit Memory Circuit Appearance.</figcaption>
                 </figure>
+
             </section>
-        </div>
+        </article>
     </main>
 
-    <footer class="mt-12 py-6 border-t border-gray-300 bg-gray-50 text-center text-sm text-gray-600">
-        <div class="container mx-auto px-4">
-            <p>Digital Circuits / CPU Design Course Material.</p>
-        </div>
+    <!-- HTML5 SEMANTIC MANDATE: Footer for ancillary content -->
+    <footer class="mt-12 py-6 border-t border-gray-200 bg-page-bg text-center text-sm text-gray-500">
+        <p class="text-xs italic">Ref: This content is based on digital logic design principles.</p>
     </footer>
-    <script>
-        // No alert() or confirm() used. No complex JS needed for this simple page.
-    </script>
 </body>
 </html>
