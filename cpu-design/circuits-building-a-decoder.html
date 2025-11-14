@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Building a Decoder</title>
+  </head>
+  <body>
+    <h1>Building a Decoder</h1>
+    <p>What's a Decoder?</p>
+<p>A decoder is a form of multiplexor ... Based upon a given set of inputs, we get one and only 1 output from each combination.</p>
+<p>For example, a 2x4 decoder has 2 inputs and 4 possible outputs. In tabular form, this would look like the following table where A and B are the inputs and each different combination of A and B results in a different output:</p>
+<table style="border-collapse: collapse; width: 60%; border-style: solid; margin-left: auto; margin-right: auto;" border="1" cellpadding="5">
+    <tbody>
+        <tr>
+            <th style="width: 33.3333%;">A</th>
+            <th style="width: 33.3333%;">B</th>
+            <th style="width: 33.3333%;">Output</th>
+        </tr>
+        <tr>
+            <td style="width: 33.3333%; text-align: center;">0</td>
+            <td style="width: 33.3333%; text-align: center;">0</td>
+            <td style="width: 33.3333%; text-align: center;">
+                <p>out 0</p>
+            </td>
+        </tr>
+        <tr>
+            <td style="width: 33.3333%; text-align: center;">0</td>
+            <td style="width: 33.3333%; text-align: center;">1</td>
+            <td style="width: 33.3333%; text-align: center;">out 1</td>
+        </tr>
+        <tr>
+            <td style="width: 33.3333%; text-align: center;">1</td>
+            <td style="width: 33.3333%; text-align: center;">0</td>
+            <td style="width: 33.3333%; text-align: center;">out 2</td>
+        </tr>
+        <tr>
+            <td style="width: 33.3333%; text-align: center;">1</td>
+            <td style="width: 33.3333%; text-align: center;">1</td>
+            <td style="width: 33.3333%; text-align: center;">out 3</td>
+        </tr>
+    </tbody>
+</table>
+<p>To create this simple decoder, we start with 2 simple 1-bit inputs, labeled A and B. We then run both inputs through <strong>NOT</strong> gates, to get "Not A" and "Not B." By effectively splitting A and B so that we have 4 usable inputs, A, B, Not A and Not B, we then combine these inputs, as appropriate, into 4, 2 input, AND gates to achieve out 4 possible outputs. If you build the circuit below in Logisim and run the simulation, you can test and verify that when you set A and B both to 0, Output 0 is 1. When you set A to 0 and B to 1, Output 1 is 1 and all others are 0. You can do this to verify that for each of the possible input combinations for A and B, only one of the outputs is 1 and all others are 0.</p>
+<p><img id="347971" style="max-width: 640px; max-height: 640px;" src="https://mendocino.instructure.com/courses/19705/files/2424418/preview" alt="2x4Decoder.jpg" data-api-endpoint="https://mendocino.instructure.com/api/v1/courses/19705/files/2424418" data-api-returntype="File" /></p>
+<p>You can clean up the decoder by using a 2-bit input and then having each input run through NOT gates to get their complements similar to that shown below. This setup will be helpful for the final CPU as you will need a 4x16 decoder. Please note that in a 4x16 decoder, each AND gate that determines the proper selection require 4 inputs.</p>
+<p><img id="347984" style="max-width: 640px; max-height: 640px;" src="https://mendocino.instructure.com/courses/19705/files/2424417/preview" alt="2x4Decoder_2bit_Input.jpg" data-api-endpoint="https://mendocino.instructure.com/api/v1/courses/19705/files/2424417" data-api-returntype="File" /></p>
+<p>In your final design, you will need a 3x8 decoder that is part of the ALU and some 4x16 decoders that are part of RAM (how you select individual RAM bytes by row and column). To create a 3x8 decoder, you need to extend the concept above for a 2x4 decoder. In a 3x8, you have 3 inputs, A, B, &amp; C. Each input will then be split and NOTted for a total of 6 possible values (similar to above where you have 2 inputs, A &amp; B, and each in NOTted to create 4 possible values). The 8 outputs come from have 8 possible input sets with 3 inputs like 0,0,0 and 0,0,1 or 1,0,1. So for outputs, you will have 8 outputs made from 3 input AND gates where each AND gate has one input each from A or Not A, B or Not B, and C or Not C.</p>
+<p>The 4x16 decoder, is one more extrapolation to 4 inputs, A, B, C, &amp; D. Each NOTted for a total of 8 values. With 4 bits, you have 16 possible combinations so your 16 outputs are 16 AND gates each with 4 inputs. After completion, I modified my circuit appearance as shown in the image below where the input on the left is a 4-bit input and there are 16 1-bit outputs on the right. You need to make sure that your input and outputs match up so that when you have an input of 0000, your output is either the top output or bottom output (mine is top). The input 0001 is the one next to that first output. 0010 is next, 0011 is next, .... until you get to 1111 which is the other end of the output (mine is bottom).</p>
+<p><img id="1894360" src="https://mendocino.instructure.com/courses/19705/files/2424416/preview" alt="decoder4x16.png" data-api-endpoint="https://mendocino.instructure.com/api/v1/courses/19705/files/2424416" data-api-returntype="File" /></p>
+  </body>
+</html>
