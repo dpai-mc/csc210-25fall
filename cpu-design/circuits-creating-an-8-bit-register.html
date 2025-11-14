@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Creating an 8-bit Register</title>
+  </head>
+  <body>
+    <h1>Creating an 8-bit Register</h1>
+    <p>We first need to create an 8-bit memory circuit using the 1-bit S-R latch we previously made. Then we will use this 8-bit memory circuit to create an 8-bit register. The register will be our primary memory device. to use the register, we need to be able to:</p>
+<ol>
+    <li>Store or move bits into the register</li>
+    <li>Retrieve or move bits out of the register.</li>
+</ol>
+<p>The tabs below walk through the creation of the register and the entire process is captured in the provided Video.</p>
+<p>&nbsp;</p>
+<p>Please review all tabs before proceeding on.</p>
+<div class="enhanceable_content tabs">
+    <ul>
+        <li><a href="#tab1">8-bit Memory</a></li>
+        <li><a href="#tab2">8-bit Enable Circuit</a></li>
+        <li><a href="#tab3">Controlled Buffers on 8-bit Enable</a></li>
+        <li><a href="#tab4">An 8-bit Register</a></li>
+        <li><a href="#tab5">Video Demo</a></li>
+    </ul>
+    <div id="tab1">
+        <h2>8-bit Memory</h2>
+        <p>An 8-bit memory circuit is comprised of 8 1-bit Gated Latches as shown below:</p>
+        <p><img id="338722" style="max-width: 640px; max-height: 640px;" src="https://mendocino.instructure.com/courses/19705/files/2431583/download" alt="CPU_MEM_8.png" data-api-endpoint="https://mendocino.instructure.com/api/v1/courses/19705/files/2431583" data-api-returntype="File" /></p>
+        <p>In the image shown, we have an 8-bit input labeled "i" for input, and 8-bit output labeled "o" for output and a 1-bit "set" labeled s. For those in Lab, we renamed what was "enable" to "set." The reason should become clear in a moment but it allows us to "Set" what is stored and then we can "Enable" our output circuit to get what is stored.</p>
+        <p>When I edited the "Circuit Appearance" for my 8-bit memory circuit, I just created a rectangle that was taller than wide.</p>
+        <p><img id="2431612" src="https://mendocino.instructure.com/courses/19705/files/2431612/preview" alt="mem-8-bit.png" data-api-endpoint="https://mendocino.instructure.com/api/v1/courses/19705/files/2431612" data-api-returntype="File" /></p>
+    </div>
+    <div id="tab2">
+        <h2>8-bit Enable Circuit</h2>
+        <p>To get memory out, we need to create a new circuit of 8 parallel "AND" gates which will allow us to take any 8-bit input and pass it to the output.</p>
+        <p><img id="338721" style="max-width: 640px; max-height: 640px;" src="https://mendocino.instructure.com/courses/19705/files/2431581/download" alt="CPU_ENABLE_8.png" data-api-endpoint="https://mendocino.instructure.com/api/v1/courses/19705/files/2431581" data-api-returntype="File" /></p>
+        <p>For this circuit, the output is "0000 0000" when the enable bit is "0" and equal to the input whenever the enable bit is "1." So we set enable to 1, to get what is on the input line and set it to 0 to not send anything out.</p>
+    </div>
+    <div id="tab3">
+        <h2>Adding a Controlled Buffer</h2>
+        <p>To complete our 8-bit Register, we need to add a controlled buffers to each of the individual enable outputs in the 8-bit enable circuit:</p>
+        <p><img id="695322" src="https://mendocino.instructure.com/courses/19705/files/2431584/preview" alt="2021-05-11_RegWithEnable.jpg" width="640" height="598" data-api-endpoint="https://mendocino.instructure.com/api/v1/courses/19705/files/2431584" data-api-returntype="File" />&nbsp;</p>
+        <p>Which allows us to set what is stored in memory using the "set" bit and to retrieve what is stored in memory using the "enable" bit.</p>
+        <p>Similar to the 8-bit memory circuit, my 8-bit enable circuit is also a rectangle.</p>
+        <p><img id="2431613" src="https://mendocino.instructure.com/courses/19705/files/2431613/preview" alt="enable-8-bit.png" data-api-endpoint="https://mendocino.instructure.com/api/v1/courses/19705/files/2431613" data-api-returntype="File" /></p>
+    </div>
+    <div id="tab4">
+        <h2>An 8-bit Register</h2>
+        <p>Now we need to combine our Memory and Enable circuits to make an 8-bit register. We also need to add a controlled buffer between the output from the Enable circuit and the 8-bit output pin.</p>
+        <p><img id="2431615" src="https://mendocino.instructure.com/courses/19705/files/2431615/preview" alt="register-8-bit-circuit.png" data-api-endpoint="https://mendocino.instructure.com/api/v1/courses/19705/files/2431615" data-api-returntype="File" /></p>
+        <p>Which allows us to set what is stored in memory using the "set" bit and to retrieve what is stored in memory using the "enable" bit.</p>
+        <p>My circuit appearance for the 8-bit register, was the same rectangle as I used for the memory and enable circuits.</p>
+        <p><img id="2431614" src="https://mendocino.instructure.com/courses/19705/files/2431614/preview" alt="register-8-bit.png" data-api-endpoint="https://mendocino.instructure.com/api/v1/courses/19705/files/2431614" data-api-returntype="File" /></p>
+    </div>
+    <div id="tab5">
+        <h2>Video Demo</h2>
+        <table style="border-collapse: collapse; width: 98.4287%;" border="0">
+            <tbody>
+                <tr>
+                    <td colspan="2">
+                        <p><span style="color: #ffffff;">Layout Table</span></p>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="width: 50%;">
+                        <p><a class="" href="https://youtu.be/jHjmNPDRk30" target="_blank" rel="noopener" data-ytt-failcnt="3">https://youtu.be/jHjmNPDRk30</a></p>
+                    </td>
+                    <td style="width: 50%;">
+                        <p><a title="captions_8BitReg_en.txt" href="https://mendocino.instructure.com/courses/19705/files/2431579/download" name="captions_8BitReg_en.txt" data-api-endpoint="https://mendocino.instructure.com/api/v1/courses/19705/files/2431579" data-api-returntype="File">Video transcription in English</a> (.txt file)&nbsp;using Google Automatic Speech-to-text</p>
+                        <p><a title="captions_8BitReg_sp.txt" href="https://mendocino.instructure.com/courses/19705/files/2431580/download" name="captions_8BitReg_sp.txt" data-api-endpoint="https://mendocino.instructure.com/api/v1/courses/19705/files/2431580" data-api-returntype="File">Transcripci&oacute;n de video en espa&ntilde;ol</a> (archivo .txt&nbsp;usando Google Translate</p>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+  </body>
+</html>
