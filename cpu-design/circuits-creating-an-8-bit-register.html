@@ -1,77 +1,291 @@
 <!DOCTYPE html>
-<html>
-  <head>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Creating an 8-bit Register</title>
-  </head>
-  <body>
-    <h1>Creating an 8-bit Register</h1>
-    <p>We first need to create an 8-bit memory circuit using the 1-bit S-R latch we previously made. Then we will use this 8-bit memory circuit to create an 8-bit register. The register will be our primary memory device. to use the register, we need to be able to:</p>
-<ol>
-    <li>Store or move bits into the register</li>
-    <li>Retrieve or move bits out of the register.</li>
-</ol>
-<p>The tabs below walk through the creation of the register and the entire process is captured in the provided Video.</p>
-<p>&nbsp;</p>
-<p>Please review all tabs before proceeding on.</p>
-<div class="enhanceable_content tabs">
-    <ul>
-        <li><a href="#tab1">8-bit Memory</a></li>
-        <li><a href="#tab2">8-bit Enable Circuit</a></li>
-        <li><a href="#tab3">Controlled Buffers on 8-bit Enable</a></li>
-        <li><a href="#tab4">An 8-bit Register</a></li>
-        <li><a href="#tab5">Video Demo</a></li>
-    </ul>
-    <div id="tab1">
-        <h2>8-bit Memory</h2>
-        <p>An 8-bit memory circuit is comprised of 8 1-bit Gated Latches as shown below:</p>
-        <p><img id="338722" style="max-width: 640px; max-height: 640px;" src="https://mendocino.instructure.com/courses/19705/files/2431583/download" alt="CPU_MEM_8.png" data-api-endpoint="https://mendocino.instructure.com/api/v1/courses/19705/files/2431583" data-api-returntype="File" /></p>
-        <p>In the image shown, we have an 8-bit input labeled "i" for input, and 8-bit output labeled "o" for output and a 1-bit "set" labeled s. For those in Lab, we renamed what was "enable" to "set." The reason should become clear in a moment but it allows us to "Set" what is stored and then we can "Enable" our output circuit to get what is stored.</p>
-        <p>When I edited the "Circuit Appearance" for my 8-bit memory circuit, I just created a rectangle that was taller than wide.</p>
-        <p><img id="2431612" src="https://mendocino.instructure.com/courses/19705/files/2431612/preview" alt="mem-8-bit.png" data-api-endpoint="https://mendocino.instructure.com/api/v1/courses/19705/files/2431612" data-api-returntype="File" /></p>
-    </div>
-    <div id="tab2">
-        <h2>8-bit Enable Circuit</h2>
-        <p>To get memory out, we need to create a new circuit of 8 parallel "AND" gates which will allow us to take any 8-bit input and pass it to the output.</p>
-        <p><img id="338721" style="max-width: 640px; max-height: 640px;" src="https://mendocino.instructure.com/courses/19705/files/2431581/download" alt="CPU_ENABLE_8.png" data-api-endpoint="https://mendocino.instructure.com/api/v1/courses/19705/files/2431581" data-api-returntype="File" /></p>
-        <p>For this circuit, the output is "0000 0000" when the enable bit is "0" and equal to the input whenever the enable bit is "1." So we set enable to 1, to get what is on the input line and set it to 0 to not send anything out.</p>
-    </div>
-    <div id="tab3">
-        <h2>Adding a Controlled Buffer</h2>
-        <p>To complete our 8-bit Register, we need to add a controlled buffers to each of the individual enable outputs in the 8-bit enable circuit:</p>
-        <p><img id="695322" src="https://mendocino.instructure.com/courses/19705/files/2431584/preview" alt="2021-05-11_RegWithEnable.jpg" width="640" height="598" data-api-endpoint="https://mendocino.instructure.com/api/v1/courses/19705/files/2431584" data-api-returntype="File" />&nbsp;</p>
-        <p>Which allows us to set what is stored in memory using the "set" bit and to retrieve what is stored in memory using the "enable" bit.</p>
-        <p>Similar to the 8-bit memory circuit, my 8-bit enable circuit is also a rectangle.</p>
-        <p><img id="2431613" src="https://mendocino.instructure.com/courses/19705/files/2431613/preview" alt="enable-8-bit.png" data-api-endpoint="https://mendocino.instructure.com/api/v1/courses/19705/files/2431613" data-api-returntype="File" /></p>
-    </div>
-    <div id="tab4">
-        <h2>An 8-bit Register</h2>
-        <p>Now we need to combine our Memory and Enable circuits to make an 8-bit register. We also need to add a controlled buffer between the output from the Enable circuit and the 8-bit output pin.</p>
-        <p><img id="2431615" src="https://mendocino.instructure.com/courses/19705/files/2431615/preview" alt="register-8-bit-circuit.png" data-api-endpoint="https://mendocino.instructure.com/api/v1/courses/19705/files/2431615" data-api-returntype="File" /></p>
-        <p>Which allows us to set what is stored in memory using the "set" bit and to retrieve what is stored in memory using the "enable" bit.</p>
-        <p>My circuit appearance for the 8-bit register, was the same rectangle as I used for the memory and enable circuits.</p>
-        <p><img id="2431614" src="https://mendocino.instructure.com/courses/19705/files/2431614/preview" alt="register-8-bit.png" data-api-endpoint="https://mendocino.instructure.com/api/v1/courses/19705/files/2431614" data-api-returntype="File" /></p>
-    </div>
-    <div id="tab5">
-        <h2>Video Demo</h2>
-        <table style="border-collapse: collapse; width: 98.4287%;" border="0">
-            <tbody>
-                <tr>
-                    <td colspan="2">
-                        <p><span style="color: #ffffff;">Layout Table</span></p>
-                    </td>
-                </tr>
-                <tr>
-                    <td style="width: 50%;">
-                        <p><a class="" href="https://youtu.be/jHjmNPDRk30" target="_blank" rel="noopener" data-ytt-failcnt="3">https://youtu.be/jHjmNPDRk30</a></p>
-                    </td>
-                    <td style="width: 50%;">
-                        <p><a title="captions_8BitReg_en.txt" href="https://mendocino.instructure.com/courses/19705/files/2431579/download" name="captions_8BitReg_en.txt" data-api-endpoint="https://mendocino.instructure.com/api/v1/courses/19705/files/2431579" data-api-returntype="File">Video transcription in English</a> (.txt file)&nbsp;using Google Automatic Speech-to-text</p>
-                        <p><a title="captions_8BitReg_sp.txt" href="https://mendocino.instructure.com/courses/19705/files/2431580/download" name="captions_8BitReg_sp.txt" data-api-endpoint="https://mendocino.instructure.com/api/v1/courses/19705/files/2431580" data-api-returntype="File">Transcripci&oacute;n de video en espa&ntilde;ol</a> (archivo .txt&nbsp;usando Google Translate</p>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-</div>
-  </body>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                fontFamily: {
+                    sans: ['Inter', 'system-ui', 'sans-serif'],
+                },
+                extend: {
+                    colors: {
+                        'page-bg': '#FDFBF8',
+                        'text-primary': '#1A1A1A',
+                        'accent-blue': '#2563EB',
+                        'code-gray': '#4B5563',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #FDFBF8;
+            color: #1A1A1A;
+        }
+        .skip-link {
+            position: absolute;
+            top: -40px;
+            left: 0;
+            background: #2563EB;
+            color: white;
+            padding: 8px;
+            text-decoration: none;
+            z-index: 100;
+        }
+        .skip-link:focus {
+            top: 0;
+        }
+    </style>
+</head>
+<body class="bg-page-bg text-text-primary font-sans">
+    <!-- Skip to Content Link -->
+    <a href="#main-content" class="skip-link font-medium">Skip to main content</a>
+
+    <main id="main-content" class="container mx-auto px-4 py-8 max-w-4xl">
+        <h1 class="text-4xl md:text-5xl font-bold mb-6 text-text-primary">Creating an 8-bit Register</h1>
+        
+        <div class="prose prose-lg max-w-none mb-8">
+            <p class="mb-4 leading-relaxed">
+                We first need to create an 8-bit memory circuit using the 1-bit S-R latch we previously made. Then we will use this 8-bit memory circuit to create an 8-bit register. The register will be our primary memory device. To use the register, we need to be able to:
+            </p>
+            
+            <ol class="list-decimal list-inside space-y-2 mb-6 ml-4">
+                <li class="leading-relaxed">Store or move bits into the register</li>
+                <li class="leading-relaxed">Retrieve or move bits out of the register</li>
+            </ol>
+            
+            <p class="mb-6 leading-relaxed">
+                The tabs below walk through the creation of the register and the entire process is captured in the provided video. Please review all tabs before proceeding.
+            </p>
+        </div>
+
+        <!-- Tabs Navigation -->
+        <div class="mb-8">
+            <nav class="flex flex-wrap border-b-2 border-gray-300 gap-2 md:gap-4" role="tablist">
+                <button onclick="showTab(event, 'tab1')" class="tab-button active px-4 py-3 font-semibold border-b-4 border-accent-blue text-accent-blue transition-colors hover:text-accent-blue focus:outline-none focus:ring-2 focus:ring-accent-blue focus:ring-offset-2" role="tab" aria-selected="true" aria-controls="tab1">
+                    8-bit Memory
+                </button>
+                <button onclick="showTab(event, 'tab2')" class="tab-button px-4 py-3 font-semibold border-b-4 border-transparent text-code-gray hover:text-accent-blue transition-colors focus:outline-none focus:ring-2 focus:ring-accent-blue focus:ring-offset-2" role="tab" aria-selected="false" aria-controls="tab2">
+                    8-bit Enable Circuit
+                </button>
+                <button onclick="showTab(event, 'tab3')" class="tab-button px-4 py-3 font-semibold border-b-4 border-transparent text-code-gray hover:text-accent-blue transition-colors focus:outline-none focus:ring-2 focus:ring-accent-blue focus:ring-offset-2" role="tab" aria-selected="false" aria-controls="tab3">
+                    Controlled Buffers
+                </button>
+                <button onclick="showTab(event, 'tab4')" class="tab-button px-4 py-3 font-semibold border-b-4 border-transparent text-code-gray hover:text-accent-blue transition-colors focus:outline-none focus:ring-2 focus:ring-accent-blue focus:ring-offset-2" role="tab" aria-selected="false" aria-controls="tab4">
+                    8-bit Register
+                </button>
+                <button onclick="showTab(event, 'tab5')" class="tab-button px-4 py-3 font-semibold border-b-4 border-transparent text-code-gray hover:text-accent-blue transition-colors focus:outline-none focus:ring-2 focus:ring-accent-blue focus:ring-offset-2" role="tab" aria-selected="false" aria-controls="tab5">
+                    Video Demo
+                </button>
+            </nav>
+        </div>
+
+        <!-- Tab 1: 8-bit Memory -->
+        <div id="tab1" class="tab-content block" role="tabpanel" aria-labelledby="tab1">
+            <h2 class="text-3xl font-bold mb-6 mt-8">8-bit Memory</h2>
+            <p class="mb-6 leading-relaxed">
+                An 8-bit memory circuit is comprised of 8 1-bit Gated Latches as shown below:
+            </p>
+            
+            <figure class="my-8">
+                <img src="images/cpu-mem-8-bit.png" 
+                     alt="8-bit memory circuit comprised of eight 1-bit Gated Latches with 8-bit input labeled i, 8-bit output labeled o, and 1-bit set labeled s" 
+                     class="max-w-full h-auto rounded-lg border border-gray-300 shadow-sm mx-auto"
+                     style="max-width: 640px;"
+                     loading="lazy">
+                <figcaption class="text-sm text-gray-600 text-center mt-3 italic">
+                    8-bit Memory Circuit with Gated Latches
+                </figcaption>
+            </figure>
+            
+            <p class="mb-6 leading-relaxed">
+                In the image shown, we have an 8-bit input labeled "i" for input, an 8-bit output labeled "o" for output, and a 1-bit input labeled "s" for set. For those in Lab, we renamed what was "enable" to "set." The reason should become clear in a moment—it allows us to "Set" what is stored and then we can "Enable" our output circuit to get what is stored.
+            </p>
+            
+            <p class="mb-6 leading-relaxed">
+                When editing the "Circuit Appearance" for the 8-bit memory circuit, I created a rectangle that was taller than wide.
+            </p>
+            
+            <figure class="my-8">
+                <img src="images/mem-8-bit-symbol.png" 
+                     alt="Circuit symbol for 8-bit memory showing rectangular appearance with input and output pins" 
+                     class="max-w-full h-auto rounded-lg border border-gray-300 shadow-sm mx-auto"
+                     loading="lazy">
+                <figcaption class="text-sm text-gray-600 text-center mt-3 italic">
+                    8-bit Memory Circuit Symbol
+                </figcaption>
+            </figure>
+        </div>
+
+        <!-- Tab 2: 8-bit Enable Circuit -->
+        <div id="tab2" class="tab-content hidden" role="tabpanel" aria-labelledby="tab2">
+            <h2 class="text-3xl font-bold mb-6 mt-8">8-bit Enable Circuit</h2>
+            <p class="mb-6 leading-relaxed">
+                To get memory out, we need to create a new circuit of 8 parallel AND gates which will allow us to take any 8-bit input and pass it to the output.
+            </p>
+            
+            <figure class="my-8">
+                <img src="images/cpu-enable-8-bit.png" 
+                     alt="8-bit enable circuit with 8 parallel AND gates for controlling output based on enable signal" 
+                     class="max-w-full h-auto rounded-lg border border-gray-300 shadow-sm mx-auto"
+                     style="max-width: 640px;"
+                     loading="lazy">
+                <figcaption class="text-sm text-gray-600 text-center mt-3 italic">
+                    8-bit Enable Circuit with Parallel AND Gates
+                </figcaption>
+            </figure>
+            
+            <p class="mb-6 leading-relaxed">
+                For this circuit, the output is "0000 0000" when the enable bit is "0" and equal to the input whenever the enable bit is "1." So we set enable to 1 to get what is on the input line and set it to 0 to not send anything out.
+            </p>
+        </div>
+
+        <!-- Tab 3: Controlled Buffers -->
+        <div id="tab3" class="tab-content hidden" role="tabpanel" aria-labelledby="tab3">
+            <h2 class="text-3xl font-bold mb-6 mt-8">Adding a Controlled Buffer</h2>
+            <p class="mb-6 leading-relaxed">
+                To complete our 8-bit Register, we need to add controlled buffers to each of the individual enable outputs in the 8-bit enable circuit:
+            </p>
+            
+            <figure class="my-8">
+                <img src="images/register-with-enable.jpg" 
+                     alt="8-bit register with controlled buffers showing set bit for storing memory and enable bit for retrieving memory" 
+                     class="max-w-full h-auto rounded-lg border border-gray-300 shadow-sm mx-auto"
+                     style="max-width: 640px;"
+                     loading="lazy">
+                <figcaption class="text-sm text-gray-600 text-center mt-3 italic">
+                    8-bit Register with Controlled Buffers
+                </figcaption>
+            </figure>
+            
+            <p class="mb-6 leading-relaxed">
+                This allows us to set what is stored in memory using the "set" bit and to retrieve what is stored in memory using the "enable" bit.
+            </p>
+            
+            <p class="mb-6 leading-relaxed">
+                Similar to the 8-bit memory circuit, the 8-bit enable circuit is also represented as a rectangle.
+            </p>
+            
+            <figure class="my-8">
+                <img src="images/enable-8-bit-symbol.png" 
+                     alt="Circuit symbol for 8-bit enable circuit showing rectangular appearance with labeled inputs and outputs" 
+                     class="max-w-full h-auto rounded-lg border border-gray-300 shadow-sm mx-auto"
+                     loading="lazy">
+                <figcaption class="text-sm text-gray-600 text-center mt-3 italic">
+                    8-bit Enable Circuit Symbol
+                </figcaption>
+            </figure>
+        </div>
+
+        <!-- Tab 4: 8-bit Register -->
+        <div id="tab4" class="tab-content hidden" role="tabpanel" aria-labelledby="tab4">
+            <h2 class="text-3xl font-bold mb-6 mt-8">An 8-bit Register</h2>
+            <p class="mb-6 leading-relaxed">
+                Now we need to combine our Memory and Enable circuits to make an 8-bit register. We also need to add a controlled buffer between the output from the Enable circuit and the 8-bit output pin.
+            </p>
+            
+            <figure class="my-8">
+                <img src="images/register-8-bit-circuit.png" 
+                     alt="Complete 8-bit register circuit combining memory and enable circuits with controlled output buffer" 
+                     class="max-w-full h-auto rounded-lg border border-gray-300 shadow-sm mx-auto"
+                     loading="lazy">
+                <figcaption class="text-sm text-gray-600 text-center mt-3 italic">
+                    Complete 8-bit Register Circuit
+                </figcaption>
+            </figure>
+            
+            <p class="mb-6 leading-relaxed">
+                This allows us to set what is stored in memory using the "set" bit and to retrieve what is stored in memory using the "enable" bit.
+            </p>
+            
+            <p class="mb-6 leading-relaxed">
+                The circuit appearance for the 8-bit register uses the same rectangle design as the memory and enable circuits.
+            </p>
+            
+            <figure class="my-8">
+                <img src="images/register-8-bit-symbol.png" 
+                     alt="Circuit symbol for 8-bit register showing rectangular appearance matching memory and enable symbols" 
+                     class="max-w-full h-auto rounded-lg border border-gray-300 shadow-sm mx-auto"
+                     loading="lazy">
+                <figcaption class="text-sm text-gray-600 text-center mt-3 italic">
+                    8-bit Register Circuit Symbol
+                </figcaption>
+            </figure>
+        </div>
+
+        <!-- Tab 5: Video Demo -->
+        <div id="tab5" class="tab-content hidden" role="tabpanel" aria-labelledby="tab5">
+            <h2 class="text-3xl font-bold mb-6 mt-8">Video Demo</h2>
+            <div class="bg-gray-50 p-6 rounded-lg border border-gray-300">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div>
+                        <h3 class="font-semibold mb-3 text-lg">Video Demonstration</h3>
+                        <p class="mb-4 leading-relaxed">
+                            Watch the complete demonstration of 8-bit register creation:
+                        </p>
+                        <a href="https://youtu.be/jHjmNPDRk30" 
+                           target="_blank" 
+                           rel="noopener noreferrer"
+                           title="External video on YouTube showing 8-bit register creation demonstration"
+                           class="inline-block text-accent-blue hover:underline font-medium">
+                            8-bit Register Creation Video on YouTube
+                        </a>
+                    </div>
+                    <div>
+                        <h3 class="font-semibold mb-3 text-lg">Video Transcriptions</h3>
+                        <ul class="space-y-3">
+                            <li>
+                                <a href="files/captions-8bit-register-english.txt" 
+                                   download
+                                   class="text-accent-blue hover:underline font-medium">
+                                    Video transcription in English
+                                </a>
+                                <span class="text-sm text-gray-600 block mt-1">(Generated with Google Automatic Speech-to-Text)</span>
+                            </li>
+                            <li>
+                                <a href="files/captions-8bit-register-spanish.txt" 
+                                   download
+                                   class="text-accent-blue hover:underline font-medium">
+                                    Transcripción de vídeo en español
+                                </a>
+                                <span class="text-sm text-gray-600 block mt-1">(Generated with Google Translate)</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        function showTab(evt, tabName) {
+            // Hide all tab content
+            const tabContents = document.querySelectorAll('.tab-content');
+            tabContents.forEach(content => {
+                content.classList.add('hidden');
+                content.classList.remove('block');
+            });
+            
+            // Remove active state from all tab buttons
+            const tabButtons = document.querySelectorAll('.tab-button');
+            tabButtons.forEach(button => {
+                button.classList.remove('border-accent-blue', 'text-accent-blue');
+                button.classList.add('border-transparent', 'text-code-gray');
+                button.setAttribute('aria-selected', 'false');
+            });
+            
+            // Show current tab and activate button
+            document.getElementById(tabName).classList.remove('hidden');
+            document.getElementById(tabName).classList.add('block');
+            evt.currentTarget.classList.add('border-accent-blue', 'text-accent-blue');
+            evt.currentTarget.classList.remove('border-transparent', 'text-code-gray');
+            evt.currentTarget.setAttribute('aria-selected', 'true');
+        }
+    </script>
+</body>
 </html>
