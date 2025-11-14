@@ -41,15 +41,6 @@
             top: 0;
         }
         
-        .image-placeholder {
-            border: 2px dashed #CBD5E1;
-            background: linear-gradient(135deg, #F1F5F9 0%, #E2E8F0 100%);
-            border-radius: 8px;
-            padding: 2rem;
-            text-align: center;
-            margin: 1.5rem 0;
-        }
-        
         .prose p {
             margin-bottom: 1rem;
         }
@@ -83,14 +74,16 @@
                     The basic design is usually shown using 2-NOR gates as depicted here:
                 </p>
                 
-                <div class="image-placeholder">
-                    <svg class="w-16 h-16 mx-auto mb-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                    </svg>
-                    <p class="font-semibold text-code-gray mb-2">Image Asset Placeholder</p>
-                    <p class="text-sm text-gray-600">images/sr-latch-nor.png</p>
-                    <p class="text-xs text-gray-500 mt-2 italic">Alt: SR_Latch_NOR.png</p>
-                </div>
+                <figure class="my-6">
+                    <img src="images/sr-latch-nor.png" 
+                         alt="SR_Latch_NOR.png" 
+                         class="max-w-full h-auto rounded-lg border border-gray-300 shadow-sm mx-auto"
+                         style="max-width: 640px;"
+                         loading="lazy">
+                    <figcaption class="text-sm text-gray-600 text-center mt-2 italic">
+                        Basic S-R Latch design using 2-NOR gates
+                    </figcaption>
+                </figure>
                 
                 <p class="text-base sm:text-lg leading-relaxed mb-4">
                     If we look at "Q" as the output or stored bit, then it is SET to 1, when S=1 and R=0. 
@@ -134,14 +127,16 @@
                     For our CPU Design project, we want to use a "Gated S-R Latch" as shown here:
                 </p>
                 
-                <div class="image-placeholder">
-                    <svg class="w-16 h-16 mx-auto mb-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                    </svg>
-                    <p class="font-semibold text-code-gray mb-2">Image Asset Placeholder</p>
-                    <p class="text-sm text-gray-600">images/gated-latch.png</p>
-                    <p class="text-xs text-gray-500 mt-2 italic">Alt: GATED_Latch.png</p>
-                </div>
+                <figure class="my-6">
+                    <img src="images/gated-latch.png" 
+                         alt="GATED_Latch.png" 
+                         class="max-w-full h-auto rounded-lg border border-gray-300 shadow-sm mx-auto"
+                         style="max-width: 640px;"
+                         loading="lazy">
+                    <figcaption class="text-sm text-gray-600 text-center mt-2 italic">
+                        Gated S-R Latch circuit diagram
+                    </figcaption>
+                </figure>
                 
                 <p class="text-base sm:text-lg leading-relaxed mb-4">
                     For the Gated latch, since we need to use NAND gates in front of the S-R Latch, 
@@ -179,28 +174,32 @@
                     Learning Platform for this discussion).
                 </p>
                 
-                <div class="image-placeholder">
-                    <svg class="w-16 h-16 mx-auto mb-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                    </svg>
-                    <p class="font-semibold text-code-gray mb-2">Image Asset Placeholder</p>
-                    <p class="text-sm text-gray-600">images/sr-latch-logisim.png</p>
-                    <p class="text-xs text-gray-500 mt-2 italic">Alt: S-R-latch-logisim.png</p>
-                </div>
+                <figure class="my-6">
+                    <img src="images/sr-latch-logisim.png" 
+                         alt="S-R-latch-logisim.png" 
+                         class="max-w-full h-auto rounded-lg border border-gray-300 shadow-sm mx-auto"
+                         style="max-width: 640px;"
+                         loading="lazy">
+                    <figcaption class="text-sm text-gray-600 text-center mt-2 italic">
+                        1-bit NAND S-R latch in Logisim with input settings
+                    </figcaption>
+                </figure>
                 
                 <p class="text-base sm:text-lg leading-relaxed mb-4">
                     For my final circuit appearance for the 1-bit memory circuit, I just used a square 
                     to represent the circuit.
                 </p>
                 
-                <div class="image-placeholder">
-                    <svg class="w-16 h-16 mx-auto mb-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                    </svg>
-                    <p class="font-semibold text-code-gray mb-2">Image Asset Placeholder</p>
-                    <p class="text-sm text-gray-600">images/1-bit-mem.png</p>
-                    <p class="text-xs text-gray-500 mt-2 italic">Alt: 1-bit-mem.png</p>
-                </div>
+                <figure class="my-6">
+                    <img src="images/1-bit-mem.png" 
+                         alt="1-bit-mem.png" 
+                         class="max-w-full h-auto rounded-lg border border-gray-300 shadow-sm mx-auto"
+                         style="max-width: 640px;"
+                         loading="lazy">
+                    <figcaption class="text-sm text-gray-600 text-center mt-2 italic">
+                        Final 1-bit memory circuit representation
+                    </figcaption>
+                </figure>
             </section>
         </article>
     </main>
