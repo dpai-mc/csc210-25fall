@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Circuits: Control Circuit for Add 2 Numbers</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        // MANDATORY: Configure Tailwind to include the Typography plugin.
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                },
+            },
+            plugins: [
+                require('@tailwindcss/typography'),
+            ],
+        }
+    </script>
+    <style>
+        /* STRICT LIGHT THEME MANDATE: Overrides dark mode settings */
+        html { 
+            font-family: 'Inter', sans-serif; 
+            background-color: #FDFBF8; 
+            color: #1A1A1A; 
+        }
+        @media (prefers-color-scheme: dark) {
+            html {
+                background-color: #FDFBF8 !important; 
+                color: #1A1A1A !important; 
+            }
+        }
+        /* Custom class for Skip Link (visible on focus) */
+        .skip-link {
+            position: absolute;
+            top: -40px;
+            left: 0;
+            background: #1A1A1A;
+            color: white;
+            padding: 8px;
+            z-index: 100;
+            transition: top 0.3s;
+        }
+        .skip-link:focus {
+            top: 0;
+        }
+        /* Styling for active transcript line */
+        .active-transcript-line {
+            background-color: #f0f7ff;
+            font-weight: 600;
+            border-left: 4px solid #1e88e5;
+            padding-left: 12px;
+            transition: background-color 0.2s;
+        }
+    </style>
+    
+    </head>
+<body class="bg-[#FDFBF8] text-[#1A1A1A]">
+    <a id="skip-to-content" href="#main-content" class="skip-link" tabindex="0">Skip to Content</a>
+    
+    <header class="bg-white shadow-md p-4 sticky top-0 z-10">
+        <div class="max-w-4xl mx-auto">
+            <h1 class="text-2xl font-bold text-[#1A1A1A]">Circuits: Control Circuit for Add 2 Numbers</h1>
+        </div>
+    </header>
+
+    <main id="main-content" class="p-4 sm:p-6 lg:p-8 max-w-4xl mx-auto">
+        
+        <h1 class="text-4xl font-extrabold mb-8 text-blue-700">Control Circuit for the ADD Operation</h1>
+
+        <section class="mb-8 p-6 bg-white rounded-xl shadow-lg">
+            <div class="prose max-w-none">
+                <p>The diagrams below illustrate the circuit required for the **"Add 2 numbers"** operation of the Control Unit and how it is temporarily wired into the CPU template to create an **"Arith-Only CPU"** for explanatory purposes. The video that follows demonstrates the operation.</p>
+
+                <h2 class="text-2xl font-bold mt-6 mb-4">Arith Control Unit Diagram</h2>
+                <p>This diagram shows the logic within the Control Unit specifically for executing an addition operation.</p>
+                
+                <div class="flex justify-center my-6">
+                    <img src="images/Arith_Control_Unit_Circuit.jpg" alt="Control Unit Circuit to add 2 numbers" class="max-w-full h-auto rounded-lg shadow-md border border-gray-300">
+                </div>
+                
+                <p>For clarity, the essential stepper connections are listed below:</p>
+                <ul class="list-disc list-inside space-y-2">
+                    <li>**Stepper 4** connects to **R1\_E** (Register 1 Enable) and **TMP\_S** (Temporary Register Set)</li>
+                    <li>**Stepper 5** connects to **R0\_E** (Register 0 Enable) and **ACC\_S** (Accumulator Set)</li>
+                    <li>**Stepper 6** connects to **ACC\_E** (Accumulator Enable) and **R3\_S** (Register 3 Set)</li>
+                    <li>**Stepper 7** connects to **Stepper reset**</li>
+                </ul>
+
+                <h2 class="text-2xl font-bold mt-6 mb-4">CPU Setup for Arith Control Unit</h2>
+                <p>This circuit is a temporary setup used to test the arithmetic control logic:</p>
+                
+                <div class="flex justify-center my-6">
+                    <img src="images/CPU_with_Arith_Only_Control_Unit.jpg" alt="CPU with Arith Only Control Unit" class="max-w-full h-auto rounded-lg shadow-md border border-gray-300">
+                </div>
+
+                <p>The temporary modifications included in this test bed are:</p>
+                <ul class="list-disc list-inside space-y-2">
+                    <li>The inputs for **R0** and **R1** have been removed from the BUS and connected to **8-bit inputs** so that the values can be manually changed to test the addition operation.</li>
+                    <li>The **'set'** input for **R0** and **R1** are set to a constant value of **1**.</li>
+                    <li>The **RAM input** and **RAM output** have been removed from the BUS.</li>
+                    <li>The **MAR** (Memory Address Register) input has been removed from the BUS.</li>
+                </ul>
+
+                <h2 class="text-2xl font-bold mt-6 mb-4">Video Explanation: CPU Design - Arithmetic Instruction</h2>
+                <div class="mt-4">
+                    <!-- Video Player Container -->
+                    <div class="aspect-video w-full mb-4">
+                        <iframe id="youtube-player"
+                                width="100%"
+                                height="auto"
+                                src="https://www.youtube.com/embed/K601wz4LTVM?enablejsapi=1"
+                                title="CPU Design: Arithmetic Instruction"
+                                frameborder="0"
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                referrerpolicy="strict-origin-when-cross-origin"
+                                allowfullscreen
+                                class="w-full h-auto rounded-lg shadow-xl border border-gray-300">
+                        </iframe>
+                    </div>
+
+                    <!-- Transcript Container (Fixed height for scrolling) -->
+                    <div id="transcript-container" class="h-96 overflow-y-scroll bg-white shadow-inner p-4 rounded-lg border border-gray-300">
+                        <p class="text-gray-500 text-center">Loading transcript...</p>
+                    </div>
+                    <p class="text-sm mt-4 text-center text-gray-600 italic">Click on any transcript line to jump to that point in the video. The current line highlights as the video plays.</p>
+                </div>
+            </div>
+        </section>
+
+        <footer class="mt-8 pt-4 border-t border-gray-300 text-center text-sm text-gray-500">
+            <div class="prose max-w-none mx-auto">
+                <p class="text-xs italic">Ref: This project adapted from "Design a CPU" by Ross McGowan (On Udemy)</p>
+            </div>
+        </footer>
+    </main>
+    
+    <script>
+        // ========================================
+        // YOUTUBE VIDEO AND TRANSCRIPT SYNC
+        // ========================================
+        
+        // 1. CONFIGURATION
+        const VIDEO_ID = 'K601wz4LTVM';
+        let player;
+        let timeUpdater;
+        let parsedTranscript = [];
+
+        // --- VTT CONTENT (from CPU_Design__Arithmetic_Instruction.vtt) ---
+        const vttContent = `WEBVTT
+
+00:00.000 --> 00:15.120
+Aloha in this video I want to talk about just adding two numbers together so if we look at our
+
+00:15.120 --> 00:25.980
+look at our control unit you see we just have stepper four five and six tied okay where four
+
+00:25.980 --> 00:32.640
+does we're gonna read the values from r0 and r1 they're tied to four and five and then we're
+
+00:32.640 --> 00:38.640
+gonna write it to r3 which is tied to six all right and that's what we're gonna go through so
+
+00:38.640 --> 00:46.740
+if we look at our CPU okay I have this clock that it's gonna give me a clock pulse and I'm
+
+00:46.740 --> 00:51.860
+gonna use to cycle through the states and when I click on the cycle through I'm gonna cycle
+
+00:51.860 --> 00:55.740
+through and it's gonna cycle through enable set
+
+00:55.980 --> 01:02.580
+a high set low enable low all off and move from one to two to three to four so we got to go
+
+01:02.580 --> 01:09.420
+through if it's for each twelve cycles to get to four to step four where we'll start doing adding
+
+01:09.420 --> 01:22.080
+so what we'll do is we'll just I already did one hopefully that I could get the number right okay
+
+01:22.080 --> 01:25.860
+so right now I have zero and zero well
+
+01:25.980 --> 01:33.600
+let's and I've enabled r1 so if we look at our control we're on step four and the first part is
+
+01:33.600 --> 01:41.100
+enable and we named abled register one and we're gonna write that into temp s which is going to be
+
+01:41.100 --> 01:53.740
+input B to our ALU right so let's first before we finish this let's put something in r1 doesn't like
+
+01:55.980 --> 02:04.560
+oh wait up here I gotta do it up here in the input let's put something into r1 so I have zero zero zero
+
+02:04.560 --> 02:10.980
+zero zero let's go with three ones one one one and then what we'll do in one two is we'll add
+
+02:10.980 --> 02:24.360
+five zeros one zero one to that and we'll get the result of these two and stick it into r3 all right
+
+02:24.360 --> 02:25.900
+so I noticed that when I was doing this
+
+02:25.980 --> 02:31.260
+it just changed what was on the bus that's because we enabled r1 so whatever's in r1 is now on the bus
+
+02:31.260 --> 02:42.780
+okay and if we look for our next clock when we do set we're setting temp high which means whatever's
+
+02:42.780 --> 02:49.080
+coming into temp will get passed through to the ALU so if we look at the ALU we'll see that B is
+
+02:49.080 --> 02:55.960
+both a and B are both all zeros one one one there's no filter on a so whatever's on the
+
+02:55.960 --> 03:06.820
+bus is always in a the filter on B is determined by temp so or bus so what we're going to do is
+
+03:06.820 --> 03:10.960
+we're going to take this stick it into a that's why we have to take the first number we want it
+
+03:10.960 --> 03:18.220
+doesn't matter if r0 r1 whichever one we're using and stick it into temp okay which means it'll go
+
+03:18.220 --> 03:25.780
+into B it's also in a so if I wanted to double it I could just use it as it is but because anything
+
+03:25.960 --> 03:32.440
+that's on the bus is in a but we'll go through we'll turn off the set so we no longer can change
+
+03:32.440 --> 03:40.120
+what's in temp or what pass through temp and then we'll cycle to the next step okay so we're going
+
+03:40.120 --> 03:48.520
+to be on step five we'll go enable set set enable okay so we're going to enable r0 and
+
+03:48.520 --> 03:55.300
+then we're going to set the accumulator to be the result of our ALU all right so let's go back
+
+03:55.960 --> 04:06.460
+we'll cycle one more okay there's our set now when we look at a in our CPU we'll see it's one zero
+
+04:06.460 --> 04:16.360
+one B is one one one which was in r1 r0 holds one zero one so that's in a the sum is coming out of
+
+04:16.360 --> 04:25.360
+our ALU because we chose zero zero zero as our opcode all right
+
+04:25.960 --> 04:36.520
+okay so when we hit set we'll set the accumulator to be the output of our ALU which will be the next
+
+04:36.520 --> 04:48.680
+pulse so we'll pulse turn on set here it'll set the accumulator to be the value of the sum which
+
+04:48.680 --> 04:55.180
+is coming from the ALU we'll stick it in memory here into the accumulator memory register here
+
+04:55.960 --> 04:58.420
+that'll be the number that's stored there
+
+05:01.780 --> 05:08.200
+all right so so far where we're at is we're here on set we're going to turn set off then
+
+05:08.200 --> 05:14.920
+turn enable off and then we'll move to step six which takes enables the accumulator so whatever's
+
+05:14.920 --> 05:19.000
+in the accumulator goes onto the bus and then we stick whatever's in the bus into r3
+
+05:22.540 --> 05:25.300
+okay so right now r3 is zero zero zero zero zero
+
+05:25.960 --> 05:33.720
+so let's turn set off turn enable off now we're the next step turn enable on okay so it's enabling
+
+05:33.720 --> 05:40.600
+what's in the accumulator which is the sum of the two okay turn set on which is going
+
+05:40.600 --> 05:45.940
+to set r3 here sets on it's going to set it to be the result of r0 plus r1
+
+05:48.100 --> 05:51.560
+okay turn set off turn enable off
+
+05:53.440 --> 05:55.540
+okay so we're done with all of six and we're
+
+05:55.960 --> 06:01.420
+We're back around because we started 7, which goes back to 1.
+
+06:01.420 --> 06:04.780
+And if we go back to our CPU and look,
+
+06:04.780 --> 06:10.520
+we'll see that our 0 has what we started with, 1, 0, 1.
+
+06:10.520 --> 06:12.580
+Our 1 has 1, 1, 1.
+
+06:12.580 --> 06:17.580
+Our 3 has the sum of those two as 1, 1, 0, 0.
+
+06:17.580 --> 06:22.980
+So that's how you do arithmetic in a straightforward, very
+
+06:22.980 --> 06:33.600
+simplistic, this is only thing it does in our control unit.
+
+06:33.600 --> 06:35.400
+The next video, we'll talk a little bit more
+
+06:35.400 --> 06:39.300
+about the ALU instruction so that we
+
+06:39.300 --> 06:42.060
+can define what register we're pulling values from.
+`;
+        // -----------------------------------
+
+        // 2. CORE UTILITIES
+        function timeToSeconds(timeStr) {
+            if (!timeStr) return 0;
+            const parts = timeStr.trim().split(':');
+            
+            // Handle both MM:SS.mmm and HH:MM:SS.mmm formats
+            if (parts.length === 2) {
+                // MM:SS.mmm format
+                let minutes = parseInt(parts[0]) || 0;
+                let seconds = parseFloat(parts[1]) || 0;
+                return minutes * 60 + seconds;
+            } else if (parts.length === 3) {
+                // HH:MM:SS.mmm format
+                let hours = parseInt(parts[0]) || 0;
+                let minutes = parseInt(parts[1]) || 0;
+                let seconds = parseFloat(parts[2]) || 0;
+                return hours * 3600 + minutes * 60 + seconds;
+            }
+            return 0;
+        }
+
+        function parseVtt(vttText) {
+            const cues = vttText.trim().split(/\n\n+/);
+            const parsedCues = [];
+            
+            cues.forEach(cueBlock => {
+                if (cueBlock.startsWith('WEBVTT') || cueBlock.trim() === '') return;
+                
+                const lines = cueBlock.trim().split('\n');
+                const timeLine = lines.find(line => line.includes('-->'));
+                if (!timeLine) return;
+
+                const [startTimeStr, endTimeStr] = timeLine.split(' --> ');
+                const textLines = lines.slice(lines.indexOf(timeLine) + 1);
+                
+                parsedCues.push({
+                    start: timeToSeconds(startTimeStr),
+                    end: timeToSeconds(endTimeStr),
+                    text: textLines.join(' ').trim()
+                });
+            });
+            return parsedCues;
+        }
+
+        // 3. TRANSCRIPT RENDERING AND INTERACTIVITY
+        function populateTranscript() {
+            const container = document.getElementById('transcript-container');
+            container.innerHTML = '';
+
+            parsedTranscript.forEach(cue => {
+                const lineElement = document.createElement('div');
+                lineElement.className = 'transcript-line p-2 cursor-pointer hover:bg-gray-100 rounded-lg';
+                lineElement.dataset.start = cue.start;
+                lineElement.dataset.end = cue.end;
+                lineElement.textContent = cue.text;
+                lineElement.setAttribute('role', 'button');
+                lineElement.setAttribute('tabindex', '0');
+
+                const seekToTime = () => {
+                    if (player && player.seekTo) {
+                        player.seekTo(cue.start, true);
+                        player.playVideo();
+                    }
+                };
+                
+                lineElement.addEventListener('click', seekToTime);
+                lineElement.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') { 
+                        e.preventDefault(); 
+                        seekToTime(); 
+                    }
+                });
+
+                container.appendChild(lineElement);
+            });
+        }
+
+        // 4. SYNC LOGIC
+        function highlightCurrentLine() {
+            if (!player || !player.getCurrentTime) return;
+
+            const currentTime = player.getCurrentTime();
+            const lines = document.querySelectorAll('#transcript-container .transcript-line');
+            let foundActive = false;
+
+            lines.forEach(line => {
+                const start = parseFloat(line.dataset.start);
+                const end = parseFloat(line.dataset.end);
+
+                if (currentTime >= start && currentTime < end) {
+                    if (!line.classList.contains('active-transcript-line')) {
+                        document.querySelector('.active-transcript-line')?.classList.remove('active-transcript-line');
+                        line.classList.add('active-transcript-line');
+                        line.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
+                    foundActive = true;
+                } else {
+                    line.classList.remove('active-transcript-line');
+                }
+            });
+        }
+
+        // 5. YOUTUBE API HANDLERS
+        window.onYouTubeIframeAPIReady = function() {
+            player = new YT.Player('youtube-player', {
+                videoId: VIDEO_ID,
+                events: {
+                    'onStateChange': onPlayerStateChange
+                }
+            });
+        };
+
+        function onPlayerStateChange(event) {
+            clearInterval(timeUpdater);
+            if (event.data === YT.PlayerState.PLAYING) {
+                timeUpdater = setInterval(highlightCurrentLine, 300);
+            }
+        }
+
+        // 6. INITIALIZATION
+        document.addEventListener('DOMContentLoaded', () => {
+            parsedTranscript = parseVtt(vttContent);
+            populateTranscript();
+
+            // Load the YouTube IFrame Player API script if not present
+            if (typeof(YT) == 'undefined' || typeof(YT.Player) == 'undefined') {
+                const tag = document.createElement('script');
+                tag.src = "https://www.youtube.com/iframe_api";
+                document.head.appendChild(tag);
+            } else {
+                onYouTubeIframeAPIReady();
+            }
+        });
+    </script>
+</body>
+</html>
