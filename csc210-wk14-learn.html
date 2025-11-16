@@ -1,0 +1,1735 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conditional Branch Instructions - Interactive Learning Guide</title>
+    
+    <!-- 1. CDN Links & Tailwind Configuration -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                },
+            },
+        }
+    </script>
+    
+    <style>
+        /* Essential for ensuring light mode and setting base font */
+        html { 
+            font-family: 'Inter', sans-serif; 
+            background-color: #FDFBF8;
+            color: #1A1A1A;
+        }
+        
+        /* Override Tailwind default dark mode behavior */
+        @media (prefers-color-scheme: dark) {
+            html {
+                background-color: #FDFBF8 !important; 
+                color: #1A1A1A !important; 
+            }
+        }
+        
+        /* Skip to content link - visible on focus */
+        .skip-link {
+            position: absolute;
+            top: -40px;
+            left: 0;
+            background: #2563eb;
+            color: white;
+            padding: 8px 16px;
+            text-decoration: none;
+            z-index: 100;
+            border-radius: 0 0 4px 0;
+        }
+        
+        .skip-link:focus {
+            top: 0;
+        }
+        
+        /* Tab styling */
+        .tab-button {
+            transition: all 0.2s ease;
+        }
+        
+        .tab-button:hover {
+            background-color: #dbeafe;
+        }
+        
+        .tab-button[aria-selected="true"] {
+            background-color: #2563eb;
+            color: white;
+            border-bottom: 3px solid #1e40af;
+        }
+        
+        .tab-button:focus {
+            outline: 2px solid #2563eb;
+            outline-offset: 2px;
+        }
+        
+        /* Content sections */
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.3s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        /* FLAGS register visualization */
+        .flag-box {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 3rem;
+            height: 3rem;
+            border-radius: 0.5rem;
+            font-weight: 700;
+            font-size: 1.125rem;
+            transition: all 0.2s ease;
+        }
+        
+        .flag-set {
+            background-color: #10b981;
+            color: white;
+            border: 2px solid #059669;
+        }
+        
+        .flag-clear {
+            background-color: #f3f4f6;
+            color: #6b7280;
+            border: 2px solid #d1d5db;
+        }
+        
+        /* Answer buttons */
+        .answer-btn {
+            transition: all 0.2s ease;
+        }
+        
+        .answer-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+        
+        .answer-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        /* Feedback section */
+        .feedback-section {
+            animation: slideDown 0.3s ease-out;
+        }
+        
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Reference table toggle */
+        .reference-table {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+        
+        .reference-table.open {
+            max-height: 500px;
+        }
+        
+        /* Code blocks */
+        .code-block {
+            background-color: #1e293b;
+            color: #e2e8f0;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 0.875rem;
+            line-height: 1.5;
+        }
+        
+        .code-comment {
+            color: #94a3b8;
+        }
+        
+        .code-instruction {
+            color: #38bdf8;
+        }
+        
+        .code-register {
+            color: #fb923c;
+        }
+        
+        .code-number {
+            color: #a78bfa;
+        }
+        
+        /* Progress indicator */
+        .progress-bar {
+            height: 8px;
+            background-color: #e5e7eb;
+            border-radius: 9999px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background-color: #2563eb;
+            transition: width 0.3s ease;
+        }
+        
+        /* Completion summary */
+        .completion-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        /* Instruction highlight box */
+        .instruction-box {
+            background-color: #fef3c7;
+            border-left: 4px solid #f59e0b;
+            padding: 1rem;
+            font-family: 'Courier New', monospace;
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+        
+        /* Context code display */
+        .context-code {
+            background-color: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.5rem;
+            padding: 0.75rem;
+            font-family: 'Courier New', monospace;
+            font-size: 0.875rem;
+        }
+        
+        .context-code-line {
+            margin: 0.25rem 0;
+            color: #475569;
+        }
+        
+        .context-code-current {
+            background-color: #fef3c7;
+            color: #1e293b;
+            font-weight: 600;
+            padding: 0.25rem 0.5rem;
+            margin: 0.25rem -0.5rem;
+            border-radius: 0.25rem;
+        }
+        
+        /* Responsive typography for prose content */
+        .prose {
+            max-width: none;
+        }
+        
+        .prose h2 {
+            font-size: 1.875rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+        }
+        
+        .prose h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #334155;
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+        }
+        
+        .prose h4 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #475569;
+            margin-top: 1.25rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .prose p {
+            margin-bottom: 1rem;
+            line-height: 1.75;
+            color: #1e293b;
+        }
+        
+        .prose ul, .prose ol {
+            margin-bottom: 1rem;
+            padding-left: 1.5rem;
+        }
+        
+        .prose li {
+            margin-bottom: 0.5rem;
+            line-height: 1.75;
+        }
+        
+        .prose code {
+            background-color: #f1f5f9;
+            padding: 0.125rem 0.375rem;
+            border-radius: 0.25rem;
+            font-size: 0.875em;
+            color: #dc2626;
+        }
+        
+        .prose pre {
+            background-color: #1e293b;
+            color: #e2e8f0;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            overflow-x: auto;
+            margin-bottom: 1rem;
+        }
+        
+        .prose strong {
+            font-weight: 600;
+            color: #1e293b;
+        }
+        
+        .prose a {
+            color: #2563eb;
+            text-decoration: underline;
+        }
+        
+        .prose a:hover {
+            color: #1e40af;
+        }
+        
+        /* Mobile responsive adjustments */
+        @media (max-width: 640px) {
+            .tab-button {
+                font-size: 0.875rem;
+                padding: 0.75rem 1rem;
+            }
+            
+            .flag-box {
+                width: 2.5rem;
+                height: 2.5rem;
+                font-size: 1rem;
+            }
+            
+            .prose h2 {
+                font-size: 1.5rem;
+            }
+            
+            .prose h3 {
+                font-size: 1.25rem;
+            }
+        }
+    </style>
+    
+    <!-- 2. Meta Comments -->
+    <!-- Chosen Palette: Primary Blue (#2563eb), Success Green (#10b981), Warning Amber (#f59e0b), Background (#FDFBF8) -->
+    <!-- Application Structure: Tabbed interface with three main sections - Foundational Concepts, Activity Instructions, Interactive Simulator -->
+    <!-- Visualization Choices: FLAGS register rendered as colored boxes (green=set, gray=clear), Code contexts shown with monospace styling -->
+</head>
+<body class="bg-[#FDFBF8] text-[#1A1A1A] min-h-screen">
+    <!-- Skip to Content Link -->
+    <a id="skip-to-content" href="#main-content" class="skip-link">Skip to Content</a>
+    
+    <!-- Header -->
+    <header class="bg-white shadow-sm border-b-2 border-blue-600">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <h1 class="text-3xl sm:text-4xl font-bold text-gray-900">
+                Conditional Branch Instructions
+            </h1>
+            <p class="mt-2 text-lg text-gray-600">
+                Understanding How CPUs Make Decisions
+            </p>
+        </div>
+    </header>
+    
+    <!-- Main Content -->
+    <main id="main-content" class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        
+        <!-- Tab Navigation -->
+        <nav role="tablist" aria-label="Content sections" class="mb-8">
+            <div class="flex flex-col sm:flex-row gap-2 sm:gap-4 border-b-2 border-gray-200">
+                <button
+                    id="tab-concepts"
+                    role="tab"
+                    aria-selected="true"
+                    aria-controls="panel-concepts"
+                    class="tab-button px-6 py-3 font-semibold text-gray-700 rounded-t-lg focus:outline-none"
+                >
+                    📚 Foundational Concepts
+                </button>
+                <button
+                    id="tab-instructions"
+                    role="tab"
+                    aria-selected="false"
+                    aria-controls="panel-instructions"
+                    class="tab-button px-6 py-3 font-semibold text-gray-700 rounded-t-lg focus:outline-none"
+                >
+                    📖 Activity Instructions
+                </button>
+                <button
+                    id="tab-simulator"
+                    role="tab"
+                    aria-selected="false"
+                    aria-controls="panel-simulator"
+                    class="tab-button px-6 py-3 font-semibold text-gray-700 rounded-t-lg focus:outline-none"
+                >
+                    🎮 Interactive Simulator
+                </button>
+            </div>
+        </nav>
+        
+        <!-- Tab Panel 1: Foundational Concepts -->
+        <div id="panel-concepts" role="tabpanel" aria-labelledby="tab-concepts" class="tab-content active">
+            <div class="prose max-w-none">
+                
+                <h2>How CPUs Make Decisions: Conditional Branch Instructions</h2>
+                
+                <p>Welcome to one of the most powerful concepts in computer architecture: conditional branches. This is where your CPU transforms from a simple calculator that follows instructions in order into an intelligent machine that can make decisions.</p>
+                
+                <h3>The Challenge: How Does Hardware Execute "IF" Statements?</h3>
+                
+                <p>Think about the code you write in high-level languages:</p>
+                
+                <pre><code>if (x == 0):
+    do_something()
+else:
+    do_something_else()</code></pre>
+                
+                <p>This seems simple in Python or Java, but how does the CPU—built from logic gates and wires—actually make this decision? The answer lies in two interconnected components: the <strong>FLAGS register</strong> and <strong>conditional branch instructions</strong>.</p>
+                
+                <h3>The FLAGS Register: The CPU's Memory of What Just Happened</h3>
+                
+                <p>After your CPU performs an arithmetic or logic operation (like ADD or SUB), it needs to remember certain facts about the result. Did the operation produce zero? Was the result negative? Did we overflow? This information is stored in a special register called the <strong>FLAGS register</strong>.</p>
+                
+                <p>Here's how the FLAGS register is structured in your CPU:</p>
+                
+                <div class="bg-gray-50 border-2 border-gray-300 rounded-lg p-6 my-6">
+                    <div class="text-center mb-4">
+                        <h4 class="text-lg font-bold text-gray-800">FLAGS Register Layout (8 bits)</h4>
+                    </div>
+                    <div class="flex justify-center items-center gap-2 mb-4">
+                        <div class="w-16 h-16 border-2 border-gray-400 bg-white flex items-center justify-center font-mono text-gray-400">-</div>
+                        <div class="w-16 h-16 border-2 border-gray-400 bg-white flex items-center justify-center font-mono text-gray-400">-</div>
+                        <div class="w-16 h-16 border-2 border-gray-400 bg-white flex items-center justify-center font-mono text-gray-400">-</div>
+                        <div class="w-16 h-16 border-2 border-gray-400 bg-white flex items-center justify-center font-mono text-gray-400">-</div>
+                        <div class="w-16 h-16 border-2 border-blue-500 bg-blue-50 flex items-center justify-center font-mono font-bold text-blue-700">O</div>
+                        <div class="w-16 h-16 border-2 border-blue-500 bg-blue-50 flex items-center justify-center font-mono font-bold text-blue-700">N</div>
+                        <div class="w-16 h-16 border-2 border-blue-500 bg-blue-50 flex items-center justify-center font-mono font-bold text-blue-700">Z</div>
+                        <div class="w-16 h-16 border-2 border-blue-500 bg-blue-50 flex items-center justify-center font-mono font-bold text-blue-700">C</div>
+                    </div>
+                    <div class="space-y-2 text-sm">
+                        <div class="flex items-center justify-end">
+                            <span class="text-gray-600">Carry flag (C)</span>
+                        </div>
+                        <div class="flex items-center justify-end">
+                            <span class="text-gray-600">Zero flag (Z)</span>
+                        </div>
+                        <div class="flex items-center justify-end">
+                            <span class="text-gray-600">Negative flag (N)</span>
+                        </div>
+                        <div class="flex items-center justify-end">
+                            <span class="text-gray-600">Overflow flag (O)</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <p>Each flag is a single bit that gets set (1) or cleared (0) based on the result of an operation:</p>
+                
+                <ul>
+                    <li><strong>Zero Flag (Z):</strong> Set to 1 when the result equals zero, 0 otherwise
+                        <ul>
+                            <li>Example: <code>SUB R1, R1</code> produces 0, so Z = 1</li>
+                        </ul>
+                    </li>
+                    <li><strong>Negative Flag (N):</strong> Set to 1 when the result is negative (MSB = 1), 0 otherwise
+                        <ul>
+                            <li>Example: <code>SUB R0, R1</code> where R0 &lt; R1 produces negative result, so N = 1</li>
+                        </ul>
+                    </li>
+                    <li><strong>Carry Flag (C):</strong> Set to 1 when addition produces a carry out or subtraction requires a borrow
+                        <ul>
+                            <li>Example: Adding two large numbers that exceed register size sets C = 1</li>
+                        </ul>
+                    </li>
+                    <li><strong>Overflow Flag (O):</strong> Set to 1 when signed arithmetic produces an incorrect result
+                        <ul>
+                            <li>Example: Adding two large positive numbers produces a negative result</li>
+                        </ul>
+                    </li>
+                </ul>
+                
+                <p><strong>Key Insight:</strong> The FLAGS register acts like the CPU's short-term memory. It remembers what just happened so the next instruction can ask, "Was the last result zero?" or "Did we get a negative number?"</p>
+                
+                <h3>Conditional Branch Instructions: Making the Decision</h3>
+                
+                <p>A <strong>conditional branch</strong> is a special type of jump instruction that only modifies the Program Counter (PC) if a specific condition is true. If the condition is false, execution continues to the next instruction sequentially.</p>
+                
+                <p>Think of it like a fork in the road with a sign: "If it's raining, take the left path. Otherwise, continue straight." The branch instruction checks a condition (the FLAGS) and decides which path to take.</p>
+                
+                <p>Here are the key conditional branch instructions you'll implement:</p>
+                
+                <h4>1. BEQ - Branch if Equal (Branch if Zero)</h4>
+                <ul>
+                    <li><strong>Condition:</strong> Z flag = 1</li>
+                    <li><strong>Meaning:</strong> The last operation produced zero</li>
+                    <li><strong>Use case:</strong> Checking if two values are equal</li>
+                    <li><strong>Example:</strong>
+                        <pre><code>SUB R0, R1      ; Compute R0 - R1, sets FLAGS
+BEQ equal_label ; If Z=1 (R0 equals R1), jump to equal_label
+; Code here runs if R0 ≠ R1</code></pre>
+                    </li>
+                </ul>
+                
+                <h4>2. BNE - Branch if Not Equal (Branch if Not Zero)</h4>
+                <ul>
+                    <li><strong>Condition:</strong> Z flag = 0</li>
+                    <li><strong>Meaning:</strong> The last operation did NOT produce zero</li>
+                    <li><strong>Use case:</strong> Checking if two values are different</li>
+                    <li><strong>Example:</strong>
+                        <pre><code>SUB R0, R1      ; Compute R0 - R1, sets FLAGS
+BNE not_equal   ; If Z=0 (R0 not equal to R1), jump
+; Code here runs if R0 = R1</code></pre>
+                    </li>
+                </ul>
+                
+                <h4>3. BLT - Branch if Less Than</h4>
+                <ul>
+                    <li><strong>Condition:</strong> N flag = 1 (for signed comparison after SUB)</li>
+                    <li><strong>Meaning:</strong> The last subtraction produced a negative result</li>
+                    <li><strong>Use case:</strong> Checking if first value is less than second</li>
+                    <li><strong>Example:</strong>
+                        <pre><code>SUB R0, R1      ; Compute R0 - R1, sets FLAGS
+BLT less_label  ; If N=1 (R0 &lt; R1), jump to less_label
+; Code here runs if R0 ≥ R1</code></pre>
+                    </li>
+                </ul>
+                
+                <h4>4. BGE - Branch if Greater or Equal</h4>
+                <ul>
+                    <li><strong>Condition:</strong> N flag = 0 (after SUB)</li>
+                    <li><strong>Meaning:</strong> The last subtraction did NOT produce a negative result</li>
+                    <li><strong>Use case:</strong> Checking if first value is greater than or equal to second</li>
+                    <li><strong>Example:</strong>
+                        <pre><code>SUB R0, R1      ; Compute R0 - R1, sets FLAGS
+BGE greater_eq  ; If N=0 (R0 ≥ R1), jump
+; Code here runs if R0 &lt; R1</code></pre>
+                    </li>
+                </ul>
+                
+                <h3>How Branches Enable Loops and Conditionals</h3>
+                
+                <p><strong>Creating a Loop:</strong></p>
+                <pre><code>      MOV R0, 0        ; Counter = 0
+loop: ADD R0, 1        ; Increment counter
+      SUB R0, 10       ; Compare with 10 (sets FLAGS)
+      ADD R0, 10       ; Restore R0 value
+      BNE loop         ; If not equal to 10, loop again
+      ; Loop exits when R0 = 10</code></pre>
+                
+                <p><strong>Creating a Conditional:</strong></p>
+                <pre><code>      SUB R0, R1       ; Compare R0 and R1
+      BEQ equal_case   ; If equal, handle that case
+      ; Not equal code here
+      JMP done
+equal_case:
+      ; Equal code here
+done:
+      ; Continue program</code></pre>
+                
+                <h3>The Two-Step Dance: Comparison + Branch</h3>
+                
+                <p>Here's the crucial pattern you'll see repeatedly:</p>
+                
+                <ol>
+                    <li><strong>Step 1 - Compare:</strong> Use SUB or CMP to compare values and set FLAGS</li>
+                    <li><strong>Step 2 - Decide:</strong> Use a conditional branch to act on those FLAGS</li>
+                </ol>
+                
+                <p>Example:</p>
+                <pre><code>SUB R0, 5     ; Step 1: Compare R0 with 5 (sets Z if equal)
+BEQ is_five   ; Step 2: Branch if Z=1
+; R0 is not 5
+JMP done
+is_five:
+; R0 is 5
+done:</code></pre>
+                
+                <h3>Why This Matters</h3>
+                
+                <p>Every <code>if</code>, <code>while</code>, <code>for</code>, and <code>switch</code> statement you've ever written in a high-level language ultimately compiles down to this pattern: set FLAGS with a comparison, then branch based on those FLAGS.</p>
+                
+                <p>Understanding conditional branches means understanding how every decision in every program actually works at the hardware level. This is the bridge between the abstract control flow you write in code and the physical signals flowing through silicon.</p>
+                
+                <p>In the interactive activity ahead, you'll practice predicting which branches will be taken based on different FLAG states. This will build your intuition for how CPUs make decisions—one of the most fundamental skills in computer architecture.</p>
+                
+            </div>
+        </div>
+        
+        <!-- Tab Panel 2: Activity Instructions -->
+        <div id="panel-instructions" role="tabpanel" aria-labelledby="tab-instructions" class="tab-content">
+            <div class="prose max-w-none">
+                
+                <h2>Interactive Activity: Conditional Branch Simulator</h2>
+                
+                <h3>What You'll Do</h3>
+                
+                <p>In this interactive activity, you'll practice predicting whether conditional branch instructions will be taken or not based on the current state of the FLAGS register. You'll work through several scenarios, each presenting:</p>
+                
+                <ol>
+                    <li>The current state of the FLAGS register (which flags are set)</li>
+                    <li>A conditional branch instruction</li>
+                    <li>Your task: Decide if the branch will be taken or if execution continues to the next instruction</li>
+                </ol>
+                
+                <h3>Why This Activity Matters</h3>
+                
+                <p>Before you can implement conditional branches in hardware, you need to deeply understand the logic of when branches are taken. This activity builds that intuition by making you think through the decision process step by step.</p>
+                
+                <p>Being able to predict branch behavior is essential for:</p>
+                <ul>
+                    <li><strong>Debugging your CPU:</strong> When your test programs don't work, you'll need to trace through and ask "Should this branch have been taken?"</li>
+                    <li><strong>Writing test programs:</strong> You need to know which FLAGS to set to test each branch condition</li>
+                    <li><strong>Understanding control flow:</strong> This reinforces how all conditionals work in computing</li>
+                </ul>
+                
+                <h3>How to Use the Simulator</h3>
+                
+                <p>The simulator presents you with scenarios in this format:</p>
+                
+                <div class="bg-gray-50 border-2 border-gray-300 rounded-lg p-6 my-6">
+                    <p class="font-semibold mb-2">Scenario Example:</p>
+                    <pre class="bg-white p-4 rounded">Current FLAGS Register State:
+Z = 1 (Zero flag is SET)
+N = 0 (Negative flag is CLEAR)
+C = 0 (Carry flag is CLEAR)
+O = 0 (Overflow flag is CLEAR)
+
+Instruction: BEQ 0x20
+
+Question: Will this branch be taken?</pre>
+                </div>
+                
+                <p><strong>Your Job:</strong></p>
+                <ol>
+                    <li>Look at the instruction (BEQ in this case)</li>
+                    <li>Recall what condition BEQ checks (Z = 1)</li>
+                    <li>Check the current FLAGS state (Z = 1)</li>
+                    <li>Determine if the condition is met (YES, Z is 1)</li>
+                    <li>Answer: <strong>Branch WILL be taken</strong></li>
+                </ol>
+                
+                <p>After you submit your answer, the simulator will:</p>
+                <ul>
+                    <li>Tell you if you're correct</li>
+                    <li>Explain WHY the branch is or isn't taken</li>
+                    <li>Show you what happens next (PC gets new value OR PC increments normally)</li>
+                    <li>Give you the option to try another scenario</li>
+                </ul>
+                
+                <h3>Understanding the Question Types</h3>
+                
+                <p>You'll encounter several types of scenarios:</p>
+                
+                <p><strong>Type 1: Basic Equality Check</strong></p>
+                <ul>
+                    <li>FLAGS: Z set or clear</li>
+                    <li>Instruction: BEQ or BNE</li>
+                    <li>Focus: Understanding zero flag behavior</li>
+                </ul>
+                
+                <p><strong>Type 2: Comparison Results</strong></p>
+                <ul>
+                    <li>FLAGS: N set or clear after a subtraction</li>
+                    <li>Instruction: BLT or BGE</li>
+                    <li>Focus: Understanding signed comparisons</li>
+                </ul>
+                
+                <p><strong>Type 3: After Arithmetic</strong></p>
+                <ul>
+                    <li>Context: "After executing SUB R0, R1 where R0=5, R1=5..."</li>
+                    <li>Instruction: Conditional branch</li>
+                    <li>Focus: Predicting FLAGS from operation results</li>
+                </ul>
+                
+                <p><strong>Type 4: Program Flow Tracing</strong></p>
+                <ul>
+                    <li>Multiple instructions shown</li>
+                    <li>You trace what happens at each step</li>
+                    <li>Focus: Following execution through branches</li>
+                </ul>
+                
+                <h3>Step-by-Step Strategy</h3>
+                
+                <p>For each scenario, use this mental checklist:</p>
+                
+                <ol>
+                    <li><strong>Identify the branch instruction type</strong>
+                        <ul>
+                            <li>BEQ checks Z=1</li>
+                            <li>BNE checks Z=0</li>
+                            <li>BLT checks N=1</li>
+                            <li>BGE checks N=0</li>
+                        </ul>
+                    </li>
+                    <li><strong>Look at the current FLAGS state</strong>
+                        <ul>
+                            <li>Which flags are 1 (SET)?</li>
+                            <li>Which flags are 0 (CLEAR)?</li>
+                        </ul>
+                    </li>
+                    <li><strong>Check if the condition matches</strong>
+                        <ul>
+                            <li>Does the FLAG state match what the instruction needs?</li>
+                        </ul>
+                    </li>
+                    <li><strong>Predict the outcome</strong>
+                        <ul>
+                            <li>If match: Branch IS taken → PC ← target address</li>
+                            <li>If no match: Branch NOT taken → PC ← PC + 1 (next instruction)</li>
+                        </ul>
+                    </li>
+                </ol>
+                
+                <h3>Common Mistakes to Avoid</h3>
+                
+                <p><strong>Mistake #1: Confusing the instruction mnemonics</strong></p>
+                <ul>
+                    <li>BEQ means "Branch if Equal" which means Z=1</li>
+                    <li>Don't confuse this with "branch if Z=0"</li>
+                </ul>
+                
+                <p><strong>Mistake #2: Forgetting FLAGS are set by previous instruction</strong></p>
+                <ul>
+                    <li>The FLAGS don't change during the branch instruction</li>
+                    <li>They were set by whatever arithmetic/logic operation came before</li>
+                </ul>
+                
+                <p><strong>Mistake #3: Mixing up signed vs unsigned comparisons</strong></p>
+                <ul>
+                    <li>For now, focus on the N flag for signed comparisons</li>
+                    <li>BLT uses N=1 (result was negative)</li>
+                </ul>
+                
+                <p><strong>Mistake #4: Not considering the "not taken" case</strong></p>
+                <ul>
+                    <li>When a branch is NOT taken, execution continues to the next sequential instruction</li>
+                    <li>This is just as important as understanding when branches ARE taken</li>
+                </ul>
+                
+                <h3>Learning Goals</h3>
+                
+                <p>By the end of this activity, you should be able to:</p>
+                
+                <ul>
+                    <li>✓ Identify which FLAG each conditional branch instruction examines</li>
+                    <li>✓ Predict whether a branch will be taken given a FLAGS state</li>
+                    <li>✓ Explain what happens to the PC when a branch is taken vs. not taken</li>
+                    <li>✓ Trace program execution through multiple branch instructions</li>
+                    <li>✓ Understand how SUB sets FLAGS for comparisons</li>
+                </ul>
+                
+                <h3>What to Do If You Get Stuck</h3>
+                
+                <p>If you're struggling with a scenario:</p>
+                
+                <ol>
+                    <li><strong>Review the reference table</strong> showing which FLAG each instruction checks</li>
+                    <li><strong>Think through the logic verbally:</strong> "BEQ takes the branch if Z equals 1. Z is currently 1. So the branch WILL be taken."</li>
+                    <li><strong>Check your understanding of the FLAGS:</strong> Make sure you know what each flag represents</li>
+                    <li><strong>Try working backwards:</strong> If the branch was taken, what must the FLAGS have been?</li>
+                </ol>
+                
+                <h3>Getting the Most From This Activity</h3>
+                
+                <ul>
+                    <li><strong>Don't rush:</strong> Take time to think through each scenario carefully</li>
+                    <li><strong>Read the feedback:</strong> When you get an answer wrong, read the explanation to understand why</li>
+                    <li><strong>Try all scenario types:</strong> Make sure you practice with BEQ, BNE, BLT, and BGE</li>
+                    <li><strong>Think about implementation:</strong> As you work, consider how you'd build the hardware to make these decisions</li>
+                </ul>
+                
+                <h3>Ready to Begin</h3>
+                
+                <p>The simulator will start with simpler scenarios and gradually increase in complexity. There's no time limit—focus on understanding rather than speed.</p>
+                
+                <p>Remember: Every time you correctly predict a branch, you're building the mental model you'll need to implement these instructions in hardware. This is practical skill-building, not just theory.</p>
+                
+                <p class="text-xl font-semibold text-blue-600 mt-8">Click the "Interactive Simulator" tab above when you're ready to begin!</p>
+                
+            </div>
+        </div>
+        
+        <!-- Tab Panel 3: Interactive Simulator -->
+        <div id="panel-simulator" role="tabpanel" aria-labelledby="tab-simulator" class="tab-content">
+            
+            <!-- Reference Table (Collapsible) -->
+            <div class="mb-8 bg-white rounded-lg shadow-md border-2 border-blue-200">
+                <button
+                    id="toggle-reference"
+                    class="w-full px-6 py-4 text-left font-semibold text-lg text-blue-900 hover:bg-blue-50 rounded-t-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors"
+                    aria-expanded="false"
+                    aria-controls="reference-content"
+                >
+                    <span class="flex items-center justify-between">
+                        <span>📋 Quick Reference: Branch Conditions</span>
+                        <span id="toggle-icon" class="text-2xl">▼</span>
+                    </span>
+                </button>
+                <div id="reference-content" class="reference-table" aria-hidden="true">
+                    <div class="px-6 py-4 border-t-2 border-blue-100">
+                        <table class="w-full">
+                            <thead>
+                                <tr class="border-b-2 border-gray-300">
+                                    <th class="text-left py-2 px-4 font-semibold text-gray-800">Instruction</th>
+                                    <th class="text-left py-2 px-4 font-semibold text-gray-800">Name</th>
+                                    <th class="text-left py-2 px-4 font-semibold text-gray-800">Condition</th>
+                                    <th class="text-left py-2 px-4 font-semibold text-gray-800">Meaning</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="border-b border-gray-200">
+                                    <td class="py-3 px-4 font-mono font-bold text-blue-600">BEQ</td>
+                                    <td class="py-3 px-4">Branch if Equal</td>
+                                    <td class="py-3 px-4 font-mono">Z = 1</td>
+                                    <td class="py-3 px-4">Last result was zero</td>
+                                </tr>
+                                <tr class="border-b border-gray-200">
+                                    <td class="py-3 px-4 font-mono font-bold text-blue-600">BNE</td>
+                                    <td class="py-3 px-4">Branch if Not Equal</td>
+                                    <td class="py-3 px-4 font-mono">Z = 0</td>
+                                    <td class="py-3 px-4">Last result was not zero</td>
+                                </tr>
+                                <tr class="border-b border-gray-200">
+                                    <td class="py-3 px-4 font-mono font-bold text-blue-600">BLT</td>
+                                    <td class="py-3 px-4">Branch if Less Than</td>
+                                    <td class="py-3 px-4 font-mono">N = 1</td>
+                                    <td class="py-3 px-4">Last result was negative</td>
+                                </tr>
+                                <tr>
+                                    <td class="py-3 px-4 font-mono font-bold text-blue-600">BGE</td>
+                                    <td class="py-3 px-4">Branch if Greater or Equal</td>
+                                    <td class="py-3 px-4 font-mono">N = 0</td>
+                                    <td class="py-3 px-4">Last result was non-negative</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Progress Indicator -->
+            <div class="mb-6 bg-white rounded-lg shadow-md p-6 border-2 border-gray-200">
+                <div class="flex justify-between items-center mb-2">
+                    <span class="text-lg font-semibold text-gray-800">Progress</span>
+                    <span id="progress-text" class="text-lg font-semibold text-blue-600">0 of 12 scenarios completed</span>
+                </div>
+                <div class="progress-bar">
+                    <div id="progress-fill" class="progress-fill" style="width: 0%"></div>
+                </div>
+                <div class="mt-2 flex justify-between items-center">
+                    <span class="text-sm text-gray-600">Score: <span id="score-display" class="font-semibold text-blue-600">0</span> correct</span>
+                    <span class="text-sm text-gray-600">Accuracy: <span id="accuracy-display" class="font-semibold text-green-600">--%</span></span>
+                </div>
+            </div>
+            
+            <!-- Scenario Display Area -->
+            <div id="scenario-container" class="bg-white rounded-lg shadow-lg p-8 border-2 border-gray-200">
+                <!-- Content will be dynamically inserted here by JavaScript -->
+            </div>
+            
+            <!-- Completion Summary (Hidden initially) -->
+            <div id="completion-summary" class="hidden mt-8 completion-card rounded-lg shadow-xl p-8">
+                <!-- Content will be dynamically inserted here by JavaScript -->
+            </div>
+            
+        </div>
+        
+    </main>
+    
+    <!-- Footer -->
+    <footer class="bg-white border-t-2 border-gray-200 mt-16">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <p class="text-center text-gray-600">
+                © 2024 Computer Architecture Learning Module | Mendocino Community College
+            </p>
+        </div>
+    </footer>
+    
+    <script>
+// ============================================================================
+// CONDITIONAL BRANCH SIMULATOR - JAVASCRIPT
+// ============================================================================
+
+document.addEventListener('DOMContentLoaded', function() {
+    
+    // ========================================================================
+    // DATA: Scenario definitions
+    // ========================================================================
+    
+    const scenarioData = {
+        "activityType": "conditionalBranchSimulator",
+        "title": "Conditional Branch Prediction Simulator",
+        "instructions": "For each scenario, examine the FLAGS register state and the branch instruction, then predict whether the branch will be taken or not.",
+        
+        "scenarios": [
+            {
+                "id": 1,
+                "difficulty": "basic",
+                "type": "simple_branch",
+                "title": "Basic BEQ - Zero Flag Set",
+                "context": "After executing SUB R0, R0 (subtracting a register from itself)",
+                "flags": {"Z": 1, "N": 0, "C": 0, "O": 0},
+                "currentPC": "0x10",
+                "instruction": {
+                    "address": "0x10",
+                    "mnemonic": "BEQ",
+                    "target": "0x20",
+                    "fullText": "BEQ 0x20"
+                },
+                "question": "Will this branch be taken?",
+                "correctAnswer": "yes",
+                "explanation": {
+                    "reasoning": "BEQ checks if the Zero flag (Z) equals 1. Since Z = 1, the condition is met.",
+                    "outcome": "The branch WILL be taken. The PC will be loaded with 0x20.",
+                    "nextPC": "0x20",
+                    "keyPoint": "BEQ takes the branch when the last operation produced a zero result."
+                }
+            },
+            {
+                "id": 2,
+                "difficulty": "basic",
+                "type": "simple_branch",
+                "title": "Basic BEQ - Zero Flag Clear",
+                "context": "After executing ADD R0, 5 where R0 initially contained 3",
+                "flags": {"Z": 0, "N": 0, "C": 0, "O": 0},
+                "currentPC": "0x15",
+                "instruction": {
+                    "address": "0x15",
+                    "mnemonic": "BEQ",
+                    "target": "0x30",
+                    "fullText": "BEQ 0x30"
+                },
+                "question": "Will this branch be taken?",
+                "correctAnswer": "no",
+                "explanation": {
+                    "reasoning": "BEQ checks if the Zero flag (Z) equals 1. Since Z = 0, the condition is NOT met.",
+                    "outcome": "The branch will NOT be taken. The PC will increment normally to 0x16.",
+                    "nextPC": "0x16",
+                    "keyPoint": "When a branch condition is not met, execution continues sequentially to the next instruction."
+                }
+            },
+            {
+                "id": 3,
+                "difficulty": "basic",
+                "type": "simple_branch",
+                "title": "Basic BNE - Zero Flag Clear",
+                "context": "After executing SUB R1, R2 where R1=10 and R2=5",
+                "flags": {"Z": 0, "N": 0, "C": 0, "O": 0},
+                "currentPC": "0x08",
+                "instruction": {
+                    "address": "0x08",
+                    "mnemonic": "BNE",
+                    "target": "0x12",
+                    "fullText": "BNE 0x12"
+                },
+                "question": "Will this branch be taken?",
+                "correctAnswer": "yes",
+                "explanation": {
+                    "reasoning": "BNE checks if the Zero flag (Z) equals 0. Since Z = 0 (result was non-zero), the condition is met.",
+                    "outcome": "The branch WILL be taken. The PC will be loaded with 0x12.",
+                    "nextPC": "0x12",
+                    "keyPoint": "BNE is the opposite of BEQ—it branches when the result was NOT zero, which is perfect for inequality checks."
+                }
+            },
+            {
+                "id": 4,
+                "difficulty": "basic",
+                "type": "simple_branch",
+                "title": "Basic BNE - Zero Flag Set",
+                "context": "After executing SUB R3, R3 (comparing a value with itself)",
+                "flags": {"Z": 1, "N": 0, "C": 0, "O": 0},
+                "currentPC": "0x1A",
+                "instruction": {
+                    "address": "0x1A",
+                    "mnemonic": "BNE",
+                    "target": "0x25",
+                    "fullText": "BNE 0x25"
+                },
+                "question": "Will this branch be taken?",
+                "correctAnswer": "no",
+                "explanation": {
+                    "reasoning": "BNE checks if the Zero flag (Z) equals 0. Since Z = 1 (result was zero), the condition is NOT met.",
+                    "outcome": "The branch will NOT be taken. The PC will increment normally to 0x1B.",
+                    "nextPC": "0x1B",
+                    "keyPoint": "When comparing a value with itself, the result is always zero, so BNE will never branch."
+                }
+            },
+            {
+                "id": 5,
+                "difficulty": "intermediate",
+                "type": "simple_branch",
+                "title": "BLT - Negative Flag Set",
+                "context": "After executing SUB R0, R1 where R0=3 and R1=8",
+                "flags": {"Z": 0, "N": 1, "C": 1, "O": 0},
+                "currentPC": "0x0C",
+                "instruction": {
+                    "address": "0x0C",
+                    "mnemonic": "BLT",
+                    "target": "0x18",
+                    "fullText": "BLT 0x18"
+                },
+                "question": "Will this branch be taken?",
+                "correctAnswer": "yes",
+                "explanation": {
+                    "reasoning": "BLT checks if the Negative flag (N) equals 1. Since N = 1 (3 - 8 = -5, negative result), the condition is met.",
+                    "outcome": "The branch WILL be taken. The PC will be loaded with 0x18.",
+                    "nextPC": "0x18",
+                    "keyPoint": "BLT implements 'less than' comparison. When R0 < R1, the subtraction R0-R1 produces a negative result, setting N=1."
+                }
+            },
+            {
+                "id": 6,
+                "difficulty": "intermediate",
+                "type": "simple_branch",
+                "title": "BLT - Negative Flag Clear",
+                "context": "After executing SUB R2, R3 where R2=15 and R3=10",
+                "flags": {"Z": 0, "N": 0, "C": 0, "O": 0},
+                "currentPC": "0x14",
+                "instruction": {
+                    "address": "0x14",
+                    "mnemonic": "BLT",
+                    "target": "0x22",
+                    "fullText": "BLT 0x22"
+                },
+                "question": "Will this branch be taken?",
+                "correctAnswer": "no",
+                "explanation": {
+                    "reasoning": "BLT checks if the Negative flag (N) equals 1. Since N = 0 (15 - 10 = 5, positive result), the condition is NOT met.",
+                    "outcome": "The branch will NOT be taken. The PC will increment normally to 0x15.",
+                    "nextPC": "0x15",
+                    "keyPoint": "When R2 ≥ R3, the subtraction produces a non-negative result, so N=0 and BLT does not branch."
+                }
+            },
+            {
+                "id": 7,
+                "difficulty": "intermediate",
+                "type": "simple_branch",
+                "title": "BGE - Negative Flag Clear",
+                "context": "After executing SUB R4, R5 where R4=7 and R5=7",
+                "flags": {"Z": 1, "N": 0, "C": 0, "O": 0},
+                "currentPC": "0x20",
+                "instruction": {
+                    "address": "0x20",
+                    "mnemonic": "BGE",
+                    "target": "0x2C",
+                    "fullText": "BGE 0x2C"
+                },
+                "question": "Will this branch be taken?",
+                "correctAnswer": "yes",
+                "explanation": {
+                    "reasoning": "BGE checks if the Negative flag (N) equals 0. Since N = 0 (7 - 7 = 0, non-negative result), the condition is met.",
+                    "outcome": "The branch WILL be taken. The PC will be loaded with 0x2C.",
+                    "nextPC": "0x2C",
+                    "keyPoint": "BGE implements 'greater than or equal to.' When values are equal, N=0 and the branch is taken. The 'equal' part is crucial!"
+                }
+            },
+            {
+                "id": 8,
+                "difficulty": "intermediate",
+                "type": "simple_branch",
+                "title": "BGE - Negative Flag Set",
+                "context": "After executing SUB R6, R7 where R6=2 and R7=9",
+                "flags": {"Z": 0, "N": 1, "C": 1, "O": 0},
+                "currentPC": "0x18",
+                "instruction": {
+                    "address": "0x18",
+                    "mnemonic": "BGE",
+                    "target": "0x28",
+                    "fullText": "BGE 0x28"
+                },
+                "question": "Will this branch be taken?",
+                "correctAnswer": "no",
+                "explanation": {
+                    "reasoning": "BGE checks if the Negative flag (N) equals 0. Since N = 1 (2 - 9 = -7, negative result), the condition is NOT met.",
+                    "outcome": "The branch will NOT be taken. The PC will increment normally to 0x19.",
+                    "nextPC": "0x19",
+                    "keyPoint": "BGE is the opposite of BLT. When R6 < R7, the result is negative (N=1), so BGE does not branch."
+                }
+            },
+            {
+                "id": 9,
+                "difficulty": "advanced",
+                "type": "program_trace",
+                "title": "Loop Counter Check",
+                "context": "Loop that counts from 0 to 5. Currently R0 = 4 after ADD R0, 1",
+                "codeContext": [
+                    "0x00: MOV R0, 0     ; Initialize counter",
+                    "0x01: ADD R0, 1     ; Increment (R0 now = 4)",
+                    "0x02: SUB R0, 5     ; Compare with limit",
+                    "0x03: ADD R0, 5     ; Restore R0 value",
+                    "0x04: BNE 0x01      ; Loop if not equal ← WE ARE HERE"
+                ],
+                "flags": {"Z": 0, "N": 1, "C": 1, "O": 0},
+                "currentPC": "0x04",
+                "instruction": {
+                    "address": "0x04",
+                    "mnemonic": "BNE",
+                    "target": "0x01",
+                    "fullText": "BNE 0x01"
+                },
+                "question": "Will the loop continue (branch back to 0x01)?",
+                "correctAnswer": "yes",
+                "explanation": {
+                    "reasoning": "After SUB R0, 5 where R0=4, the result is -1 (not zero), so Z=0. BNE checks Z=0, which is true.",
+                    "outcome": "The branch WILL be taken. PC will jump back to 0x01, and the loop continues for one more iteration.",
+                    "nextPC": "0x01",
+                    "keyPoint": "This is a classic counting loop pattern. The branch continues until R0 equals 5, at which point Z would be 1 and BNE would not branch."
+                }
+            },
+            {
+                "id": 10,
+                "difficulty": "advanced",
+                "type": "program_trace",
+                "title": "Loop Termination",
+                "context": "Same loop, but now R0 = 5 after ADD R0, 1",
+                "codeContext": [
+                    "0x00: MOV R0, 0     ; Initialize counter",
+                    "0x01: ADD R0, 1     ; Increment (R0 now = 5)",
+                    "0x02: SUB R0, 5     ; Compare with limit",
+                    "0x03: ADD R0, 5     ; Restore R0 value",
+                    "0x04: BNE 0x01      ; Loop if not equal ← WE ARE HERE"
+                ],
+                "flags": {"Z": 1, "N": 0, "C": 0, "O": 0},
+                "currentPC": "0x04",
+                "instruction": {
+                    "address": "0x04",
+                    "mnemonic": "BNE",
+                    "target": "0x01",
+                    "fullText": "BNE 0x01"
+                },
+                "question": "Will the loop continue (branch back to 0x01)?",
+                "correctAnswer": "no",
+                "explanation": {
+                    "reasoning": "After SUB R0, 5 where R0=5, the result is 0, so Z=1. BNE checks Z=0, which is false.",
+                    "outcome": "The branch will NOT be taken. The loop terminates, and PC increments to 0x05 (next instruction after loop).",
+                    "nextPC": "0x05",
+                    "keyPoint": "This demonstrates loop termination. When the counter reaches the limit, the comparison produces zero, Z gets set, and BNE stops branching—the loop exits."
+                }
+            },
+            {
+                "id": 11,
+                "difficulty": "advanced",
+                "type": "conditional_logic",
+                "title": "If-Then-Else Structure",
+                "context": "Checking if user input (in R1) is valid (< 10). R1 currently = 12",
+                "codeContext": [
+                    "0x10: MOV R0, 10    ; Load comparison value",
+                    "0x11: SUB R1, R0    ; Check if R1 < 10",
+                    "0x12: ADD R1, R0    ; Restore R1",
+                    "0x13: BLT 0x18      ; If less than, jump to valid case ← WE ARE HERE",
+                    "0x14: ; Invalid case code",
+                    "0x18: ; Valid case code"
+                ],
+                "flags": {"Z": 0, "N": 0, "C": 0, "O": 0},
+                "currentPC": "0x13",
+                "instruction": {
+                    "address": "0x13",
+                    "mnemonic": "BLT",
+                    "target": "0x18",
+                    "fullText": "BLT 0x18"
+                },
+                "question": "Will execution jump to the 'valid case' code?",
+                "correctAnswer": "no",
+                "explanation": {
+                    "reasoning": "After SUB R1, R0 where R1=12 and R0=10, result is 2 (positive), so N=0. BLT checks N=1, which is false.",
+                    "outcome": "The branch will NOT be taken. Execution continues to 0x14 (the invalid case), because 12 is NOT less than 10.",
+                    "nextPC": "0x14",
+                    "keyPoint": "This implements an if-then-else. The BLT acts as the 'if (input < 10)' test. Since it's false, we execute the 'else' clause."
+                }
+            },
+            {
+                "id": 12,
+                "difficulty": "advanced",
+                "type": "conditional_logic",
+                "title": "Early Exit Pattern",
+                "context": "Checking for error condition. R2 contains error code, currently = 0",
+                "codeContext": [
+                    "0x20: ; Some operation that may fail",
+                    "0x21: SUB R2, 0     ; Check if error code is zero",
+                    "0x22: BNE 0x30      ; If error exists, jump to handler ← WE ARE HERE",
+                    "0x23: ; Continue normal processing",
+                    "0x30: ; Error handler"
+                ],
+                "flags": {"Z": 1, "N": 0, "C": 0, "O": 0},
+                "currentPC": "0x22",
+                "instruction": {
+                    "address": "0x22",
+                    "mnemonic": "BNE",
+                    "target": "0x30",
+                    "fullText": "BNE 0x30"
+                },
+                "question": "Will execution jump to the error handler?",
+                "correctAnswer": "no",
+                "explanation": {
+                    "reasoning": "After SUB R2, 0 where R2=0, the result is 0, so Z=1. BNE checks Z=0, which is false.",
+                    "outcome": "The branch will NOT be taken. Since R2=0 (no error), execution continues normally to 0x23.",
+                    "nextPC": "0x23",
+                    "keyPoint": "This is an 'early exit' pattern common in error handling. If there's no error (R2=0), we skip the handler and continue."
+                }
+            }
+        ]
+    };
+    
+    // ========================================================================
+    // STATE MANAGEMENT (Session-only, no localStorage)
+    // ========================================================================
+    
+    let state = {
+        scenarios: [],
+        currentScenarioIndex: 0,
+        answeredScenarios: [],
+        score: 0,
+        isAnswered: false,
+        userAnswer: null
+    };
+    
+    // ========================================================================
+    // TAB NAVIGATION
+    // ========================================================================
+    
+    function initializeTabs() {
+        const tabs = document.querySelectorAll('[role="tab"]');
+        const panels = document.querySelectorAll('[role="tabpanel"]');
+        
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                // Remove selected state from all tabs
+                tabs.forEach(t => {
+                    t.setAttribute('aria-selected', 'false');
+                    t.classList.remove('bg-blue-600', 'text-white', 'border-blue-800');
+                    t.classList.add('text-gray-700');
+                });
+                
+                // Hide all panels
+                panels.forEach(panel => {
+                    panel.classList.remove('active');
+                });
+                
+                // Activate clicked tab
+                tab.setAttribute('aria-selected', 'true');
+                tab.classList.add('bg-blue-600', 'text-white');
+                tab.classList.remove('text-gray-700');
+                
+                // Show corresponding panel
+                const panelId = tab.getAttribute('aria-controls');
+                const panel = document.getElementById(panelId);
+                if (panel) {
+                    panel.classList.add('active');
+                }
+            });
+            
+            // Keyboard navigation
+            tab.addEventListener('keydown', (e) => {
+                if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+                    e.preventDefault();
+                    const currentIndex = Array.from(tabs).indexOf(tab);
+                    let nextIndex;
+                    
+                    if (e.key === 'ArrowRight') {
+                        nextIndex = (currentIndex + 1) % tabs.length;
+                    } else {
+                        nextIndex = (currentIndex - 1 + tabs.length) % tabs.length;
+                    }
+                    
+                    tabs[nextIndex].click();
+                    tabs[nextIndex].focus();
+                }
+            });
+        });
+    }
+    
+    // ========================================================================
+    // REFERENCE TABLE TOGGLE
+    // ========================================================================
+    
+    function initializeReferenceToggle() {
+        const toggleButton = document.getElementById('toggle-reference');
+        const referenceContent = document.getElementById('reference-content');
+        const toggleIcon = document.getElementById('toggle-icon');
+        
+        if (toggleButton && referenceContent) {
+            toggleButton.addEventListener('click', () => {
+                const isOpen = referenceContent.classList.contains('open');
+                
+                if (isOpen) {
+                    referenceContent.classList.remove('open');
+                    toggleButton.setAttribute('aria-expanded', 'false');
+                    referenceContent.setAttribute('aria-hidden', 'true');
+                    toggleIcon.textContent = '▼';
+                } else {
+                    referenceContent.classList.add('open');
+                    toggleButton.setAttribute('aria-expanded', 'true');
+                    referenceContent.setAttribute('aria-hidden', 'false');
+                    toggleIcon.textContent = '▲';
+                }
+            });
+        }
+    }
+    
+    // ========================================================================
+    // SIMULATOR LOGIC
+    // ========================================================================
+    
+    function initializeSimulator() {
+        // Randomize scenario order
+        state.scenarios = shuffleArray([...scenarioData.scenarios]);
+        state.currentScenarioIndex = 0;
+        state.answeredScenarios = [];
+        state.score = 0;
+        state.isAnswered = false;
+        
+        // Display first scenario
+        displayScenario();
+        updateProgress();
+    }
+    
+    function shuffleArray(array) {
+        const shuffled = [...array];
+        for (let i = shuffled.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+        }
+        return shuffled;
+    }
+    
+    function displayScenario() {
+        const container = document.getElementById('scenario-container');
+        const scenario = state.scenarios[state.currentScenarioIndex];
+        
+        if (!scenario) {
+            showCompletionSummary();
+            return;
+        }
+        
+        // Build scenario HTML
+        let html = `
+            <div class="scenario-content">
+                <div class="mb-6">
+                    <span class="inline-block px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm font-semibold mb-2">
+                        ${scenario.difficulty.toUpperCase()}
+                    </span>
+                    <h2 class="text-2xl font-bold text-gray-900 mb-2">${scenario.title}</h2>
+                    <p class="text-gray-700 italic">${scenario.context}</p>
+                </div>
+        `;
+        
+        // Display code context if available
+        if (scenario.codeContext && scenario.codeContext.length > 0) {
+            html += `
+                <div class="mb-6">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-3">Program Context:</h3>
+                    <div class="context-code">
+            `;
+            scenario.codeContext.forEach(line => {
+                if (line.includes('← WE ARE HERE')) {
+                    html += `<div class="context-code-current">${line}</div>`;
+                } else {
+                    html += `<div class="context-code-line">${line}</div>`;
+                }
+            });
+            html += `
+                    </div>
+                </div>
+            `;
+        }
+        
+        // Display FLAGS register
+        html += `
+            <div class="mb-6">
+                <h3 class="text-lg font-semibold text-gray-800 mb-3">Current FLAGS Register State:</h3>
+                <div class="flex flex-wrap gap-4 justify-center sm:justify-start">
+                    ${renderFlag('O', scenario.flags.O)}
+                    ${renderFlag('N', scenario.flags.N)}
+                    ${renderFlag('Z', scenario.flags.Z)}
+                    ${renderFlag('C', scenario.flags.C)}
+                </div>
+            </div>
+        `;
+        
+        // Display current PC and instruction
+        html += `
+            <div class="mb-6">
+                <h3 class="text-lg font-semibold text-gray-800 mb-3">Current State:</h3>
+                <div class="bg-gray-50 border-2 border-gray-300 rounded-lg p-4">
+                    <p class="mb-2"><span class="font-semibold">Program Counter (PC):</span> <code class="bg-white px-2 py-1 rounded text-blue-600">${scenario.currentPC}</code></p>
+                    <p><span class="font-semibold">Instruction at ${scenario.instruction.address}:</span></p>
+                    <div class="instruction-box mt-2">
+                        ${scenario.instruction.fullText}
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        // Display question
+        html += `
+            <div class="mb-6">
+                <h3 class="text-xl font-bold text-gray-900 mb-4">${scenario.question}</h3>
+                <div class="flex gap-4" id="answer-buttons">
+                    <button 
+                        class="answer-btn flex-1 bg-green-600 hover:bg-green-700 text-white font-bold py-4 px-8 rounded-lg text-lg focus:outline-none focus:ring-4 focus:ring-green-300"
+                        data-answer="yes"
+                        aria-label="Answer: Yes, branch will be taken"
+                    >
+                        ✓ Yes - Branch WILL be taken
+                    </button>
+                    <button 
+                        class="answer-btn flex-1 bg-red-600 hover:bg-red-700 text-white font-bold py-4 px-8 rounded-lg text-lg focus:outline-none focus:ring-4 focus:ring-red-300"
+                        data-answer="no"
+                        aria-label="Answer: No, branch will not be taken"
+                    >
+                        ✗ No - Branch will NOT be taken
+                    </button>
+                </div>
+            </div>
+        `;
+        
+        // Feedback section (hidden initially)
+        html += `
+            <div id="feedback-section" class="hidden">
+                <!-- Feedback content will be inserted here -->
+            </div>
+        `;
+        
+        html += `</div>`;
+        
+        container.innerHTML = html;
+        
+        // Attach event listeners to answer buttons
+        const answerButtons = document.querySelectorAll('.answer-btn');
+        answerButtons.forEach(btn => {
+            btn.addEventListener('click', () => handleAnswer(btn.dataset.answer));
+        });
+    }
+    
+    function renderFlag(name, value) {
+        const flagClass = value === 1 ? 'flag-set' : 'flag-clear';
+        const statusText = value === 1 ? 'SET' : 'CLEAR';
+        const statusColor = value === 1 ? 'text-green-700' : 'text-gray-600';
+        
+        return `
+            <div class="text-center">
+                <div class="${flagClass} flag-box" role="status" aria-label="${name} flag is ${statusText}">
+                    ${name}
+                </div>
+                <div class="mt-2 text-sm font-semibold ${statusColor}">
+                    ${value === 1 ? '1 (SET)' : '0 (CLEAR)'}
+                </div>
+            </div>
+        `;
+    }
+    
+    function handleAnswer(userAnswer) {
+        if (state.isAnswered) return; // Prevent multiple submissions
+        
+        state.isAnswered = true;
+        state.userAnswer = userAnswer;
+        
+        const scenario = state.scenarios[state.currentScenarioIndex];
+        const isCorrect = userAnswer === scenario.correctAnswer;
+        
+        // Update score
+        if (isCorrect) {
+            state.score++;
+        }
+        
+        // Record answered scenario
+        state.answeredScenarios.push({
+            scenario: scenario,
+            userAnswer: userAnswer,
+            isCorrect: isCorrect
+        });
+        
+        // Disable answer buttons
+        const answerButtons = document.querySelectorAll('.answer-btn');
+        answerButtons.forEach(btn => {
+            btn.disabled = true;
+            btn.classList.add('opacity-50', 'cursor-not-allowed');
+        });
+        
+        // Display feedback
+        displayFeedback(scenario, isCorrect);
+        
+        // Update progress
+        updateProgress();
+    }
+    
+    function displayFeedback(scenario, isCorrect) {
+        const feedbackSection = document.getElementById('feedback-section');
+        
+        const feedbackClass = isCorrect ? 'bg-green-50 border-green-500' : 'bg-red-50 border-red-500';
+        const feedbackIcon = isCorrect ? '✓' : '✗';
+        const feedbackTitle = isCorrect ? 'Correct!' : 'Not Quite';
+        const feedbackTitleColor = isCorrect ? 'text-green-800' : 'text-red-800';
+        
+        let html = `
+            <div class="feedback-section ${feedbackClass} border-2 rounded-lg p-6">
+                <div class="flex items-center mb-4">
+                    <span class="text-4xl mr-3">${feedbackIcon}</span>
+                    <h3 class="text-2xl font-bold ${feedbackTitleColor}">${feedbackTitle}</h3>
+                </div>
+                
+                <div class="space-y-4">
+                    <div>
+                        <h4 class="font-semibold text-gray-900 mb-2">Reasoning:</h4>
+                        <p class="text-gray-800">${scenario.explanation.reasoning}</p>
+                    </div>
+                    
+                    <div>
+                        <h4 class="font-semibold text-gray-900 mb-2">What Happens:</h4>
+                        <p class="text-gray-800">${scenario.explanation.outcome}</p>
+                    </div>
+                    
+                    <div class="bg-white border-2 border-gray-300 rounded-lg p-4">
+                        <p class="mb-2"><span class="font-semibold">Next PC Value:</span> <code class="bg-gray-100 px-2 py-1 rounded text-blue-600">${scenario.explanation.nextPC}</code></p>
+                    </div>
+                    
+                    <div class="bg-blue-50 border-l-4 border-blue-600 p-4">
+                        <p class="font-semibold text-blue-900 mb-1">💡 Key Insight:</p>
+                        <p class="text-blue-800">${scenario.explanation.keyPoint}</p>
+                    </div>
+                </div>
+        `;
+        
+        // Add Next button
+        const hasMoreScenarios = state.currentScenarioIndex < state.scenarios.length - 1;
+        if (hasMoreScenarios) {
+            html += `
+                <div class="mt-6">
+                    <button 
+                        id="next-scenario-btn"
+                        class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg text-lg focus:outline-none focus:ring-4 focus:ring-blue-300"
+                    >
+                        Next Scenario →
+                    </button>
+                </div>
+            `;
+        } else {
+            html += `
+                <div class="mt-6">
+                    <button 
+                        id="show-summary-btn"
+                        class="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-6 rounded-lg text-lg focus:outline-none focus:ring-4 focus:ring-purple-300"
+                    >
+                        View Completion Summary →
+                    </button>
+                </div>
+            `;
+        }
+        
+        html += `</div>`;
+        
+        feedbackSection.innerHTML = html;
+        feedbackSection.classList.remove('hidden');
+        
+        // Attach event listener to Next button
+        const nextButton = document.getElementById('next-scenario-btn');
+        if (nextButton) {
+            nextButton.addEventListener('click', nextScenario);
+        }
+        
+        const summaryButton = document.getElementById('show-summary-btn');
+        if (summaryButton) {
+            summaryButton.addEventListener('click', showCompletionSummary);
+        }
+    }
+    
+    function nextScenario() {
+        state.currentScenarioIndex++;
+        state.isAnswered = false;
+        state.userAnswer = null;
+        
+        displayScenario();
+        
+        // Scroll to top of scenario
+        document.getElementById('scenario-container').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+    
+    function updateProgress() {
+        const completed = state.answeredScenarios.length;
+        const total = state.scenarios.length;
+        const percentage = (completed / total) * 100;
+        const accuracy = completed > 0 ? Math.round((state.score / completed) * 100) : 0;
+        
+        document.getElementById('progress-text').textContent = `${completed} of ${total} scenarios completed`;
+        document.getElementById('progress-fill').style.width = `${percentage}%`;
+        document.getElementById('score-display').textContent = state.score;
+        document.getElementById('accuracy-display').textContent = completed > 0 ? `${accuracy}%` : '--%';
+    }
+    
+    function showCompletionSummary() {
+        const container = document.getElementById('scenario-container');
+        const summaryDiv = document.getElementById('completion-summary');
+        
+        // Hide scenario container
+        container.classList.add('hidden');
+        
+        // Calculate statistics
+        const total = state.answeredScenarios.length;
+        const correct = state.score;
+        const accuracy = Math.round((correct / total) * 100);
+        const passingScore = 9; // 75% of 12
+        const passed = correct >= passingScore;
+        
+        // Determine feedback message
+        let feedbackMessage = '';
+        if (accuracy >= 90) {
+            feedbackMessage = "Excellent work! You've mastered conditional branch prediction. You now understand how CPUs make decisions based on FLAGS.";
+        } else if (accuracy >= 75) {
+            feedbackMessage = "Great job! You have a solid understanding of conditional branches. Review any missed scenarios to strengthen your knowledge.";
+        } else {
+            feedbackMessage = "You're learning! Conditional branches can be tricky. Review the reference table and try focusing on one instruction type at a time.";
+        }
+        
+        // Build summary HTML
+        let html = `
+            <div class="text-center">
+                <h2 class="text-4xl font-bold text-white mb-4">
+                    ${passed ? '🎉 Congratulations!' : '📚 Keep Learning!'}
+                </h2>
+                <p class="text-xl text-white mb-8">You've completed all scenarios!</p>
+                
+                <div class="bg-white rounded-lg p-8 mb-6">
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-6">
+                        <div>
+                            <div class="text-4xl font-bold text-blue-600">${correct}/${total}</div>
+                            <div class="text-gray-600 mt-2">Correct Answers</div>
+                        </div>
+                        <div>
+                            <div class="text-4xl font-bold ${accuracy >= 75 ? 'text-green-600' : 'text-orange-600'}">${accuracy}%</div>
+                            <div class="text-gray-600 mt-2">Accuracy</div>
+                        </div>
+                        <div>
+                            <div class="text-4xl font-bold ${passed ? 'text-green-600' : 'text-orange-600'}">${passed ? 'PASS' : 'REVIEW'}</div>
+                            <div class="text-gray-600 mt-2">Status (${passingScore}+ to pass)</div>
+                        </div>
+                    </div>
+                    
+                    <div class="text-left bg-gray-50 rounded-lg p-6 mb-6">
+                        <p class="text-gray-800">${feedbackMessage}</p>
+                    </div>
+                    
+                    <div class="text-left bg-blue-50 border-l-4 border-blue-600 p-4">
+                        <p class="text-blue-900 italic">"Remember: Every programmer struggles with control flow at first. The fact that you're practicing means you're building real expertise."</p>
+                    </div>
+                </div>
+                
+                <div class="space-y-4">
+                    <button 
+                        id="restart-btn"
+                        class="w-full bg-white text-purple-700 hover:bg-gray-100 font-bold py-3 px-6 rounded-lg text-lg focus:outline-none focus:ring-4 focus:ring-white"
+                    >
+                        🔄 Try Again (New Random Order)
+                    </button>
+                    <button 
+                        id="review-answers-btn"
+                        class="w-full bg-white bg-opacity-20 hover:bg-opacity-30 text-white font-bold py-3 px-6 rounded-lg text-lg focus:outline-none focus:ring-4 focus:ring-white"
+                    >
+                        📋 Review Your Answers
+                    </button>
+                </div>
+            </div>
+        `;
+        
+        summaryDiv.innerHTML = html;
+        summaryDiv.classList.remove('hidden');
+        
+        // Attach event listeners
+        document.getElementById('restart-btn').addEventListener('click', () => {
+            summaryDiv.classList.add('hidden');
+            container.classList.remove('hidden');
+            initializeSimulator();
+        });
+        
+        document.getElementById('review-answers-btn').addEventListener('click', showAnswerReview);
+        
+        // Scroll to summary
+        summaryDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+    
+    function showAnswerReview() {
+        const summaryDiv = document.getElementById('completion-summary');
+        
+        let html = `
+            <div>
+                <button 
+                    id="back-to-summary-btn"
+                    class="mb-6 bg-white bg-opacity-20 hover:bg-opacity-30 text-white font-bold py-2 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-white"
+                >
+                    ← Back to Summary
+                </button>
+                
+                <h2 class="text-3xl font-bold text-white mb-6">Answer Review</h2>
+                
+                <div class="space-y-4">
+        `;
+        
+        state.answeredScenarios.forEach((item, index) => {
+            const iconClass = item.isCorrect ? 'text-green-400' : 'text-red-400';
+            const icon = item.isCorrect ? '✓' : '✗';
+            const bgClass = item.isCorrect ? 'bg-green-900 bg-opacity-30 border-green-400' : 'bg-red-900 bg-opacity-30 border-red-400';
+            
+            html += `
+                <div class="${bgClass} border-2 rounded-lg p-4 text-white">
+                    <div class="flex items-start">
+                        <span class="text-2xl ${iconClass} mr-3">${icon}</span>
+                        <div class="flex-1">
+                            <h3 class="font-bold text-lg mb-1">${index + 1}. ${item.scenario.title}</h3>
+                            <p class="text-sm opacity-90 mb-2">${item.scenario.instruction.fullText}</p>
+                            <p class="text-sm">
+                                <span class="font-semibold">Your answer:</span> ${item.userAnswer === 'yes' ? 'Yes (Branch taken)' : 'No (Branch not taken)'}<br>
+                                <span class="font-semibold">Correct answer:</span> ${item.scenario.correctAnswer === 'yes' ? 'Yes (Branch taken)' : 'No (Branch not taken)'}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
+        
+        html += `
+                </div>
+            </div>
+        `;
+        
+        summaryDiv.innerHTML = html;
+        
+        document.getElementById('back-to-summary-btn').addEventListener('click', showCompletionSummary);
+    }
+    
+    // ========================================================================
+    // INITIALIZATION
+    // ========================================================================
+    
+    initializeTabs();
+    initializeReferenceToggle();
+    initializeSimulator();
+    
+});
+</script>
+
+    
+</body>
+</html>
