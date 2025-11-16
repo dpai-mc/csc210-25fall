@@ -63,18 +63,18 @@
     <a id="skip-to-content" href="#main-content" class="skip-link" tabindex="0">Skip to Content</a>
     
     <header class="bg-white shadow-md p-4 sticky top-0 z-10">
-        <div class="max-w-4xl mx-auto">
+        <div class="max-w-7xl mx-auto">
             <h1 class="text-2xl font-bold text-[#1A1A1A]">Circuits: Control Circuit for Add 2 Numbers</h1>
         </div>
     </header>
 
-    <main id="main-content" class="p-4 sm:p-6 lg:p-8 max-w-4xl mx-auto">
+    <main id="main-content" class="p-4 sm:p-6 lg:p-8 w-full max-w-7xl mx-auto">
         
         <h1 class="text-4xl font-extrabold mb-8 text-blue-700">Control Circuit for the ADD Operation</h1>
 
         <section class="mb-8 p-6 bg-white rounded-xl shadow-lg">
             <div class="prose max-w-none">
-                <p>The diagrams below illustrate the circuit required for the **"Add 2 numbers"** operation of the Control Unit and how it is temporarily wired into the CPU template to create an **"Arith-Only CPU"** for explanatory purposes. The video that follows demonstrates the operation.</p>
+                <p>The diagrams below illustrate the circuit required for the <strong>"Add 2 numbers"</strong> operation of the Control Unit and how it is temporarily wired into the CPU template to create an <strong>"Arith-Only CPU"</strong> for explanatory purposes. The video that follows demonstrates the operation.</p>
 
                 <h2 class="text-2xl font-bold mt-6 mb-4">Arith Control Unit Diagram</h2>
                 <p>This diagram shows the logic within the Control Unit specifically for executing an addition operation.</p>
@@ -85,10 +85,10 @@
                 
                 <p>For clarity, the essential stepper connections are listed below:</p>
                 <ul class="list-disc list-inside space-y-2">
-                    <li>**Stepper 4** connects to **R1\_E** (Register 1 Enable) and **TMP\_S** (Temporary Register Set)</li>
-                    <li>**Stepper 5** connects to **R0\_E** (Register 0 Enable) and **ACC\_S** (Accumulator Set)</li>
-                    <li>**Stepper 6** connects to **ACC\_E** (Accumulator Enable) and **R3\_S** (Register 3 Set)</li>
-                    <li>**Stepper 7** connects to **Stepper reset**</li>
+                    <li><strong>Stepper 4</strong> connects to <strong>R1_E</strong> (Register 1 Enable) and <strong>TMP_S</strong> (Temporary Register Set)</li>
+                    <li><strong>Stepper 5</strong> connects to <strong>R0_E</strong> (Register 0 Enable) and <strong>ACC_S</strong> (Accumulator Set)</li>
+                    <li><strong>Stepper 6</strong> connects to <strong>ACC_E</strong> (Accumulator Enable) and <strong>R3_S</strong> (Register 3 Set)</li>
+                    <li><strong>Stepper 7</strong> connects to <strong>Stepper reset</strong></li>
                 </ul>
 
                 <h2 class="text-2xl font-bold mt-6 mb-4">CPU Setup for Arith Control Unit</h2>
@@ -100,32 +100,37 @@
 
                 <p>The temporary modifications included in this test bed are:</p>
                 <ul class="list-disc list-inside space-y-2">
-                    <li>The inputs for **R0** and **R1** have been removed from the BUS and connected to **8-bit inputs** so that the values can be manually changed to test the addition operation.</li>
-                    <li>The **'set'** input for **R0** and **R1** are set to a constant value of **1**.</li>
-                    <li>The **RAM input** and **RAM output** have been removed from the BUS.</li>
-                    <li>The **MAR** (Memory Address Register) input has been removed from the BUS.</li>
+                    <li>The inputs for <strong>R0</strong> and <strong>R1</strong> have been removed from the BUS and connected to <strong>8-bit inputs</strong> so that the values can be manually changed to test the addition operation.</li>
+                    <li>The <strong>'set'</strong> input for <strong>R0</strong> and <strong>R1</strong> are set to a constant value of <strong>1</strong>.</li>
+                    <li>The <strong>RAM input</strong> and <strong>RAM output</strong> have been removed from the BUS.</li>
+                    <li>The <strong>MAR</strong> (Memory Address Register) input has been removed from the BUS.</li>
                 </ul>
 
                 <h2 class="text-2xl font-bold mt-6 mb-4">Video Explanation: CPU Design - Arithmetic Instruction</h2>
                 <div class="mt-4">
-                    <!-- Video Player Container -->
-                    <div class="aspect-video w-full mb-4">
-                        <iframe id="youtube-player"
-                                width="100%"
-                                height="auto"
-                                src="https://www.youtube.com/embed/K601wz4LTVM?enablejsapi=1"
-                                title="CPU Design: Arithmetic Instruction"
-                                frameborder="0"
-                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                                referrerpolicy="strict-origin-when-cross-origin"
-                                allowfullscreen
-                                class="w-full h-auto rounded-lg shadow-xl border border-gray-300">
-                        </iframe>
-                    </div>
+                    <!-- Video and Transcript Container: Responsive flex layout -->
+                    <div class="flex flex-col lg:flex-row gap-4 w-full">
+                        <!-- Video Player Section -->
+                        <div class="flex-1 lg:w-2/3 min-w-0">
+                            <div style="width: 100%; height: 0; padding-bottom: 56.25%; position: relative;">
+                                <iframe id="youtube-player"
+                                        style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"
+                                        src="https://www.youtube.com/embed/K601wz4LTVM?enablejsapi=1"
+                                        title="CPU Design: Arithmetic Instruction"
+                                        frameborder="0"
+                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                        referrerpolicy="strict-origin-when-cross-origin"
+                                        allowfullscreen>
+                                </iframe>
+                            </div>
+                        </div>
 
-                    <!-- Transcript Container (Fixed height for scrolling) -->
-                    <div id="transcript-container" class="h-96 overflow-y-scroll bg-white shadow-inner p-4 rounded-lg border border-gray-300">
-                        <p class="text-gray-500 text-center">Loading transcript...</p>
+                        <!-- Transcript Container Section -->
+                        <div class="flex-1 lg:w-1/3 min-w-0">
+                            <div id="transcript-container" class="h-96 lg:h-full overflow-y-scroll bg-white shadow-inner p-4 rounded-lg border border-gray-300">
+                                <p class="text-gray-500 text-center">Loading transcript...</p>
+                            </div>
+                        </div>
                     </div>
                     <p class="text-sm mt-4 text-center text-gray-600 italic">Click on any transcript line to jump to that point in the video. The current line highlights as the video plays.</p>
                 </div>
@@ -133,8 +138,8 @@
         </section>
 
         <footer class="mt-8 pt-4 border-t border-gray-300 text-center text-sm text-gray-500">
-            <div class="prose max-w-none mx-auto">
-                <p class="text-xs italic">Ref: This project adapted from "Design a CPU" by Ross McGowan (On Udemy)</p>
+            <div class="prose max-w-7xl mx-auto">
+                <p class="text-xs italic">Ref: This project adapted from <em>"Design a CPU"</em> by Ross McGowan (On Udemy)</p>
             </div>
         </footer>
     </main>
