@@ -111,8 +111,8 @@
                     <!-- Video and Transcript Container: Responsive flex layout -->
                     <div class="flex flex-col lg:flex-row gap-4 w-full">
                         <!-- Video Player Section -->
-                        <div class="flex-1 lg:w-2/3 min-w-0">
-                            <div style="width: 100%; height: 0; padding-bottom: 56.25%; position: relative;">
+                        <div class="w-full lg:w-2/3 flex-shrink-0">
+                            <div id="video-container" style="width: 100%; height: 0; padding-bottom: 56.25%; position: relative;">
                                 <iframe id="youtube-player"
                                         style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"
                                         src="https://www.youtube.com/embed/K601wz4LTVM?enablejsapi=1"
@@ -126,8 +126,8 @@
                         </div>
 
                         <!-- Transcript Container Section -->
-                        <div class="flex-1 lg:w-1/3 min-w-0">
-                            <div id="transcript-container" class="h-96 lg:h-full overflow-y-scroll bg-white shadow-inner p-4 rounded-lg border border-gray-300">
+                        <div class="w-full lg:w-1/3 flex-shrink-0">
+                            <div id="transcript-container" class="h-96 overflow-y-scroll bg-white shadow-inner p-4 rounded-lg border border-gray-300">
                                 <p class="text-gray-500 text-center">Loading transcript...</p>
                             </div>
                         </div>
@@ -447,10 +447,31 @@ can define what register we're pulling values from.
             }
         }
 
-        // 6. INITIALIZATION
+        // 6. HEIGHT SYNCHRONIZATION (Transcript matches video container)
+        function syncTranscriptHeight() {
+            const mediaQuery = window.matchMedia('(min-width: 1024px)');
+            const videoContainer = document.getElementById('video-container');
+            const transcriptContainer = document.getElementById('transcript-container');
+            
+            if (!videoContainer || !transcriptContainer) return;
+            
+            if (mediaQuery.matches) {
+                // On large screens, match the video container height
+                const videoHeight = videoContainer.offsetHeight;
+                transcriptContainer.style.maxHeight = videoHeight + 'px';
+            } else {
+                // On small screens, use default height (h-96 = 24rem)
+                transcriptContainer.style.maxHeight = '24rem';
+            }
+        }
+
+        // 7. INITIALIZATION
         document.addEventListener('DOMContentLoaded', () => {
             parsedTranscript = parseVtt(vttContent);
             populateTranscript();
+            
+            // Sync transcript height on page load
+            setTimeout(syncTranscriptHeight, 100);
 
             // Load the YouTube IFrame Player API script if not present
             if (typeof(YT) == 'undefined' || typeof(YT.Player) == 'undefined') {
@@ -460,6 +481,13 @@ can define what register we're pulling values from.
             } else {
                 onYouTubeIframeAPIReady();
             }
+        });
+
+        // Handle window resize with debouncing to sync transcript height
+        let resizeTimeout;
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(syncTranscriptHeight, 250);
         });
     </script>
 </body>
