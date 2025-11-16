@@ -86,7 +86,7 @@
             </div>
             
             <figure class="flex justify-center my-8">
-                <img src="images/CPU-Overview.png" 
+                <img src="images/CPU_Overview.png" 
                      alt="Conceptual CPU Overview diagram showing the major components and their relationships" 
                      class="max-w-full h-auto rounded-lg shadow-md"
                      style="max-width: 640px;"
@@ -100,6 +100,14 @@
                 For the Final Submission, you need to complete the following based on the desired grade:
             </p>
 
+            <!-- Core Circuits Reference -->
+            <div class="p-6 mb-6 bg-blue-50 rounded-xl shadow-lg border-t-4 border-blue-500">
+                <h3 class="text-2xl font-bold text-gray-800 mt-0 mb-4">Core Circuits</h3>
+                <p class="text-base text-gray-700 leading-relaxed mb-4">
+                    For Reference: <a href="circuits-needed-for-final-project.html" class="text-accent-blue hover:text-accent-blue hover:underline font-medium">Circuits Needed for Final Project</a> (Completion of circuits listed here is implied by the requirements for each grade level).
+                </p>
+            </div>
+
             <!-- Grade C Requirements -->
             <div class="p-6 mb-6 bg-white rounded-xl shadow-lg border-t-4 border-gray-400">
                 <h3 class="text-2xl font-bold text-gray-800 mt-0 mb-4">For a Grade of "C":</h3>
@@ -111,15 +119,9 @@
                             You need to complete <strong>at least 4 of the Control Circuits</strong> (do each as an individual, separate circuit) and associated <strong>CPU setups</strong> (do each as an individual, separate circuit) provided on the <a href="circuits-control-summary.html" class="text-accent-blue hover:text-accent-blue hover:underline font-medium">Circuits: Control Summary</a> page.
                         </span>
                     </label>
-                    <label class="flex items-start cursor-pointer hover:bg-gray-50 p-3 rounded transition">
-                        <input type="checkbox" id="c-req-2" data-req="reference_circuits" class="mt-1 h-4 w-4 text-accent-blue border-gray-300 rounded focus:ring-2 focus:ring-accent-blue focus:ring-offset-2 flex-shrink-0">
-                        <span class="ml-3 text-base text-gray-700 leading-relaxed">
-                            For Reference: <a href="circuits-needed-for-final-project.html" class="text-accent-blue hover:text-accent-blue hover:underline font-medium">Circuits Needed for Final Project</a> (Completion of circuits listed here is implied by the first point).
-                        </span>
-                    </label>
                 </div>
                 <div id="c-grade-status" class="mt-6 p-3 rounded-md bg-gray-100 text-center font-semibold text-sm">
-                    C-Grade Progress: 0/2 Requirements Met
+                    C-Grade Progress: 0/1 Requirements Met
                 </div>
             </div>
 
@@ -178,7 +180,7 @@
             <h3 class="text-2xl font-bold text-gray-800 mt-0 mb-4">Top-Level CPU Simulation View</h3>
             
             <figure class="flex justify-center my-8">
-                <img src="images/CPU-TopSim.jpg" 
+                <img src="images/CPU_TopSim.jpg" 
                      alt="Abstracted CPU top-level view showing the simulation interface with inputs and outputs" 
                      class="max-w-full h-auto rounded-lg shadow-md"
                      style="max-width: 640px;"
@@ -198,13 +200,12 @@
             let progressState = {
                 c_grade: {
                     control_circuits: false,
-                    reference_circuits: false,
                 }
             };
 
             const checklistContainer = document.getElementById('c-requirements-checklist');
             const statusDisplay = document.getElementById('c-grade-status');
-            const totalCReqs = 2;
+            const totalCReqs = 1;
 
             function updateProgress() {
                 const checkedCount = Object.values(progressState.c_grade).filter(v => v).length;
