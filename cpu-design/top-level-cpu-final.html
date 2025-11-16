@@ -7,42 +7,46 @@
     
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
-        // MANDATORY: Configure Tailwind to include the Typography plugin for consistent text/heading styling.
         tailwind.config = {
             theme: {
-                extend: {
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                    },
+                fontFamily: {
+                    sans: ['Inter', 'system-ui', 'sans-serif'],
                 },
-            },
-            plugins: [
-                require('@tailwindcss/typography'),
-            ],
+                extend: {
+                    colors: {
+                        'page-bg': '#FDFBF8',
+                        'text-primary': '#1A1A1A',
+                        'accent-blue': '#2563EB',
+                        'code-gray': '#4B5563',
+                    }
+                }
+            }
         }
     </script>
     <style>
-        /* Essential for ensuring light mode and setting base font */
         html { 
-            font-family: 'Inter', sans-serif; 
-            background-color: #FDFBF8; /* Light background */
-            color: #1A1A1A; /* Dark text */
+            font-family: 'Inter', 'system-ui', 'sans-serif'; 
+            background-color: #FDFBF8;
+            color: #1A1A1A;
         }
-        /* Override Tailwind default dark mode behavior */
+        body {
+            background-color: #FDFBF8;
+            color: #1A1A1A;
+        }
         @media (prefers-color-scheme: dark) {
             html {
                 background-color: #FDFBF8 !important; 
                 color: #1A1A1A !important; 
             }
         }
-        /* Custom class for Skip Link (visible on focus) */
         .skip-link {
             position: absolute;
             top: -40px;
             left: 0;
-            background: #1A1A1A;
+            background: #2563EB;
             color: white;
             padding: 8px;
+            text-decoration: none;
             z-index: 100;
             transition: top 0.3s;
         }
@@ -50,109 +54,147 @@
             top: 0;
         }
     </style>
-    
-    </head>
-<body class="bg-[#FDFBF8] text-[#1A1A1A]">
-    <a id="skip-to-content" href="#main-content" class="skip-link" tabindex="0">Skip to Content</a>
+</head>
+<body class="bg-page-bg text-text-primary">
+    <a id="skip-to-content" href="#main-content" class="skip-link font-medium" tabindex="0">Skip to main content</a>
     
     <header class="bg-white shadow-md p-4 sticky top-0 z-10">
-        <div class="max-w-4xl mx-auto">
-            <h1 class="text-2xl font-bold text-[#1A1A1A]">Final Project: 8-bit CPU Design Requirements</h1>
+        <div class="max-w-4xl mx-auto px-4">
+            <h1 class="text-2xl md:text-3xl font-bold text-text-primary">Final Project: 8-bit CPU Design Requirements</h1>
         </div>
     </header>
 
     <main id="main-content" class="p-4 sm:p-6 lg:p-8 max-w-4xl mx-auto">
         
         <section class="mb-8 p-6 bg-white rounded-xl shadow-lg">
-            <h2 class="text-4xl font-extrabold mb-4 text-blue-700">Project Overview</h2>
+            <h2 class="text-3xl md:text-4xl font-bold mb-4 text-accent-blue">Project Overview</h2>
             
-            <div class="prose max-w-none">
-                <p>For the Final Project in this course, we are going to design and build an **8-bit CPU** using a digital circuit simulation software.</p>
+            <p class="mb-4 leading-relaxed text-lg">
+                For the Final Project in this course, we are going to design and build an <strong>8-bit CPU</strong> using a digital circuit simulation software.
+            </p>
 
-                <h3 class="text-2xl font-bold mt-6 mb-2 text-gray-800">Overview of the Final CPU Design</h3>
-                <p>Here's an overview of the final CPU design that we will be building.</p>
+            <h3 class="text-2xl font-bold mt-8 mb-4 text-text-primary">Overview of the Final CPU Design</h3>
+            <p class="mb-6 leading-relaxed text-lg">
+                Here's an overview of the final CPU design that we will be building.
+            </p>
 
-                <div class="p-4 bg-yellow-50 border-l-4 border-yellow-500 text-yellow-800 rounded-md my-4">
-                    <p class="font-bold">PLEASE NOTE:</p>
-                    <p>You **MUST** include ALL of the circuits necessary for the CPU simulation in your final submission file. Do not link any libraries in your project other than those included by default. You MUST have created all of your component using basic gates as defined throughout the various component instructions, except as noted in the instructions.</p>
-                </div>
+            <div class="p-4 sm:p-6 bg-yellow-50 border-l-4 border-yellow-500 text-yellow-900 rounded-md my-6">
+                <p class="font-bold text-base sm:text-lg mb-2">PLEASE NOTE:</p>
+                <p class="leading-relaxed">
+                    You <strong>MUST</strong> include ALL of the circuits necessary for the CPU simulation in your final submission file. Do not link any libraries in your project other than those included by default. You <strong>MUST</strong> have created all of your components using basic gates as defined throughout the various component instructions, except as noted in the instructions.
+                </p>
             </div>
             
-            <div class="flex justify-center my-6">
-                <img src="images/CPU_Overview.png" alt="Conceptual CPU Overview" class="max-w-full h-auto rounded-lg shadow-md">
-            </div>
+            <figure class="flex justify-center my-8">
+                <img src="images/CPU-Overview.png" 
+                     alt="Conceptual CPU Overview diagram showing the major components and their relationships" 
+                     class="max-w-full h-auto rounded-lg shadow-md"
+                     style="max-width: 640px;"
+                     loading="lazy">
+            </figure>
         </section>
 
         <section class="mb-8">
-            <h2 class="text-4xl font-extrabold mb-4 text-blue-700">Final Submission Requirements</h2>
-            <p class="text-lg text-gray-700 mb-6">For the Final Submission, you need to complete the following based on the desired grade:</p>
+            <h2 class="text-3xl md:text-4xl font-bold mb-6 text-accent-blue">Final Submission Requirements</h2>
+            <p class="text-base sm:text-lg text-gray-700 mb-8 leading-relaxed">
+                For the Final Submission, you need to complete the following based on the desired grade:
+            </p>
 
-            <div class="p-6 mb-4 bg-white rounded-xl shadow-lg border-t-4 border-gray-400">
-                <h3 class="text-2xl font-bold text-gray-800 mt-0 mb-2">For a Grade of "C":</h3>
+            <!-- Grade C Requirements -->
+            <div class="p-6 mb-6 bg-white rounded-xl shadow-lg border-t-4 border-gray-400">
+                <h3 class="text-2xl font-bold text-gray-800 mt-0 mb-4">For a Grade of "C":</h3>
                 
-                <div id="c-requirements-checklist" class="prose max-w-none">
-                    <ul class="list-none pl-0">
-                        <li class="flex items-start mb-2">
-                            <input type="checkbox" id="c-req-1" data-req="control_circuits" class="mt-1 mr-3 h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
-                            <label for="c-req-1" class="text-base text-gray-700">
-                                You need to complete **at least 4 of the Control Circuits** (Do each as an individual, separate circuit) and associated **CPU setups** (Do each as an individual, separate circuit) provided on the <a href="circuits-control-summary.html" class="text-blue-600 hover:text-blue-800">Circuits: Control Summary</a> page.
-                            </label>
-                        </li>
-                        <li class="flex items-start mb-2">
-                            <input type="checkbox" id="c-req-2" data-req="reference_circuits" class="mt-1 mr-3 h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
-                            <label for="c-req-2" class="text-base text-gray-700">
-                                For Reference: <a href="circuits-needed-for-final-project.html" class="text-blue-600 hover:text-blue-800">Circuits Needed for Final Project</a> (Completion of circuits listed here is implied by the first point).
-                            </label>
-                        </li>
-                    </ul>
+                <div id="c-requirements-checklist" class="space-y-3">
+                    <label class="flex items-start cursor-pointer hover:bg-gray-50 p-3 rounded transition">
+                        <input type="checkbox" id="c-req-1" data-req="control_circuits" class="mt-1 h-4 w-4 text-accent-blue border-gray-300 rounded focus:ring-2 focus:ring-accent-blue focus:ring-offset-2 flex-shrink-0">
+                        <span class="ml-3 text-base text-gray-700 leading-relaxed">
+                            You need to complete <strong>at least 4 of the Control Circuits</strong> (do each as an individual, separate circuit) and associated <strong>CPU setups</strong> (do each as an individual, separate circuit) provided on the <a href="circuits-control-summary.html" class="text-accent-blue hover:text-accent-blue hover:underline font-medium">Circuits: Control Summary</a> page.
+                        </span>
+                    </label>
+                    <label class="flex items-start cursor-pointer hover:bg-gray-50 p-3 rounded transition">
+                        <input type="checkbox" id="c-req-2" data-req="reference_circuits" class="mt-1 h-4 w-4 text-accent-blue border-gray-300 rounded focus:ring-2 focus:ring-accent-blue focus:ring-offset-2 flex-shrink-0">
+                        <span class="ml-3 text-base text-gray-700 leading-relaxed">
+                            For Reference: <a href="circuits-needed-for-final-project.html" class="text-accent-blue hover:text-accent-blue hover:underline font-medium">Circuits Needed for Final Project</a> (Completion of circuits listed here is implied by the first point).
+                        </span>
+                    </label>
                 </div>
-                <div id="c-grade-status" class="mt-4 p-3 rounded-md bg-gray-100 text-center font-semibold text-sm">
+                <div id="c-grade-status" class="mt-6 p-3 rounded-md bg-gray-100 text-center font-semibold text-sm">
                     C-Grade Progress: 0/2 Requirements Met
                 </div>
             </div>
 
-            <div class="p-6 mb-4 bg-white rounded-xl shadow-lg border-t-4 border-yellow-500">
-                <div class="prose max-w-none">
-                    <h3 class="text-2xl font-bold text-gray-800 mt-0 mb-2">For a Grade of "B":</h3>
-                    <ul>
-                        <li>Complete "For Grade of C" **AND**</li>
-                        <li>Complete the integrated controls section: <a href="circuits-final-control-unit-circuit.html" class="text-blue-600 hover:text-blue-800">Circuits: Final Control Unit Circuit</a></li>
-                        <li>Create a "**Final**" CPU with all parts: (<a href="circuits-final-cpu.html" class="text-blue-600 hover:text-blue-800">Circuits: Final CPU</a>)</li>
-                    </ul>
-                </div>
+            <!-- Grade B Requirements -->
+            <div class="p-6 mb-6 bg-white rounded-xl shadow-lg border-t-4 border-yellow-500">
+                <h3 class="text-2xl font-bold text-gray-800 mt-0 mb-4">For a Grade of "B":</h3>
+                <ul class="space-y-3 text-base text-gray-700">
+                    <li class="flex items-start">
+                        <span class="inline-block mr-3 font-bold text-gray-500 flex-shrink-0">•</span>
+                        <span class="leading-relaxed">
+                            Complete at least <strong>2 of the control circuits</strong> identified in the For Grade of C section <strong>AND</strong>
+                        </span>
+                    </li>
+                    <li class="flex items-start">
+                        <span class="inline-block mr-3 font-bold text-gray-500 flex-shrink-0">•</span>
+                        <span class="leading-relaxed">
+                            Complete the integrated controls section: <a href="circuits-final-control-unit-circuit.html" class="text-accent-blue hover:text-accent-blue hover:underline font-medium">Circuits: Final Control Unit Circuit</a>
+                        </span>
+                    </li>
+                    <li class="flex items-start">
+                        <span class="inline-block mr-3 font-bold text-gray-500 flex-shrink-0">•</span>
+                        <span class="leading-relaxed">
+                            Create a <strong>Final CPU</strong> with all parts: <a href="circuits-final-cpu.html" class="text-accent-blue hover:text-accent-blue hover:underline font-medium">Circuits: Final CPU</a>
+                        </span>
+                    </li>
+                </ul>
             </div>
 
-            <div class="p-6 mb-4 bg-white rounded-xl shadow-lg border-t-4 border-green-600">
-                <div class="prose max-w-none">
-                    <h3 class="text-2xl font-bold text-gray-800 mt-0 mb-2">For a Grade of "A":</h3>
-                    <ul>
-                        <li>Complete "For Grade of B" **AND**</li>
-                        <li>Create the **top-level CPU for simulation purposes** (<a href="circuits-top-level-cpu.html" class="text-blue-600 hover:text-blue-800">Circuits: Top-Level CPU</a>)</li>
-                        <li>Download the provided Program and run it (5 * 5 program - <a href="files/MYSIM.txt" target="_blank" rel="noopener" class="text-blue-600 hover:text-blue-800">MYSIM.txt)</a></li>
-                    </ul>
-                </div>
+            <!-- Grade A Requirements -->
+            <div class="p-6 mb-6 bg-white rounded-xl shadow-lg border-t-4 border-green-600">
+                <h3 class="text-2xl font-bold text-gray-800 mt-0 mb-4">For a Grade of "A":</h3>
+                <ul class="space-y-3 text-base text-gray-700">
+                    <li class="flex items-start">
+                        <span class="inline-block mr-3 font-bold text-gray-500 flex-shrink-0">•</span>
+                        <span class="leading-relaxed">
+                            Complete "For Grade of B" <strong>AND</strong>
+                        </span>
+                    </li>
+                    <li class="flex items-start">
+                        <span class="inline-block mr-3 font-bold text-gray-500 flex-shrink-0">•</span>
+                        <span class="leading-relaxed">
+                            Create the <strong>top-level CPU for simulation purposes</strong> <a href="circuits-top-level-cpu.html" class="text-accent-blue hover:text-accent-blue hover:underline font-medium">Circuits: Top-Level CPU</a>
+                        </span>
+                    </li>
+                    <li class="flex items-start">
+                        <span class="inline-block mr-3 font-bold text-gray-500 flex-shrink-0">•</span>
+                        <span class="leading-relaxed">
+                            Download the provided Program and run it (5 × 5 program - <a href="files/MYSIM.txt" target="_blank" rel="noopener noreferrer" class="text-accent-blue hover:text-accent-blue hover:underline font-medium">MYSIM.txt</a>)
+                        </span>
+                    </li>
+                </ul>
             </div>
         </section>
 
         <section class="mb-8 p-6 bg-white rounded-xl shadow-lg">
-            <h3 class="text-2xl font-bold text-gray-800 mt-0 mb-2">Top-Level CPU Simulation View</h3>
+            <h3 class="text-2xl font-bold text-gray-800 mt-0 mb-4">Top-Level CPU Simulation View</h3>
             
-            <div class="flex justify-center my-6">
-                <img src="images/CPU_TopSim.jpg" alt="Abstracted CPU Top-Level" class="max-w-full h-auto rounded-lg shadow-md">
-            </div>
+            <figure class="flex justify-center my-8">
+                <img src="images/CPU-TopSim.jpg" 
+                     alt="Abstracted CPU top-level view showing the simulation interface with inputs and outputs" 
+                     class="max-w-full h-auto rounded-lg shadow-md"
+                     style="max-width: 640px;"
+                     loading="lazy">
+            </figure>
         </section>
 
-        <footer class="mt-8 pt-4 border-t border-gray-300 text-center text-sm text-gray-500">
-            <div class="prose max-w-none mx-auto">
-                <p class="text-xs italic">Ref: This project adapted from "Design a CPU" by Ross McGowan (On Udemy)</p>
-            </div>
+        <footer class="mt-12 pt-6 border-t border-gray-300 text-center text-sm text-gray-600">
+            <p class="text-xs italic leading-relaxed">
+                Reference: This project adapted from "Design a CPU" by Ross McGowan (On Udemy)
+            </p>
         </footer>
     </main>
     
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // State must be managed using simple JavaScript variables or objects within the script's scope.
-            // Progress is lost upon browser refresh (SESSION-LEVEL PROGRESS ONLY mandate).
             let progressState = {
                 c_grade: {
                     control_circuits: false,
@@ -162,39 +204,26 @@
 
             const checklistContainer = document.getElementById('c-requirements-checklist');
             const statusDisplay = document.getElementById('c-grade-status');
-            const totalCReqs = 2; // Fixed number of requirements
+            const totalCReqs = 2;
 
-            // Function to update the progress state and the UI status display
             function updateProgress() {
-                // Count how many requirements are currently checked
                 const checkedCount = Object.values(progressState.c_grade).filter(v => v).length;
-                
-                // Update the status text
                 statusDisplay.textContent = `C-Grade Progress: ${checkedCount}/${totalCReqs} Requirements Met`;
-
-                // Optionally change the status box appearance based on completion
                 statusDisplay.classList.remove('bg-gray-100', 'bg-green-100');
                 statusDisplay.classList.add(checkedCount === totalCReqs ? 'bg-green-100' : 'bg-gray-100');
             }
 
-            // Event listener for all checkboxes in the Grade C section
             if (checklistContainer) {
                 checklistContainer.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
-                    // Note: Since no persistent storage (localStorage) is used, this starts fresh on every page load.
                     const reqKey = checkbox.dataset.req;
-                    
                     checkbox.addEventListener('change', (event) => {
                         const key = event.target.dataset.req;
-                        // Update the session-level JS variable
                         progressState.c_grade[key] = event.target.checked;
-                        
-                        // Update the UI
                         updateProgress();
                     });
                 });
             }
 
-            // Initialize the status display on load
             updateProgress();
         });
     </script>
