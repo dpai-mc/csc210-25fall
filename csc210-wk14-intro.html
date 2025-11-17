@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Title for CSC210 Week 14 -->
+    <title>CSC210 - Week 14: Advanced Instructions & Testing</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            /* Light, professional color scheme suitable for an IT/CS class */
+            background-color: #F8F9FA; 
+            color: #212529;
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .code-font {
+            font-family: 'Fira Code', monospace;
+        }
+        
+        /* Style for the currently active transcript line */
+        .active-transcript-line {
+            background-color: #f0f7ff;
+            font-weight: 600;
+            border-left: 4px solid #1e88e5;
+            padding-left: 12px;
+            transition: background-color 0.2s;
+        }
+
+        /* Skip link style (Accessibility requirement) */
+        .skip-link {
+            position: absolute;
+            top: -40px;
+            left: 0;
+            background: #007BFF;
+            color: #F8F9FA;
+            padding: 8px;
+            z-index: 100;
+            transition: top 0.3s;
+        }
+
+        .skip-link:focus {
+            top: 0;
+        }
+
+        /* Custom scrollbar for transcript */
+        #transcript-container::-webkit-scrollbar {
+            width: 8px;
+        }
+        #transcript-container::-webkit-scrollbar-thumb {
+            background-color: #ced4da;
+            border-radius: 10px;
+        }
+        #transcript-container::-webkit-scrollbar-thumb:hover {
+            background-color: #adb5bd;
+        }
+    </style>
+</head>
+<body class="p-4 sm:p-8">
+    <a href="#main-content" class="skip-link rounded-br-md">Skip to main content</a>
+    
+    <div id="main-content" class="max-w-7xl mx-auto">
+        <header class="mb-8">
+            <h1 class="text-3xl sm:text-4xl font-extrabold text-gray-800 mb-2">CSC210 - Week 14: Advanced Instructions & Testing</h1>
+            <p class="text-lg text-gray-600">Aloha, and welcome to <strong>Week 14</strong>. This week focuses on how computers make decisions through <strong>conditional branching</strong> and the <strong>FLAGS register</strong>. We'll examine the mechanics behind if statements, loops, and switch statements at the assembly level, exploring how branch instructions (<code class="code-font">BEQ</code>, <code class="code-font">BNE</code>, <code class="code-font">BLT</code>, <code class="code-font">BGE</code>) utilize flags (zero, negative, overflow, carry) to implement program flow control. You'll gain a deeper understanding of how high-level control structures translate to low-level conditional branches and see that all these constructs—whether if, while, for, or switch—ultimately reduce to the same fundamental branching operations at the machine level.</p>
+        </header>
+
+        <main>
+            <!-- Video and Transcript Section using v2 Guide Layout -->
+            <div class="flex flex-col lg:flex-row gap-4 w-full mb-8">
+                <!-- Video Player Section: 66% width on large screens -->
+                <div class="w-full lg:w-2/3 flex-shrink-0">
+                    <h2 class="text-2xl font-semibold mb-4 text-gray-700">Video Lecture: Conditional Branching and Decision Making</h2>
+                    <div id="video-container" style="width: 100%; height: 0; padding-bottom: 56.25%; position: relative;">
+                        <iframe id="youtube-player"
+                                style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"
+                                src="https://www.youtube.com/embed/PUpPFYTXXu8?enablejsapi=1"
+                                title="YouTube video player"
+                                frameborder="0"
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                referrerpolicy="strict-origin-when-cross-origin"
+                                allowfullscreen>
+                        </iframe>
+                    </div>
+                    <p class="mt-4 text-sm text-gray-500">Video ID: <span class="code-font">PUpPFYTXXu8</span></p>
+                </div>
+
+                <!-- Transcript Container Section: 33% width on large screens -->
+                <div class="w-full lg:w-1/3 flex-shrink-0">
+                    <h2 class="text-2xl font-semibold mb-4 text-gray-700">Video Transcript</h2>
+                    <div id="transcript-container" class="h-96 overflow-y-scroll bg-white shadow-inner p-4 rounded-lg border border-gray-300">
+                        <p class="text-gray-500 text-center">Loading transcript...</p>
+                    </div>
+                    <p class="mt-4 text-sm text-gray-600">Click any line in the transcript or use the <strong>Enter/Space</strong> keys when focused to jump to that moment in the video.</p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // 1. CONFIGURATION
+        const VIDEO_ID = 'PUpPFYTXXu8';
+        let player;
+        let timeUpdater;
+        let parsedTranscript = [];
+
+        // --- VTT CONTENT ---
+        const vttContent = `WEBVTT
+
+00:00.720 --> 00:05.920
+Aloha and welcome. I think we're in week 14 here, Advanced Instructions and Testing,
+
+00:06.520 --> 00:12.760
+and really what that is, is making decisions, okay? How does the computer make decisions?
+
+00:12.980 --> 00:18.560
+I'm going to do that and talk about it as conditional branching, okay? So this week's
+
+00:18.560 --> 00:27.100
+topic, when you go to the learning content, it goes through and talks really about basically
+
+00:27.100 --> 00:33.320
+how does branching work, okay? So how do we do ifs? How do we do loops? You know, and
+
+00:33.320 --> 00:37.440
+it kind of goes through that, even though we probably know a lot of that already from
+
+00:37.440 --> 00:47.120
+doing the programs we've done already in assembly, we really want to just, you know, make that,
+
+00:48.400 --> 00:52.780
+you know, reinforce that, okay? You really know what an if statement is. You really know
+
+00:52.780 --> 00:56.940
+what a loop is. You need to know what branch not equals, branch equals, branch less than,
+
+00:57.100 --> 01:02.520
+branch greater than, greater than equal to, all those kind of things, okay? And how it uses flags
+
+01:02.520 --> 01:08.360
+to do it, okay? So what are the flags and how it uses flags? So in this example where I put this
+
+01:08.360 --> 01:15.540
+up, I've decided to use a zero flag, which we have in ours, a negative flag, which we do not have in
+
+01:15.540 --> 01:24.160
+ours, okay? A overflow flag and a carry flag, meaning carry, we have carry in, overflow, we
+
+01:24.160 --> 01:24.840
+carry out.
+
+01:27.100 --> 01:32.540
+The value is negative, that we're outputting in zero means the value is zero, okay? In our
+
+01:32.540 --> 01:39.560
+simplified 8-bit CPU, we only have the zero, we don't have the negative, right? Because we're
+
+01:39.560 --> 01:44.920
+simplifying it. But I think it's important that you know how this negative works, so we've included
+
+01:44.920 --> 01:53.280
+it here for our flags register stuff, okay? And so this just talks about the different branch
+
+01:53.280 --> 01:57.080
+instructions, making decisions, what does branch equals really mean?
+
+01:57.100 --> 02:01.420
+What does branch not equals really mean? What does branch less than? What does branch greater
+
+02:01.420 --> 02:09.580
+than or equal? And you know, there are others, like there's less than, there's LE for less than
+
+02:09.580 --> 02:15.900
+or equal to, there's greater than equal to, and then there's GT for greater than. So all those
+
+02:15.900 --> 02:20.940
+permutations exist. We could walk through them all, but it doesn't make a lot of sense to walk
+
+02:20.940 --> 02:23.820
+through them all, okay?
+
+02:26.460 --> 02:26.960
+So,
+
+02:27.100 --> 02:29.020
+how is it enabled loops and conditionals?
+
+02:32.860 --> 02:37.420
+Okay, so comparison and a branch, why it matters. So this is how you do if, while,
+
+02:37.420 --> 02:44.060
+for, and switch statements. You do them all the same way in assembly, okay? So as far as assembly
+
+02:44.700 --> 02:49.820
+is concerned, an if statement, a while loop, a for loop, a switch statement,
+
+02:49.820 --> 02:56.460
+they're all essentially the same things, okay? At the assembly language level and at the computer
+
+02:56.460 --> 03:04.700
+operational level, they're essentially the same things, okay? We use different words in our
+
+03:04.700 --> 03:10.700
+program because it makes it easier for us to write our program and make it more meaningful and make
+
+03:10.700 --> 03:16.560
+it more understandable. But essentially, they are the same thing. A branch and a loop are the same
+
+03:16.560 --> 03:23.260
+thing. A loop just branches back to the top of itself, okay? So it's still a branch, it's just
+
+03:23.260 --> 03:26.260
+branching back to itself, okay? That's the difference between a loop and a branch. So,
+
+03:26.260 --> 03:31.600
+loop and a conditional conditional branches somewhere else in the program
+
+03:31.600 --> 03:37.480
+and a you know like an if branches somewhere else in the program and if in
+
+03:37.480 --> 03:40.540
+a switch they're both like conditionals they branch somewhere else in the
+
+03:40.540 --> 03:48.660
+program in a while or for or I do while those are loops so they branch back to
+
+03:48.660 --> 03:55.540
+themselves okay so they're all branches when you do this though so this is the
+
+03:55.540 --> 03:59.380
+content basic primary content of how branches work these are the
+
+03:59.380 --> 04:07.360
+instructions for how to use the interactive simulator okay and what I
+
+04:07.360 --> 04:13.520
+suggest you do can read it what I suggest you do is print it as a PDF take
+
+04:13.520 --> 04:18.340
+this PDF save it as a PDF or whatever so you can open it print it have it on your
+
+04:18.340 --> 04:24.960
+desktop open it so that when you go to your interactive simulator
+
+04:24.960 --> 04:25.500
+you
+
+04:25.540 --> 04:31.220
+you'll have these questions you have 12 questions okay there's a quick reference
+
+04:31.220 --> 04:36.240
+you know branch equals so we're gonna use these four branches branch equals
+
+04:36.240 --> 04:41.000
+branch not equals branch less than branch greater than equal to you okay in
+
+04:41.000 --> 04:47.500
+the condition if if their equals equals one they're not equals equals zero okay
+
+04:47.500 --> 04:52.580
+and equals one and equals zero these are the flags okay and then we check the
+
+04:52.580 --> 04:55.180
+flag don't actually
+
+04:55.540 --> 04:58.960
+you know when we do the compare the branch we check the flag the flag was
+
+04:58.960 --> 05:03.720
+calculated prior and we check the flag we don't actually check the calculation
+
+05:03.720 --> 05:08.740
+if you will we already did it okay so there's 12 of these and you'll go
+
+05:08.740 --> 05:12.840
+through and I'm just gonna just I'm not even to read it right now I'm gonna say
+
+05:12.840 --> 05:17.460
+yes we're gonna branch oh I got it right and it'll gives you a little description
+
+05:17.460 --> 05:25.380
+next PC value Oh X to see so and these branches we are using memory address
+
+05:25.380 --> 05:34.020
+addresses in this simulator rather than labels when we wrote our assembly
+
+05:34.020 --> 05:39.320
+programs we branch to a label and we put the label you know in our program when we
+
+05:39.320 --> 05:44.880
+branch to that well that label is really a placeholder for a memory location okay
+
+05:44.880 --> 05:48.840
+so we always are actually branching to some place in memory so in this
+
+05:48.840 --> 05:52.880
+simulator we're just gonna branch directly to memory and not use labels
+
+05:52.880 --> 05:54.800
+okay so you do this
+
+05:55.380 --> 06:02.220
+and then you go to the next one and there'll be another question okay
+
+06:02.220 --> 06:07.080
+you'll answer it yes or no you move to the next one be another question and you
+
+06:07.080 --> 06:14.340
+go through there's 12 of them okay and I'm just gonna go through them all okay
+
+06:14.340 --> 06:17.660
+I know I'm gonna get some I'm gonna write no on every single one so I'll
+
+06:17.660 --> 06:25.320
+get maybe I'll get some incorrect okay I just want to show you the and I
+
+06:25.380 --> 06:30.320
+it's in the assignment but I want to show you to you anyway when you're done
+
+06:30.320 --> 06:33.500
+with all 12
+
+06:36.580 --> 06:55.200
+what am I here I did eight of them I'm not really reading them okay and 11 and 12 okay so here's the summary I'm gonna go through them all okay so here's the summary
+
+06:55.200 --> 06:55.220
+okay so here's the summary I'm gonna go through them all okay so here's the summary
+
+06:55.380 --> 07:01.120
+okay so here's the summary okay so here's the summary okay so by just by picking on those I got 8 out of 12 which is 67%
+
+07:01.120 --> 07:01.140
+okay so by just by picking on those I got 8 out of 12 which is 67%
+
+07:01.140 --> 07:06.020
+okay so by just by picking on those I got 8 out of 12 which is 67% it says review try again so you can always go
+
+07:06.020 --> 07:06.040
+it says review try again so you can always go
+
+07:06.040 --> 07:08.240
+it says review try again so you can always go back and try it again to get a better
+
+07:08.240 --> 07:08.260
+back and try it again to get a better
+
+07:08.260 --> 07:11.200
+back and try it again to get a better score it'll just be the same questions in
+
+07:11.200 --> 07:11.220
+score it'll just be the same questions in
+
+07:11.220 --> 07:13.760
+score it'll just be the same questions in a different order and you can review
+
+07:13.760 --> 07:13.780
+a different order and you can review
+
+07:13.780 --> 07:15.760
+a different order and you can review your answers click review your answers it
+
+07:15.760 --> 07:15.780
+your answers click review your answers it
+
+07:15.780 --> 07:26.980
+says this is what they did okay okay and then go back to summary and for your
+
+07:26.980 --> 07:36.660
+assignment what I want you to turn in is I just want you to take a screenshot of
+
+07:36.660 --> 07:46.680
+this okay so have this right here and you submit that image now save it as an
+
+07:46.680 --> 07:51.780
+image upload the image you don't need to zip it or anything easiest for me if you
+
+07:51.780 --> 07:57.660
+just upload the image because then I can just create them really easily all right
+
+07:57.660 --> 08:01.440
+so everybody's doing it this week this is the assignment is to do this and
+
+08:01.440 --> 08:05.880
+submit this so there's no participation assignment we go to the modules this
+
+08:05.880 --> 08:06.040
+week
+
+08:06.660 --> 08:14.960
+you will see that there's just this interactive simulator okay and this is
+
+08:14.960 --> 08:21.520
+what you want to submit 12 questions each word is worth five points so 60
+
+08:21.520 --> 08:27.220
+total so I'm just gonna take whatever you got yeah 12 out of 12 you get 60 if
+
+08:27.220 --> 08:33.220
+you got 11 out of 12 you get 55 okay and then the file you upload is just a
+
+08:33.220 --> 08:35.520
+picture
+
+08:36.660 --> 08:42.560
+all right and then the other thing is the final projects put posted but I'm
+
+08:42.560 --> 08:47.780
+gonna go through that in a separate video it'll be on this introduction over
+
+08:47.780 --> 08:54.180
+if you've got a final project page and so I will do that I'll do that in a
+
+08:54.180 --> 09:00.560
+separate video okay and so this will be you for the rest of semester I want you
+
+09:00.560 --> 09:05.860
+to really work on this final project and get that to work
+
+09:06.660 --> 09:14.280
+so I'm gonna go so I can do this other one and we'll talk to you soon`;
+        // ------------------------------------
+
+        // 2. CORE UTILITIES
+        function timeToSeconds(timeStr) {
+            if (!timeStr) return 0;
+            const parts = timeStr.trim().split(':');
+            
+            // Handle both MM:SS.mmm and HH:MM:SS.mmm formats
+            if (parts.length === 2) {
+                // MM:SS.mmm format
+                let minutes = parseInt(parts[0]) || 0;
+                let seconds = parseFloat(parts[1]) || 0;
+                return minutes * 60 + seconds;
+            } else if (parts.length === 3) {
+                // HH:MM:SS.mmm format
+                let hours = parseInt(parts[0]) || 0;
+                let minutes = parseInt(parts[1]) || 0;
+                let seconds = parseFloat(parts[2]) || 0;
+                return hours * 3600 + minutes * 60 + seconds;
+            }
+            return 0;
+        }
+
+        function parseVtt(vttText) {
+            const cues = vttText.trim().split(/\n\n+/);
+            const parsedCues = [];
+            
+            cues.forEach(cueBlock => {
+                if (cueBlock.startsWith('WEBVTT') || cueBlock.trim() === '') return;
+                
+                const lines = cueBlock.trim().split('\n');
+                const timeLine = lines.find(line => line.includes('-->'));
+                if (!timeLine) return;
+
+                const [startTimeStr, endTimeStr] = timeLine.split(' --> ');
+                const textLines = lines.slice(lines.indexOf(timeLine) + 1);
+                
+                parsedCues.push({
+                    start: timeToSeconds(startTimeStr),
+                    end: timeToSeconds(endTimeStr),
+                    text: textLines.join(' ').trim()
+                });
+            });
+            return parsedCues;
+        }
+
+        // 3. TRANSCRIPT RENDERING AND INTERACTIVITY
+        function populateTranscript() {
+            const container = document.getElementById('transcript-container');
+            container.innerHTML = '';
+
+            parsedTranscript.forEach(cue => {
+                const lineElement = document.createElement('div');
+                lineElement.className = 'transcript-line p-2 cursor-pointer hover:bg-gray-100 rounded-lg';
+                lineElement.dataset.start = cue.start;
+                lineElement.dataset.end = cue.end;
+                lineElement.textContent = cue.text;
+                lineElement.setAttribute('role', 'button');
+                lineElement.setAttribute('tabindex', '0');
+
+                const seekToTime = () => {
+                    if (player && player.seekTo) {
+                        player.seekTo(cue.start, true);
+                        player.playVideo();
+                    }
+                };
+                
+                lineElement.addEventListener('click', seekToTime);
+                lineElement.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') { 
+                        e.preventDefault(); 
+                        seekToTime(); 
+                    }
+                });
+
+                container.appendChild(lineElement);
+            });
+        }
+
+        // 4. SYNC LOGIC
+        function highlightCurrentLine() {
+            if (!player || !player.getCurrentTime) return;
+
+            const currentTime = player.getCurrentTime();
+            const lines = document.querySelectorAll('#transcript-container .transcript-line');
+            let foundActive = false;
+
+            lines.forEach(line => {
+                const start = parseFloat(line.dataset.start);
+                const end = parseFloat(line.dataset.end);
+
+                if (currentTime >= start && currentTime < end) {
+                    if (!line.classList.contains('active-transcript-line')) {
+                        document.querySelector('.active-transcript-line')?.classList.remove('active-transcript-line');
+                        line.classList.add('active-transcript-line');
+                        line.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
+                    foundActive = true;
+                } else {
+                    line.classList.remove('active-transcript-line');
+                }
+            });
+        }
+
+        // 5. HEIGHT SYNCHRONIZATION (Transcript matches video container)
+        function syncTranscriptHeight() {
+            const mediaQuery = window.matchMedia('(min-width: 1024px)');
+            const videoContainer = document.getElementById('video-container');
+            const transcriptContainer = document.getElementById('transcript-container');
+            
+            if (!videoContainer || !transcriptContainer) return;
+            
+            if (mediaQuery.matches) {
+                // On large screens, match the video container height
+                const videoHeight = videoContainer.offsetHeight;
+                transcriptContainer.style.maxHeight = videoHeight + 'px';
+            } else {
+                // On mobile, revert to default fixed height
+                transcriptContainer.style.maxHeight = '24rem'; // h-96 equivalent
+            }
+        }
+
+        // 6. PLAYER STATE MANAGEMENT
+        function onPlayerStateChange(event) {
+            clearInterval(timeUpdater);
+            if (event.data === YT.PlayerState.PLAYING) {
+                timeUpdater = setInterval(highlightCurrentLine, 300);
+            }
+        }
+
+        // 7. INITIALIZATION
+        window.onYouTubeIframeAPIReady = function() {
+            player = new YT.Player('youtube-player', {
+                videoId: VIDEO_ID,
+                events: {
+                    'onStateChange': onPlayerStateChange
+                }
+            });
+        };
+
+        // --- DOM READY INITIALIZATION ---
+        document.addEventListener('DOMContentLoaded', () => {
+            parsedTranscript = parseVtt(vttContent);
+            populateTranscript();
+            syncTranscriptHeight();
+            
+            // Load YouTube API
+            if (typeof(YT) == 'undefined' || typeof(YT.Player) == 'undefined') {
+                const tag = document.createElement('script');
+                tag.src = "https://www.youtube.com/iframe_api";
+                document.head.appendChild(tag);
+            } else {
+                onYouTubeIframeAPIReady();
+            }
+            
+            console.log('CSC210 Week 14 page initialized.');
+        });
+
+        // 8. WINDOW RESIZE HANDLER
+        let resizeTimeout;
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(syncTranscriptHeight, 250);
+        });
+    </script>
+</body>
+</html>
