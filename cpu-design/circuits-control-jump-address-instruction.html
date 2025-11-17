@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Circuits: Jump Address-Only</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+      
+      * {
+        font-family: 'Inter', sans-serif;
+      }
+      
+      body {
+        background-color: #FDFBF8;
+        color: #1A1A1A;
+      }
+      
+      .skip-link {
+        position: absolute;
+        top: -40px;
+        left: 0;
+        background: #2563EB;
+        color: white;
+        padding: 0.5rem 1rem;
+        text-decoration: none;
+        border-radius: 0 0 4px 0;
+        z-index: 1000;
+      }
+      
+      .skip-link:focus {
+        top: 0;
+      }
+      
+      h1, h2, h3 {
+        color: #1A1A1A;
+      }
+      
+      h1 {
+        font-size: 2.25rem;
+        font-weight: 700;
+        line-height: 1.2;
+      }
+      
+      h2 {
+        font-size: 1.875rem;
+        font-weight: 600;
+        line-height: 1.3;
+      }
+      
+      h3 {
+        font-size: 1.25rem;
+        font-weight: 600;
+        line-height: 1.4;
+      }
+      
+      p {
+        font-size: 1rem;
+        line-height: 1.6;
+        color: #1A1A1A;
+      }
+      
+      a {
+        color: #2563EB;
+        text-decoration: none;
+        font-weight: 500;
+      }
+      
+      a:hover {
+        text-decoration: underline;
+      }
+      
+      ul {
+        list-style-type: disc;
+        margin-left: 1.5rem;
+      }
+      
+      li {
+        margin-bottom: 0.75rem;
+        line-height: 1.6;
+      }
+      
+      figure {
+        margin: 1.5rem 0;
+      }
+      
+      figcaption {
+        font-size: 0.875rem;
+        color: #4B5563;
+        font-style: italic;
+        margin-top: 0.5rem;
+        text-align: center;
+      }
+      
+      img {
+        max-width: 100%;
+        height: auto;
+        border-radius: 0.5rem;
+        border: 1px solid #E5E7EB;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        display: block;
+        margin: 0 auto;
+      }
+
+      /* Table Styling */
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 1.5rem 0;
+      }
+
+      th, td {
+        border: 1px solid #D1D5DB;
+        padding: 0.75rem;
+        text-align: center;
+      }
+
+      th {
+        background-color: #E5E7EB;
+        font-weight: 600;
+        color: #1A1A1A;
+      }
+
+      td {
+        background-color: #FFFFFF;
+      }
+
+      /* Accessible Tab Styling */
+      .tabs-container {
+        margin-bottom: 2rem;
+      }
+
+      [role="tablist"] {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        border-bottom: 2px solid #D1D5DB;
+        list-style: none;
+        margin: 0;
+        padding: 0;
+      }
+
+      [role="tab"] {
+        padding: 0.75rem 1.25rem;
+        background-color: #F3F4F6;
+        border: 1px solid #D1D5DB;
+        border-bottom: none;
+        border-radius: 0.5rem 0.5rem 0 0;
+        cursor: pointer;
+        font-weight: 500;
+        color: #1A1A1A;
+        transition: all 0.2s ease;
+        margin-bottom: -2px;
+      }
+
+      [role="tab"]:hover {
+        background-color: #E5E7EB;
+      }
+
+      [role="tab"][aria-selected="true"] {
+        background-color: #2563EB;
+        color: #FFFFFF;
+        border-color: #2563EB;
+        border-bottom-color: #FDFBF8;
+      }
+
+      [role="tab"]:focus-visible {
+        outline: 2px solid #2563EB;
+        outline-offset: 2px;
+      }
+
+      [role="tabpanel"] {
+        display: none;
+        padding: 2rem 0;
+        animation: fadeIn 0.2s ease;
+      }
+
+      [role="tabpanel"][data-active="true"] {
+        display: block;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+
+      [role="tabpanel"] h2 {
+        margin-top: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Skip Link for Accessibility -->
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+    
+    <main id="main-content" class="container mx-auto px-4 py-12 max-w-4xl">
+      <!-- Page Header -->
+      <header class="mb-10">
+        <h1 class="text-4xl font-bold mb-4">Circuits: Jump Address-Only</h1>
+        <p class="text-lg text-gray-700">Before we begin, we first have to define how our Instruction Register works for Jump Address Instructions.</p>
+      </header>
+
+      <!-- Accessible Tab Interface -->
+      <div class="tabs-container">
+        <div role="tablist" aria-label="Content sections">
+          <button role="tab" 
+                  id="tab-instructions" 
+                  aria-selected="true" 
+                  aria-controls="panel-instructions">
+            Jump Address Instructions
+          </button>
+          <button role="tab" 
+                  id="tab-control-unit" 
+                  aria-selected="false" 
+                  aria-controls="panel-control-unit">
+            Jump Address Control Unit Diagram
+          </button>
+          <button role="tab" 
+                  id="tab-cpu-diagram" 
+                  aria-selected="false" 
+                  aria-controls="panel-cpu-diagram">
+            Jump Address CPU Diagram
+          </button>
+          <button role="tab" 
+                  id="tab-video" 
+                  aria-selected="false" 
+                  aria-controls="panel-video">
+            Jump Address Video
+          </button>
+        </div>
+
+        <!-- Section 1: Jump Address Instructions -->
+        <section role="tabpanel" 
+                 id="panel-instructions" 
+                 aria-labelledby="tab-instructions"
+                 data-active="true">
+          <h2 class="text-3xl font-semibold mb-6">Jump Address Instructions</h2>
+        
+          <p class="mb-6">The Operation instruction is an 8-bit value that is broken down as follows:</p>
+          
+          <div class="overflow-x-auto mb-6">
+            <table>
+              <thead>
+                <tr>
+                  <th style="width: 12.5%;">bit 0</th>
+                  <th style="width: 12.5%;">bit 1</th>
+                  <th style="width: 12.5%;">bit 2</th>
+                  <th style="width: 12.5%;">bit 3</th>
+                  <th style="width: 12.5%;">bit 4</th>
+                  <th style="width: 12.5%;">bit 5</th>
+                  <th style="width: 12.5%;">bit 6</th>
+                  <th style="width: 12.5%;">bit 7</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>0 for Non-ALU Instr.</td>
+                  <td>1</td>
+                  <td>0</td>
+                  <td>0</td>
+                  <td>x</td>
+                  <td>x</td>
+                  <td>x</td>
+                  <td>x</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <p class="mb-6"><strong>Where:</strong></p>
+          <ul class="mb-6 space-y-2">
+            <li><strong>bit 0:</strong> When this is 0, then we have either a Load or a Store Instruction</li>
+            <li><strong>bits 1-3:</strong> are 100 for a jump address instruction</li>
+            <li><strong>bits 4-5:</strong> not used by this operation</li>
+            <li><strong>bits 6-7:</strong> not used by this operation</li>
+          </ul>
+
+          <h3 class="text-xl font-semibold mb-4">Jump Address Instructions:</h3>
+          
+          <p class="mb-4">What a Jump Address Instruction does is "jumps" to the next byte in RAM which allows us to pull the address from a byte in RAM as the new address stored in the PC. An assembly language mnemonic might be:</p>
+          
+          <p class="mb-4 bg-gray-100 p-4 rounded-lg border-l-4 border-blue-500"><code class="text-code-gray">JMP ADDR</code></p>
+        </section>
+
+        <!-- Section 2: Jump Address Control Unit Diagram -->
+        <section role="tabpanel" 
+                 id="panel-control-unit" 
+                 aria-labelledby="tab-control-unit"
+                 data-active="false">
+          <h2 class="text-3xl font-semibold mb-6">Jump Address Instruction Control Unit Diagram</h2>
+          
+          <p class="mb-6">The actual Control unit for this system appears below. Please note that the following elements have been added and/or removed from this control unit that was not in the previous ones:</p>
+          
+          <ul class="mb-8 space-y-2">
+            <li>Since the Data Instruction is 100 (or 4), we are only wiring up the output for this from the 3x8 decoder</li>
+          </ul>
+
+          <figure class="my-6">
+            <img id="381108" 
+                 src="images/control-unit-diagram-jump-address.png" 
+                 alt="Control Unit Diagram for Jump Address Instruction showing decoder output wiring for instruction 100" 
+                 class="max-w-full h-auto rounded-lg border border-gray-300 shadow-sm mx-auto"
+                 style="max-width: 640px;"
+                 loading="lazy">
+            <figcaption>Jump Address Instruction Control Unit Diagram</figcaption>
+          </figure>
+        </section>
+
+        <!-- Section 3: Jump Address CPU Diagram -->
+        <section role="tabpanel" 
+                 id="panel-cpu-diagram" 
+                 aria-labelledby="tab-cpu-diagram"
+                 data-active="false">
+          <h2 class="text-3xl font-semibold mb-6">CPU for Jump Address Instruction</h2>
+          
+          <p class="mb-6">The temporary modifications included here include:</p>
+          
+          <ul class="mb-8 space-y-2">
+            <li>Removing IR from the BUS so can manually set the value (IR_S is 1)</li>
+            <li>Set both PC and RAM to a constant 1 for the "Set" for each</li>
+            <li>Removing RAM Input from the BUS so we can set it manually</li>
+          </ul>
+
+          <figure class="my-6">
+            <img id="381107" 
+                 src="images/cpu-diagram-jump-address.png" 
+                 alt="CPU Circuit Layout for Jump Address Instruction showing IR bus, PC, and RAM modifications" 
+                 class="max-w-full h-auto rounded-lg border border-gray-300 shadow-sm mx-auto"
+                 style="max-width: 640px;"
+                 loading="lazy">
+            <figcaption>Jump Address CPU Circuit Diagram</figcaption>
+          </figure>
+        </section>
+
+        <!-- Section 4: Video Description of Operation -->
+        <section role="tabpanel" 
+                 id="panel-video" 
+                 aria-labelledby="tab-video"
+                 data-active="false">
+          <h2 class="text-3xl font-semibold mb-6">Video Description of Operation</h2>
+          
+          <p class="mb-6">The following video walks through the details of the Jump Address Instruction Operation:</p>
+          
+          <div class="bg-gray-100 p-6 rounded-lg border border-gray-300">
+            <p class="mb-4">
+              <strong>Video:</strong> 
+              <a href="https://youtu.be/oQbk8rDnxVI" 
+                 target="_blank" 
+                 rel="noopener" 
+                 title="External video link: Jump Address Instruction on YouTube"
+                 class="text-accent-blue hover:underline font-medium">
+                Jump Address Instruction: Detailed Walkthrough of Address Loading and PC Operations
+              </a>
+            </p>
+            <p class="text-sm text-gray-600">
+              This video provides a comprehensive explanation of how Jump Address Instructions operate, demonstrating how addresses are loaded from RAM and used to set the Program Counter for program control flow.
+            </p>
+          </div>
+        </section>
+      </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-100 border-t border-gray-300 mt-12 py-6">
+      <div class="container mx-auto px-4 max-w-4xl text-center text-sm text-gray-600">
+        <p>CSC210: Computer Organization & Architecture</p>
+      </div>
+    </footer>
+
+    <!-- Tab Functionality Script -->
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        const tabs = document.querySelectorAll('[role="tab"]');
+        const panels = document.querySelectorAll('[role="tabpanel"]');
+
+        // Click handler for tabs
+        tabs.forEach(tab => {
+          tab.addEventListener('click', function() {
+            const tabId = this.id;
+            const panelId = this.getAttribute('aria-controls');
+
+            // Hide all panels
+            panels.forEach(panel => {
+              panel.setAttribute('data-active', 'false');
+            });
+
+            // Deselect all tabs
+            tabs.forEach(t => {
+              t.setAttribute('aria-selected', 'false');
+            });
+
+            // Show selected panel
+            const selectedPanel = document.getElementById(panelId);
+            if (selectedPanel) {
+              selectedPanel.setAttribute('data-active', 'true');
+            }
+
+            // Select clicked tab
+            this.setAttribute('aria-selected', 'true');
+            this.focus();
+          });
+        });
+
+        // Keyboard navigation (Arrow keys)
+        tabs.forEach((tab, index) => {
+          tab.addEventListener('keydown', function(e) {
+            let targetTab = null;
+
+            switch(e.key) {
+              case 'ArrowLeft':
+              case 'ArrowUp':
+                e.preventDefault();
+                // Go to previous tab
+                targetTab = index > 0 ? tabs[index - 1] : tabs[tabs.length - 1];
+                break;
+              case 'ArrowRight':
+              case 'ArrowDown':
+                e.preventDefault();
+                // Go to next tab
+                targetTab = index < tabs.length - 1 ? tabs[index + 1] : tabs[0];
+                break;
+              case 'Home':
+                e.preventDefault();
+                targetTab = tabs[0];
+                break;
+              case 'End':
+                e.preventDefault();
+                targetTab = tabs[tabs.length - 1];
+                break;
+            }
+
+            if (targetTab) {
+              targetTab.click();
+            }
+          });
+        });
+      });
+    </script>
+  </body>
+</html>
