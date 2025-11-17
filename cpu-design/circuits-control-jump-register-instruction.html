@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Circuits: Jump Register-Only</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+      
+      * {
+        font-family: 'Inter', sans-serif;
+      }
+      
+      body {
+        background-color: #FDFBF8;
+        color: #1A1A1A;
+      }
+      
+      .skip-link {
+        position: absolute;
+        top: -40px;
+        left: 0;
+        background: #2563EB;
+        color: white;
+        padding: 0.5rem 1rem;
+        text-decoration: none;
+        border-radius: 0 0 4px 0;
+      }
+      
+      .skip-link:focus {
+        top: 0;
+      }
+      
+      h1, h2, h3 {
+        color: #1A1A1A;
+      }
+      
+      h1 {
+        font-size: 2.25rem;
+        font-weight: 700;
+        line-height: 1.2;
+      }
+      
+      h2 {
+        font-size: 1.875rem;
+        font-weight: 600;
+        line-height: 1.3;
+      }
+      
+      h3 {
+        font-size: 1.25rem;
+        font-weight: 600;
+        line-height: 1.4;
+      }
+      
+      p {
+        font-size: 1rem;
+        line-height: 1.6;
+        color: #1A1A1A;
+      }
+      
+      a {
+        color: #2563EB;
+        text-decoration: none;
+        font-weight: 500;
+      }
+      
+      a:hover {
+        text-decoration: underline;
+      }
+      
+      ul {
+        list-style-type: disc;
+        margin-left: 1.5rem;
+      }
+      
+      li {
+        margin-bottom: 0.75rem;
+        line-height: 1.6;
+      }
+      
+      figure {
+        margin: 1.5rem 0;
+      }
+      
+      figcaption {
+        font-size: 0.875rem;
+        color: #4B5563;
+        font-style: italic;
+        margin-top: 0.5rem;
+        text-align: center;
+      }
+      
+      img {
+        max-width: 100%;
+        height: auto;
+        border-radius: 0.5rem;
+        border: 1px solid #E5E7EB;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        display: block;
+        margin: 0 auto;
+      }
+
+      /* Table Styling */
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 1.5rem 0;
+      }
+
+      th, td {
+        border: 1px solid #D1D5DB;
+        padding: 0.75rem;
+        text-align: center;
+      }
+
+      th {
+        background-color: #E5E7EB;
+        font-weight: 600;
+        color: #1A1A1A;
+      }
+
+      td {
+        background-color: #FFFFFF;
+      }
+
+      /* Navigation styling */
+      nav.section-nav {
+        background-color: #F3F4F6;
+        border: 1px solid #D1D5DB;
+        border-radius: 0.5rem;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+      }
+
+      nav.section-nav ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+      }
+
+      nav.section-nav li {
+        margin-bottom: 0.5rem;
+      }
+
+      nav.section-nav a {
+        display: inline-block;
+        padding: 0.5rem 1rem;
+        background-color: #FFFFFF;
+        border: 1px solid #D1D5DB;
+        border-radius: 0.375rem;
+        transition: all 0.2s ease;
+      }
+
+      nav.section-nav a:hover {
+        background-color: #2563EB;
+        color: #FFFFFF;
+        text-decoration: none;
+        border-color: #2563EB;
+      }
+
+      .content-section {
+        scroll-margin-top: 2rem;
+      }
+
+      .content-section + .content-section {
+        margin-top: 3rem;
+        padding-top: 2rem;
+        border-top: 2px solid #E5E7EB;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Skip Link for Accessibility -->
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+    
+    <main id="main-content" class="container mx-auto px-4 py-12 max-w-4xl">
+      <!-- Page Header -->
+      <header class="mb-10">
+        <h1 class="text-4xl font-bold mb-4">Circuits: Jump Register-Only</h1>
+        <p class="text-lg text-gray-700">Before we begin, we first have to define how our Instruction Register works for Jump Register Instructions.</p>
+      </header>
+
+      <!-- Navigation to Sections -->
+      <nav class="section-nav" aria-label="Page sections">
+        <ul>
+          <li><a href="#jump-register-instructions" class="font-medium">Jump Register Instructions</a></li>
+          <li><a href="#control-unit-diagram" class="font-medium">Jump Register Control Unit Diagram</a></li>
+          <li><a href="#cpu-diagram" class="font-medium">Jump Register CPU Diagram</a></li>
+          <li><a href="#video-description" class="font-medium">Jump Register Video</a></li>
+        </ul>
+      </nav>
+
+      <!-- Section 1: Jump Register Instructions -->
+      <section id="jump-register-instructions" class="content-section">
+        <h2 class="text-3xl font-semibold mb-6">Jump Register Instructions</h2>
+        
+        <p class="mb-6">The Operation instruction is an 8-bit value that is broken down as follows:</p>
+        
+        <div class="overflow-x-auto mb-6">
+          <table>
+            <thead>
+              <tr>
+                <th style="width: 12.5%;">bit 0</th>
+                <th style="width: 12.5%;">bit 1</th>
+                <th style="width: 12.5%;">bit 2</th>
+                <th style="width: 12.5%;">bit 3</th>
+                <th style="width: 12.5%;">bit 4</th>
+                <th style="width: 12.5%;">bit 5</th>
+                <th style="width: 12.5%;">bit 6</th>
+                <th style="width: 12.5%;">bit 7</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>0 for Non-ALU Instr.</td>
+                <td>0</td>
+                <td>1</td>
+                <td>1</td>
+                <td>x</td>
+                <td>x</td>
+                <td>Reg B</td>
+                <td>Reg B</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p class="mb-6"><strong>Where:</strong></p>
+        <ul class="mb-6 space-y-2">
+          <li><strong>bit 0:</strong> When this is 0, then we have either a Load or a Store Instruction</li>
+          <li><strong>bits 1-3:</strong> are 011 for a jump register instruction</li>
+          <li><strong>bits 4-5:</strong> not used by this operation</li>
+          <li><strong>bits 6-7:</strong> define which Register, 0-3, will be used for this operation</li>
+        </ul>
+
+        <h3 class="text-xl font-semibold mb-4">Jump Register Instructions:</h3>
+        
+        <p class="mb-4">What a Jump Register Instruction does is "jumps" to the address defined in Register B. An assembly language mnemonic might be:</p>
+        
+        <p class="mb-4 bg-gray-100 p-4 rounded-lg border-l-4 border-blue-500"><code class="text-code-gray">JMPR RB</code></p>
+        
+        <p class="mb-4">where <strong>RB</strong> is the Register, R0-R3, defined by bits 6 and 7.</p>
+        
+        <p class="text-lg">This instruction will let us jump about rather than just incrementing the location by 1 as we have done so far.</p>
+      </section>
+
+      <!-- Section 2: Jump Register Control Unit Diagram -->
+      <section id="control-unit-diagram" class="content-section">
+        <h2 class="text-3xl font-semibold mb-6">Jump Register Instruction Control Unit Diagram</h2>
+        
+        <p class="mb-6">The actual Control unit for this system appears below. Please note that the following elements have been added and/or removed from this control unit that was not in the previous ones:</p>
+        
+        <ul class="mb-8 space-y-2">
+          <li>Since the Data Instruction is 011 (or 3), we are only wiring up the output for this from the 3x8 decoder</li>
+        </ul>
+
+        <figure class="my-6">
+          <img id="381100" 
+               src="images/control-unit-diagram-jump-register.png" 
+               alt="Jump Register Control Unit Circuit Diagram showing decoder output wiring for instruction 011" 
+               class="max-w-full h-auto rounded-lg border border-gray-300 shadow-sm mx-auto"
+               style="max-width: 640px;"
+               loading="lazy">
+          <figcaption>Jump Register Control Unit Circuit Diagram</figcaption>
+        </figure>
+      </section>
+
+      <!-- Section 3: Jump Register CPU Diagram -->
+      <section id="cpu-diagram" class="content-section">
+        <h2 class="text-3xl font-semibold mb-6">CPU for Jump Register Instruction</h2>
+        
+        <p class="mb-6">The temporary modifications included here include:</p>
+        
+        <ul class="mb-8 space-y-2">
+          <li>Disconnect the Register we are going to use as RB in the Jump Register Instruction (and fix the "set" at 1)</li>
+          <li>Removing IR from the BUS so can manually set the value (IR_S is 1)</li>
+        </ul>
+
+        <figure class="my-6">
+          <img id="381099" 
+               src="images/cpu-diagram-jump-register.png" 
+               alt="Jump Register CPU Circuit Diagram showing register disconnection and IR bus modifications" 
+               class="max-w-full h-auto rounded-lg border border-gray-300 shadow-sm mx-auto"
+               style="max-width: 640px;"
+               loading="lazy">
+          <figcaption>Jump Register CPU Circuit Diagram</figcaption>
+        </figure>
+      </section>
+
+      <!-- Section 4: Video Description of Operation -->
+      <section id="video-description" class="content-section">
+        <h2 class="text-3xl font-semibold mb-6">Video Description of Operation</h2>
+        
+        <p class="mb-6">The following video walks through the details of the Jump Register Instruction Operation:</p>
+        
+        <div class="bg-gray-100 p-6 rounded-lg border border-gray-300">
+          <p class="mb-4">
+            <strong>Video:</strong> 
+            <a href="https://youtu.be/MsYq6yor3Ag" 
+               target="_blank" 
+               rel="noopener" 
+               title="External video link: Jump Register Instruction on YouTube"
+               class="text-accent-blue hover:underline font-medium">
+              Jump Register Instruction: Detailed Walkthrough of Jump Operations and Register Selection
+            </a>
+          </p>
+          <p class="text-sm text-gray-600">
+            This video provides a comprehensive explanation of how Jump Register Instructions operate, demonstrating register selection through bits 6-7 and the jump operation to addresses stored in selected registers.
+          </p>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-100 border-t border-gray-300 mt-12 py-6">
+      <div class="container mx-auto px-4 max-w-4xl text-center text-sm text-gray-600">
+        <p>CSC210: Computer Organization & Architecture</p>
+      </div>
+    </footer>
+  </body>
+</html>
