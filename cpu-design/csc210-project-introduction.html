@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Title for CSC210 8-bit CPU Simulation Project Introduction -->
+    <title>CSC210 - 8-bit CPU Simulation Project: Introduction & Overview</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            /* Light, professional color scheme suitable for an IT/CS class */
+            background-color: #F8F9FA; 
+            color: #212529;
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .code-font {
+            font-family: 'Fira Code', monospace;
+        }
+        
+        /* Style for the currently active transcript line */
+        .active-transcript-line {
+            background-color: #f0f7ff;
+            font-weight: 600;
+            border-left: 4px solid #1e88e5;
+            padding-left: 12px;
+            transition: background-color 0.2s;
+        }
+
+        /* Skip link style (Accessibility requirement) */
+        .skip-link {
+            position: absolute;
+            top: -40px;
+            left: 0;
+            background: #007BFF;
+            color: #F8F9FA;
+            padding: 8px;
+            z-index: 100;
+            transition: top 0.3s;
+        }
+
+        .skip-link:focus {
+            top: 0;
+        }
+
+        /* Custom scrollbar for transcript */
+        #transcript-container::-webkit-scrollbar {
+            width: 8px;
+        }
+        #transcript-container::-webkit-scrollbar-thumb {
+            background-color: #ced4da;
+            border-radius: 10px;
+        }
+        #transcript-container::-webkit-scrollbar-thumb:hover {
+            background-color: #adb5bd;
+        }
+    </style>
+</head>
+<body class="p-4 sm:p-8">
+    <a href="#main-content" class="skip-link rounded-br-md">Skip to main content</a>
+    
+    <div id="main-content" class="max-w-7xl mx-auto">
+        <header class="mb-8">
+            <h1 class="text-3xl sm:text-4xl font-extrabold text-gray-800 mb-2">CSC210 - 8-bit CPU Simulation Project: Introduction & Overview</h1>
+            <p class="text-lg text-gray-600">Aloha, and welcome to the <strong>8-bit CPU Simulation project</strong>—the culminating experience for this course. In this video, you'll receive a comprehensive overview and introduction to the final project. We'll explore what components you need to build, how the project is structured, and what grade categories (A, B, or C) require. You'll learn about the essential circuits, including the RAM summary, ALU summary, and additional required components such as registers, temporary storage, and the program counter. We'll walk through the control unit architecture, individual instruction cycles, and how to assemble everything into a fully functional 8-bit CPU simulator. Whether you're aiming for a basic implementation or a complete system, this video will guide you through the entire scope of the project.</p>
+        </header>
+
+        <main>
+            <!-- Video and Transcript Section using v2 Guide Layout -->
+            <div class="flex flex-col lg:flex-row gap-4 w-full mb-8">
+                <!-- Video Player Section: 66% width on large screens -->
+                <div class="w-full lg:w-2/3 flex-shrink-0">
+                    <h2 class="text-2xl font-semibold mb-4 text-gray-700">Project Overview Video</h2>
+                    <div id="video-container" style="width: 100%; height: 0; padding-bottom: 56.25%; position: relative;">
+                        <iframe id="youtube-player"
+                                style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"
+                                src="https://www.youtube.com/embed/e5Xg7kgpYaA?enablejsapi=1"
+                                title="CSC210 8-bit CPU Simulation Project Overview"
+                                frameborder="0"
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                referrerpolicy="strict-origin-when-cross-origin"
+                                allowfullscreen>
+                        </iframe>
+                    </div>
+                    <p class="mt-4 text-sm text-gray-500">Video ID: <span class="code-font">e5Xg7kgpYaA</span></p>
+                </div>
+
+                <!-- Transcript Container Section: 33% width on large screens -->
+                <div class="w-full lg:w-1/3 flex-shrink-0">
+                    <h2 class="text-2xl font-semibold mb-4 text-gray-700">Video Transcript</h2>
+                    <div id="transcript-container" class="h-96 overflow-y-scroll bg-white shadow-inner p-4 rounded-lg border border-gray-300">
+                        <p class="text-gray-500 text-center">Loading transcript...</p>
+                    </div>
+                    <p class="mt-4 text-sm text-gray-600">Click any line in the transcript or use the <strong>Enter/Space</strong> keys when focused to jump to that moment in the video.</p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // 1. CONFIGURATION
+        const VIDEO_ID = 'e5Xg7kgpYaA';
+        let player;
+        let timeUpdater;
+        let parsedTranscript = [];
+
+        // --- VTT CONTENT ---
+        const vttContent = `WEBVTT
+
+00:00.640 --> 00:06.160
+Aloha! So in this video I just want to give you a brief overview and introduction to the
+
+00:06.160 --> 00:14.720
+final project. And so when you go and look at the final project it's going to show up as an
+
+00:14.720 --> 00:22.160
+assignment for the 8-bit CPU. You need to include all your circuits in your single file. Don't link
+
+00:22.160 --> 00:29.760
+them. Everything needs to be in the one file. It's created from basic gates except in the very
+
+00:29.760 --> 00:35.760
+very very final part for the top level sim there's a couple things for the external we're learning
+
+00:35.760 --> 00:40.240
+from external ram and stuff where we'll use some pre-built stuff. But other than that everything
+
+00:40.240 --> 00:45.520
+needs to be built by you by you using basically AND gates, NAND gates, OR gates, NOR gates,
+
+00:45.520 --> 00:52.000
+that kind of thing. Okay so this is just a brief kind of a top level summary of what
+
+00:52.000 --> 00:52.120
+I'll be doing in the final project. So I'm going to go ahead and show you what I'm going to do.
+
+00:52.120 --> 00:52.140
+Okay so this is just a brief kind of a top level summary of what I'll be doing in the final project.
+
+00:52.140 --> 00:54.440
+So I'm going to go ahead and show you what I'm going to do. Our final CPU is going to look like.
+
+00:55.120 --> 00:59.200
+You know we have this ring this rectangle around the outside that's our bus.
+
+01:00.000 --> 01:06.320
+We have our RAM. We have our MAR from our memory address register. But this is basically
+
+01:07.000 --> 01:14.960
+um setting the address that we're from that we're using from RAM. We have a control unit that does
+
+01:14.960 --> 01:22.100
+all the stuff. We have four basic registers. You can label them R1 to R4 or I read I've labeled them
+
+01:22.100 --> 01:31.880
+mine R0 to R3. You have a TMP a temp. The bus one into your ALU B side. Your A side will be
+
+01:31.880 --> 01:39.400
+directly connected to the bus. Your ALU will have the three op codes A, B, and C that come from the
+
+01:39.400 --> 01:47.280
+control unit. We have an accumulator. We have a clock. We have some flags. And some of this there's
+
+01:47.280 --> 01:51.400
+a just some a few other things that we're going to add. But this is just kind of a general overview
+
+01:51.400 --> 01:51.940
+of the major part of the project. So I'm going to go ahead and show you what I'm going to do.
+
+01:51.940 --> 01:52.080
+So I'm going to go ahead and show you what I'm going to do. I'm going to go ahead and show you
+
+01:52.100 --> 01:52.340
+what I'm going to do. I'm going to go ahead and show you what I'm going to do. I'm going to go ahead
+
+01:52.340 --> 01:54.240
+and show you what I'm going to do. I'm going to go ahead and show you what I'm going to do.
+
+01:54.240 --> 01:57.340
+Okay so for the final
+
+02:00.080 --> 02:08.480
+project I've broken it into three grade categories A, B, or C. Obviously if you don't do C then you're
+
+02:08.480 --> 02:14.400
+going to get something less than C. The biggest thing where you need to start is the circuits
+
+02:14.400 --> 02:19.680
+needed for final project. Okay and so you can click on that and it'll open it up in that same
+
+02:21.160 --> 02:21.740
+assignment.
+
+02:22.100 --> 02:33.720
+Or what you might want to do, which might make it easier, is if you right click and open in the new tab, it will open it up on my GitHub page.
+
+02:35.400 --> 02:37.720
+OK, so then it's just that there's nothing else.
+
+02:37.820 --> 02:40.600
+There's no canvas surrounding it.
+
+02:41.920 --> 02:43.900
+Either way, it works fine.
+
+02:43.900 --> 02:48.180
+I like to do it this way, so I'd always have this one back here as my reference.
+
+02:48.180 --> 03:01.780
+But. So basically, all this stuff on the top before the core, this RAM circuits required and basic memory building block, these are all part of the RAM summary.
+
+03:03.580 --> 03:12.260
+OK, one bit, a bit register, building your decoder and then putting it all together to the addressable RAM byte.
+
+03:14.340 --> 03:16.460
+OK, did you create?
+
+03:18.180 --> 03:24.320
+OK, so that's all these.
+
+03:27.060 --> 03:37.320
+You know, part of RAM summary, all these this one memory, one bit memory circuits, also part of the RAM summary, and we also have the ALU summary, which you should have already walked through and created.
+
+03:38.700 --> 03:43.160
+All these shift left, shift right, add to not and or Zor.
+
+03:45.840 --> 03:47.000
+OK, but it's all here again.
+
+03:48.180 --> 03:52.120
+And then here's the first new thing is additional circuits required.
+
+03:53.060 --> 04:10.700
+OK, so when we do this, we have our ALU, we have our RAM, but now we need our registers, we need temp, TMP, we need bus one, we need our clock, we need our accumulator, and then we also need our program counter and our instruction register.
+
+04:11.560 --> 04:15.060
+Now, here's the key, these register based components.
+
+04:16.660 --> 04:17.940
+CPU are for me.
+
+04:17.940 --> 04:21.860
+Is CPU RAM, so that's these are one to our four circuits.
+
+04:22.820 --> 04:28.600
+OK, so all this is, is a regular register, so you take a register, you copy it.
+
+04:29.640 --> 04:35.260
+Create a new circuit called whatever you want to call it, CPU, RAM is a good name for it.
+
+04:36.320 --> 04:44.780
+OK, and then all you do is you copy the register circuit, paste it in that new circuit, and then you just change the drawing.
+
+04:46.000 --> 04:47.940
+OK, our registers when we build.
+
+04:48.140 --> 04:51.940
+Then before the input was on the left and output was on the right.
+
+04:52.860 --> 04:54.300
+OK, and we need those.
+
+04:55.160 --> 04:56.700
+Because those work in our RAM byte.
+
+04:57.760 --> 05:01.760
+What we want here is we want to register where input and output are on the top.
+
+05:03.000 --> 05:04.760
+Set an enabler on the bottom.
+
+05:05.720 --> 05:09.620
+And then I have that central, you know, what's stored in here off the middle here, but.
+
+05:10.740 --> 05:17.720
+So basically, all you're doing is you're going to copy that register into a new circuit and then do the circuit appearance and draw it like this.
+
+05:17.940 --> 05:30.060
+OK, accumulator is exactly the same thing, it's another register, OK, except for now, we want the input on the top and the output on the bottom.
+
+05:32.640 --> 05:33.140
+OK.
+
+05:34.940 --> 05:37.640
+And we want to set and enable on the right side.
+
+05:39.840 --> 05:40.840
+It's the same thing.
+
+05:42.340 --> 05:45.760
+Copy that register circuit, all the things in the register circuit.
+
+05:46.360 --> 05:47.920
+Paste it into a new circuit.
+
+05:48.240 --> 05:49.380
+Call the accumulator.
+
+05:50.300 --> 05:52.060
+And then change the circuit appearance.
+
+05:53.520 --> 05:56.700
+OK, program counter again, 8-bit register.
+
+05:57.520 --> 06:05.780
+But this one, instead of having input and output on the top, you want input and output on the bottom and set and enable on the top.
+
+06:07.220 --> 06:12.280
+OK, and this is just so that when we put it into our full up CPU, it's just easier to do.
+
+06:12.680 --> 06:13.840
+The wiring is easier.
+
+06:13.980 --> 06:15.220
+It's straight line wiring.
+
+06:16.440 --> 06:17.920
+OK, now memory.
+
+06:18.060 --> 06:40.060
+Memory-based circuits, TMP is a memory-based circuit, so we need an 8-bit memory, build it on 8-bit memory, OK, so you drop in an 8-bit memory circuit, and then we take input through a controlled buffer off a set, so that's how we're controlling how it gets in, is through this set bit, and then we have an output.
+
+06:40.060 --> 06:44.960
+OK, we redraw input on the top, output on the bottom, sets on the right.
+
+06:44.960 --> 06:54.240
+The instruction register is another 8-bit memory circuit, OK, where input's on the bottom, output's on the top, and sets on the right side.
+
+06:57.140 --> 07:01.220
+All right, our bus 1 circuit, so now I have the bus 1 details here.
+
+07:03.580 --> 07:09.160
+We start with 8-bit input, 8-bit output, and we have a bus 1 input on the right.
+
+07:09.160 --> 07:14.660
+And all what happens, how it works, is the zero.
+
+07:14.960 --> 07:21.080
+Rightmost bit from the input side ores with this 1-bit from bus 1.
+
+07:22.080 --> 07:27.300
+OK, and the output of that ore goes to the zero output, zero bit on the output side.
+
+07:28.300 --> 07:34.640
+And then all the rest go into two input AND gates.
+
+07:36.020 --> 07:40.660
+OK, and the second input is the knotted bus 1.
+
+07:42.400 --> 07:44.440
+OK, so when bus 1 is 1.
+
+07:45.920 --> 07:50.040
+All these are coming in as zero, so these ANDs will always be zero.
+
+07:51.040 --> 07:53.120
+So when bus 1 is 1, you only get 1.
+
+07:55.100 --> 08:01.320
+OK, we do that so that we can add 1 to the memory location.
+
+08:01.500 --> 08:05.420
+And so for the next cycle, we increment the program counter.
+
+08:06.580 --> 08:13.060
+OK, and then finally we have a clock. The clock is a 1-bit external input. When you run your project, you're going to click clock and it will go true and false.
+
+08:14.060 --> 08:14.460
+OK.
+
+08:16.000 --> 08:18.840
+So that brings me to control circuits.
+
+08:19.860 --> 08:26.240
+And so we're basically going to be building control circuits for each instruction cycle that we implement.
+
+08:27.800 --> 08:31.360
+OK, so think about, you know, like an add instruction.
+
+08:31.940 --> 08:34.420
+What does it do? It adds two numbers.
+
+08:35.660 --> 08:42.380
+What you end up doing is for like add two numbers, you're going to build a control logic diagram or a control circuit that all it will do is add two numbers and won't do anything else.
+
+08:43.120 --> 08:44.560
+OK, so you want to call it something specific control ad or, you know.
+
+08:45.200 --> 08:45.600
+OK.
+
+08:46.640 --> 08:48.080
+And then you're going to.
+
+08:48.280 --> 08:51.820
+You put that into a CPU because you're going to have a control unit.
+
+08:51.980 --> 08:53.340
+You're going to stick that into the CPU.
+
+08:55.220 --> 08:58.960
+OK, and there's some things you want to do so that you can then.
+
+08:59.920 --> 09:06.300
+Hard code some values into these two registers and have it write the result into this register.
+
+09:07.480 --> 09:11.080
+OK, so you're just going to hard code it so it only does one thing.
+
+09:11.940 --> 09:15.240
+And that's to add two numbers together that you set manually.
+
+09:16.640 --> 09:17.040
+OK.
+
+09:17.140 --> 09:18.240
+And the purpose behind doing.
+
+09:18.360 --> 09:21.120
+These this way is so that you get an idea of how.
+
+09:21.960 --> 09:23.440
+Each cycle works.
+
+09:24.740 --> 09:25.320
+All right.
+
+09:27.640 --> 09:32.980
+There are like I said, there's nine of these different cycles, but you don't have to do all nine of them.
+
+09:34.600 --> 09:35.000
+OK.
+
+09:37.240 --> 09:40.600
+What you have to do is you have to do at least four.
+
+09:41.240 --> 09:42.940
+So the minimum you do is well.
+
+09:43.940 --> 09:45.320
+For C, you can do four.
+
+09:46.620 --> 09:47.800
+And they can stop there.
+
+09:48.040 --> 09:48.260
+I did.
+
+09:48.360 --> 09:48.900
+Those four.
+
+09:49.080 --> 09:50.360
+I don't have to finish anything else.
+
+09:51.740 --> 09:54.840
+OK, for a B, you only have to do two of them.
+
+09:55.080 --> 09:57.200
+One of them instructions and one of jump instructions.
+
+09:59.220 --> 10:02.300
+OK, so when you look at these, sorry.
+
+10:04.300 --> 10:10.320
+There are instruction cycles, five of them in four of these jump instruction cycles.
+
+10:10.900 --> 10:15.740
+OK, so for a C, you got to do two of these and two of these.
+
+10:16.500 --> 10:18.180
+For a B, you have to do one.
+
+10:18.180 --> 10:19.960
+And one of these and one of these.
+
+10:21.780 --> 10:23.880
+OK, and then also the final control unit.
+
+10:27.200 --> 10:28.380
+OK, so.
+
+10:30.500 --> 10:32.120
+If you do this thing.
+
+10:33.960 --> 10:34.200
+OK.
+
+10:36.840 --> 10:40.580
+This ugly thing, and I'll have a separate video about this ugly thing.
+
+10:41.480 --> 10:42.880
+About how I suggest you should make it.
+
+10:44.340 --> 10:45.360
+But right now we have this.
+
+10:45.360 --> 10:46.500
+This is the total view.
+
+10:47.180 --> 10:52.460
+And then we have this is the total view, and then we have the top view.
+
+10:54.060 --> 10:54.680
+This is a.
+
+10:56.720 --> 10:57.920
+Image of the top view.
+
+10:58.820 --> 11:00.440
+You can download this image if you want.
+
+11:01.940 --> 11:03.300
+And then there's also a bottom view.
+
+11:06.460 --> 11:09.860
+OK, so the top half and bottom half are split here so that you have a little bit better.
+
+11:10.560 --> 11:14.600
+You can see where lines cross and where there's junctioned when they cross that kind of thing.
+
+11:16.000 --> 11:16.940
+OK, but like I said, there's.
+
+11:16.940 --> 11:18.820
+There'll be a separate video just about this one.
+
+11:23.060 --> 11:31.340
+Right, so your final control unit, and then you got to build your final CPU, which is here's your final control unit, and there's a bunch of other stuff in here.
+
+11:32.500 --> 11:36.500
+OK, and here's the circles for all these bunch of other things that we're sticking in.
+
+11:37.740 --> 11:43.940
+I labeled them one, two, three, four, five, six, seven, eight and nine.
+
+11:45.820 --> 11:46.820
+Right.
+
+11:46.940 --> 11:50.820
+And then down here, all these talk about those nine things.
+
+11:55.300 --> 11:56.580
+I don't know if they're connected yet.
+
+11:56.740 --> 11:57.820
+Now I got to finish these.
+
+11:57.860 --> 11:59.700
+They're not connected yet, but they will get there.
+
+12:02.060 --> 12:08.620
+OK, but then when you do this final CPU, you can have to do these nine additional kind of modifications.
+
+12:10.300 --> 12:13.260
+All right, and each one will explain what it is and how it works.
+
+12:13.260 --> 12:27.620
+And then for the last one, for an A, then you have to take your final CPU, and then you're going to have to create a new circuit.
+
+12:27.620 --> 12:36.300
+OK, this is a new circuit, and so your final CPU, you need to redraw it to look like this.
+
+12:38.300 --> 12:41.040
+OK, so we build all these things.
+
+12:43.260 --> 12:51.540
+This is the top level circuit appearance.
+
+12:51.540 --> 12:56.460
+You're going to build the CPU circuit appearance, but a tunnel.
+
+12:56.500 --> 12:57.500
+These are tunnels.
+
+12:58.220 --> 13:04.580
+And a tunnel is just like a tag that and I'll talk about it in the control, the detail control unit.
+
+13:05.100 --> 13:12.580
+But it's just a tag that basically is like a wireless connection to the tag matching tag with the exact same name in it.
+
+13:12.580 --> 13:12.660
+OK.
+
+13:13.260 --> 13:17.500
+And then decide to do the displays.
+
+13:19.180 --> 13:25.340
+OK, to create these displays and we do the display so that when you run your program.
+
+13:26.980 --> 13:39.380
+You can watch all these things, the bus, what's on the bus, what's in the accumulator, what's in the program counter, what's in the instruction register and what's in these four registers and in-game point time, you'll see them, they'll light up and they'll keep changing as you do stuff.
+
+13:39.380 --> 13:54.780
+OK, load, set, load, reset about what those are clock setting, how to do the clock setting, but those are external RAM to load our program.
+
+13:55.780 --> 13:58.300
+This is how we load our program, external RAM.
+
+13:58.300 --> 14:06.620
+And I also have a video that walks through running a program and making it work and seeing how watching the results come out.
+
+14:08.260 --> 14:08.420
+Right.
+
+14:08.420 --> 14:09.300
+So that's kind of the overview.
+
+14:09.300 --> 14:12.820
+Of the semester project.
+
+14:15.860 --> 14:23.040
+Now, you run into problems or issues, let me know if you have a image that doesn't make sense or you can't see it.
+
+14:23.100 --> 14:24.100
+Well, let me know.
+
+14:24.360 --> 14:26.300
+I'll try to make a new one and update it.
+
+14:28.900 --> 14:32.120
+Or if you really get stuck, make sure you make an appointment on my calendar.
+
+14:33.120 --> 14:37.680
+Be happy to meet with you and walk through and take as long, whatever time we need to.
+
+14:39.300 --> 14:43.240
+Get you on track and make sure you understand what we're doing, how it's working.
+
+14:45.560 --> 14:45.880
+OK.
+
+14:48.660 --> 14:49.120
+Good luck.
+
+14:49.460 --> 14:50.020
+Talk to you soon.`;
+        // ------------------------------------
+
+        // 2. CORE UTILITIES
+        function timeToSeconds(timeStr) {
+            if (!timeStr) return 0;
+            const parts = timeStr.trim().split(':');
+            
+            // Handle both MM:SS.mmm and HH:MM:SS.mmm formats
+            if (parts.length === 2) {
+                // MM:SS.mmm format
+                let minutes = parseInt(parts[0]) || 0;
+                let seconds = parseFloat(parts[1]) || 0;
+                return minutes * 60 + seconds;
+            } else if (parts.length === 3) {
+                // HH:MM:SS.mmm format
+                let hours = parseInt(parts[0]) || 0;
+                let minutes = parseInt(parts[1]) || 0;
+                let seconds = parseFloat(parts[2]) || 0;
+                return hours * 3600 + minutes * 60 + seconds;
+            }
+            return 0;
+        }
+
+        function parseVtt(vttText) {
+            const cues = vttText.trim().split(/\n\n+/);
+            const parsedCues = [];
+            
+            cues.forEach(cueBlock => {
+                if (cueBlock.startsWith('WEBVTT') || cueBlock.trim() === '') return;
+                
+                const lines = cueBlock.trim().split('\n');
+                const timeLine = lines.find(line => line.includes('-->'));
+                if (!timeLine) return;
+
+                const [startTimeStr, endTimeStr] = timeLine.split(' --> ');
+                const textLines = lines.slice(lines.indexOf(timeLine) + 1);
+                
+                parsedCues.push({
+                    start: timeToSeconds(startTimeStr),
+                    end: timeToSeconds(endTimeStr),
+                    text: textLines.join(' ').trim()
+                });
+            });
+            return parsedCues;
+        }
+
+        // 3. TRANSCRIPT RENDERING AND INTERACTIVITY
+        function populateTranscript() {
+            const container = document.getElementById('transcript-container');
+            container.innerHTML = '';
+
+            parsedTranscript.forEach(cue => {
+                const lineElement = document.createElement('div');
+                lineElement.className = 'transcript-line p-2 cursor-pointer hover:bg-gray-100 rounded-lg';
+                lineElement.dataset.start = cue.start;
+                lineElement.dataset.end = cue.end;
+                lineElement.textContent = cue.text;
+                lineElement.setAttribute('role', 'button');
+                lineElement.setAttribute('tabindex', '0');
+
+                const seekToTime = () => {
+                    if (player && player.seekTo) {
+                        player.seekTo(cue.start, true);
+                        player.playVideo();
+                    }
+                };
+                
+                lineElement.addEventListener('click', seekToTime);
+                lineElement.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') { 
+                        e.preventDefault(); 
+                        seekToTime(); 
+                    }
+                });
+
+                container.appendChild(lineElement);
+            });
+        }
+
+        // 4. SYNC LOGIC
+        function highlightCurrentLine() {
+            if (!player || !player.getCurrentTime) return;
+
+            const currentTime = player.getCurrentTime();
+            const lines = document.querySelectorAll('#transcript-container .transcript-line');
+            let foundActive = false;
+
+            lines.forEach(line => {
+                const start = parseFloat(line.dataset.start);
+                const end = parseFloat(line.dataset.end);
+
+                if (currentTime >= start && currentTime < end) {
+                    if (!line.classList.contains('active-transcript-line')) {
+                        document.querySelector('.active-transcript-line')?.classList.remove('active-transcript-line');
+                        line.classList.add('active-transcript-line');
+                        line.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
+                    foundActive = true;
+                } else {
+                    line.classList.remove('active-transcript-line');
+                }
+            });
+        }
+
+        // 5. HEIGHT SYNCHRONIZATION (Transcript matches video container)
+        function syncTranscriptHeight() {
+            const mediaQuery = window.matchMedia('(min-width: 1024px)');
+            const videoContainer = document.getElementById('video-container');
+            const transcriptContainer = document.getElementById('transcript-container');
+            
+            if (!videoContainer || !transcriptContainer) return;
+            
+            if (mediaQuery.matches) {
+                // On large screens, match the video container height
+                const videoHeight = videoContainer.offsetHeight;
+                transcriptContainer.style.maxHeight = videoHeight + 'px';
+            } else {
+                // On mobile, revert to default fixed height
+                transcriptContainer.style.maxHeight = '24rem'; // h-96 equivalent
+            }
+        }
+
+        // 6. PLAYER STATE MANAGEMENT
+        function onPlayerStateChange(event) {
+            clearInterval(timeUpdater);
+            if (event.data === YT.PlayerState.PLAYING) {
+                timeUpdater = setInterval(highlightCurrentLine, 300);
+            }
+        }
+
+        // 7. INITIALIZATION
+        window.onYouTubeIframeAPIReady = function() {
+            player = new YT.Player('youtube-player', {
+                videoId: VIDEO_ID,
+                events: {
+                    'onStateChange': onPlayerStateChange
+                }
+            });
+        };
+
+        // --- DOM READY INITIALIZATION ---
+        document.addEventListener('DOMContentLoaded', () => {
+            parsedTranscript = parseVtt(vttContent);
+            populateTranscript();
+            syncTranscriptHeight();
+            
+            // Load YouTube API
+            if (typeof(YT) == 'undefined' || typeof(YT.Player) == 'undefined') {
+                const tag = document.createElement('script');
+                tag.src = "https://www.youtube.com/iframe_api";
+                document.head.appendChild(tag);
+            } else {
+                onYouTubeIframeAPIReady();
+            }
+            
+            console.log('CSC210 8-bit CPU Project Introduction page initialized.');
+        });
+
+        // 8. WINDOW RESIZE HANDLER
+        let resizeTimeout;
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(syncTranscriptHeight, 250);
+        });
+    </script>
+</body>
+</html>
