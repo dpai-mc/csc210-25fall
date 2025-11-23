@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Control Unit for Data Instruction</title>
+    <script src="https://cdn.tailwindcss.com?plugins=typography"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        primary: '#1A1A1A',
+                        accent: '#2563EB', // Royal Blue
+                        bg: '#FDFBF8',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom focus styles for accessibility */
+        *:focus-visible {
+            outline: 3px solid #2563EB;
+            outline-offset: 2px;
+        }
+        .tab-active {
+            border-bottom: 3px solid #2563EB;
+            color: #2563EB;
+            font-weight: 600;
+        }
+        .tab-inactive {
+            border-bottom: 3px solid transparent;
+            color: #6B7280;
+        }
+        .tab-inactive:hover {
+            color: #1A1A1A;
+            border-bottom-color: #D1D5DB;
+        }
+    </style>
+</head>
+<body class="bg-[#FDFBF8] text-[#1A1A1A] font-sans antialiased min-h-screen flex flex-col">
+
+    <!-- Skip to Content -->
+    <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 bg-accent text-white px-4 py-2 rounded shadow-lg z-50">
+        Skip to Content
+    </a>
+
+    <!-- Header -->
+    <header class="bg-white border-b border-gray-200 shadow-sm">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <h1 class="text-3xl font-bold text-gray-900">Control Unit for Data Instruction</h1>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main id="main-content" class="flex-grow max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
+        
+        <!-- Introduction -->
+        <section class="prose prose-lg max-w-none mb-10 text-gray-800">
+            <p>
+                Before we begin, we first have to define how our Instruction Register works for Data Instructions.
+                We will look at the breakdown of the instruction bits, the Control Unit diagram, the CPU diagram, and finally a video demonstration.
+            </p>
+        </section>
+
+        <!-- Tabs Container -->
+        <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+            <!-- Tab List -->
+            <div class="border-b border-gray-200 overflow-x-auto">
+                <nav class="flex -mb-px" aria-label="Tabs" role="tablist">
+                    <button onclick="switchTab('tab1')" id="btn-tab1" role="tab" aria-selected="true" aria-controls="tab1" class="tab-active whitespace-nowrap py-4 px-6 text-sm font-medium transition-colors duration-200 focus:outline-none">
+                        Data Instructions
+                    </button>
+                    <button onclick="switchTab('tab2')" id="btn-tab2" role="tab" aria-selected="false" aria-controls="tab2" class="tab-inactive whitespace-nowrap py-4 px-6 text-sm font-medium transition-colors duration-200 focus:outline-none">
+                        Control Unit
+                    </button>
+                    <button onclick="switchTab('tab3')" id="btn-tab3" role="tab" aria-selected="false" aria-controls="tab3" class="tab-inactive whitespace-nowrap py-4 px-6 text-sm font-medium transition-colors duration-200 focus:outline-none">
+                        CPU Diagram
+                    </button>
+                    <button onclick="switchTab('tab4')" id="btn-tab4" role="tab" aria-selected="false" aria-controls="tab4" class="tab-inactive whitespace-nowrap py-4 px-6 text-sm font-medium transition-colors duration-200 focus:outline-none">
+                        Video
+                    </button>
+                </nav>
+            </div>
+
+            <!-- Tab 1: Data Instructions -->
+            <div id="tab1" role="tabpanel" aria-labelledby="btn-tab1" class="p-6 sm:p-8 focus:outline-none" tabindex="0">
+                <div class="prose max-w-none">
+                    <h2>Data Instructions Breakdown</h2>
+                    <p>The Data instruction is an 8-bit value broken down as follows:</p>
+                    
+                    <!-- Responsive Table Container -->
+                    <div class="overflow-x-auto my-6 border rounded-lg">
+                        <table class="min-w-[600px] w-full text-sm text-center">
+                            <thead class="bg-gray-50 text-gray-700 uppercase">
+                                <tr>
+                                    <th class="px-4 py-3 border-b">Bit 0</th>
+                                    <th class="px-4 py-3 border-b">Bit 1</th>
+                                    <th class="px-4 py-3 border-b">Bit 2</th>
+                                    <th class="px-4 py-3 border-b">Bit 3</th>
+                                    <th class="px-4 py-3 border-b">Bit 4</th>
+                                    <th class="px-4 py-3 border-b">Bit 5</th>
+                                    <th class="px-4 py-3 border-b">Bit 6</th>
+                                    <th class="px-4 py-3 border-b">Bit 7</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="divide-x divide-gray-200">
+                                    <td class="px-4 py-3">0 (Data Instr)</td>
+                                    <td class="px-4 py-3 bg-blue-50">Op Code</td>
+                                    <td class="px-4 py-3 bg-blue-50">Op Code</td>
+                                    <td class="px-4 py-3 bg-blue-50">Op Code</td>
+                                    <td class="px-4 py-3 bg-green-50">Reg / Unused</td>
+                                    <td class="px-4 py-3 bg-green-50">Reg / Unused</td>
+                                    <td class="px-4 py-3 bg-orange-50">Reg / Val</td>
+                                    <td class="px-4 py-3 bg-orange-50">Reg / Val</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <h3>Bit Definitions</h3>
+                    <ul class="list-disc pl-5 space-y-2">
+                        <li><strong>Bit 0:</strong> When this is 0, we have a Data Instruction.</li>
+                        <li><strong>Bits 1-3:</strong> The Operation code (based upon the table below).</li>
+                        <li><strong>Bits 4-5:</strong> Define which Register (0-3) will be used. (Sometimes unused depending on Op Code).</li>
+                        <li><strong>Bits 6-7:</strong> Define which Register (0-3) will be used OR an immediate value.</li>
+                    </ul>
+
+                    <h3>Data Operations Table</h3>
+                    <div class="overflow-x-auto my-6 border rounded-lg max-w-md">
+                        <table class="w-full text-sm text-center divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-4 py-3">Operation</th>
+                                    <th class="px-4 py-3">Bit 1</th>
+                                    <th class="px-4 py-3">Bit 2</th>
+                                    <th class="px-4 py-3">Bit 3</th>
+                                    <th class="px-4 py-3 text-left">Description</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-200">
+                                <tr><td class="px-4 py-2 font-medium">LOAD</td><td>0</td><td>0</td><td>0</td><td class="text-left text-xs text-gray-600">Load Register from RAM</td></tr>
+                                <tr><td class="px-4 py-2 font-medium">STORE</td><td>0</td><td>0</td><td>1</td><td class="text-left text-xs text-gray-600">Store Register to RAM</td></tr>
+                                <tr><td class="px-4 py-2 font-medium">DATA</td><td>0</td><td>1</td><td>0</td><td class="text-left text-xs text-gray-600">Load Immediate Value</td></tr>
+                                <tr><td class="px-4 py-2 font-medium">JMPR</td><td>0</td><td>1</td><td>1</td><td class="text-left text-xs text-gray-600">Jump to Register Address</td></tr>
+                                <tr><td class="px-4 py-2 font-medium">JMP</td><td>1</td><td>0</td><td>0</td><td class="text-left text-xs text-gray-600">Jump to Immediate Address</td></tr>
+                                <tr><td class="px-4 py-2 font-medium">JEQ</td><td>1</td><td>0</td><td>1</td><td class="text-left text-xs text-gray-600">Jump if Equal</td></tr>
+                                <tr><td class="px-4 py-2 font-medium">CLR</td><td>1</td><td>1</td><td>0</td><td class="text-left text-xs text-gray-600">Clear Register</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <h3>Register Codes</h3>
+                    <div class="overflow-x-auto my-6 border rounded-lg max-w-sm">
+                        <table class="w-full text-sm text-center divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-4 py-3">Bit 4 / 6</th>
+                                    <th class="px-4 py-3">Bit 5 / 7</th>
+                                    <th class="px-4 py-3">Register</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-200">
+                                <tr><td>0</td><td>0</td><td class="font-medium">R0</td></tr>
+                                <tr><td>0</td><td>1</td><td class="font-medium">R1</td></tr>
+                                <tr><td>1</td><td>0</td><td class="font-medium">R2</td></tr>
+                                <tr><td>1</td><td>1</td><td class="font-medium">R3</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab 2: Control Unit Diagram -->
+            <div id="tab2" role="tabpanel" aria-labelledby="btn-tab2" class="hidden p-6 sm:p-8 focus:outline-none" tabindex="0">
+                <div class="prose max-w-none">
+                    <h2>Data Instruction Control Unit Diagram</h2>
+                    <p>The Control Unit logic for handling the various data instructions is detailed below.</p>
+                    
+                    <figure class="my-8">
+                        <img src="images/control-unit-data-diagram.jpg" alt="Control Unit Diagram for Data Instruction" class="w-full h-auto rounded shadow-md border border-gray-200">
+                        <figcaption class="text-sm text-gray-500 mt-2 text-center">Figure 1: Control Unit Circuit Diagram for Data Instructions</figcaption>
+                    </figure>
+                </div>
+            </div>
+
+            <!-- Tab 3: CPU Diagram -->
+            <div id="tab3" role="tabpanel" aria-labelledby="btn-tab3" class="hidden p-6 sm:p-8 focus:outline-none" tabindex="0">
+                <div class="prose max-w-none">
+                    <h2>CPU for Data Instruction</h2>
+                    <p>The temporary modifications included in this diagram for testing purposes include:</p>
+                    <ul class="list-disc pl-5 space-y-2">
+                        <li>Disconnection RAM Input from the BUS so you can manually set the value stored in RAM.</li>
+                        <li>Fix <strong>RAM_S</strong> to 1 because we don't have all of the circuitry in this example.</li>
+                        <li>Removing <strong>IR</strong> from the BUS so we can manually set the value (IR_S is 1).</li>
+                        <li>Setting <strong>PC_S</strong> to 1 so that we have an initial value to start with.</li>
+                    </ul>
+
+                    <figure class="my-8">
+                        <img src="images/cpu-data-layout.jpg" alt="CPU Diagram for Data Instruction" class="w-full h-auto rounded shadow-md border border-gray-200">
+                        <figcaption class="text-sm text-gray-500 mt-2 text-center">Figure 2: CPU Layout Diagram</figcaption>
+                    </figure>
+                </div>
+            </div>
+
+            <!-- Tab 4: Video -->
+            <div id="tab4" role="tabpanel" aria-labelledby="btn-tab4" class="hidden p-6 sm:p-8 focus:outline-none" tabindex="0">
+                <div class="prose max-w-none">
+                    <h2>Video Description of Operation</h2>
+                    <p>The following video demonstrates the execution of data instructions within the circuit.</p>
+                    
+                    <div class="aspect-w-16 aspect-h-9 my-6">
+                        <!-- Placeholder ID used: Replace VIDEO_ID with actual YouTube ID from source -->
+                        <iframe class="w-full h-64 md:h-[500px] rounded-lg shadow-md" src="https://www.youtube.com/embed/VIDEO_ID" title="Demonstration of Data Instruction" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-gray-200 mt-auto">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <p class="text-center text-sm text-gray-500">
+                &copy; 2025 Instructional Content. All rights reserved.
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        function switchTab(tabId) {
+            // Get all tabs and panels
+            const tabs = document.querySelectorAll('[role="tab"]');
+            const panels = document.querySelectorAll('[role="tabpanel"]');
+
+            // Loop through tabs to update state
+            tabs.forEach(tab => {
+                const isSelected = tab.getAttribute('onclick').includes(tabId);
+                tab.setAttribute('aria-selected', isSelected);
+                
+                if (isSelected) {
+                    tab.classList.remove('tab-inactive');
+                    tab.classList.add('tab-active');
+                } else {
+                    tab.classList.remove('tab-active');
+                    tab.classList.add('tab-inactive');
+                }
+            });
+
+            // Loop through panels to show/hide
+            panels.forEach(panel => {
+                if (panel.id === tabId) {
+                    panel.classList.remove('hidden');
+                } else {
+                    panel.classList.add('hidden');
+                }
+            });
+        }
+
+        // Handle keyboard navigation for tabs
+        document.addEventListener('keydown', function(e) {
+            const currentTab = document.activeElement;
+            if (currentTab.getAttribute('role') !== 'tab') return;
+
+            const tabs = Array.from(document.querySelectorAll('[role="tab"]'));
+            const index = tabs.indexOf(currentTab);
+            
+            let nextIndex = null;
+
+            if (e.key === 'ArrowRight') {
+                nextIndex = (index + 1) % tabs.length;
+            } else if (e.key === 'ArrowLeft') {
+                nextIndex = (index - 1 + tabs.length) % tabs.length;
+            }
+
+            if (nextIndex !== null) {
+                e.preventDefault();
+                tabs[nextIndex].focus();
+                tabs[nextIndex].click();
+            }
+        });
+    </script>
+</body>
+</html>
