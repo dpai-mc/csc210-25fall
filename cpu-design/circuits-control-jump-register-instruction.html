@@ -38,406 +38,598 @@
       }
       
       h1 {
-        font-size: 2.25rem;
         font-weight: 700;
-        line-height: 1.2;
+        letter-spacing: -0.025em;
       }
       
-      h2 {
-        font-size: 1.875rem;
-        font-weight: 600;
-        line-height: 1.3;
-      }
-      
-      h3 {
-        font-size: 1.25rem;
-        font-weight: 600;
-        line-height: 1.4;
-      }
-      
-      p {
-        font-size: 1rem;
-        line-height: 1.6;
-        color: #1A1A1A;
-      }
-      
-      a {
-        color: #2563EB;
-        text-decoration: none;
-        font-weight: 500;
-      }
-      
-      a:hover {
-        text-decoration: underline;
-      }
-      
-      ul {
-        list-style-type: disc;
-        margin-left: 1.5rem;
-      }
-      
-      li {
-        margin-bottom: 0.75rem;
-        line-height: 1.6;
-      }
-      
-      figure {
-        margin: 1.5rem 0;
-      }
-      
-      figcaption {
-        font-size: 0.875rem;
-        color: #4B5563;
-        font-style: italic;
-        margin-top: 0.5rem;
-        text-align: center;
-      }
-      
-      img {
-        max-width: 100%;
-        height: auto;
-        border-radius: 0.5rem;
-        border: 1px solid #E5E7EB;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-        display: block;
-        margin: 0 auto;
-      }
-
-      /* Table Styling */
-      table {
-        width: 100%;
-        border-collapse: collapse;
-        margin: 1.5rem 0;
-      }
-
-      th, td {
-        border: 1px solid #D1D5DB;
-        padding: 0.75rem;
-        text-align: center;
-      }
-
-      th {
-        background-color: #E5E7EB;
-        font-weight: 600;
-        color: #1A1A1A;
-      }
-
-      td {
-        background-color: #FFFFFF;
-      }
-
-      /* Accessible Tab Styling */
-      .tabs-container {
-        margin-bottom: 2rem;
-      }
-
-      [role="tablist"] {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 0.5rem;
-        border-bottom: 2px solid #D1D5DB;
-        list-style: none;
-        margin: 0;
-        padding: 0;
-      }
-
-      [role="tab"] {
-        padding: 0.75rem 1.25rem;
-        background-color: #F3F4F6;
-        border: 1px solid #D1D5DB;
-        border-bottom: none;
-        border-radius: 0.5rem 0.5rem 0 0;
+      /* Transcript Highlight Styles */
+      .transcript-line {
         cursor: pointer;
+        padding: 8px 12px;
+        border-radius: 6px;
+        transition: background-color 0.2s ease, border-left-color 0.2s ease;
+        border-left: 4px solid transparent;
+      }
+      
+      .transcript-line:hover {
+        background-color: #f3f4f6;
+      }
+      
+      .transcript-line.highlight {
+        background-color: #e2e8f0;
+        border-left: 4px solid #3b82f6;
         font-weight: 500;
-        color: #1A1A1A;
-        transition: all 0.2s ease;
-        margin-bottom: -2px;
       }
 
-      [role="tab"]:hover {
-        background-color: #E5E7EB;
+      /* Custom Scrollbar for Transcript */
+      #transcript-container::-webkit-scrollbar {
+        width: 8px;
       }
-
-      [role="tab"][aria-selected="true"] {
-        background-color: #2563EB;
-        color: #FFFFFF;
-        border-color: #2563EB;
-        border-bottom-color: #FDFBF8;
+      
+      #transcript-container::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 4px;
       }
-
-      [role="tab"]:focus-visible {
-        outline: 2px solid #2563EB;
-        outline-offset: 2px;
+      
+      #transcript-container::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border-radius: 4px;
       }
-
-      [role="tabpanel"] {
-        display: none;
-        padding: 2rem 0;
-        animation: fadeIn 0.2s ease;
-      }
-
-      [role="tabpanel"][data-active="true"] {
-        display: block;
-      }
-
-      @keyframes fadeIn {
-        from {
-          opacity: 0;
-        }
-        to {
-          opacity: 1;
-        }
-      }
-
-      [role="tabpanel"] h2 {
-        margin-top: 0;
+      
+      #transcript-container::-webkit-scrollbar-thumb:hover {
+        background: #94a3b8;
       }
     </style>
   </head>
-  <body>
-    <!-- Skip Link for Accessibility -->
+  <body class="min-h-screen flex flex-col">
     <a href="#main-content" class="skip-link">Skip to main content</a>
-    
-    <main id="main-content" class="container mx-auto px-4 py-12 max-w-4xl">
-      <!-- Page Header -->
-      <header class="mb-10">
-        <h1 class="text-4xl font-bold mb-4">Circuits: Jump Register-Only</h1>
-        <p class="text-lg text-gray-700">Before we begin, we first have to define how our Instruction Register works for Jump Register Instructions.</p>
-      </header>
 
-      <!-- Accessible Tab Interface -->
-      <div class="tabs-container">
-        <div role="tablist" aria-label="Content sections">
-          <button role="tab" 
-                  id="tab-instructions" 
-                  aria-selected="true" 
-                  aria-controls="panel-instructions">
-            Jump Register Instructions
-          </button>
-          <button role="tab" 
-                  id="tab-control-unit" 
-                  aria-selected="false" 
-                  aria-controls="panel-control-unit">
-            Jump Register Control Unit Diagram
-          </button>
-          <button role="tab" 
-                  id="tab-cpu-diagram" 
-                  aria-selected="false" 
-                  aria-controls="panel-cpu-diagram">
-            Jump Register CPU Diagram
-          </button>
-          <button role="tab" 
-                  id="tab-video" 
-                  aria-selected="false" 
-                  aria-controls="panel-video">
-            Jump Register Video
-          </button>
+    <header class="bg-white border-b border-gray-200 sticky top-0 z-10">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between h-16 items-center">
+          <div class="flex items-center gap-2">
+            <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.384-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path>
+            </svg>
+            <span class="font-bold text-xl tracking-tight">Computer Organization</span>
+          </div>
+          <nav class="flex space-x-4">
+            <a href="#" class="text-gray-500 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium">Home</a>
+            <a href="#" class="text-gray-900 bg-gray-100 px-3 py-2 rounded-md text-sm font-medium" aria-current="page">Modules</a>
+          </nav>
         </div>
+      </div>
+    </header>
 
-        <!-- Section 1: Jump Register Instructions -->
-        <section role="tabpanel" 
-                 id="panel-instructions" 
-                 aria-labelledby="tab-instructions"
-                 data-active="true">
-          <h2 class="text-3xl font-semibold mb-6">Jump Register Instructions</h2>
+    <main id="main-content" class="flex-grow py-8 bg-gray-50">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
-          <p class="mb-6">The Operation instruction is an 8-bit value that is broken down as follows:</p>
-          
-          <div class="overflow-x-auto mb-6">
-            <table>
-              <thead>
-                <tr>
-                  <th style="width: 12.5%;">bit 0</th>
-                  <th style="width: 12.5%;">bit 1</th>
-                  <th style="width: 12.5%;">bit 2</th>
-                  <th style="width: 12.5%;">bit 3</th>
-                  <th style="width: 12.5%;">bit 4</th>
-                  <th style="width: 12.5%;">bit 5</th>
-                  <th style="width: 12.5%;">bit 6</th>
-                  <th style="width: 12.5%;">bit 7</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>0 for Non-ALU Instr.</td>
-                  <td>0</td>
-                  <td>1</td>
-                  <td>1</td>
-                  <td>x</td>
-                  <td>x</td>
-                  <td>Reg B</td>
-                  <td>Reg B</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-
-          <p class="mb-6"><strong>Where:</strong></p>
-          <ul class="mb-6 space-y-2">
-            <li><strong>bit 0:</strong> When this is 0, then we have either a Load or a Store Instruction</li>
-            <li><strong>bits 1-3:</strong> are 011 for a jump register instruction</li>
-            <li><strong>bits 4-5:</strong> not used by this operation</li>
-            <li><strong>bits 6-7:</strong> define which Register, 0-3, will be used for this operation</li>
-          </ul>
-
-          <h3 class="text-xl font-semibold mb-4">Jump Register Instructions:</h3>
-          
-          <p class="mb-4">What a Jump Register Instruction does is "jumps" to the address defined in Register B. An assembly language mnemonic might be:</p>
-          
-          <p class="mb-4 bg-gray-100 p-4 rounded-lg border-l-4 border-blue-500"><code class="text-code-gray">JMPR RB</code></p>
-          
-          <p class="mb-4">where <strong>RB</strong> is the Register, R0-R3, defined by bits 6 and 7.</p>
-          
-          <p class="text-lg">This instruction will let us jump about rather than just incrementing the location by 1 as we have done so far.</p>
-        </section>
-
-        <!-- Section 2: Jump Register Control Unit Diagram -->
-        <section role="tabpanel" 
-                 id="panel-control-unit" 
-                 aria-labelledby="tab-control-unit"
-                 data-active="false">
-          <h2 class="text-3xl font-semibold mb-6">Jump Register Instruction Control Unit Diagram</h2>
-          
-          <p class="mb-6">The actual Control unit for this system appears below. Please note that the following elements have been added and/or removed from this control unit that was not in the previous ones:</p>
-          
-          <ul class="mb-8 space-y-2">
-            <li>Since the Data Instruction is 011 (or 3), we are only wiring up the output for this from the 3x8 decoder</li>
-          </ul>
-
-          <figure class="my-6">
-            <img id="381100" 
-                 src="images/control-unit-diagram-jump-register.jpg" 
-                 alt="Jump Register Control Unit Circuit Diagram showing decoder output wiring for instruction 011" 
-                 class="max-w-full h-auto rounded-lg border border-gray-300 shadow-sm mx-auto"
-                 style="max-width: 640px;"
-                 loading="lazy">
-            <figcaption>Jump Register Control Unit Circuit Diagram</figcaption>
-          </figure>
-        </section>
-
-        <!-- Section 3: Jump Register CPU Diagram -->
-        <section role="tabpanel" 
-                 id="panel-cpu-diagram" 
-                 aria-labelledby="tab-cpu-diagram"
-                 data-active="false">
-          <h2 class="text-3xl font-semibold mb-6">CPU for Jump Register Instruction</h2>
-          
-          <p class="mb-6">The temporary modifications included here include:</p>
-          
-          <ul class="mb-8 space-y-2">
-            <li>Disconnect the Register we are going to use as RB in the Jump Register Instruction (and fix the "set" at 1)</li>
-            <li>Removing IR from the BUS so can manually set the value (IR_S is 1)</li>
-          </ul>
-
-          <figure class="my-6">
-            <img id="381099" 
-                 src="images/cpu-diagram-jump-register.jpg" 
-                 alt="Jump Register CPU Circuit Diagram showing register disconnection and IR bus modifications" 
-                 class="max-w-full h-auto rounded-lg border border-gray-300 shadow-sm mx-auto"
-                 style="max-width: 640px;"
-                 loading="lazy">
-            <figcaption>Jump Register CPU Circuit Diagram</figcaption>
-          </figure>
-        </section>
-
-        <!-- Section 4: Video Description of Operation -->
-        <section role="tabpanel" 
-                 id="panel-video" 
-                 aria-labelledby="tab-video"
-                 data-active="false">
-          <h2 class="text-3xl font-semibold mb-6">Video Description of Operation</h2>
-          
-          <p class="mb-6">The following video walks through the details of the Jump Register Instruction Operation:</p>
-          
-          <div class="bg-gray-100 p-6 rounded-lg border border-gray-300">
-            <p class="mb-4">
-              <strong>Video:</strong> 
-              <a href="https://youtu.be/MsYq6yor3Ag" 
-                 target="_blank" 
-                 rel="noopener" 
-                 title="External video link: Jump Register Instruction on YouTube"
-                 class="text-accent-blue hover:underline font-medium">
-                Jump Register Instruction: Detailed Walkthrough of Jump Operations and Register Selection
+        <!-- Breadcrumb -->
+        <nav class="flex mb-8 text-sm text-gray-500" aria-label="Breadcrumb">
+          <ol class="inline-flex items-center space-x-1 md:space-x-3">
+            <li class="inline-flex items-center">
+              <a href="#" class="inline-flex items-center hover:text-blue-600">
+                <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20"><path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"></path></svg>
+                Modules
               </a>
-            </p>
-            <p class="text-sm text-gray-600">
-              This video provides a comprehensive explanation of how Jump Register Instructions operate, demonstrating register selection through bits 6-7 and the jump operation to addresses stored in selected registers.
-            </p>
-          </div>
-        </section>
-      </div>    </main>
+            </li>
+            <li>
+              <div class="flex items-center">
+                <svg class="w-6 h-6 text-gray-400" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path></svg>
+                <a href="#" class="ml-1 hover:text-blue-600 md:ml-2">CPU Design</a>
+              </div>
+            </li>
+            <li aria-current="page">
+              <div class="flex items-center">
+                <svg class="w-6 h-6 text-gray-400" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path></svg>
+                <span class="ml-1 text-gray-800 font-semibold md:ml-2">Jump Register</span>
+              </div>
+            </li>
+          </ol>
+        </nav>
 
-    <!-- Footer -->
-    <footer class="bg-gray-100 border-t border-gray-300 mt-12 py-6">
-      <div class="container mx-auto px-4 max-w-4xl text-center text-sm text-gray-600">
-        <p>CSC210: Computer Organization & Architecture</p>
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+          <div class="p-6 md:p-8">
+            <h1 class="text-3xl font-bold text-gray-900 mb-4">Jump Register Instruction</h1>
+            <p class="text-lg text-gray-600 mb-8 max-w-3xl">
+              Understand how the Jump Register instruction alters program flow by loading a specific register's value directly into the Program Counter.
+            </p>
+
+            <!-- Video and Transcript Section (Updated per Guide v2) -->
+            <div class="flex flex-col lg:flex-row gap-6 w-full mb-10">
+                <!-- Video Player Section: 66% width on large screens -->
+                <div class="w-full lg:w-2/3">
+                    <div class="relative w-full rounded-xl overflow-hidden shadow-md bg-black" style="padding-bottom: 56.25%; height: 0;">
+                        <iframe 
+                            id="video-player"
+                            class="absolute top-0 left-0 w-full h-full"
+                            src="https://www.youtube.com/embed/MsYq6yor3Ag?enablejsapi=1" 
+                            title="YouTube video player" 
+                            frameborder="0" 
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                            allowfullscreen>
+                        </iframe>
+                    </div>
+                </div>
+
+                <!-- Transcript Section: 33% width on large screens -->
+                <div class="w-full lg:w-1/3 flex flex-col bg-white rounded-xl border border-gray-200 shadow-sm h-96 lg:h-auto">
+                    <div class="p-4 border-b border-gray-100 bg-gray-50 rounded-t-xl">
+                        <h3 class="font-semibold text-gray-700 flex items-center gap-2">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                            Transcript
+                        </h3>
+                    </div>
+                    <!-- The container that scrolls -->
+                    <div id="transcript-container" class="flex-grow overflow-y-auto p-4 space-y-2 bg-white rounded-b-xl">
+                        <div id="transcript-content" class="text-sm text-gray-600 leading-relaxed">
+                            <!-- Transcript lines will be injected here by JS -->
+                            <div class="animate-pulse space-y-3">
+                                <div class="h-4 bg-gray-100 rounded w-3/4"></div>
+                                <div class="h-4 bg-gray-100 rounded"></div>
+                                <div class="h-4 bg-gray-100 rounded w-5/6"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Content Tabs -->
+            <div class="mt-8">
+              <div class="border-b border-gray-200">
+                <nav class="-mb-px flex space-x-8" aria-label="Tabs" role="tablist">
+                  <button 
+                    class="border-blue-500 text-blue-600 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm focus:outline-none focus:text-blue-800 focus:border-blue-800 transition-colors"
+                    id="tab-overview"
+                    role="tab"
+                    aria-selected="true"
+                    aria-controls="panel-overview"
+                    tabindex="0">
+                    Overview
+                  </button>
+                  <button 
+                    class="border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm focus:outline-none focus:text-gray-700 focus:border-gray-400 transition-colors"
+                    id="tab-diagram"
+                    role="tab"
+                    aria-selected="false"
+                    aria-controls="panel-diagram"
+                    tabindex="-1">
+                    Circuit Diagram
+                  </button>
+                  <button 
+                    class="border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm focus:outline-none focus:text-gray-700 focus:border-gray-400 transition-colors"
+                    id="tab-quiz"
+                    role="tab"
+                    aria-selected="false"
+                    aria-controls="panel-quiz"
+                    tabindex="-1">
+                    Knowledge Check
+                  </button>
+                </nav>
+              </div>
+
+              <!-- Tab Panels -->
+              <div class="mt-6">
+                <!-- Overview Panel -->
+                <div id="panel-overview" role="tabpanel" aria-labelledby="tab-overview" class="space-y-4">
+                  <h3 class="text-lg font-medium text-gray-900">Key Concepts</h3>
+                  <ul class="list-disc pl-5 space-y-2 text-gray-700">
+                    <li><strong>Opcode:</strong> The Jump Register opcode is <code class="bg-gray-100 px-1 py-0.5 rounded text-sm font-mono">0011</code>.</li>
+                    <li><strong>Target:</strong> The instruction specifies a source register (e.g., Register B).</li>
+                    <li><strong>Operation:</strong> The value stored in the source register is moved to the Bus, and then loaded into the Program Counter (PC).</li>
+                    <li><strong>Effect:</strong> The next instruction fetch will occur at the memory address that was just loaded into the PC.</li>
+                  </ul>
+                </div>
+
+                <!-- Diagram Panel -->
+                <div id="panel-diagram" role="tabpanel" aria-labelledby="tab-diagram" class="hidden space-y-4">
+                   <h3 class="text-lg font-medium text-gray-900">Data Path Visualization</h3>
+                   <div class="bg-gray-100 p-8 rounded-lg flex items-center justify-center border-2 border-dashed border-gray-300">
+                     <p class="text-gray-500 italic">Circuit diagram visualization placeholder</p>
+                   </div>
+                </div>
+
+                <!-- Quiz Panel -->
+                <div id="panel-quiz" role="tabpanel" aria-labelledby="tab-quiz" class="hidden space-y-4">
+                  <h3 class="text-lg font-medium text-gray-900">Quick Quiz</h3>
+                  <div class="space-y-4">
+                    <div class="p-4 bg-blue-50 rounded-lg border border-blue-100">
+                      <p class="font-medium text-gray-900 mb-3">Which component's value is updated during a Jump Register instruction?</p>
+                      <div class="space-y-2">
+                        <label class="flex items-center space-x-3">
+                          <input type="radio" name="q1" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300">
+                          <span class="text-gray-700">The Accumulator</span>
+                        </label>
+                        <label class="flex items-center space-x-3">
+                          <input type="radio" name="q1" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300">
+                          <span class="text-gray-700">The Instruction Register</span>
+                        </label>
+                        <label class="flex items-center space-x-3">
+                          <input type="radio" name="q1" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300">
+                          <span class="text-gray-700">The Program Counter</span>
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <footer class="bg-white border-t border-gray-200 mt-auto">
+      <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+        <p class="text-center text-sm text-gray-500">© 2024 Computer Organization Course. All rights reserved.</p>
       </div>
     </footer>
 
-    <!-- Tab Functionality Script -->
+    <!-- Video & Transcript Scripts -->
+    <script src="https://www.youtube.com/iframe_api"></script>
     <script>
-      document.addEventListener('DOMContentLoaded', function() {
+      // 1. VTT Data
+      const vttData = `WEBVTT
+
+00:00.000 --> 00:11.120
+Aloha in this little video I want to talk about the jump register command and
+
+00:11.120 --> 00:16.620
+operation and how it works and so let's look at the code first so jump register
+
+00:16.620 --> 00:21.600
+is zero zero one one are the first four bits the next two bits are not used and
+
+00:21.600 --> 00:29.320
+then the last two are to define register B in our control unit and what happens
+
+00:29.320 --> 00:34.480
+is so we use jump register register B which basically what we're going to do
+
+00:34.480 --> 00:40.240
+is we're going to take the value stored in register B and it's going to be a
+
+00:40.240 --> 00:44.180
+memory address and we're going to stick that into our program counter meaning
+
+00:44.180 --> 00:51.280
+this is the address for the next instruction okay so today what we've
+
+00:51.280 --> 00:55.780
+been doing is just adding one through the accumulator to get to the next
+
+00:55.780 --> 01:03.960
+instruction here we're going to jump to wherever register B points to okay so
+
+01:03.960 --> 01:08.520
+that's the idea of jump register this is what the micro code looks like so
+
+01:08.520 --> 01:13.200
+here's our address three there's our op code for jump register and then
+
+01:13.200 --> 01:21.400
+it's register B so the register B enable we're going to enable register B onto
+
+01:21.400 --> 01:28.080
+the bus and then we're going to jump register or load the program counter
+
+01:28.080 --> 01:32.480
+so that's this jump register part load the program counter from the bus so
+
+01:32.480 --> 01:37.400
+whatever's on register B goes on the bus and then it goes into the program counter
+
+01:37.400 --> 01:43.900
+so let's see how that works okay so let's start the simulation
+
+01:43.900 --> 01:47.360
+and let's go look at our code first so here's our code
+
+01:47.360 --> 01:54.680
+so we're going to do an immediate load of register B with a value of four
+
+01:54.680 --> 02:00.680
+okay so we're going to put four into register B then we're going to jump to
+
+02:00.680 --> 02:05.100
+register B so basically we're going to jump to line four which is right here
+
+02:05.100 --> 02:11.580
+okay that's what we want to have happen but let's go through the steps so
+
+02:11.580 --> 02:16.860
+first thing we do is we load four into register B so that works and let's go
+
+02:16.860 --> 02:22.680
+see that so here we are in register B and we have a value of four okay so
+
+02:22.680 --> 02:28.320
+that's good so now we're going to the next instruction this is instruction
+
+02:28.320 --> 02:35.840
+is in memory address two so we're fetching from two and we're getting
+
+02:35.840 --> 02:40.620
+this value here which is our jump register register B okay so now
+
+02:40.620 --> 02:45.180
+we've fetched it we put it into the instruction register the instruction
+
+02:45.180 --> 02:49.120
+register now tells the control unit what to do and here's our
+
+02:49.120 --> 02:57.320
+and we can see that we have turned on enable register B and jump which is
+
+02:57.320 --> 02:58.080
+super
+
+02:58.080 --> 03:06.140
+complex circuit all right so again but though it's starting at four because
+
+03:06.140 --> 03:13.020
+this is the one two and three is a fetch so we will go to our CPU and we will get
+
+03:13.020 --> 03:28.080
+to four there we're at four okay and so we got four and we did enable so
+
+03:28.080 --> 03:33.080
+we're able reg B we just registered three and so everything whatever is in
+
+03:33.080 --> 03:39.700
+registry is now on the bus okay so here it is on the bus it's all one it's on
+
+03:39.700 --> 03:44.360
+the bus it's not in our program counter yet because they haven't tried to set it
+
+03:44.360 --> 03:50.300
+so when we cycle the next one it's set now we've set our program counter and
+
+03:50.300 --> 03:57.940
+just taken the value of the bus which is all ones okay so now we're setting and
+
+03:57.940 --> 04:02.980
+we can see that here the program counter is now four we're done with
+
+04:02.980 --> 04:08.520
+that instruction so we go back to step one of the fetch cycle and where are
+
+04:08.520 --> 04:15.540
+we going to fetch from well we're going to fetch from address four so we go over
+
+04:15.540 --> 04:22.280
+to ram and we can see that we are fetching from address four which is a
+
+04:22.280 --> 04:30.980
+load immediate to register a with the value of one so that's how jump register
+
+04:30.980 --> 04:36.560
+works whatever is in the register that you define we put that into the program
+
+04:36.560 --> 04:41.240
+counter and that's where we go for our next instruction thanks for watching`;
+
+      // 2. Transcript Manager Class
+      class TranscriptManager {
+          constructor(vttContent, videoId, transcriptId) {
+              this.vttContent = vttContent;
+              this.player = null;
+              this.transcriptContainer = document.getElementById(transcriptId);
+              this.cues = [];
+              this.isAutoScrolling = false;
+              
+              this.init();
+          }
+
+          init() {
+              this.parseVTT();
+              this.renderTranscript();
+              this.setupHeightSync();
+          }
+
+          parseVTT() {
+              const lines = this.vttContent.split('\n');
+              let currentTime = null;
+              
+              lines.forEach(line => {
+                  line = line.trim();
+                  if (!line || line === 'WEBVTT') return;
+                  
+                  // Support both MM:SS.mmm and HH:MM:SS.mmm formats
+                  const timeMatch = line.match(/(\d{2}:)?(\d{2}:\d{2}\.\d{3}) --> (\d{2}:)?(\d{2}:\d{2}\.\d{3})/);
+                  
+                  if (timeMatch) {
+                      currentTime = this.parseTime(timeMatch[0].split(' --> ')[0]);
+                  } else if (currentTime !== null) {
+                      this.cues.push({
+                          time: currentTime,
+                          text: line
+                      });
+                      currentTime = null; // Reset until next timestamp
+                  }
+              });
+          }
+
+          parseTime(timeString) {
+              const parts = timeString.split(':');
+              let seconds = 0;
+              if (parts.length === 3) {
+                  seconds = parseInt(parts[0]) * 3600 + parseInt(parts[1]) * 60 + parseFloat(parts[2]);
+              } else {
+                  seconds = parseInt(parts[0]) * 60 + parseFloat(parts[1]);
+              }
+              return seconds;
+          }
+
+          renderTranscript() {
+              this.transcriptContainer.innerHTML = '';
+              this.cues.forEach((cue, index) => {
+                  const div = document.createElement('div');
+                  div.className = 'transcript-line';
+                  div.dataset.time = cue.time;
+                  div.dataset.index = index;
+                  div.textContent = cue.text;
+                  div.addEventListener('click', () => {
+                      if (this.player && this.player.seekTo) {
+                          this.player.seekTo(cue.time, true);
+                          this.player.playVideo();
+                      }
+                  });
+                  this.transcriptContainer.appendChild(div);
+              });
+          }
+
+          setPlayer(player) {
+              this.player = player;
+          }
+
+          highlightCurrentLine(currentTime) {
+              // Find the last cue that started before current time
+              const activeIndex = this.cues.findLastIndex(cue => cue.time <= currentTime);
+              
+              if (activeIndex !== -1) {
+                  const lines = this.transcriptContainer.children;
+                  
+                  // Remove highlight from all
+                  Array.from(lines).forEach(line => line.classList.remove('highlight'));
+                  
+                  // Add highlight to current
+                  const activeLine = lines[activeIndex];
+                  activeLine.classList.add('highlight');
+                  
+                  // Auto-scroll logic
+                  if (!this.isAutoScrolling) {
+                      this.isAutoScrolling = true;
+                      
+                      // Calculate position to center the highlighted element within the container
+                      const containerHeight = this.transcriptContainer.clientHeight;
+                      const lineTop = activeLine.offsetTop;
+                      const lineHeight = activeLine.clientHeight;
+                      const containerTop = this.transcriptContainer.offsetTop; // Offset relative to parent
+                      
+                      // Standard scrollIntoView with block: 'center' works well, but we need
+                      // to ensure it doesn't scroll the whole page.
+                      // The container has overflow-y-auto, so basic calculation is safer.
+                      
+                      const scrollTarget = (lineTop - this.transcriptContainer.offsetTop) - (containerHeight / 2) + (lineHeight / 2);
+                      
+                      this.transcriptContainer.scrollTo({
+                          top: Math.max(0, scrollTarget),
+                          behavior: 'smooth'
+                      });
+
+                      setTimeout(() => {
+                          this.isAutoScrolling = false;
+                      }, 500);
+                  }
+              }
+          }
+
+          setupHeightSync() {
+              const videoContainer = document.querySelector('.relative.w-full'); // The wrapper with padding-bottom
+              
+              const syncHeight = () => {
+                  // Only sync on desktop (lg breakpoint in Tailwind is 1024px)
+                  if (window.innerWidth >= 1024 && videoContainer) {
+                      // Get the computed height of the video container
+                      const videoHeight = videoContainer.getBoundingClientRect().height;
+                      
+                      // The parent of transcript-container includes the header (h3),
+                      // so we set the parent's height to match video, then flex takes care of the rest.
+                      const transcriptWrapper = this.transcriptContainer.parentElement;
+                      transcriptWrapper.style.height = `${videoHeight}px`;
+                  } else {
+                      // Reset for mobile
+                      const transcriptWrapper = this.transcriptContainer.parentElement;
+                      transcriptWrapper.style.height = ''; // Fallback to CSS class (h-96 or auto)
+                  }
+              };
+
+              // Initial sync
+              // We need a small delay to ensure the video iframe has established its ratio
+              setTimeout(syncHeight, 100);
+              
+              // Sync on resize with debounce
+              let resizeTimer;
+              window.addEventListener('resize', () => {
+                  clearTimeout(resizeTimer);
+                  resizeTimer = setTimeout(syncHeight, 250);
+              });
+          }
+      }
+
+      // 3. Initialize
+      let transcriptManager;
+      let player;
+
+      function onYouTubeIframeAPIReady() {
+          transcriptManager = new TranscriptManager(vttData, 'video-player', 'transcript-container');
+          
+          player = new YT.Player('video-player', {
+              events: {
+                  'onReady': onPlayerReady,
+                  'onStateChange': onPlayerStateChange
+              }
+          });
+          
+          transcriptManager.setPlayer(player);
+      }
+
+      function onPlayerReady(event) {
+          setInterval(() => {
+              if (player && player.getCurrentTime) {
+                  const time = player.getCurrentTime();
+                  transcriptManager.highlightCurrentLine(time);
+              }
+          }, 250);
+      }
+
+      function onPlayerStateChange(event) {
+          // Optional: Handle state changes (play/pause) if needed
+      }
+
+      // --- Tab Interaction Logic (Existing functionality preservation) ---
+      document.addEventListener('DOMContentLoaded', () => {
         const tabs = document.querySelectorAll('[role="tab"]');
         const panels = document.querySelectorAll('[role="tabpanel"]');
 
-        // Click handler for tabs
         tabs.forEach(tab => {
-          tab.addEventListener('click', function() {
-            const tabId = this.id;
-            const panelId = this.getAttribute('aria-controls');
-
-            // Hide all panels
-            panels.forEach(panel => {
-              panel.setAttribute('data-active', 'false');
-            });
-
+          tab.addEventListener('click', function(e) {
             // Deselect all tabs
             tabs.forEach(t => {
               t.setAttribute('aria-selected', 'false');
+              t.classList.remove('border-blue-500', 'text-blue-600');
+              t.classList.add('border-transparent', 'text-gray-500');
             });
 
-            // Show selected panel
-            const selectedPanel = document.getElementById(panelId);
-            if (selectedPanel) {
-              selectedPanel.setAttribute('data-active', 'true');
-            }
+            // Hide all panels
+            panels.forEach(p => p.classList.add('hidden'));
 
             // Select clicked tab
             this.setAttribute('aria-selected', 'true');
-            this.focus();
+            this.classList.remove('border-transparent', 'text-gray-500');
+            this.classList.add('border-blue-500', 'text-blue-600');
+
+            // Show target panel
+            const panelId = this.getAttribute('aria-controls');
+            document.getElementById(panelId).classList.remove('hidden');
           });
-        });
 
-        // Keyboard navigation (Arrow keys)
-        tabs.forEach((tab, index) => {
-          tab.addEventListener('keydown', function(e) {
-            let targetTab = null;
-
-            switch(e.key) {
-              case 'ArrowLeft':
-              case 'ArrowUp':
-                e.preventDefault();
-                // Go to previous tab
-                targetTab = index > 0 ? tabs[index - 1] : tabs[tabs.length - 1];
-                break;
-              case 'ArrowRight':
-              case 'ArrowDown':
-                e.preventDefault();
-                // Go to next tab
-                targetTab = index < tabs.length - 1 ? tabs[index + 1] : tabs[0];
-                break;
-              case 'Home':
-                e.preventDefault();
-                targetTab = tabs[0];
-                break;
-              case 'End':
-                e.preventDefault();
-                targetTab = tabs[tabs.length - 1];
-                break;
+          // Keyboard navigation
+          tab.addEventListener('keydown', (e) => {
+            let target = null;
+            const idx = Array.from(tabs).indexOf(e.target);
+            
+            if (e.key === 'ArrowRight') {
+              target = tabs[(idx + 1) % tabs.length];
+            } else if (e.key === 'ArrowLeft') {
+              target = tabs[(idx - 1 + tabs.length) % tabs.length];
             }
 
-            if (targetTab) {
-              targetTab.click();
+            if (target) {
+              target.focus();
+              target.click();
             }
           });
         });
