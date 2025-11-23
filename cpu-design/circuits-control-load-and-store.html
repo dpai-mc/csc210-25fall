@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Control Unit for Load and Store Instructions</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'bg-light': '#FDFBF8',
+                        'text-dark': '#1A1A1A'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif']
+                    }
+                }
+            },
+            plugins: [require('@tailwindcss/typography')],
+            corePlugins: {
+                preflight: true
+            }
+        };
+    </script>
+    <style>
+        /* Disable dark mode and force light theme */
+        :root {
+            color-scheme: light;
+        }
+        html, body {
+            background-color: #FDFBF8 !important;
+            color: #1A1A1A !important;
+        }
+        @media (prefers-color-scheme: dark) {
+            html, body {
+                background-color: #FDFBF8 !important;
+                color: #1A1A1A !important;
+            }
+        }
+        /* Enhanced focus states for accessibility */
+        *:focus-visible {
+            outline: 2px solid #2563eb !important;
+            outline-offset: 2px !important;
+        }
+        /* Skip to content link */
+        .skip-to-content {
+            position: absolute;
+            top: -40px;
+            left: 0;
+            background: #2563eb;
+            color: white;
+            padding: 8px 16px;
+            z-index: 100;
+            text-decoration: none;
+            border-radius: 0 0 4px 0;
+        }
+        .skip-to-content:focus {
+            top: 0;
+        }
+        /* Tab styling */
+        [role="tab"] {
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        [role="tab"][aria-selected="true"] {
+            border-bottom-width: 3px;
+            border-bottom-color: #2563eb;
+        }
+        [role="tab"][aria-selected="false"] {
+            border-bottom-width: 2px;
+            border-bottom-color: #e5e7eb;
+        }
+        [role="tab"]:hover {
+            background-color: #f3f4f6;
+        }
+        [role="tabpanel"] {
+            display: none;
+        }
+        [role="tabpanel"][aria-hidden="false"] {
+            display: block;
+        }
+        /* Asset placeholder styling */
+        .asset-placeholder {
+            background-color: #fef3c7;
+            border-left: 4px solid #f59e0b;
+            padding: 12px 16px;
+            margin: 16px 0;
+            border-radius: 4px;
+        }
+        .asset-placeholder p {
+            margin: 0;
+            font-size: 14px;
+            color: #92400e;
+        }
+        /* Table styling */
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 16px 0;
+        }
+        th, td {
+            border: 1px solid #d1d5db;
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #f3f4f6;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+        tbody tr:nth-child(even) {
+            background-color: #fafafa;
+        }
+    </style>
+</head>
+<body class="bg-bg-light text-text-dark font-sans">
+    <!-- Skip to Content Link -->
+    <a href="#main-content" class="skip-to-content">Skip to Main Content</a>
+
+    <!-- Header -->
+    <header class="bg-white shadow-sm border-b border-gray-200">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <h1 class="text-3xl sm:text-4xl font-bold text-text-dark mb-2">Control Unit for Load and Store Instructions</h1>
+            <p class="text-lg text-gray-700">Before we begin, we first need to define how our Instruction Register works for Load and Store Instructions.</p>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main id="main-content" class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        
+        <!-- Tabbed Interface -->
+        <div class="mb-12">
+            <!-- Tab List -->
+            <div role="tablist" class="flex flex-wrap gap-0 border-b-2 border-gray-300 mb-8" aria-label="Instructional Content Tabs">
+                <button 
+                    role="tab"
+                    aria-selected="true"
+                    aria-controls="panel-load-store-instructions"
+                    id="tab-load-store-instructions"
+                    class="px-4 sm:px-6 py-3 text-base font-medium text-gray-700 hover:text-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                    Load/Store Instructions
+                </button>
+                <button 
+                    role="tab"
+                    aria-selected="false"
+                    aria-controls="panel-control-unit"
+                    id="tab-control-unit"
+                    class="px-4 sm:px-6 py-3 text-base font-medium text-gray-700 hover:text-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                    L/S Control Unit Diagram
+                </button>
+                <button 
+                    role="tab"
+                    aria-selected="false"
+                    aria-controls="panel-cpu-diagram"
+                    id="tab-cpu-diagram"
+                    class="px-4 sm:px-6 py-3 text-base font-medium text-gray-700 hover:text-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                    L/S CPU Diagram
+                </button>
+                <button 
+                    role="tab"
+                    aria-selected="false"
+                    aria-controls="panel-video"
+                    id="tab-video"
+                    class="px-4 sm:px-6 py-3 text-base font-medium text-gray-700 hover:text-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                    L/S Video
+                </button>
+            </div>
+
+            <!-- Tab Panels -->
+            
+            <!-- Panel 1: Load/Store Instructions -->
+            <div 
+                role="tabpanel"
+                id="panel-load-store-instructions"
+                aria-labelledby="tab-load-store-instructions"
+                aria-hidden="false"
+                class="prose prose-sm sm:prose max-w-none">
+                
+                <h2 class="text-2xl font-bold mt-0 mb-6">Load and Store Instructions</h2>
+                
+                <p>The Operation instruction is an 8-bit value that is broken down as follows:</p>
+
+                <!-- Instruction Format Table -->
+                <div class="overflow-x-auto">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>bit 0</th>
+                                <th>bit 1</th>
+                                <th>bit 2</th>
+                                <th>bit 3</th>
+                                <th>bit 4</th>
+                                <th>bit 5</th>
+                                <th>bit 6</th>
+                                <th>bit 7</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>0 for LD/ST Instr.</td>
+                                <td>0</td>
+                                <td>0</td>
+                                <td><strong>0 = Load<br />1 = Store</strong></td>
+                                <td>Reg A</td>
+                                <td>Reg A</td>
+                                <td>Reg B</td>
+                                <td>Reg B</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h3 class="text-xl font-bold mt-8 mb-4">Bit Definitions</h3>
+                <p><strong>bit 0:</strong> When this is 0, then we have either a Load or a Store Instruction</p>
+                <p><strong>bits 1-2:</strong> Are not used; both are 0s</p>
+                <p><strong>bit 3:</strong> Is 0 for a Load Instruction, 1 for a Store Instruction</p>
+                <p><strong>bits 4-5:</strong> Define which Register (0-3) will be used for the first register</p>
+                <p><strong>bits 6-7:</strong> Define which Register (0-3) will be used for the second register</p>
+
+                <h3 class="text-xl font-bold mt-8 mb-4">Store Instructions</h3>
+                <p><strong>ST RA, RB</strong> — This is the mnemonic for the Store instruction. It reads: "Store the contents of RB into the Memory Address (RAM Address) held or defined in RA." In other words, RB holds the value or 1s and 0s being used, and RA holds the RAM address where that content should be stored.</p>
+                
+                <p><strong>Example:</strong> To store the contents of R2 into the location specified by R3, the Operational Instruction (IR) would be:</p>
+                <p><code class="bg-gray-100 px-2 py-1 rounded">0 00 1 11 10</code></p>
+
+                <h3 class="text-xl font-bold mt-8 mb-4">Load Instructions</h3>
+                <p><strong>LD RA, RB</strong> — This is the mnemonic for the Load instruction. It reads: "Load into RB the contents held in Memory Address (RAM Address) defined in RA." In other words, we take the value stored in RAM based upon the address RA and put it into the Register specified by RB.</p>
+                
+                <p><strong>Example:</strong> To load the contents at the location specified in R3 into R2, the Operational Instruction (IR) would be:</p>
+                <p><code class="bg-gray-100 px-2 py-1 rounded">0 00 0 11 10</code></p>
+
+                <p class="bg-blue-50 border-l-4 border-blue-400 p-4 rounded mt-6"><strong>NOTE:</strong> In the examples above, only bit 3 differs: a 1 for the Store instruction and a 0 for the Load instruction.</p>
+            </div>
+
+            <!-- Panel 2: Control Unit Diagram -->
+            <div 
+                role="tabpanel"
+                id="panel-control-unit"
+                aria-labelledby="tab-control-unit"
+                aria-hidden="true"
+                class="prose prose-sm sm:prose max-w-none">
+                
+                <h2 class="text-2xl font-bold mt-0 mb-6">Load and Store Control Unit Diagram</h2>
+                
+                <p>The actual Control unit for this system is shown below. Please note that the following elements have been added to this control unit that were not in the previous ones:</p>
+                
+                <ul>
+                    <li>3×8 Decoder to decode bits 2, 3, and 4 of the Instruction Register</li>
+                    <li>Removed ALU circuits for clarity</li>
+                </ul>
+
+                <div class="asset-placeholder">
+                    <p><strong>📌 Asset Placeholder:</strong> Control Unit Circuit Diagram for Load and Store Operations</p>
+                    <p>This image is currently hosted on Canvas and will be migrated to GitHub. Relative URL: <code>images/control-unit-load-store.png</code></p>
+                </div>
+
+                <figure class="my-8">
+                    <img 
+                        src="images/control-unit-load-store.png" 
+                        alt="Control Unit Circuit Diagram for Load and Store Operations showing 3x8 decoder and related circuits"
+                        width="800"
+                        height="688"
+                        class="w-full max-w-2xl mx-auto border border-gray-300 rounded">
+                    <figcaption class="text-sm text-gray-600 mt-4 text-center">Figure 1: Control Unit Circuit Diagram for Load and Store Operations</figcaption>
+                </figure>
+            </div>
+
+            <!-- Panel 3: CPU Diagram -->
+            <div 
+                role="tabpanel"
+                id="panel-cpu-diagram"
+                aria-labelledby="tab-cpu-diagram"
+                aria-hidden="true"
+                class="prose prose-sm sm:prose max-w-none">
+                
+                <h2 class="text-2xl font-bold mt-0 mb-6">CPU for Load and Store Operation</h2>
+                
+                <p>The temporary modifications included here are:</p>
+                
+                <ul>
+                    <li>Removing inputs R3 and R2 from the BUS and connecting them to 8-bit inputs that we can manually change to test our addition</li>
+                    <li>Making the "set" input for R3 and R2 a constant value of 1</li>
+                    <li>Removing IR from the BUS so it can be manually set</li>
+                </ul>
+
+                <div class="asset-placeholder">
+                    <p><strong>📌 Asset Placeholder:</strong> CPU Layout for Store and Load Operations</p>
+                    <p>This image is currently hosted on Canvas and will be migrated to GitHub. Relative URL: <code>images/cpu-load-store.png</code></p>
+                </div>
+
+                <figure class="my-8">
+                    <img 
+                        src="images/cpu-load-store.png" 
+                        alt="CPU Layout for Store and Load Operations showing register connections and manual input configurations"
+                        width="800"
+                        height="578"
+                        class="w-full max-w-2xl mx-auto border border-gray-300 rounded">
+                    <figcaption class="text-sm text-gray-600 mt-4 text-center">Figure 2: CPU Layout for Store and Load Operations</figcaption>
+                </figure>
+            </div>
+
+            <!-- Panel 4: Video -->
+            <div 
+                role="tabpanel"
+                id="panel-video"
+                aria-labelledby="tab-video"
+                aria-hidden="true"
+                class="prose prose-sm sm:prose max-w-none">
+                
+                <h2 class="text-2xl font-bold mt-0 mb-6">Video Description of Operation</h2>
+                
+                <p>The following video walks through the details of Load and Store Operations:</p>
+                
+                <p><a href="https://youtu.be/2WBKdxYHUYk" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:text-blue-800 underline">Load and Store Instructions (YouTube)</a></p>
+                
+                <p class="text-sm text-gray-600">Opens in a new window. For best accessibility, ensure captions are enabled on the video.</p>
+            </div>
+
+        </div>
+
+        <!-- Assets Section -->
+        <section class="mt-16 border-t-2 border-gray-300 pt-12">
+            <h2 class="text-2xl font-bold mb-6">Assets</h2>
+            
+            <p class="text-gray-700 mb-6">This section documents all resources embedded in or linked from this instructional page. All images and files are currently hosted on Canvas and will be migrated to GitHub-hosted URLs. See the separate <code>circuits-control-load-and-store-assets.html</code> file for the complete asset register.</p>
+            
+            <div class="overflow-x-auto">
+                <table class="w-full">
+                    <thead>
+                        <tr>
+                            <th class="w-1/6">Type</th>
+                            <th class="w-2/6">Title / Alt Text</th>
+                            <th class="w-2/6">Current Relative URL</th>
+                            <th class="w-1/6">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Image</td>
+                            <td>Control Unit Circuit Diagram for Load and Store Operations</td>
+                            <td><code class="text-sm">images/control-unit-load-store.png</code></td>
+                            <td><span class="inline-block bg-yellow-100 text-yellow-800 px-2 py-1 rounded text-xs font-semibold">Placeholder</span></td>
+                        </tr>
+                        <tr>
+                            <td>Image</td>
+                            <td>CPU Layout for Store and Load Operations</td>
+                            <td><code class="text-sm">images/cpu-load-store.png</code></td>
+                            <td><span class="inline-block bg-yellow-100 text-yellow-800 px-2 py-1 rounded text-xs font-semibold">Placeholder</span></td>
+                        </tr>
+                        <tr>
+                            <td>Video</td>
+                            <td>Load and Store Instructions</td>
+                            <td><code class="text-sm">https://youtu.be/2WBKdxYHUYk</code></td>
+                            <td><span class="inline-block bg-green-100 text-green-800 px-2 py-1 rounded text-xs font-semibold">Active</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="mt-6 p-4 bg-blue-50 border border-blue-200 rounded">
+                <h3 class="font-bold text-blue-900 mb-2">Migration Note</h3>
+                <p class="text-sm text-blue-800">All images currently hosted on Canvas will be migrated to GitHub-hosted versions. Placeholder images will be replaced with the actual circuit and CPU diagrams during the asset migration process. The asset register will be updated with final GitHub URLs once migration is complete.</p>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-100 border-t border-gray-300 mt-16 py-8">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-gray-600 text-sm">
+            <p>&copy; 2024 Mendocino College Computer Science Department. Instructional materials for CSC210: Computer Organization & Architecture.</p>
+        </div>
+    </footer>
+
+    <!-- Tab Switching JavaScript -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const tabButtons = document.querySelectorAll('[role="tab"]');
+            const tabPanels = document.querySelectorAll('[role="tabpanel"]');
+
+            // Initialize all panels as hidden except the first
+            tabPanels.forEach((panel, index) => {
+                if (index === 0) {
+                    panel.setAttribute('aria-hidden', 'false');
+                } else {
+                    panel.setAttribute('aria-hidden', 'true');
+                }
+            });
+
+            // Add click event listeners to tabs
+            tabButtons.forEach((button, index) => {
+                button.addEventListener('click', function() {
+                    // Deselect all tabs and hide all panels
+                    tabButtons.forEach(btn => {
+                        btn.setAttribute('aria-selected', 'false');
+                    });
+                    tabPanels.forEach(panel => {
+                        panel.setAttribute('aria-hidden', 'true');
+                    });
+
+                    // Select clicked tab and show corresponding panel
+                    button.setAttribute('aria-selected', 'true');
+                    const panelId = button.getAttribute('aria-controls');
+                    const panel = document.getElementById(panelId);
+                    if (panel) {
+                        panel.setAttribute('aria-hidden', 'false');
+                    }
+                });
+
+                // Add keyboard navigation for tabs (Arrow Left/Right)
+                button.addEventListener('keydown', function(event) {
+                    let targetIndex = index;
+
+                    if (event.key === 'ArrowRight') {
+                        event.preventDefault();
+                        targetIndex = (index + 1) % tabButtons.length;
+                    } else if (event.key === 'ArrowLeft') {
+                        event.preventDefault();
+                        targetIndex = (index - 1 + tabButtons.length) % tabButtons.length;
+                    } else if (event.key === 'Home') {
+                        event.preventDefault();
+                        targetIndex = 0;
+                    } else if (event.key === 'End') {
+                        event.preventDefault();
+                        targetIndex = tabButtons.length - 1;
+                    }
+
+                    if (targetIndex !== index) {
+                        tabButtons[targetIndex].click();
+                        tabButtons[targetIndex].focus();
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
