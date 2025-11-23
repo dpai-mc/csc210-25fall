@@ -157,32 +157,881 @@
       <section class="mb-12">
         <h2 class="text-3xl font-semibold mb-6">Description of Operation</h2>
         
-        <p class="mb-6">The following video walks through the details of the Fetch Operation:</p>
+        <p class="mb-6">The following video walks through the details of the Fetch Operation. Use the transcript panel to navigate the video or click any transcript line to jump to that moment.</p>
         
-        <div class="bg-gray-100 p-6 rounded-lg border border-gray-300">
-          <p class="mb-4">
-            <strong>Video:</strong> 
-            <a href="https://youtu.be/kkQDHYFo5Bo" 
-               target="_blank" 
-               rel="noopener" 
-               title="External video link: The Fetch Cycle on YouTube"
-               class="text-accent-blue hover:underline font-medium">
-              The Fetch Cycle: Detailed Walkthrough of Control Unit Operation
-            </a>
-          </p>
-          <p class="text-sm text-gray-600">
-            This video provides a comprehensive explanation of how the Fetch operation executes within the Control Unit, demonstrating the stepper sequences and their interactions with the CPU components.
-          </p>
+        <!-- Video and Transcript Container -->
+        <div class="flex flex-col lg:flex-row gap-4 w-full">
+          <!-- Video Player Section: 66% width on large screens -->
+          <div class="w-full lg:w-2/3 flex-shrink-0">
+            <div id="video-container" style="width: 100%; height: 0; padding-bottom: 56.25%; position: relative;">
+              <iframe id="youtube-player"
+                      style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"
+                      src="https://www.youtube.com/embed/kkQDHYFo5Bo?enablejsapi=1"
+                      title="The Fetch Cycle: Detailed Walkthrough of Control Unit Operation"
+                      frameborder="0"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                      referrerpolicy="strict-origin-when-cross-origin"
+                      allowfullscreen>
+              </iframe>
+            </div>
+          </div>
+
+          <!-- Transcript Container Section: 33% width on large screens -->
+          <div class="w-full lg:w-1/3 flex-shrink-0">
+            <div id="transcript-container" class="h-96 overflow-y-scroll bg-white shadow-inner p-4 rounded-lg border border-gray-300">
+              <p class="text-gray-500 text-center">Loading transcript...</p>
+            </div>
+          </div>
         </div>
+
+        <!-- CSS for highlighting the active line -->
+        <style>
+          .active-transcript-line {
+            background-color: #f0f7ff;
+            font-weight: 600;
+            border-left: 4px solid #1e88e5;
+            padding-left: 12px;
+            transition: background-color 0.2s;
+          }
+        </style>
       </section>
 
-    </main>
+    <!-- YouTube Transcript Sync Script -->
+    <script>
+      // 1. CONFIGURATION
+      const VIDEO_ID = 'kkQDHYFo5Bo';
+      let player;
+      let timeUpdater;
+      let parsedTranscript = [];
 
-    <!-- Footer -->
-    <footer class="bg-gray-100 border-t border-gray-300 mt-12 py-6">
-      <div class="container mx-auto px-4 max-w-4xl text-center text-sm text-gray-600">
-        <p>CSC210: Computer Organization & Architecture</p>
-      </div>
-    </footer>
+      // --- RAW VTT CONTENT ---
+      const vttContent = `WEBVTT
+
+00:00.000 --> 00:15.240
+Aloha so this might take a while to go through but I wanted to walk through this fetch cycle so we
+
+00:15.240 --> 00:22.800
+want to do in our simulation at least the first thing that we should do in our simulation is I'm
+
+00:22.800 --> 00:28.280
+going to reset the simulation now what I do want to do is I want to show you something here this
+
+00:28.280 --> 00:37.900
+is my program counter or my next instruction okay and right now it's all zeros so if I go into this
+
+00:37.900 --> 00:46.940
+program counter I grab the input you there are different behaviors there's pull up pull down
+
+00:46.940 --> 00:53.540
+and unchanged so pull down means if there's something in it's all zeros pull up means
+
+00:53.540 --> 00:58.260
+there's nothing in its all ones and unchanged means uh you know in
+
+00:58.260 --> 01:12.320
+there's nothing in there so if I use pull down in my CPU then what's in there is all zeros if I
+
+01:12.320 --> 01:28.260
+were to change that behavior to pull up and if I go to my CPU simulation and then I reset it
+
+01:28.260 --> 01:36.720
+it's all ones so pull up makes it all ones pull down makes it all zeros until you change it okay
+
+01:36.720 --> 01:40.860
+so what we're going to do is we're going to set this to be pull down so this starts at all zeros
+
+01:40.860 --> 01:51.960
+and that means our first instruction is going to be in memory location zero all right so I take it
+
+01:51.960 --> 01:55.500
+out of this mode here
+
+01:58.260 --> 02:11.440
+sorry you go in here I'm going to change the behavior of this to pull down and then I'll go
+
+02:11.440 --> 02:24.480
+back to my CPU and now in simulate I'll simulate reset okay so all zeros everywhere okay I'm using
+
+02:24.480 --> 02:27.360
+this clock pulse I'm going to pulse my clock
+
+02:28.260 --> 02:37.500
+let me reset and go back so right now when you start your reset is that clock enable for one so
+
+02:37.500 --> 02:43.800
+if we look in our control system that means stepper one is on which means bus one is high
+
+02:43.800 --> 02:52.440
+and also program counter enable means grab what is in the program counter okay and put that on
+
+02:52.440 --> 02:58.260
+the bus so there's all zeros the bus should have zeros and the value
+
+02:58.260 --> 03:02.820
+going to bus one should be one meaning that our
+
+03:05.820 --> 03:15.540
+line into bus one is high which means if actually if we look at our alu you'll see that a is zero b
+
+03:15.540 --> 03:23.880
+is one because we've hardwired opcode of zero zero zero we're going to get the addition of a and b
+
+03:25.560 --> 03:26.640
+which would be one
+
+03:27.720 --> 03:28.080
+okay
+
+03:28.260 --> 03:31.740
+the accumulator right now has a one in it on the output side
+
+03:33.300 --> 03:33.780
+okay
+
+03:35.340 --> 03:40.920
+so and of course that's our next instruction so basically we're just going to walk through and
+
+03:40.920 --> 03:46.860
+go zero to one and then it should go one to two and then two to three but because we've
+
+03:47.820 --> 03:52.680
+disconnected a few things like we've taken set and made it high on our
+
+03:53.160 --> 03:57.720
+program counter just because we don't have everything working in our control unit
+
+03:57.720 --> 04:03.820
+we've also set our RAM in value rather than grabbing it off the bus we're going to manually
+
+04:03.820 --> 04:12.280
+set it so what we're going to do here is we're going to set let's set instead of X's or zeros
+
+04:12.280 --> 04:23.640
+we'll set all ones for our RAM input and what that's going to do is it's going to come in here
+
+04:23.640 --> 04:24.880
+and when we set our RAM
+
+04:24.880 --> 04:27.580
+okay
+
+04:27.580 --> 04:34.840
+What will happen is, in our RAM, it'll be address 0,
+
+04:34.840 --> 04:38.380
+and we'll stick it in this memory location.
+
+04:38.380 --> 04:43.700
+0 will be the instruction that we want to run, OK?
+
+04:43.700 --> 04:47.340
+And so that's what we'll grab as our instruction.
+
+04:47.340 --> 04:48.780
+So let's go back to our CPU.
+
+04:52.580 --> 04:56.700
+So 1 is in here, which means the accumulator output, ALU output,
+
+04:56.700 --> 04:58.500
+has 1.
+
+04:58.500 --> 05:00.540
+We haven't set it into our accumulator yet,
+
+05:00.540 --> 05:05.100
+so our ALU output is 1 if we grab it right now.
+
+05:05.100 --> 05:07.940
+If we change what's in A, then all things are different.
+
+05:07.940 --> 05:12.860
+But right now, that's what we have, OK?
+
+05:12.860 --> 05:17.200
+So we're going to cycle our clock pulse.
+
+05:17.200 --> 05:23.220
+So 1 pulse means basically turn the clock on,
+
+05:23.220 --> 05:26.320
+and also clock set, meaning set our memory
+
+05:26.320 --> 05:26.700
+address.
+
+05:26.700 --> 05:30.820
+So 1 pulse means set the memory address location.
+
+05:30.820 --> 05:32.100
+Set the accumulator.
+
+05:32.100 --> 05:35.820
+So we've taken that, what was in the accumulator,
+
+05:35.820 --> 05:40.200
+in the ALU of 1, and we're sticking it into the accumulator.
+
+05:40.200 --> 05:41.400
+OK, we're setting RAM.
+
+05:41.400 --> 05:45.420
+So the value that we have, notice that every time we enable,
+
+05:45.420 --> 05:50.580
+we set RAM to be whatever is in our RAM input, which is,
+
+05:50.580 --> 05:51.960
+right now, we set it to all 1.
+
+05:51.960 --> 05:54.600
+So we're setting RAM to 1.
+
+05:54.600 --> 05:56.580
+So that's what we do on that first pulse for set.
+
+05:56.580 --> 06:03.580
+So enable, set, and so we go enable high, set high, set low,
+
+06:03.580 --> 06:05.100
+enable low.
+
+06:05.100 --> 06:06.780
+That's the cycle we go through in order
+
+06:06.780 --> 06:11.020
+to enable and set stuff, OK?
+
+06:11.020 --> 06:16.920
+So if we go back to our CPU, all right, so we're setting RAM.
+
+06:16.920 --> 06:19.380
+So we should go into RAM, and the value
+
+06:19.380 --> 06:22.620
+that we've stuck into 0 should be all 1s because that's
+
+06:22.620 --> 06:23.660
+what we said our input was.
+
+06:26.580 --> 06:28.740
+So we're changing the accumulator.
+
+06:28.740 --> 06:31.060
+We're setting the accumulator.
+
+06:31.060 --> 06:33.660
+So if we go and view the accumulator,
+
+06:33.660 --> 06:35.100
+we've set the value to 1.
+
+06:35.100 --> 06:36.720
+That's what's stored in the accumulator.
+
+06:36.720 --> 06:38.800
+And then we're going to turn that off so we
+
+06:38.800 --> 06:44.080
+don't change the accumulator, OK?
+
+06:44.080 --> 06:46.260
+So we set our RAM.
+
+06:46.260 --> 06:49.820
+Our memory address was all 0s, so that's
+
+06:49.820 --> 06:53.260
+why it's looking for 0s, OK?
+
+06:53.260 --> 06:55.100
+Then we're going to cycle our clock.
+
+06:56.580 --> 06:58.340
+OK, it turns off all the sets.
+
+06:58.340 --> 06:59.880
+It doesn't change any of the values.
+
+06:59.880 --> 07:01.820
+It just turns off all the sets.
+
+07:01.820 --> 07:05.480
+And we cycle our GIN, and it turns off all the enables.
+
+07:05.480 --> 07:08.360
+So the value stored that we stuck in those places
+
+07:08.360 --> 07:12.100
+is what was there, OK?
+
+07:12.100 --> 07:14.180
+So then let's cycle.
+
+07:14.180 --> 07:15.820
+If we look at our fetch control unit,
+
+07:15.820 --> 07:18.620
+we'll see now we've moved to cycle 2.
+
+07:18.620 --> 07:19.820
+So we've moved from stepper 1.
+
+07:19.820 --> 07:22.340
+Now we're to stepper 2, which is going
+
+07:22.340 --> 07:25.820
+to tie to RAM enable and our instruction register.
+
+07:25.820 --> 07:26.540
+And then we'll go in.
+
+07:26.580 --> 07:32.760
+Enable, set, we'll enable high, set high, set low, enable low.
+
+07:32.760 --> 07:38.600
+That will finish cycle 2 and move us to cycle 3, OK?
+
+07:38.600 --> 07:40.640
+So let's go back to our CPU.
+
+07:44.180 --> 07:48.140
+All right, so we're going to click to enable.
+
+07:48.140 --> 07:50.760
+Oh, look at that.
+
+07:50.760 --> 07:53.340
+So enable, RAM enable grabs whatever
+
+07:53.340 --> 07:55.380
+in memory location 0, which is all 1s.
+
+07:56.580 --> 07:59.340
+So we're taking all 1s and putting it on the bus.
+
+07:59.340 --> 08:01.680
+That's all we're doing.
+
+08:01.680 --> 08:06.360
+We haven't, set hasn't gone on yet, OK?
+
+08:06.360 --> 08:12.580
+So we've gotten what's stored in location 0, or RAM byte 0,
+
+08:12.580 --> 08:15.980
+which was all 1s, and we put it on the bus.
+
+08:15.980 --> 08:18.340
+So let's cycle again.
+
+08:18.340 --> 08:23.860
+We've done all our sets, OK?
+
+08:23.860 --> 08:24.280
+And notice.
+
+08:24.280 --> 08:24.780
+Because.
+
+08:24.780 --> 08:25.280
+Because.
+
+08:25.280 --> 08:25.780
+Because.
+
+08:25.780 --> 08:26.280
+Because.
+
+08:26.280 --> 08:29.940
+Because we've hardwired our program counter set
+
+08:29.940 --> 08:33.420
+to be all 1s, it sets it.
+
+08:33.420 --> 08:35.600
+Normally, it wouldn't if we had tied it together,
+
+08:35.600 --> 08:38.380
+but we don't have everything we need to make that work.
+
+08:38.380 --> 08:40.980
+So we just hardcoded that.
+
+08:40.980 --> 08:43.780
+But our instruction register, notice it's all 1s,
+
+08:43.780 --> 08:45.960
+because that's what's on the bus and we're trying
+
+08:45.960 --> 08:47.320
+to set our instruction register.
+
+08:47.320 --> 08:55.080
+So if we look at our control fetch, right, we have our set.
+
+08:55.080 --> 08:56.040
+Our RAM set is always.
+
+08:56.040 --> 08:59.160
+Whenever it sets high, we're setting RAM.
+
+08:59.160 --> 09:00.860
+But we've already set it to all 1s,
+
+09:00.860 --> 09:04.740
+so it's just setting it to all 1s still.
+
+09:04.740 --> 09:06.280
+We haven't changed the memory address.
+
+09:06.280 --> 09:08.720
+It's still all 0s.
+
+09:08.720 --> 09:10.820
+We're setting the instruction register.
+
+09:10.820 --> 09:14.300
+Notice in our little diagram, I stuck instruction register
+
+09:14.300 --> 09:16.040
+here just so that we knew what was in it.
+
+09:16.040 --> 09:18.360
+It's all 1s, OK?
+
+09:18.360 --> 09:20.340
+So now we're going to turn set off,
+
+09:20.340 --> 09:23.520
+and then we'll turn enable off.
+
+09:23.520 --> 09:24.160
+All right?
+
+09:24.160 --> 09:24.840
+So.
+
+09:24.840 --> 09:25.340
+So.
+
+09:25.340 --> 09:28.660
+Let's go back to CPU fetch.
+
+09:28.660 --> 09:29.620
+We'll cycle again.
+
+09:29.620 --> 09:30.700
+Set goes off.
+
+09:30.700 --> 09:32.940
+All the sets go off.
+
+09:32.940 --> 09:35.740
+And then when we cycle again, enable goes off,
+
+09:35.740 --> 09:39.340
+and we move to step 3, OK?
+
+09:39.340 --> 09:42.240
+When enable goes off, since there's no input for program
+
+09:42.240 --> 09:46.060
+counter and set's always 1, it pulls down to all 0s again.
+
+09:46.060 --> 09:50.200
+That's just a function of how we set that up.
+
+09:50.200 --> 09:50.760
+All right?
+
+09:50.760 --> 09:54.480
+So now we'll cycle again, and we should be right now,
+
+09:54.480 --> 09:55.340
+we should be on cycle.
+
+09:55.340 --> 09:56.360
+Cycle 3.
+
+09:56.360 --> 09:58.060
+So when we cycle again, we're going
+
+09:58.060 --> 09:59.500
+to enable the accumulator.
+
+09:59.500 --> 10:01.480
+So whatever's stored in the accumulator, which
+
+10:01.480 --> 10:05.680
+should be the 1 from way back, should go on the bus, OK?
+
+10:05.680 --> 10:10.180
+And then we're going to set the program counter.
+
+10:10.180 --> 10:12.940
+Will be all we set.
+
+10:12.940 --> 10:15.440
+OK?
+
+10:15.440 --> 10:17.140
+So we enable the 1.
+
+10:17.140 --> 10:21.660
+We'll set the program counter to be 1, all right?
+
+10:24.240 --> 10:24.740
+So.
+
+10:24.740 --> 10:27.920
+Let's go back to our CPU fetch.
+
+10:27.920 --> 10:32.460
+So when we enable our accumulator,
+
+10:32.460 --> 10:36.420
+which had a 1 in it, so 1 goes on the bus, OK?
+
+10:39.700 --> 10:43.080
+Because we have set, everything that's in the program counter
+
+10:43.080 --> 10:46.460
+is automatically set to be whatever it is.
+
+10:50.460 --> 10:53.320
+Turn all the sets on.
+
+10:53.320 --> 10:54.720
+So for anything that needs to be set,
+
+10:54.740 --> 11:04.080
+through our control fetch, we have RAM set and PC set.
+
+11:04.080 --> 11:04.580
+OK?
+
+11:04.580 --> 11:09.220
+So it's saying 1, OK?
+
+11:09.220 --> 11:11.200
+We're not changing the address to 1.
+
+11:11.200 --> 11:15.100
+So RAM set to RAM input, which is all 1s.
+
+11:15.100 --> 11:17.240
+Our memory address is still 0, because that's the only thing
+
+11:17.240 --> 11:20.180
+we've ever got from it.
+
+11:20.180 --> 11:22.240
+All right?
+
+11:22.240 --> 11:24.260
+And then that's pretty much the cycle.
+
+11:24.740 --> 11:29.380
+So we turn off our set.
+
+11:29.380 --> 11:32.740
+And then we turn off the enables.
+
+11:32.740 --> 11:34.840
+So there's nothing on the bus, which
+
+11:34.840 --> 11:37.500
+means program counter goes back to 0, even though it was 1.
+
+11:40.180 --> 11:41.280
+OK?
+
+11:41.280 --> 11:43.020
+So it would have been 1.
+
+11:43.020 --> 11:45.900
+And then we would cycle through all the 1s.
+
+11:45.900 --> 11:48.120
+Now, if I do a bunch of these cycles,
+
+11:48.120 --> 11:52.720
+nothing is going to happen, because we're
+
+11:52.720 --> 11:54.580
+going to have to go through 4, 5, 6, and 7.
+
+11:54.580 --> 11:58.520
+To get back to 1, OK?
+
+11:58.520 --> 12:00.520
+And because of the way we hardwired it,
+
+12:00.520 --> 12:03.080
+it won't actually go 0, 1, 2, 3.
+
+12:03.080 --> 12:05.040
+But when we're done, that's how it will work.
+
+12:05.040 --> 12:09.160
+It'll go 0, 1, 2, 3, to walk through different program
+
+12:09.160 --> 12:10.660
+codes.
+
+12:10.660 --> 12:12.200
+OK, so that's how control fetch works.
+
+12:12.200 --> 12:17.240
+It basically just uses that bus 1 to grab a thing,
+
+12:17.240 --> 12:21.900
+to add 1 to whatever the current memory location is
+
+12:21.900 --> 12:24.040
+that you're at, OK?
+
+12:24.040 --> 12:27.500
+Which is basically whatever's in the program counter.
+
+12:27.500 --> 12:31.160
+It takes the program counter, goes and grabs the instruction.
+
+12:31.160 --> 12:33.000
+It says, here's where the instruction,
+
+12:33.000 --> 12:34.440
+next instruction is.
+
+12:34.440 --> 12:36.060
+Grabs that instruction.
+
+12:40.020 --> 12:41.460
+Let's look at the view.
+
+12:41.460 --> 12:41.960
+OK?
+
+12:41.960 --> 12:44.640
+So whatever's in the program counter
+
+12:44.640 --> 12:47.960
+is the memory of the next address, OK?
+
+12:47.960 --> 12:49.760
+We go grab what is in that memory location.
+
+12:49.760 --> 12:53.060
+We stick it into the instruction register.
+
+12:53.060 --> 12:54.020
+We add 1.
+
+12:54.020 --> 12:58.640
+So whatever that memory address was, OK?
+
+12:58.640 --> 13:01.440
+Instruction register, as we cycle through the steps,
+
+13:01.440 --> 13:04.680
+goes through and does whatever the instruction register says
+
+13:04.680 --> 13:06.240
+to do.
+
+13:06.240 --> 13:10.060
+And then when it's done, we add 1 to the program counter.
+
+13:10.060 --> 13:15.160
+We go to memory and grab the next instruction register
+
+13:15.160 --> 13:16.520
+and cycle through again.
+
+13:16.520 --> 13:17.700
+So that's the fetch cycle.
+
+13:17.700 --> 13:22.960
+It's just basically, how do we get, how do we count the,
+
+13:22.960 --> 13:23.960
+how do we make the program?
+
+13:24.020 --> 13:30.400
+How do we counter, move up 1 and get the next instruction?
+
+13:30.400 --> 13:30.900
+OK?
+
+13:30.900 --> 13:32.060
+Play with it.
+
+13:32.060 --> 13:34.140
+Hopefully it works out for you, but play with it.
+
+13:34.140 --> 13:36.240
+See if you can make it work.`;
+
+      // 2. CORE UTILITIES
+      function timeToSeconds(timeStr) {
+        if (!timeStr) return 0;
+        const parts = timeStr.trim().split(':');
+        
+        // Handle both MM:SS.mmm and HH:MM:SS.mmm formats
+        if (parts.length === 2) {
+          // MM:SS.mmm format
+          let minutes = parseInt(parts[0]) || 0;
+          let seconds = parseFloat(parts[1]) || 0;
+          return minutes * 60 + seconds;
+        } else if (parts.length === 3) {
+          // HH:MM:SS.mmm format
+          let hours = parseInt(parts[0]) || 0;
+          let minutes = parseInt(parts[1]) || 0;
+          let seconds = parseFloat(parts[2]) || 0;
+          return hours * 3600 + minutes * 60 + seconds;
+        }
+        return 0;
+      }
+
+      function parseVtt(vttText) {
+        const cues = vttText.trim().split(/\n\n+/);
+        const parsedCues = [];
+        
+        cues.forEach(cueBlock => {
+          if (cueBlock.startsWith('WEBVTT') || cueBlock.trim() === '') return;
+          
+          const lines = cueBlock.trim().split('\n');
+          const timeLine = lines.find(line => line.includes('-->'));
+          if (!timeLine) return;
+
+          const [startTimeStr, endTimeStr] = timeLine.split(' --> ');
+          const textLines = lines.slice(lines.indexOf(timeLine) + 1);
+          
+          parsedCues.push({
+            start: timeToSeconds(startTimeStr),
+            end: timeToSeconds(endTimeStr),
+            text: textLines.join(' ').trim()
+          });
+        });
+        return parsedCues;
+      }
+
+      // 3. TRANSCRIPT RENDERING AND INTERACTIVITY
+      function populateTranscript() {
+        const container = document.getElementById('transcript-container');
+        container.innerHTML = '';
+
+        parsedTranscript.forEach(cue => {
+          const lineElement = document.createElement('div');
+          lineElement.className = 'transcript-line p-2 cursor-pointer hover:bg-gray-100 rounded-lg';
+          lineElement.dataset.start = cue.start;
+          lineElement.dataset.end = cue.end;
+          lineElement.textContent = cue.text;
+          lineElement.setAttribute('role', 'button');
+          lineElement.setAttribute('tabindex', '0');
+
+          const seekToTime = () => {
+            if (player && player.seekTo) {
+              player.seekTo(cue.start, true);
+              player.playVideo();
+            }
+          };
+          
+          lineElement.addEventListener('click', seekToTime);
+          lineElement.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') { 
+              e.preventDefault(); 
+              seekToTime(); 
+            }
+          });
+
+          container.appendChild(lineElement);
+        });
+      }
+
+      // 4. SYNC LOGIC
+      function highlightCurrentLine() {
+        if (!player || !player.getCurrentTime) return;
+
+        const currentTime = player.getCurrentTime();
+        const lines = document.querySelectorAll('#transcript-container .transcript-line');
+        let foundActive = false;
+
+        lines.forEach(line => {
+          const start = parseFloat(line.dataset.start);
+          const end = parseFloat(line.dataset.end);
+
+          if (currentTime >= start && currentTime < end) {
+            if (!line.classList.contains('active-transcript-line')) {
+              document.querySelector('.active-transcript-line')?.classList.remove('active-transcript-line');
+              line.classList.add('active-transcript-line');
+              line.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+            foundActive = true;
+          } else {
+            line.classList.remove('active-transcript-line');
+          }
+        });
+      }
+
+      // 5. HEIGHT SYNCHRONIZATION (Transcript matches video container)
+      function syncTranscriptHeight() {
+        const mediaQuery = window.matchMedia('(min-width: 1024px)');
+        const videoContainer = document.getElementById('video-container');
+        const transcriptContainer = document.getElementById('transcript-container');
+        
+        if (!videoContainer || !transcriptContainer) return;
+        
+        if (mediaQuery.matches) {
+          // On large screens, match the video container height
+          const videoHeight = videoContainer.offsetHeight;
+          transcriptContainer.style.maxHeight = videoHeight + 'px';
+        } else {
+          // On mobile, use fixed height
+          transcriptContainer.style.maxHeight = '24rem';
+        }
+      }
+
+      // 6. PLAYER STATE HANDLER
+      function onPlayerStateChange(event) {
+        clearInterval(timeUpdater);
+        if (event.data === YT.PlayerState.PLAYING) {
+          timeUpdater = setInterval(highlightCurrentLine, 300);
+        }
+      }
+
+      // 7. INITIALIZATION
+      function initializeTranscript() {
+        parsedTranscript = parseVtt(vttContent);
+        populateTranscript();
+        syncTranscriptHeight();
+
+        player = new YT.Player('youtube-player', {
+          events: {
+            'onStateChange': onPlayerStateChange
+          }
+        });
+      }
+
+      // 8. CENTRAL INITIALIZATION
+      document.addEventListener('DOMContentLoaded', () => {
+        if (typeof(YT) == 'undefined' || typeof(YT.Player) == 'undefined') {
+          const tag = document.createElement('script');
+          tag.src = "https://www.youtube.com/iframe_api";
+          document.head.appendChild(tag);
+          window.onYouTubeIframeAPIReady = initializeTranscript;
+        } else {
+          initializeTranscript();
+        }
+
+        // Handle window resize for transcript height sync
+        let resizeTimeout;
+        window.addEventListener('resize', () => {
+          clearTimeout(resizeTimeout);
+          resizeTimeout = setTimeout(syncTranscriptHeight, 250);
+        });
+      });
+    </script>
   </body>
 </html>
