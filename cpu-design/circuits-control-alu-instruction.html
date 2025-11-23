@@ -91,9 +91,6 @@
                     <button onclick="switchTab('tab5')" id="btn-tab5" role="tab" aria-selected="false" aria-controls="tab5" class="tab-inactive whitespace-nowrap py-4 px-6 text-sm font-medium transition-colors duration-200 focus:outline-none">
                         Video
                     </button>
-                    <button onclick="switchTab('tab6')" id="btn-tab6" role="tab" aria-selected="false" aria-controls="tab6" class="tab-inactive whitespace-nowrap py-4 px-6 text-sm font-medium transition-colors duration-200 focus:outline-none">
-                        Assets
-                    </button>
                 </nav>
             </div>
 
@@ -214,7 +211,7 @@
                     <p>The clock wiring element simulates a clock pulse (oscillating 1's and 0's). It cycles between 1 and 0 every time you click on it. You will see this in the example videos that follow.</p>
                     
                     <figure class="my-6">
-                        <img src="images/clock-element.png" alt="Wiring element to simulate a Clock pulse" class="rounded shadow-md max-w-xs border border-gray-200">
+                        <img src="images/clock-element.jpg" alt="Wiring element to simulate a Clock pulse" class="rounded shadow-md max-w-xs border border-gray-200">
                         <figcaption class="text-sm text-gray-500 mt-2">Figure 2: Clock wiring element</figcaption>
                     </figure>
                 </div>
@@ -236,7 +233,7 @@
                     </ul>
 
                     <figure class="my-8">
-                        <img src="images/control-unit-diagram.png" alt="Circuit diagram for ALU Instruction Control Unit showing decoders and enable lines" class="w-full h-auto rounded shadow-md border border-gray-200">
+                        <img src="images/control-unit-diagram.jpg" alt="Circuit diagram for ALU Instruction Control Unit showing decoders and enable lines" class="w-full h-auto rounded shadow-md border border-gray-200">
                         <figcaption class="text-sm text-gray-500 mt-2 text-center">Figure 3: Control Unit Circuit Diagram</figcaption>
                     </figure>
                 </div>
@@ -254,7 +251,7 @@
                     </ul>
 
                     <figure class="my-8">
-                        <img src="images/cpu-alu-layout.png" alt="ALU Instruction CPU Layout Diagram showing modified inputs for testing" class="w-full h-auto rounded shadow-md border border-gray-200">
+                        <img src="images/cpu-alu-layout.jpg" alt="ALU Instruction CPU Layout Diagram showing modified inputs for testing" class="w-full h-auto rounded shadow-md border border-gray-200">
                         <figcaption class="text-sm text-gray-500 mt-2 text-center">Figure 4: CPU Layout Diagram</figcaption>
                     </figure>
                 </div>
@@ -268,65 +265,6 @@
                     
                     <div class="aspect-w-16 aspect-h-9 my-6">
                         <iframe class="w-full h-64 md:h-[500px] rounded-lg shadow-md" src="https://www.youtube.com/embed/Ni2EHHkhHms" title="Demonstration of ALU Instruction" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Tab 6: Assets -->
-            <div id="tab6" role="tabpanel" aria-labelledby="btn-tab6" class="hidden p-6 sm:p-8 focus:outline-none" tabindex="0">
-                <div class="prose max-w-none">
-                    <h2>Asset Register</h2>
-                    <p>The following table lists all assets used in this instructional page, their current locations, and planned migration paths.</p>
-                    
-                    <div class="overflow-x-auto mt-6 border rounded-lg">
-                        <table class="min-w-full divide-y divide-gray-200 text-sm">
-                            <thead class="bg-gray-50">
-                                <tr>
-                                    <th class="px-4 py-3 text-left font-medium text-gray-500 uppercase tracking-wider">Type</th>
-                                    <th class="px-4 py-3 text-left font-medium text-gray-500 uppercase tracking-wider">Title / Alt</th>
-                                    <th class="px-4 py-3 text-left font-medium text-gray-500 uppercase tracking-wider">Current Relative URL</th>
-                                    <th class="px-4 py-3 text-left font-medium text-gray-500 uppercase tracking-wider">Planned GitHub URL</th>
-                                </tr>
-                            </thead>
-                            <tbody class="bg-white divide-y divide-gray-200">
-                                <tr>
-                                    <td class="px-4 py-3">Image</td>
-                                    <td class="px-4 py-3">Tunnel Wiring Element</td>
-                                    <td class="px-4 py-3 font-mono text-xs">images/tunnel-icon.png</td>
-                                    <td class="px-4 py-3 font-mono text-xs text-gray-400">https://github.com/ORG/REPO/assets/...</td>
-                                </tr>
-                                <tr>
-                                    <td class="px-4 py-3">Image</td>
-                                    <td class="px-4 py-3">Clock Wiring Element</td>
-                                    <td class="px-4 py-3 font-mono text-xs">images/clock-element.png</td>
-                                    <td class="px-4 py-3 font-mono text-xs text-gray-400">https://github.com/ORG/REPO/assets/...</td>
-                                </tr>
-                                <tr>
-                                    <td class="px-4 py-3">Image</td>
-                                    <td class="px-4 py-3">Control Unit Diagram</td>
-                                    <td class="px-4 py-3 font-mono text-xs">images/control-unit-diagram.png</td>
-                                    <td class="px-4 py-3 font-mono text-xs text-gray-400">https://github.com/ORG/REPO/assets/...</td>
-                                </tr>
-                                <tr>
-                                    <td class="px-4 py-3">Image</td>
-                                    <td class="px-4 py-3">CPU Layout Diagram</td>
-                                    <td class="px-4 py-3 font-mono text-xs">images/cpu-alu-layout.png</td>
-                                    <td class="px-4 py-3 font-mono text-xs text-gray-400">https://github.com/ORG/REPO/assets/...</td>
-                                </tr>
-                                <tr>
-                                    <td class="px-4 py-3">Video (Embed)</td>
-                                    <td class="px-4 py-3">Tunnel Explanation</td>
-                                    <td class="px-4 py-3 font-mono text-xs">YouTube: Z6usYyBZaF0</td>
-                                    <td class="px-4 py-3 font-mono text-xs text-gray-400">N/A (Hosted on YouTube)</td>
-                                </tr>
-                                <tr>
-                                    <td class="px-4 py-3">Video (Embed)</td>
-                                    <td class="px-4 py-3">ALU Instruction Demo</td>
-                                    <td class="px-4 py-3 font-mono text-xs">YouTube: Ni2EHHkhHms</td>
-                                    <td class="px-4 py-3 font-mono text-xs text-gray-400">N/A (Hosted on YouTube)</td>
-                                </tr>
-                            </tbody>
-                        </table>
                     </div>
                 </div>
             </div>
