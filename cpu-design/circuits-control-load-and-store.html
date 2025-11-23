@@ -100,13 +100,19 @@
         tbody tr:nth-child(even) {
             background-color: #fafafa;
         }
+        /* Video Transcript Highlight */
+        .active-transcript-line {
+            background-color: #f0f7ff;
+            font-weight: 600;
+            border-left: 4px solid #1e88e5;
+            padding-left: 12px;
+            transition: background-color 0.2s;
+        }
     </style>
 </head>
 <body class="bg-bg-light text-text-dark font-sans">
-    <!-- Skip to Content Link -->
     <a href="#main-content" class="skip-to-content">Skip to Main Content</a>
 
-    <!-- Header -->
     <header class="bg-white shadow-sm border-b border-gray-200">
         <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
             <h1 class="text-3xl sm:text-4xl font-bold text-text-dark mb-2">Control Unit for Load and Store Instructions</h1>
@@ -114,12 +120,9 @@
         </div>
     </header>
 
-    <!-- Main Content -->
     <main id="main-content" class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         
-        <!-- Tabbed Interface -->
         <div class="mb-12">
-            <!-- Tab List -->
             <div role="tablist" class="flex flex-wrap gap-0 border-b-2 border-gray-300 mb-8" aria-label="Instructional Content Tabs">
                 <button 
                     role="tab"
@@ -155,9 +158,6 @@
                 </button>
             </div>
 
-            <!-- Tab Panels -->
-            
-            <!-- Panel 1: Load/Store Instructions -->
             <div 
                 role="tabpanel"
                 id="panel-load-store-instructions"
@@ -169,7 +169,6 @@
                 
                 <p>The Operation instruction is an 8-bit value that is broken down as follows:</p>
 
-                <!-- Instruction Format Table -->
                 <div class="overflow-x-auto">
                     <table>
                         <thead>
@@ -221,7 +220,6 @@
                 <p class="bg-blue-50 border-l-4 border-blue-400 p-4 rounded mt-6"><strong>NOTE:</strong> In the examples above, only bit 3 differs: a 1 for the Store instruction and a 0 for the Load instruction.</p>
             </div>
 
-            <!-- Panel 2: Control Unit Diagram -->
             <div 
                 role="tabpanel"
                 id="panel-control-unit"
@@ -249,7 +247,6 @@
                 </figure>
             </div>
 
-            <!-- Panel 3: CPU Diagram -->
             <div 
                 role="tabpanel"
                 id="panel-cpu-diagram"
@@ -278,7 +275,6 @@
                 </figure>
             </div>
 
-            <!-- Panel 4: Video -->
             <div 
                 role="tabpanel"
                 id="panel-video"
@@ -288,25 +284,41 @@
                 
                 <h2 class="text-2xl font-bold mt-0 mb-6">Video Description of Operation</h2>
                 
-                <p>The following video walks through the details of Load and Store Operations:</p>
+                <div class="flex flex-col lg:flex-row gap-4 w-full not-prose">
+                    <div class="w-full lg:w-2/3 flex-shrink-0">
+                        <div id="video-container" style="width: 100%; height: 0; padding-bottom: 56.25%; position: relative;">
+                            <iframe id="youtube-player"
+                                    style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"
+                                    src="https://www.youtube.com/embed/2WBKdxYHUYk?enablejsapi=1"
+                                    title="YouTube video player"
+                                    frameborder="0"
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                    referrerpolicy="strict-origin-when-cross-origin"
+                                    allowfullscreen>
+                            </iframe>
+                        </div>
+                    </div>
                 
-                <p><a href="https://youtu.be/2WBKdxYHUYk" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:text-blue-800 underline">Load and Store Instructions (YouTube)</a></p>
-                
-                <p class="text-sm text-gray-600">Opens in a new window. For best accessibility, ensure captions are enabled on the video.</p>
+                    <div class="w-full lg:w-1/3 flex-shrink-0">
+                        <div id="transcript-container" class="h-96 overflow-y-scroll bg-white shadow-inner p-4 rounded-lg border border-gray-300 text-sm leading-relaxed">
+                            <p class="text-gray-500 text-center">Loading transcript...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <p class="text-sm text-gray-600 mt-4">You can click any line in the transcript to jump to that point in the video.</p>
             </div>
 
         </div>
 
     </main>
 
-    <!-- Footer -->
     <footer class="bg-gray-100 border-t border-gray-300 mt-16 py-8">
         <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-gray-600 text-sm">
             <p>&copy; 2024 Mendocino College Computer Science Department. Instructional materials for CSC210: Computer Organization & Architecture.</p>
         </div>
     </footer>
 
-    <!-- Tab Switching JavaScript -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const tabButtons = document.querySelectorAll('[role="tab"]');
@@ -365,6 +377,577 @@
                     }
                 });
             });
+        });
+    </script>
+
+    <script>
+        // 1. CONFIGURATION
+        const VIDEO_ID = '2WBKdxYHUYk';
+        let player;
+        let timeUpdater;
+        let parsedTranscript = [];
+    
+        // --- PASTE YOUR RAW VTT CONTENT HERE ---
+        const vttContent = `WEBVTT
+
+00:00.000 --> 00:07.600
+Aloha.
+
+00:07.600 --> 00:09.760
+So in this video, I want to talk about
+
+00:09.760 --> 00:15.280
+the store and load instructions in our CPU.
+
+00:15.280 --> 00:19.080
+So we've wired up our CPU so that registers two and
+
+00:19.080 --> 00:23.120
+three are disconnected so that we can manually manipulate them,
+
+00:23.120 --> 00:27.560
+as well as our instruction register so that we can set our instructions.
+
+00:27.560 --> 00:33.180
+So if we look at our load and store instructions,
+
+00:33.180 --> 00:36.060
+what we're going to do is store first.
+
+00:36.060 --> 00:42.240
+What we're going to do is take a value that's stored in
+
+00:42.240 --> 00:44.320
+register B and put it into
+
+00:44.320 --> 00:49.440
+the memory address that we put into register A.
+
+00:49.440 --> 00:54.560
+So what we're going to do is in register A,
+
+00:54.560 --> 00:56.760
+we're going to define the memory address
+
+00:56.760 --> 01:02.520
+as RAM byte 15 and then in B,
+
+01:02.520 --> 01:08.380
+what we're going to stick in there is 101010.
+
+01:08.380 --> 01:12.940
+We're going to stick 10101010.
+
+01:12.940 --> 01:14.360
+That's what we're going to stick.
+
+01:14.360 --> 01:17.080
+So that's the value we have in register B,
+
+01:17.080 --> 01:20.520
+and we're going to stick that into the memory address in RAM,
+
+01:20.520 --> 01:23.540
+identified by register A, which is 15.
+
+01:23.540 --> 01:25.000
+If we look at RAM right now,
+
+01:25.000 --> 01:26.500
+15 is E,
+
+01:26.500 --> 01:30.620
+actually everything is E because we're starting with a totally empty thing.
+
+01:30.620 --> 01:35.280
+But RAM 15 is this first one, RAM byte 15.
+
+01:36.600 --> 01:40.400
+Here we are. Control, I want CPU.
+
+01:40.400 --> 01:42.260
+Here we are with our CPU,
+
+01:42.260 --> 01:45.540
+and then we want to give us our instruction.
+
+01:45.540 --> 01:47.360
+So when we look at our,
+
+01:47.360 --> 01:48.860
+we're going to do this instruction here,
+
+01:48.860 --> 01:56.280
+00011110, meaning zero, not ALU,
+
+01:56.280 --> 01:57.540
+because it's not one.
+
+01:57.540 --> 02:01.980
+001, meaning 001 store.
+
+02:01.980 --> 02:06.980
+Reg A will be 11, I mean, for register three.
+
+02:08.180 --> 02:10.420
+Reg B will be 10 for register two.
+
+02:11.540 --> 02:16.540
+Okay, so we're going to put that into our 0001110.
+
+02:26.280 --> 02:29.840
+Okay, I'm pretty sure that's the correct,
+
+02:29.840 --> 02:35.460
+should be 0001, 11110 for store,
+
+02:35.460 --> 02:40.420
+what's in B into the location that is defined by A.
+
+02:40.420 --> 02:43.220
+All right, so when we look at our control unit,
+
+02:43.220 --> 02:45.820
+you can see we don't really start this until we get to step four.
+
+02:45.820 --> 02:47.600
+We're on step one right now.
+
+02:47.600 --> 02:51.100
+So in our CPU load and store,
+
+02:51.100 --> 02:54.380
+I mean, we're just going to have to cycle through until we get to,
+
+02:54.380 --> 03:00.100
+until we get to step four.
+
+03:00.100 --> 03:03.480
+Okay, so step four starts with an enable.
+
+03:03.480 --> 03:05.620
+We click on enable.
+
+03:05.620 --> 03:10.300
+Okay, that comes in here and it says,
+
+03:13.300 --> 03:23.700
+enable Reg A and enable or set high memory address register set.
+
+03:23.700 --> 03:26.920
+Because we're on enable, we're only doing the enable side.
+
+03:26.920 --> 03:29.080
+So we're enabling register A.
+
+03:29.080 --> 03:31.860
+So our CPU is taking what's in register A,
+
+03:31.860 --> 03:35.340
+which is R3, and it's putting it on the bus.
+
+03:35.340 --> 03:40.340
+So it's putting 0000, 0000, 1111 on the bus.
+
+03:42.820 --> 03:44.940
+Okay, when we go to set,
+
+03:44.940 --> 03:47.240
+that's going to set the memory address
+
+03:47.240 --> 03:51.120
+and that'll go into RAM in here, into our memory address.
+
+03:51.120 --> 03:51.960
+I'll actually set it.
+
+03:51.960 --> 03:53.420
+It's not set yet, because you can see,
+
+03:53.420 --> 03:54.980
+there's nothing going through.
+
+03:56.360 --> 03:58.660
+Okay, it's there because it's on the bus,
+
+03:58.660 --> 04:01.700
+but until we hit set, it won't pass it through.
+
+04:04.880 --> 04:08.180
+Okay, so let's start control again.
+
+04:08.180 --> 04:11.300
+Let's go to our CPU and let's cycle to set.
+
+04:11.300 --> 04:12.800
+Now we cycled to set.
+
+04:14.160 --> 04:17.200
+So now memory address register is set.
+
+04:17.200 --> 04:18.460
+So we can take what's on the bus
+
+04:18.460 --> 04:20.760
+and stick it into the memory address register.
+
+04:23.420 --> 04:26.260
+And then we can go into RAM and we can look at RAM.
+
+04:27.180 --> 04:30.060
+And here it's set, memory address register is set.
+
+04:31.220 --> 04:35.280
+Okay, so now we've selected this.
+
+04:35.280 --> 04:38.580
+You can see vertical and H are both high.
+
+04:38.580 --> 04:42.240
+We've set, we've selected this element,
+
+04:42.240 --> 04:44.420
+this byte of RAM, which is byte 15.
+
+04:45.300 --> 04:50.300
+Okay, so that's our CPU.
+
+04:50.420 --> 04:51.940
+We're ready there.
+
+04:51.940 --> 04:53.420
+It's all set up.
+
+04:54.020 --> 04:56.560
+And then we're gonna cycle through to turn it off
+
+04:56.560 --> 04:58.480
+before we do the next step.
+
+04:58.480 --> 05:01.580
+And the next step will be step five.
+
+05:01.580 --> 05:06.380
+And in step five, we're gonna grab what's in register B
+
+05:06.380 --> 05:07.660
+and put it into RAM.
+
+05:09.360 --> 05:10.660
+That's what step five is.
+
+05:12.480 --> 05:15.540
+Okay, so we'll go enable.
+
+05:15.540 --> 05:18.300
+That takes what's in register B, 101010,
+
+05:18.300 --> 05:19.500
+and puts it on the bus.
+
+05:21.880 --> 05:23.220
+Okay.
+
+05:23.220 --> 05:27.780
+That takes what's, it allows RAM to be set.
+
+05:29.120 --> 05:32.840
+So now it takes this address and takes this input
+
+05:32.840 --> 05:34.300
+and puts it into that address.
+
+05:34.300 --> 05:37.640
+So now register 15 has 10101010 in it.
+
+05:44.020 --> 05:46.460
+And we cycle to turn off our set
+
+05:46.460 --> 05:49.840
+and we cycle to turn off our E.
+
+05:49.840 --> 05:50.680
+And that's it.
+
+05:50.680 --> 05:52.260
+That's pretty much the whole thing.
+
+05:52.260 --> 05:55.060
+We have now taken something from a register
+
+05:55.060 --> 05:59.160
+and put it into a location in memory in RAM
+
+05:59.160 --> 06:01.660
+defined by another register.
+
+06:01.660 --> 06:03.260
+Okay, so that's store.
+
+06:04.620 --> 06:05.460
+All right.
+
+06:05.460 --> 06:08.260
+To load, all we have to do is change
+
+06:10.520 --> 06:12.960
+that one to a zero.
+
+06:12.960 --> 06:16.480
+And then what load does is it does the reverse.
+
+06:16.480 --> 06:18.960
+Hit grabs this memory address
+
+06:20.200 --> 06:22.260
+and it takes what's stored in that memory address,
+
+06:22.260 --> 06:28.260
+and puts it into register b in this scenario we'll go walk through this and we'll grab and
+
+06:28.260 --> 06:34.420
+it'll show how we get 15 and then it'll grab the value that's stored in 15 and put it on the wire
+
+06:34.420 --> 06:40.100
+on the bus but it won't actually update r2 because we've disconnected it so that we could do that
+
+06:40.100 --> 06:46.900
+store operation but so if we cycle through i'm going to get back all the way to the beginning
+
+06:59.460 --> 07:07.220
+oops i already went past it but basically i'm on set but here we got to cycle four enable
+
+07:07.220 --> 07:09.540
+enabled r3 it grabbed the value in r3 and then stick it into the memory address register
+
+07:10.100 --> 07:12.020
+just like before it's doing exactly the same thing
+
+07:14.180 --> 07:18.580
+it's sticking it into the memory address register and it's
+
+07:18.580 --> 07:22.420
+setting it so it's passing it through since it was 15 it's 15.
+
+07:24.980 --> 07:27.060
+all right and then the next step will be to
+
+07:29.620 --> 07:37.860
+when we look at our load and store the next step will be
+
+07:39.620 --> 07:40.100
+to set up ram set
+
+07:40.100 --> 07:43.380
+and able okay
+
+07:46.820 --> 07:49.140
+rj rgb enable so it will grab ram
+
+07:52.500 --> 07:59.220
+oh wait it'll be ram enable rgb set sorry because right here the ram enable rgb set
+
+08:02.820 --> 08:07.460
+and reg b enable ram set okay so let's look at that
+
+08:10.100 --> 08:17.360
+and so we've select we've identified the place of memory and now we're going to
+
+08:17.360 --> 08:24.080
+enable so RAM is enabled so we're taking it from RAM and then we're gonna set it
+
+08:24.080 --> 08:35.720
+into Reg B all right it's not using this line because that's for this
+
+08:35.720 --> 08:41.780
+is for look I mean load and this is for store so store is this bottom line load is this
+
+08:41.780 --> 08:50.700
+line all right so go back to our CPU and we cycle the set and you'll notice set
+
+08:50.700 --> 08:56.300
+here for register 2 is on so whatever is on this bus would then if we had it
+
+08:56.300 --> 09:02.260
+connected properly would come into register 2 all right and so that's
+
+09:02.260 --> 09:04.420
+really
+
+09:04.480 --> 09:05.620
+store and load
+
+09:05.620 --> 09:11.740
+so store take it from our registers and put it into RAM and load grab it in RAM
+
+09:11.740 --> 09:18.380
+and bring it back to one of the registers that we use all right so
+
+09:18.380 --> 09:22.860
+that's loading and storing to and from RAM
+`;
+        // ------------------------------------
+    
+        // 2. CORE UTILITIES
+        function timeToSeconds(timeStr) {
+            if (!timeStr) return 0;
+            const parts = timeStr.trim().split(':');
+            
+            // Handle both MM:SS.mmm and HH:MM:SS.mmm formats
+            if (parts.length === 2) {
+                // MM:SS.mmm format
+                let minutes = parseInt(parts[0]) || 0;
+                let seconds = parseFloat(parts[1]) || 0;
+                return minutes * 60 + seconds;
+            } else if (parts.length === 3) {
+                // HH:MM:SS.mmm format
+                let hours = parseInt(parts[0]) || 0;
+                let minutes = parseInt(parts[1]) || 0;
+                let seconds = parseFloat(parts[2]) || 0;
+                return hours * 3600 + minutes * 60 + seconds;
+            }
+            return 0;
+        }
+    
+        function parseVtt(vttText) {
+            const cues = vttText.trim().split(/\n\n+/);
+            const parsedCues = [];
+            
+            cues.forEach(cueBlock => {
+                if (cueBlock.startsWith('WEBVTT') || cueBlock.trim() === '') return;
+                
+                const lines = cueBlock.trim().split('\n');
+                const timeLine = lines.find(line => line.includes('-->'));
+                if (!timeLine) return;
+    
+                const [startTimeStr, endTimeStr] = timeLine.split(' --> ');
+                const textLines = lines.slice(lines.indexOf(timeLine) + 1);
+                
+                parsedCues.push({
+                    start: timeToSeconds(startTimeStr),
+                    end: timeToSeconds(endTimeStr),
+                    text: textLines.join(' ').trim()
+                });
+            });
+            return parsedCues;
+        }
+    
+        // 3. TRANSCRIPT RENDERING AND INTERACTIVITY
+        function populateTranscript() {
+            const container = document.getElementById('transcript-container');
+            container.innerHTML = '';
+    
+            parsedTranscript.forEach(cue => {
+                const lineElement = document.createElement('div');
+                lineElement.className = 'transcript-line p-2 cursor-pointer hover:bg-gray-100 rounded-lg';
+                lineElement.dataset.start = cue.start;
+                lineElement.dataset.end = cue.end;
+                lineElement.textContent = cue.text;
+                lineElement.setAttribute('role', 'button');
+                lineElement.setAttribute('tabindex', '0');
+    
+                const seekToTime = () => {
+                    if (player && player.seekTo) {
+                        player.seekTo(cue.start, true);
+                        player.playVideo();
+                    }
+                };
+                
+                lineElement.addEventListener('click', seekToTime);
+                lineElement.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') { 
+                        e.preventDefault(); 
+                        seekToTime(); 
+                    }
+                });
+    
+                container.appendChild(lineElement);
+            });
+        }
+    
+        // 4. SYNC LOGIC
+        function highlightCurrentLine() {
+            if (!player || !player.getCurrentTime) return;
+    
+            const currentTime = player.getCurrentTime();
+            const lines = document.querySelectorAll('#transcript-container .transcript-line');
+            let foundActive = false;
+    
+            lines.forEach(line => {
+                const start = parseFloat(line.dataset.start);
+                const end = parseFloat(line.dataset.end);
+    
+                if (currentTime >= start && currentTime < end) {
+                    if (!line.classList.contains('active-transcript-line')) {
+                        document.querySelector('.active-transcript-line')?.classList.remove('active-transcript-line');
+                        line.classList.add('active-transcript-line');
+                        line.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
+                    foundActive = true;
+                } else {
+                    line.classList.remove('active-transcript-line');
+                }
+            });
+        }
+    
+        // 5. HEIGHT SYNCHRONIZATION (Transcript matches video container)
+        function syncTranscriptHeight() {
+            const mediaQuery = window.matchMedia('(min-width: 1024px)');
+            const videoContainer = document.getElementById('video-container');
+            const transcriptContainer = document.getElementById('transcript-container');
+            
+            if (!videoContainer || !transcriptContainer) return;
+            
+            if (mediaQuery.matches) {
+                // On large screens, match the video container height
+                const videoHeight = videoContainer.offsetHeight;
+                transcriptContainer.style.maxHeight = videoHeight + 'px';
+            } else {
+                // On small screens, use default height (h-96 = 24rem)
+                transcriptContainer.style.maxHeight = '24rem';
+            }
+        }
+    
+        // 6. YOUTUBE API HANDLERS
+        window.onYouTubeIframeAPIReady = function() {
+            player = new YT.Player('youtube-player', {
+                videoId: VIDEO_ID,
+                events: {
+                    'onStateChange': onPlayerStateChange
+                }
+            });
+        };
+    
+        function onPlayerStateChange(event) {
+            clearInterval(timeUpdater);
+            if (event.data === YT.PlayerState.PLAYING) {
+                timeUpdater = setInterval(highlightCurrentLine, 300);
+            }
+        }
+    
+        // 7. INITIALIZATION
+        document.addEventListener('DOMContentLoaded', () => {
+            parsedTranscript = parseVtt(vttContent);
+            populateTranscript();
+            
+            // Sync transcript height on page load
+            setTimeout(syncTranscriptHeight, 100);
+    
+            // Load the YouTube IFrame Player API script if not present
+            if (typeof(YT) == 'undefined' || typeof(YT.Player) == 'undefined') {
+                const tag = document.createElement('script');
+                tag.src = "https://www.youtube.com/iframe_api";
+                document.head.appendChild(tag);
+            } else {
+                onYouTubeIframeAPIReady();
+            }
+        });
+    
+        // Handle window resize with debouncing to sync transcript height
+        let resizeTimeout;
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(syncTranscriptHeight, 250);
         });
     </script>
 </body>
