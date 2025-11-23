@@ -460,11 +460,43 @@
                 
                 <h2 class="text-2xl font-bold mt-0 mb-6">Video Description of Operation</h2>
                 
-                <p>The following video walks through the details of Jump IF Instruction implementation and operation:</p>
+                <p>The following video walks through the details of Jump IF Instruction implementation and operation. Use the transcript panel to navigate the video or click any transcript line to jump to that moment.</p>
                 
-                <p><a href="https://youtu.be/4MtMXlr2cPk" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:text-blue-800 underline">Jump IF Instruction (YouTube)</a></p>
-                
-                <p class="text-sm text-gray-600">Opens in a new window. For best accessibility, ensure captions are enabled on the video.</p>
+                <!-- Video and Transcript Container -->
+                <div class="flex flex-col lg:flex-row gap-4 w-full my-6">
+                  <!-- Video Player Section: 66% width on large screens -->
+                  <div class="w-full lg:w-2/3 flex-shrink-0">
+                    <div id="video-container" style="width: 100%; height: 0; padding-bottom: 56.25%; position: relative;">
+                      <iframe id="youtube-player"
+                              style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"
+                              src="https://www.youtube.com/embed/4MtMXlr2cPk?enablejsapi=1"
+                              title="Jump IF Instruction: Detailed Walkthrough of Conditional Jumping and Flag Checking"
+                              frameborder="0"
+                              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                              referrerpolicy="strict-origin-when-cross-origin"
+                              allowfullscreen>
+                      </iframe>
+                    </div>
+                  </div>
+
+                  <!-- Transcript Container Section: 33% width on large screens -->
+                  <div class="w-full lg:w-1/3 flex-shrink-0">
+                    <div id="transcript-container" class="h-96 overflow-y-scroll bg-white shadow-inner p-4 rounded-lg border border-gray-300">
+                      <p class="text-gray-500 text-center">Loading transcript...</p>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- CSS for highlighting the active line -->
+                <style>
+                  .active-transcript-line {
+                    background-color: #f0f7ff;
+                    font-weight: 600;
+                    border-left: 4px solid #1e88e5;
+                    padding-left: 12px;
+                    transition: background-color 0.2s;
+                  }
+                </style>
             </div>
 
         </div>
@@ -478,8 +510,9 @@
         </div>
     </footer>
 
-    <!-- Tab Switching JavaScript -->
+    <!-- Tab Switching and YouTube Transcript Sync JavaScript -->
     <script>
+        // ============== TAB SWITCHING LOGIC ==============
         document.addEventListener('DOMContentLoaded', function() {
             const tabButtons = document.querySelectorAll('[role="tab"]');
             const tabPanels = document.querySelectorAll('[role="tabpanel"]');
@@ -511,6 +544,11 @@
                     if (panel) {
                         panel.setAttribute('aria-hidden', 'false');
                     }
+
+                    // Initialize transcript when video tab is opened
+                    if (panelId === 'panel-video') {
+                        initializeVideoTranscript();
+                    }
                 });
 
                 // Add keyboard navigation for tabs (Arrow Left/Right)
@@ -536,6 +574,388 @@
                         tabButtons[targetIndex].focus();
                     }
                 });
+            });
+        });
+
+        // ============== YOUTUBE TRANSCRIPT SYNC LOGIC ==============
+        const VIDEO_ID = '4MtMXlr2cPk';
+        let player;
+        let timeUpdater;
+        let parsedTranscript = [];
+        let videoInitialized = false;
+
+        // --- RAW VTT CONTENT ---
+        const vttContent = `WEBVTT
+
+00:00.000 --> 00:15.440
+okay in this video I want to talk about the jump if portion again it's a register jumping let's
+
+00:15.440 --> 00:21.000
+look at it real quick so basically what we have here and the jump if is usually after an
+
+00:21.000 --> 00:29.680
+arithmetic logic unit thing so we have 0 1 0 1 is our primary opcode so that's saying this is a jump
+
+00:29.680 --> 00:36.760
+if and then the last four bits stand for if it's 1 we're checking to see if the carry flag is set
+
+00:36.760 --> 00:46.780
+from the ALU meaning the carry out is 1 a a as large a is larger is 1 meaning a is larger e for
+
+00:46.780 --> 00:56.500
+equals a and B are equal and Z 0 meaning a the 0 5 okay is 1 so we actually have 16 different
+
+00:56.500 --> 00:59.120
+combinations of things that we can do
+
+00:59.680 --> 01:09.040
+note these are always or so if we have multiple slow like jump AZ means jump if a is greater than
+
+01:09.040 --> 01:23.060
+B or 0 okay not and but or okay and it jumps to the next address that's stored in ran okay so let
+
+01:23.060 --> 01:28.900
+me show you how that works okay so there's two things one when you look at this you should see
+
+01:29.680 --> 01:36.940
+I had to add this register here for flag so let's look at this in a little bit detail all it is is
+
+01:36.940 --> 01:44.680
+four bits I have four inputs to the from the left CAE and Z that are going to tie into the outputs
+
+01:44.680 --> 01:51.880
+from the ALU okay and then I have four output CAE and Z which are going to tie into my control unit
+
+01:51.880 --> 01:59.560
+okay so it's just those four beds and then I just made it look like this see a easy easy
+
+01:59.680 --> 02:15.520
+flag okay so we have to add that into our model so that we could do this all right so what we
+
+02:15.520 --> 02:20.320
+want to do okay I can't really manipulate ram all be able to manipulate RAM so it won't really work
+
+02:20.320 --> 02:27.320
+doesn't matter what I put in here to say this is where the next instruction is but at the the Yvi
+
+02:27.320 --> 02:33.880
+and correct destruction is zero one zero one zero one zero one and then the last four are
+
+02:37.240 --> 02:48.760
+the flags okay for c out a larger equals in z so i have equals and z here selected all right
+
+02:48.760 --> 02:55.160
+and so when we look at our control unit and we view our control unit we have coming out of
+
+02:57.320 --> 03:02.760
+one zero one zero is this one coming out we have four coming out of one two three four six
+
+03:03.480 --> 03:07.720
+we have three steps four five and six on step four
+
+03:10.520 --> 03:14.440
+okay we're going to look at pc out pc enable
+
+03:16.520 --> 03:22.760
+and accumulator set and memory address set so the first thing it's going to do is going to take
+
+03:22.760 --> 03:27.160
+whatever's in the program counter and put it on the bus and then it's going to stick that into
+
+03:27.160 --> 03:27.320
+the program counter and put it on the bus and then it's going to stick that into the
+
+03:27.640 --> 03:30.680
+and then it's going to set the accumulator which should be one more than that because
+
+03:31.720 --> 03:35.560
+when you have bus one high here it'll be whatever on the
+
+03:36.840 --> 03:41.480
+in the counter plus one meaning every time we add just once we move just one
+
+03:42.920 --> 03:46.840
+okay and then we're going to stick that new value into the accumulator which would be
+
+03:46.840 --> 03:51.160
+one more than the old value and we're also going to set that as the memory address
+
+03:52.760 --> 03:57.160
+okay step five will be take whatever's in the accumulator
+
+03:57.400 --> 04:03.880
+and put it on the bus and put it into our program counter as the next instruction
+
+04:04.760 --> 04:10.360
+okay so down here on our program counter now we have two possible results and we're going to or
+
+04:10.360 --> 04:17.240
+them and we'll show you what that means in a minute so the step six will be we've added step
+
+04:17.240 --> 04:26.600
+six step six is what's gonna happen you see this green line on the bottom is this check of c a e and
+
+04:26.600 --> 04:36.040
+z they're coming in and i'm comparing them to c a e and z so right now the alu is saying equals and
+
+04:36.040 --> 04:41.720
+zeros are both high and i'm checking for equals and zeros so they're both high which comes in this
+
+04:41.720 --> 04:47.800
+or and says this is high which says oh when i get to this step i'm gonna take whatever's on ram and
+
+04:47.800 --> 04:55.080
+put on the bus okay and then that's gonna go into the program counter so what i will do is
+
+04:55.080 --> 05:03.240
+what's in the program counter right now is one more than the current location in ram okay for my
+
+05:03.240 --> 05:07.640
+program counter and what i'm gonna do is i'm gonna replace it with whatever stored in ram to say hey
+
+05:07.640 --> 05:13.080
+no i don't want to do the next place i want to jump somewhere else okay so i jump if any of these
+
+05:13.080 --> 05:19.240
+things are true so they match one and one zero zeros are not matches just ones and ones
+
+05:21.960 --> 05:24.840
+all right so if we go back to our cpu jump if
+
+05:25.480 --> 05:29.240
+and we start cycling through because i got to get to four
+
+05:33.000 --> 05:39.080
+okay so here's four okay i'm in enable bus one's enabled
+
+05:41.160 --> 05:48.280
+and because pc program counter is enabled and then i'm gonna set into memory address
+
+05:48.280 --> 05:54.920
+and the accumulator okay so bus one is also enabled so when i go back to
+
+05:55.080 --> 06:02.360
+my jump if cpu i have one here and a is zero so the alu is going to add them and put one
+
+06:02.920 --> 06:07.960
+when i set the accumulator one will be here but when i set the memory address it'll be
+
+06:07.960 --> 06:16.040
+off the bus so it'll be zero okay so zero is our current program counter our current instruction
+
+06:16.840 --> 06:22.440
+one will be our next instruction okay so i cycle set
+
+06:25.320 --> 06:26.760
+okay and then step five
+
+06:29.000 --> 06:33.480
+step five is where i take what's in the accumulator and stick it on the bus
+
+06:33.480 --> 06:35.480
+and then stick it into the program counter
+
+06:42.120 --> 06:50.440
+okay so here i'm enabled the accumulator is one it's on the bus because i set this to always be
+
+06:51.080 --> 06:55.000
+on i've already set it because i actually didn't set it as
+
+06:55.000 --> 06:58.920
+well okay so one's in the program counter for the next one
+
+07:01.800 --> 07:11.720
+cycle and now when i go to six here enable is fine but i don't really have anything in ram
+
+07:13.320 --> 07:19.880
+so i won't be able to overwrite it but here i have equals and zero are both high still
+
+07:20.600 --> 07:24.520
+so that means they're a match which means i'm going to take whatever's in ram
+
+07:25.480 --> 07:29.720
+when i enable it i'm going to take whatever's in ram and i'm going to set it in the program
+
+07:29.720 --> 07:37.720
+counter okay and so that should not work because when i go to the next step i should get all red
+
+07:37.720 --> 07:41.880
+because there's all ease and ram so i'm not getting something into ram
+
+07:42.840 --> 07:47.640
+but if i had something in there it would put out on the bus and then it would go into the
+
+07:47.640 --> 07:54.040
+program counter okay and so that's how i jump if certain conditions are true and how i check them
+
+07:55.960 --> 08:02.840
+all right so that's a jump if um it's not fully complete but it should show you how you can jump
+
+08:02.840 --> 08:09.480
+around to different locations in ram to grab instructions based on certain conditions
+
+08:10.840 --> 08:15.480
+so that you can have your code do more than just a linear thing`;
+
+        // 2. CORE UTILITIES
+        function timeToSeconds(timeStr) {
+            if (!timeStr) return 0;
+            const parts = timeStr.trim().split(':');
+            
+            // Handle both MM:SS.mmm and HH:MM:SS.mmm formats
+            if (parts.length === 2) {
+                // MM:SS.mmm format
+                let minutes = parseInt(parts[0]) || 0;
+                let seconds = parseFloat(parts[1]) || 0;
+                return minutes * 60 + seconds;
+            } else if (parts.length === 3) {
+                // HH:MM:SS.mmm format
+                let hours = parseInt(parts[0]) || 0;
+                let minutes = parseInt(parts[1]) || 0;
+                let seconds = parseFloat(parts[2]) || 0;
+                return hours * 3600 + minutes * 60 + seconds;
+            }
+            return 0;
+        }
+
+        function parseVtt(vttText) {
+            const cues = vttText.trim().split(/\n\n+/);
+            const parsedCues = [];
+            
+            cues.forEach(cueBlock => {
+                if (cueBlock.startsWith('WEBVTT') || cueBlock.trim() === '') return;
+                
+                const lines = cueBlock.trim().split('\n');
+                const timeLine = lines.find(line => line.includes('-->'));
+                if (!timeLine) return;
+
+                const [startTimeStr, endTimeStr] = timeLine.split(' --> ');
+                const textLines = lines.slice(lines.indexOf(timeLine) + 1);
+                
+                parsedCues.push({
+                    start: timeToSeconds(startTimeStr),
+                    end: timeToSeconds(endTimeStr),
+                    text: textLines.join(' ').trim()
+                });
+            });
+            return parsedCues;
+        }
+
+        // 3. TRANSCRIPT RENDERING AND INTERACTIVITY
+        function populateTranscript() {
+            const container = document.getElementById('transcript-container');
+            if (!container) return;
+            container.innerHTML = '';
+
+            parsedTranscript.forEach(cue => {
+                const lineElement = document.createElement('div');
+                lineElement.className = 'transcript-line p-2 cursor-pointer hover:bg-gray-100 rounded-lg';
+                lineElement.dataset.start = cue.start;
+                lineElement.dataset.end = cue.end;
+                lineElement.textContent = cue.text;
+                lineElement.setAttribute('role', 'button');
+                lineElement.setAttribute('tabindex', '0');
+
+                const seekToTime = () => {
+                    if (player && player.seekTo) {
+                        player.seekTo(cue.start, true);
+                        player.playVideo();
+                    }
+                };
+                
+                lineElement.addEventListener('click', seekToTime);
+                lineElement.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') { 
+                        e.preventDefault(); 
+                        seekToTime(); 
+                    }
+                });
+
+                container.appendChild(lineElement);
+            });
+        }
+
+        // 4. SYNC LOGIC
+        function highlightCurrentLine() {
+            if (!player || !player.getCurrentTime) return;
+
+            const currentTime = player.getCurrentTime();
+            const lines = document.querySelectorAll('#transcript-container .transcript-line');
+
+            lines.forEach(line => {
+                const start = parseFloat(line.dataset.start);
+                const end = parseFloat(line.dataset.end);
+
+                if (currentTime >= start && currentTime < end) {
+                    if (!line.classList.contains('active-transcript-line')) {
+                        document.querySelector('.active-transcript-line')?.classList.remove('active-transcript-line');
+                        line.classList.add('active-transcript-line');
+                        line.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
+                } else {
+                    line.classList.remove('active-transcript-line');
+                }
+            });
+        }
+
+        // 5. HEIGHT SYNCHRONIZATION (Transcript matches video container)
+        function syncTranscriptHeight() {
+            const mediaQuery = window.matchMedia('(min-width: 1024px)');
+            const videoContainer = document.getElementById('video-container');
+            const transcriptContainer = document.getElementById('transcript-container');
+            
+            if (!videoContainer || !transcriptContainer) return;
+            
+            if (mediaQuery.matches) {
+                // On large screens, match the video container height
+                const videoHeight = videoContainer.offsetHeight;
+                transcriptContainer.style.maxHeight = videoHeight + 'px';
+            } else {
+                // On mobile, use fixed height
+                transcriptContainer.style.maxHeight = '24rem';
+            }
+        }
+
+        // 6. PLAYER STATE HANDLER
+        function onPlayerStateChange(event) {
+            clearInterval(timeUpdater);
+            if (event.data === YT.PlayerState.PLAYING) {
+                timeUpdater = setInterval(highlightCurrentLine, 300);
+            }
+        }
+
+        // 7. INITIALIZATION
+        function initializeVideoTranscript() {
+            if (videoInitialized) return;
+            videoInitialized = true;
+
+            parsedTranscript = parseVtt(vttContent);
+            populateTranscript();
+            syncTranscriptHeight();
+
+            if (!player) {
+                player = new YT.Player('youtube-player', {
+                    events: {
+                        'onStateChange': onPlayerStateChange
+                    }
+                });
+            }
+        }
+
+        // 8. CENTRAL INITIALIZATION
+        document.addEventListener('DOMContentLoaded', () => {
+            if (typeof(YT) == 'undefined' || typeof(YT.Player) == 'undefined') {
+                const tag = document.createElement('script');
+                tag.src = "https://www.youtube.com/iframe_api";
+                document.head.appendChild(tag);
+                window.onYouTubeIframeAPIReady = initializeVideoTranscript;
+            }
+
+            // Handle window resize for transcript height sync
+            let resizeTimeout;
+            window.addEventListener('resize', () => {
+                clearTimeout(resizeTimeout);
+                resizeTimeout = setTimeout(syncTranscriptHeight, 250);
             });
         });
     </script>
