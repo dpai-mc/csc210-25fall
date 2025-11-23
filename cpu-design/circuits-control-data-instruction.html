@@ -213,12 +213,43 @@
             <div id="tab4" role="tabpanel" aria-labelledby="btn-tab4" class="hidden p-6 sm:p-8 focus:outline-none" tabindex="0">
                 <div class="prose max-w-none">
                     <h2>Video Description of Operation</h2>
-                    <p>The following video demonstrates the execution of data instructions within the circuit.</p>
+                    <p>The following video demonstrates the execution of data instructions within the circuit. Use the transcript panel to navigate the video or click any transcript line to jump to that moment.</p>
                     
-                    <div class="aspect-w-16 aspect-h-9 my-6">
-                        <!-- Placeholder ID used: Replace VIDEO_ID with actual YouTube ID from source -->
-                        <iframe class="w-full h-64 md:h-[500px] rounded-lg shadow-md" src="https://www.youtube.com/embed/VIDEO_ID" title="Demonstration of Data Instruction" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    <!-- Video and Transcript Container -->
+                    <div class="flex flex-col lg:flex-row gap-4 w-full my-6">
+                      <!-- Video Player Section: 66% width on large screens -->
+                      <div class="w-full lg:w-2/3 flex-shrink-0">
+                        <div id="video-container" style="width: 100%; height: 0; padding-bottom: 56.25%; position: relative;">
+                          <iframe id="youtube-player"
+                                  style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"
+                                  src="https://www.youtube.com/embed/8Y-iYrDWodM?enablejsapi=1"
+                                  title="Data Instruction: Detailed Walkthrough of Control Unit Operation"
+                                  frameborder="0"
+                                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                  referrerpolicy="strict-origin-when-cross-origin"
+                                  allowfullscreen>
+                          </iframe>
+                        </div>
+                      </div>
+
+                      <!-- Transcript Container Section: 33% width on large screens -->
+                      <div class="w-full lg:w-1/3 flex-shrink-0">
+                        <div id="transcript-container" class="h-96 overflow-y-scroll bg-white shadow-inner p-4 rounded-lg border border-gray-300">
+                          <p class="text-gray-500 text-center">Loading transcript...</p>
+                        </div>
+                      </div>
                     </div>
+
+                    <!-- CSS for highlighting the active line -->
+                    <style>
+                      .active-transcript-line {
+                        background-color: #f0f7ff;
+                        font-weight: 600;
+                        border-left: 4px solid #1e88e5;
+                        padding-left: 12px;
+                        transition: background-color 0.2s;
+                      }
+                    </style>
                 </div>
             </div>
 
@@ -235,6 +266,7 @@
     </footer>
 
     <script>
+        // ============== TAB SWITCHING LOGIC ==============
         function switchTab(tabId) {
             // Get all tabs and panels
             const tabs = document.querySelectorAll('[role="tab"]');
@@ -262,6 +294,11 @@
                     panel.classList.add('hidden');
                 }
             });
+
+            // Initialize transcript when video tab is opened
+            if (tabId === 'tab4') {
+                initializeVideoTranscript();
+            }
         }
 
         // Handle keyboard navigation for tabs
@@ -285,6 +322,424 @@
                 tabs[nextIndex].focus();
                 tabs[nextIndex].click();
             }
+        });
+
+        // ============== YOUTUBE TRANSCRIPT SYNC LOGIC ==============
+        const VIDEO_ID = '8Y-iYrDWodM';
+        let player;
+        let timeUpdater;
+        let parsedTranscript = [];
+        let videoInitialized = false;
+
+        // --- RAW VTT CONTENT ---
+        const vttContent = `WEBVTT
+
+00:00.000 --> 00:12.600
+Aloha in this video we're going to talk about the data instruction and so when we look at the
+
+00:12.600 --> 00:22.800
+data instruction okay we have our instruction our opcode and instruction register as zero zero one
+
+00:22.800 --> 00:32.400
+zero so zero zero one zero blank blank we don't care and then two for register B and what that's
+
+00:32.400 --> 00:43.080
+gonna do is it's gonna grab the data in the next RAM lot spot next byte of RAM and put it into
+
+00:43.080 --> 00:51.060
+register B what we define as register B all right so what we're gonna do so it's zero zero one zero
+
+00:51.060 --> 00:52.780
+and then register B
+
+00:52.800 --> 01:01.140
+so we want to do is we have it set up so that we can run our simulation and so zero zero one
+
+01:01.140 --> 01:10.020
+zero is our instruction register and then register B we want to put it into register three we can
+
+01:10.020 --> 01:20.820
+make it one one register three and then we need to have something put into RAM so I'm gonna go
+
+01:20.820 --> 01:22.040
+zero one one one
+
+01:22.800 --> 01:32.560
+zero zero one one zero okay so zero one one zero zero one one zero so we're going to stick that
+
+01:32.560 --> 01:40.800
+into ram and it's going to go into memory address zero okay so when we look at our control unit
+
+01:42.000 --> 01:48.480
+remember we're starting this with just the data instruction and we're not doing the fetch
+
+01:48.480 --> 01:58.160
+part which is steps one two and three so normally we would have fetched the address of our first um
+
+02:00.720 --> 02:08.800
+our first um instruction and that would be in byte zero and then we'd now be in byte one but
+
+02:08.800 --> 02:13.840
+because of the way we're doing it we're actually in byte zero which means that first instruction
+
+02:13.840 --> 02:18.240
+was really in like byte negative one if you will because it happened before this
+
+02:19.200 --> 02:23.840
+and that just happens because we're just trying to focus on just this one step of the process
+
+02:25.040 --> 02:31.520
+all right so anyway what we're going to do is we're going to cycle through this and the idea
+
+02:31.520 --> 02:37.200
+is we're going to grab it from zero and we're going to put it into register three
+
+02:38.720 --> 02:43.280
+okay so we're going to grab it from the next byte because our current instruction
+
+02:45.200 --> 02:48.320
+this instruction we stuck in here because it's in here it
+
+02:48.480 --> 02:52.080
+is going to be at zero and we're going to put it inside of our data
+
+02:52.720 --> 02:57.680
+and then we're going to put it in our data and now what's going to happen before this this is
+
+02:57.680 --> 03:01.280
+the next one the next one's at zero but the next one's not going to be at zero because
+
+03:01.280 --> 03:05.280
+zero is going to be data and so the next one's actually going to be at one because maybe one
+
+03:05.280 --> 03:11.360
+passed the data okay so let's cycle through until we get to
+
+03:14.080 --> 03:17.280
+cycle four i haven't enabled it yet but cycle four you're going to see that
+
+03:17.280 --> 03:18.240
+when we enable
+
+03:18.240 --> 03:28.000
+to set the program code enable memory address and the accumulator set memory address set and
+
+03:28.000 --> 03:31.600
+accumulator set so what's going to be on there is going to be zero because that's the current
+
+03:31.600 --> 03:36.800
+program code for the next one and it's going to be all zero so the memory address will be zero
+
+03:37.440 --> 03:43.040
+the accumulator set will be one because we have the bus one of one so it'll be one plus zero is one
+
+03:43.040 --> 03:55.920
+okay so we look at our data instruction and we cycle here we are on the enable it's all zeros
+
+03:58.240 --> 04:05.120
+okay our accumulator or our cpu is putting out one because b is one
+
+04:06.400 --> 04:09.680
+a is zero b is one so zero plus one is one
+
+04:12.160 --> 04:12.400
+um
+
+04:13.200 --> 04:15.360
+our memory address
+
+04:17.680 --> 04:20.560
+we've set it we should gonna set it to zero on the next step
+
+04:21.840 --> 04:28.560
+right now it's zero waiting for it but it's not set yet okay so our data instruction
+
+04:29.280 --> 04:35.360
+will set everything that we can set okay so we set the accumulator we set the memory address
+
+04:37.440 --> 04:42.160
+right memory address register and the accumulator set so accumulator should be one memory address
+
+04:42.160 --> 04:44.980
+Memory address should be, I mean, yeah, it should be one.
+
+04:45.080 --> 04:46.180
+Memory address should be zero.
+
+04:48.860 --> 04:54.060
+So if we go to memory address, it should be zero.
+
+04:54.780 --> 04:56.060
+It should be turned on.
+
+04:56.660 --> 05:00.680
+And it should hold 01100110 because that's the input that we put in.
+
+05:01.540 --> 05:06.180
+So that's in register zero, RAM byte zero.
+
+05:06.180 --> 05:15.080
+And our accumulator should be holding the value of one
+
+05:15.080 --> 05:19.680
+because bus one is one, one plus zero is one.
+
+05:24.000 --> 05:28.180
+All right, and then we'll cycle to the next step.
+
+05:29.100 --> 05:31.520
+We'll turn them off, turn off set, turn off enable,
+
+05:31.520 --> 05:35.800
+and then we'll cycle to the next one, which is step five.
+
+05:36.340 --> 05:39.980
+Step five now is going to enable RAM.
+
+05:40.120 --> 05:44.200
+So it's going to grab what's in byte zero and stick it on the bus.
+
+05:44.540 --> 05:51.240
+And then when we set, we're going to set our reg B to be the value that's on the bus.
+
+05:52.180 --> 05:57.100
+And in this case, reg B, it's going to be reg R3.
+
+05:58.920 --> 06:03.060
+Okay, so we'll go back to our data instruction.
+
+06:03.520 --> 06:04.540
+We click on set.
+
+06:06.180 --> 06:08.220
+Okay, so we set.
+
+06:12.400 --> 06:15.200
+And reg B, R3 is set here for reg B.
+
+06:17.040 --> 06:19.640
+So when we go back to now our data instruction,
+
+06:19.860 --> 06:25.100
+we'll see reg B holds 01100110, which is what we had in input.
+
+06:26.440 --> 06:28.820
+Okay, and then we'll cycle again.
+
+06:32.420 --> 06:34.240
+Where our last one is six.
+
+06:35.000 --> 06:36.160
+And that's going to enable RAM.
+
+06:36.180 --> 06:41.400
+And then we're going to enable the accumulator and set the program code for the next instruction.
+
+06:42.500 --> 06:44.620
+Okay, and so that should be one.
+
+06:46.200 --> 06:48.900
+Because we just used zero for data.
+
+06:50.400 --> 07:00.580
+So zero can't be the next instruction because byte zero was data.
+
+07:01.680 --> 07:04.300
+So the next instruction will be in byte one.
+
+07:04.300 --> 07:04.640
+Okay.
+
+07:06.180 --> 07:07.200
+And we enabled it.
+
+07:07.300 --> 07:08.080
+We set it.
+
+07:09.340 --> 07:10.540
+Here we set it.
+
+07:11.020 --> 07:12.220
+So PC code is one.
+
+07:14.080 --> 07:14.600
+Okay.
+
+07:15.940 --> 07:19.420
+And then we'll click off set.
+
+07:19.500 --> 07:20.020
+Click off enable.
+
+07:20.260 --> 07:22.160
+And that's the cycle of data instruction.
+
+07:22.880 --> 07:28.360
+So it's grabbing what's in the next byte of RAM and sticking it into one of the regs.
+
+07:28.360 --> 07:28.800
+Okay.`;
+
+        // 2. CORE UTILITIES
+        function timeToSeconds(timeStr) {
+            if (!timeStr) return 0;
+            const parts = timeStr.trim().split(':');
+            
+            // Handle both MM:SS.mmm and HH:MM:SS.mmm formats
+            if (parts.length === 2) {
+                // MM:SS.mmm format
+                let minutes = parseInt(parts[0]) || 0;
+                let seconds = parseFloat(parts[1]) || 0;
+                return minutes * 60 + seconds;
+            } else if (parts.length === 3) {
+                // HH:MM:SS.mmm format
+                let hours = parseInt(parts[0]) || 0;
+                let minutes = parseInt(parts[1]) || 0;
+                let seconds = parseFloat(parts[2]) || 0;
+                return hours * 3600 + minutes * 60 + seconds;
+            }
+            return 0;
+        }
+
+        function parseVtt(vttText) {
+            const cues = vttText.trim().split(/\n\n+/);
+            const parsedCues = [];
+            
+            cues.forEach(cueBlock => {
+                if (cueBlock.startsWith('WEBVTT') || cueBlock.trim() === '') return;
+                
+                const lines = cueBlock.trim().split('\n');
+                const timeLine = lines.find(line => line.includes('-->'));
+                if (!timeLine) return;
+
+                const [startTimeStr, endTimeStr] = timeLine.split(' --> ');
+                const textLines = lines.slice(lines.indexOf(timeLine) + 1);
+                
+                parsedCues.push({
+                    start: timeToSeconds(startTimeStr),
+                    end: timeToSeconds(endTimeStr),
+                    text: textLines.join(' ').trim()
+                });
+            });
+            return parsedCues;
+        }
+
+        // 3. TRANSCRIPT RENDERING AND INTERACTIVITY
+        function populateTranscript() {
+            const container = document.getElementById('transcript-container');
+            if (!container) return;
+            container.innerHTML = '';
+
+            parsedTranscript.forEach(cue => {
+                const lineElement = document.createElement('div');
+                lineElement.className = 'transcript-line p-2 cursor-pointer hover:bg-gray-100 rounded-lg';
+                lineElement.dataset.start = cue.start;
+                lineElement.dataset.end = cue.end;
+                lineElement.textContent = cue.text;
+                lineElement.setAttribute('role', 'button');
+                lineElement.setAttribute('tabindex', '0');
+
+                const seekToTime = () => {
+                    if (player && player.seekTo) {
+                        player.seekTo(cue.start, true);
+                        player.playVideo();
+                    }
+                };
+                
+                lineElement.addEventListener('click', seekToTime);
+                lineElement.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') { 
+                        e.preventDefault(); 
+                        seekToTime(); 
+                    }
+                });
+
+                container.appendChild(lineElement);
+            });
+        }
+
+        // 4. SYNC LOGIC
+        function highlightCurrentLine() {
+            if (!player || !player.getCurrentTime) return;
+
+            const currentTime = player.getCurrentTime();
+            const lines = document.querySelectorAll('#transcript-container .transcript-line');
+
+            lines.forEach(line => {
+                const start = parseFloat(line.dataset.start);
+                const end = parseFloat(line.dataset.end);
+
+                if (currentTime >= start && currentTime < end) {
+                    if (!line.classList.contains('active-transcript-line')) {
+                        document.querySelector('.active-transcript-line')?.classList.remove('active-transcript-line');
+                        line.classList.add('active-transcript-line');
+                        line.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
+                } else {
+                    line.classList.remove('active-transcript-line');
+                }
+            });
+        }
+
+        // 5. HEIGHT SYNCHRONIZATION (Transcript matches video container)
+        function syncTranscriptHeight() {
+            const mediaQuery = window.matchMedia('(min-width: 1024px)');
+            const videoContainer = document.getElementById('video-container');
+            const transcriptContainer = document.getElementById('transcript-container');
+            
+            if (!videoContainer || !transcriptContainer) return;
+            
+            if (mediaQuery.matches) {
+                // On large screens, match the video container height
+                const videoHeight = videoContainer.offsetHeight;
+                transcriptContainer.style.maxHeight = videoHeight + 'px';
+            } else {
+                // On mobile, use fixed height
+                transcriptContainer.style.maxHeight = '24rem';
+            }
+        }
+
+        // 6. PLAYER STATE HANDLER
+        function onPlayerStateChange(event) {
+            clearInterval(timeUpdater);
+            if (event.data === YT.PlayerState.PLAYING) {
+                timeUpdater = setInterval(highlightCurrentLine, 300);
+            }
+        }
+
+        // 7. INITIALIZATION
+        function initializeVideoTranscript() {
+            if (videoInitialized) return;
+            videoInitialized = true;
+
+            parsedTranscript = parseVtt(vttContent);
+            populateTranscript();
+            syncTranscriptHeight();
+
+            if (!player) {
+                player = new YT.Player('youtube-player', {
+                    events: {
+                        'onStateChange': onPlayerStateChange
+                    }
+                });
+            }
+        }
+
+        // 8. CENTRAL INITIALIZATION
+        document.addEventListener('DOMContentLoaded', () => {
+            if (typeof(YT) == 'undefined' || typeof(YT.Player) == 'undefined') {
+                const tag = document.createElement('script');
+                tag.src = "https://www.youtube.com/iframe_api";
+                document.head.appendChild(tag);
+                window.onYouTubeIframeAPIReady = initializeVideoTranscript;
+            }
+
+            // Handle window resize for transcript height sync
+            let resizeTimeout;
+            window.addEventListener('resize', () => {
+                clearTimeout(resizeTimeout);
+                resizeTimeout = setTimeout(syncTranscriptHeight, 250);
+            });
         });
     </script>
 </body>
