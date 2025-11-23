@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Control Unit for Clear Flags Instruction</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'bg-light': '#FDFBF8',
+                        'text-dark': '#1A1A1A'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif']
+                    }
+                }
+            },
+            plugins: [require('@tailwindcss/typography')],
+            corePlugins: {
+                preflight: true
+            }
+        };
+    </script>
+    <style>
+        /* Disable dark mode and force light theme */
+        :root {
+            color-scheme: light;
+        }
+        html, body {
+            background-color: #FDFBF8 !important;
+            color: #1A1A1A !important;
+        }
+        @media (prefers-color-scheme: dark) {
+            html, body {
+                background-color: #FDFBF8 !important;
+                color: #1A1A1A !important;
+            }
+        }
+        /* Enhanced focus states for accessibility */
+        *:focus-visible {
+            outline: 2px solid #2563eb !important;
+            outline-offset: 2px !important;
+        }
+        /* Skip to content link */
+        .skip-to-content {
+            position: absolute;
+            top: -40px;
+            left: 0;
+            background: #2563eb;
+            color: white;
+            padding: 8px 16px;
+            z-index: 100;
+            text-decoration: none;
+            border-radius: 0 0 4px 0;
+        }
+        .skip-to-content:focus {
+            top: 0;
+        }
+        /* Tab styling */
+        [role="tab"] {
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        [role="tab"][aria-selected="true"] {
+            border-bottom-width: 3px;
+            border-bottom-color: #2563eb;
+        }
+        [role="tab"][aria-selected="false"] {
+            border-bottom-width: 2px;
+            border-bottom-color: #e5e7eb;
+        }
+        [role="tab"]:hover {
+            background-color: #f3f4f6;
+        }
+        [role="tabpanel"] {
+            display: none;
+        }
+        [role="tabpanel"][aria-hidden="false"] {
+            display: block;
+        }
+        /* Table styling */
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 16px 0;
+        }
+        th, td {
+            border: 1px solid #d1d5db;
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #f3f4f6;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+        tbody tr:nth-child(even) {
+            background-color: #fafafa;
+        }
+    </style>
+</head>
+<body class="bg-bg-light text-text-dark font-sans">
+    <!-- Skip to Content Link -->
+    <a href="#main-content" class="skip-to-content">Skip to Main Content</a>
+
+    <!-- Header -->
+    <header class="bg-white shadow-sm border-b border-gray-200">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <h1 class="text-3xl sm:text-4xl font-bold text-text-dark mb-2">Control Unit for Clear Flags Instruction</h1>
+            <p class="text-lg text-gray-700">Learn how the Clear Flags instruction resets all ALU status flags to prepare for the next operation.</p>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main id="main-content" class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        
+        <!-- Tabbed Interface -->
+        <div class="mb-12">
+            <!-- Tab List -->
+            <div role="tablist" class="flex flex-wrap gap-0 border-b-2 border-gray-300 mb-8" aria-label="Instructional Content Tabs">
+                <button 
+                    role="tab"
+                    aria-selected="true"
+                    aria-controls="panel-clear-flags-instructions"
+                    id="tab-clear-flags-instructions"
+                    class="px-4 sm:px-6 py-3 text-base font-medium text-gray-700 hover:text-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                    Clear Flags Instructions
+                </button>
+                <button 
+                    role="tab"
+                    aria-selected="false"
+                    aria-controls="panel-control-unit"
+                    id="tab-control-unit"
+                    class="px-4 sm:px-6 py-3 text-base font-medium text-gray-700 hover:text-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                    Control Unit Diagram
+                </button>
+                <button 
+                    role="tab"
+                    aria-selected="false"
+                    aria-controls="panel-video"
+                    id="tab-video"
+                    class="px-4 sm:px-6 py-3 text-base font-medium text-gray-700 hover:text-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                    Video
+                </button>
+            </div>
+
+            <!-- Tab Panels -->
+            
+            <!-- Panel 1: Clear Flags Instructions -->
+            <div 
+                role="tabpanel"
+                id="panel-clear-flags-instructions"
+                aria-labelledby="tab-clear-flags-instructions"
+                aria-hidden="false"
+                class="prose prose-sm sm:prose max-w-none">
+                
+                <h2 class="text-2xl font-bold mt-0 mb-6">Clear Flags Instructions</h2>
+                
+                <p>The Operation instruction is an 8-bit value that is broken down as follows:</p>
+
+                <!-- Instruction Format Table -->
+                <div class="overflow-x-auto">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>bit 0</th>
+                                <th>bit 1</th>
+                                <th>bit 2</th>
+                                <th>bit 3</th>
+                                <th>bit 4</th>
+                                <th>bit 5</th>
+                                <th>bit 6</th>
+                                <th>bit 7</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>0 for Non-ALU Instr.</td>
+                                <td>1</td>
+                                <td>1</td>
+                                <td><strong>0</strong></td>
+                                <td>x</td>
+                                <td>x</td>
+                                <td>x</td>
+                                <td>x</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h3 class="text-xl font-bold mt-8 mb-4">Bit Definitions</h3>
+                <p><strong>bit 0:</strong> When this is 0, we have a non-ALU instruction (such as Load, Store, Jump IF, or Clear Flags)</p>
+                <p><strong>bits 1-3:</strong> Are 110 for a Clear Flags instruction</p>
+                <p><strong>bits 4-7:</strong> Are not used for this instruction (marked as x, can be any value)</p>
+
+                <h3 class="text-xl font-bold mt-8 mb-4">Clear Flags Instruction</h3>
+                <p>A Clear Flags instruction sets all of our Jump IF flags (C, A, E, Z) to 0. This resets the flag register before the next operation.</p>
+                <p class="bg-blue-50 border-l-4 border-blue-400 p-4 rounded"><strong>Instruction Mnemonic:</strong> <code class="bg-white px-2 py-1">CLF</code></p>
+
+                <h3 class="text-xl font-bold mt-8 mb-4">Clear Flags Implementation</h3>
+                <p>The implementation of Clear Flags is accomplished by setting the FLAG_S (Flags Set) signal to 1 at the appropriate time in the operation cycle. This timing is critical:</p>
+                
+                <p>When the BUS contains all zeros (0x00) and BUS_1 is set to 1, all of the flag outputs from the ALU are False (0):</p>
+                <ul>
+                    <li>Carry out = 0</li>
+                    <li>A is larger than B = 0</li>
+                    <li>A equals B = 0</li>
+                    <li>Result equals 0 = 0</li>
+                </ul>
+
+                <p>By setting FLAG_S = 1 when the BUS is all zeros, all flags are captured as 0, effectively clearing them before the next operation begins.</p>
+            </div>
+
+            <!-- Panel 2: Control Unit Diagram -->
+            <div 
+                role="tabpanel"
+                id="panel-control-unit"
+                aria-labelledby="tab-control-unit"
+                aria-hidden="true"
+                class="prose prose-sm sm:prose max-w-none">
+                
+                <h2 class="text-2xl font-bold mt-0 mb-6">Clear Flags Instruction Control Unit Diagram</h2>
+                
+                <p>The diagram below shows the control unit circuit for the Clear Flags instruction. It demonstrates how the FLAG_S signal is controlled to capture the zero values from the ALU when the BUS contains all zeros.</p>
+
+                <figure class="my-8">
+                    <img 
+                        src="images/clear-flags-control-unit.jpg" 
+                        alt="Clear Flags Instruction Diagram for Control Unit showing FLAG_S control and ALU flag inputs"
+                        width="800"
+                        height="745"
+                        class="w-full max-w-2xl mx-auto border border-gray-300 rounded">
+                    <figcaption class="text-sm text-gray-600 mt-4 text-center">Figure 1: Clear Flags Instruction Control Unit Diagram</figcaption>
+                </figure>
+            </div>
+
+            <!-- Panel 3: Video -->
+            <div 
+                role="tabpanel"
+                id="panel-video"
+                aria-labelledby="tab-video"
+                aria-hidden="true"
+                class="prose prose-sm sm:prose max-w-none">
+                
+                <h2 class="text-2xl font-bold mt-0 mb-6">Video Description of Operation</h2>
+                
+                <p>The following video walks through the Clear Flags Instruction control unit diagram and explains how the FLAG_S signal manages the flag clearing operation:</p>
+                
+                <p><a href="https://youtu.be/7Wz7RNHX7zY" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:text-blue-800 underline">Clear Flags Instruction (YouTube)</a></p>
+                
+                <p class="text-sm text-gray-600">Opens in a new window. For best accessibility, ensure captions are enabled on the video.</p>
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-100 border-t border-gray-300 mt-16 py-8">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-gray-600 text-sm">
+            <p>&copy; 2024 Mendocino College Computer Science Department. Instructional materials for CSC210: Computer Organization & Architecture.</p>
+        </div>
+    </footer>
+
+    <!-- Tab Switching JavaScript -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const tabButtons = document.querySelectorAll('[role="tab"]');
+            const tabPanels = document.querySelectorAll('[role="tabpanel"]');
+
+            // Initialize all panels as hidden except the first
+            tabPanels.forEach((panel, index) => {
+                if (index === 0) {
+                    panel.setAttribute('aria-hidden', 'false');
+                } else {
+                    panel.setAttribute('aria-hidden', 'true');
+                }
+            });
+
+            // Add click event listeners to tabs
+            tabButtons.forEach((button, index) => {
+                button.addEventListener('click', function() {
+                    // Deselect all tabs and hide all panels
+                    tabButtons.forEach(btn => {
+                        btn.setAttribute('aria-selected', 'false');
+                    });
+                    tabPanels.forEach(panel => {
+                        panel.setAttribute('aria-hidden', 'true');
+                    });
+
+                    // Select clicked tab and show corresponding panel
+                    button.setAttribute('aria-selected', 'true');
+                    const panelId = button.getAttribute('aria-controls');
+                    const panel = document.getElementById(panelId);
+                    if (panel) {
+                        panel.setAttribute('aria-hidden', 'false');
+                    }
+                });
+
+                // Add keyboard navigation for tabs (Arrow Left/Right)
+                button.addEventListener('keydown', function(event) {
+                    let targetIndex = index;
+
+                    if (event.key === 'ArrowRight') {
+                        event.preventDefault();
+                        targetIndex = (index + 1) % tabButtons.length;
+                    } else if (event.key === 'ArrowLeft') {
+                        event.preventDefault();
+                        targetIndex = (index - 1 + tabButtons.length) % tabButtons.length;
+                    } else if (event.key === 'Home') {
+                        event.preventDefault();
+                        targetIndex = 0;
+                    } else if (event.key === 'End') {
+                        event.preventDefault();
+                        targetIndex = tabButtons.length - 1;
+                    }
+
+                    if (targetIndex !== index) {
+                        tabButtons[targetIndex].click();
+                        tabButtons[targetIndex].focus();
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
