@@ -1,0 +1,1576 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSC210 Week 15-16: Performance Basics & Modern Architecture - Interactive Performance Calculator</title>
+    
+    <!-- Tailwind CSS CDN with Typography Plugin -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                },
+            },
+            plugins: [],
+        }
+    </script>
+    
+    <style>
+        /* MANDATORY LIGHT THEME ONLY */
+        html { 
+            font-family: 'Inter', sans-serif; 
+            background-color: #FDFBF8 !important;
+            color: #1A1A1A !important;
+        }
+        
+        body {
+            background-color: #FDFBF8 !important;
+            color: #1A1A1A !important;
+        }
+        
+        /* Override any dark mode preferences */
+        @media (prefers-color-scheme: dark) {
+            html, body {
+                background-color: #FDFBF8 !important;
+                color: #1A1A1A !important;
+            }
+        }
+        
+        /* Skip to Content Link (Accessibility) */
+        .skip-link {
+            position: absolute;
+            top: -40px;
+            left: 0;
+            background: #0066CC;
+            color: white;
+            padding: 8px;
+            text-decoration: none;
+            z-index: 100;
+        }
+        
+        .skip-link:focus {
+            top: 0;
+        }
+        
+        /* Prose content styling for text blocks */
+        .prose {
+            color: #1A1A1A;
+            line-height: 1.8;
+        }
+        
+        .prose h1 {
+            font-size: 2.25rem;
+            font-weight: bold;
+            color: #0066CC;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+        }
+        
+        .prose h2 {
+            font-size: 1.875rem;
+            font-weight: bold;
+            color: #0066CC;
+            margin-top: 1.75rem;
+            margin-bottom: 0.75rem;
+            border-bottom: 3px solid #0066CC;
+            padding-bottom: 0.5rem;
+        }
+        
+        .prose h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #333333;
+            margin-top: 1.25rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .prose h4 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #555555;
+            margin-top: 1rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .prose p {
+            margin-bottom: 1.2rem;
+            font-size: 1.025rem;
+            line-height: 1.8;
+        }
+        
+        .prose ul, .prose ol {
+            margin-left: 1.5rem;
+            margin-bottom: 1.2rem;
+        }
+        
+        .prose li {
+            margin-bottom: 0.5rem;
+            line-height: 1.8;
+        }
+        
+        .prose code {
+            background-color: #F0F0F0;
+            color: #CC0000;
+            padding: 0.2rem 0.4rem;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.95rem;
+        }
+        
+        .prose pre {
+            background-color: #F0F0F0;
+            border-left: 4px solid #0066CC;
+            padding: 1rem;
+            margin: 1.2rem 0;
+            border-radius: 4px;
+            overflow-x: auto;
+            line-height: 1.6;
+        }
+        
+        .prose pre code {
+            background-color: transparent;
+            color: #1A1A1A;
+            padding: 0;
+        }
+        
+        /* Table styling */
+        .prose table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+        }
+        
+        .prose table th {
+            background-color: #0066CC;
+            color: white;
+            padding: 0.75rem;
+            text-align: left;
+            font-weight: bold;
+        }
+        
+        .prose table td {
+            border: 1px solid #DDDDDD;
+            padding: 0.75rem;
+        }
+        
+        .prose table tr:nth-child(even) {
+            background-color: #F9F9F9;
+        }
+        
+        /* Blockquote / Key Insight Styling */
+        .prose blockquote {
+            border-left: 4px solid #00AA00;
+            padding-left: 1rem;
+            margin: 1.5rem 0;
+            color: #333333;
+            font-style: italic;
+        }
+        
+        /* Tab Interface Styling */
+        .tab-container {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .tab-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0;
+            border-bottom: 2px solid #DDDDDD;
+            margin-bottom: 2rem;
+        }
+        
+        .tab-button {
+            padding: 1rem 1.5rem;
+            border: none;
+            background-color: transparent;
+            color: #555555;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s ease;
+        }
+        
+        .tab-button:hover {
+            color: #0066CC;
+            background-color: #F5F5F5;
+        }
+        
+        .tab-button[aria-selected="true"] {
+            color: #0066CC;
+            border-bottom-color: #0066CC;
+            font-weight: 600;
+        }
+        
+        .tab-button:focus {
+            outline: 2px solid #0066CC;
+            outline-offset: -2px;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content[data-active="true"] {
+            display: block;
+            animation: fadeIn 0.3s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        /* Calculator Component Styling */
+        .calculator-container {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+        
+        @media (min-width: 768px) {
+            .calculator-container {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+        
+        .slider-group {
+            background-color: #FFFFFF;
+            border: 1px solid #DDDDDD;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        
+        .slider-group label {
+            display: block;
+            font-weight: 600;
+            color: #0066CC;
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+        }
+        
+        .slider-group .slider-value {
+            display: inline-block;
+            background-color: #0066CC;
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+        
+        .slider-group .unit {
+            color: #666666;
+            font-size: 0.9rem;
+            margin-left: 0.5rem;
+        }
+        
+        input[type="range"] {
+            width: 100%;
+            margin: 1rem 0;
+            height: 6px;
+            border-radius: 3px;
+            background: #DDDDDD;
+            outline: none;
+            -webkit-appearance: none;
+        }
+        
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #0066CC;
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        input[type="range"]::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #0066CC;
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        input[type="range"]:focus {
+            outline: 2px solid #0066CC;
+        }
+        
+        /* Preset Buttons */
+        .preset-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+        
+        .preset-button {
+            background-color: #CCCCCC;
+            color: #1A1A1A;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+        
+        .preset-button:hover {
+            background-color: #999999;
+            color: white;
+        }
+        
+        .preset-button:focus {
+            outline: 2px solid #0066CC;
+            outline-offset: 2px;
+        }
+        
+        /* Results Display */
+        .results-container {
+            background-color: #FFFFFF;
+            border: 2px solid #0066CC;
+            border-radius: 8px;
+            padding: 2rem;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        .result-value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #0066CC;
+            margin: 1rem 0;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .result-label {
+            font-size: 1rem;
+            color: #666666;
+            margin-bottom: 0.5rem;
+        }
+        
+        .comparison-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 1.5rem 0;
+            padding: 1rem;
+            background-color: #F5F5F5;
+            border-radius: 6px;
+        }
+        
+        .comparison-label {
+            font-weight: 500;
+            color: #333333;
+        }
+        
+        .comparison-value {
+            font-size: 1.25rem;
+            font-weight: bold;
+            color: #0066CC;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .comparison-value.faster {
+            color: #00AA00;
+        }
+        
+        .comparison-value.slower {
+            color: #CC0000;
+        }
+        
+        /* Speedup Gauge */
+        .speedup-gauge {
+            margin: 2rem 0;
+            text-align: center;
+        }
+        
+        .gauge-label {
+            font-size: 1rem;
+            color: #666666;
+            margin-bottom: 1rem;
+        }
+        
+        .gauge-bar {
+            width: 100%;
+            height: 40px;
+            background-color: #EEEEEE;
+            border-radius: 20px;
+            overflow: hidden;
+            border: 1px solid #DDDDDD;
+            position: relative;
+        }
+        
+        .gauge-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #00AA00 0%, #0066CC 50%, #CC0000 100%);
+            width: 50%;
+            transition: width 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+        
+        .gauge-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-top: 1rem;
+            color: #0066CC;
+        }
+        
+        /* Scenario Buttons */
+        .scenario-buttons {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+        
+        @media (min-width: 768px) {
+            .scenario-buttons {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+        
+        .scenario-button {
+            background-color: #0066CC;
+            color: white;
+            border: none;
+            padding: 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.2s ease;
+            text-align: left;
+        }
+        
+        .scenario-button:hover {
+            background-color: #0052A3;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,102,204,0.3);
+        }
+        
+        .scenario-button:focus {
+            outline: 2px solid #333333;
+            outline-offset: 2px;
+        }
+        
+        /* Information Display */
+        .info-box {
+            background-color: #E6F2FF;
+            border-left: 4px solid #0066CC;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 4px;
+        }
+        
+        .info-box.success {
+            background-color: #E6FFE6;
+            border-left-color: #00AA00;
+        }
+        
+        .info-box.warning {
+            background-color: #FFF9E6;
+            border-left-color: #CCAA00;
+        }
+        
+        .scenario-description {
+            margin: 1rem 0;
+            padding: 1rem;
+            background-color: #F5F5F5;
+            border-radius: 6px;
+        }
+        
+        /* Real CPU Table */
+        .cpu-table-wrapper {
+            overflow-x: auto;
+            margin: 2rem 0;
+        }
+        
+        /* Buttons */
+        .button-primary {
+            background-color: #0066CC;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.2s ease;
+        }
+        
+        .button-primary:hover {
+            background-color: #0052A3;
+        }
+        
+        .button-primary:focus {
+            outline: 2px solid #333333;
+            outline-offset: 2px;
+        }
+        
+        .button-secondary {
+            background-color: #CCCCCC;
+            color: #1A1A1A;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.2s ease;
+        }
+        
+        .button-secondary:hover {
+            background-color: #999999;
+            color: white;
+        }
+        
+        .button-secondary:focus {
+            outline: 2px solid #333333;
+            outline-offset: 2px;
+        }
+        
+        /* Responsive Text */
+        @media (max-width: 640px) {
+            .prose h1 {
+                font-size: 1.75rem;
+            }
+            
+            .prose h2 {
+                font-size: 1.5rem;
+            }
+            
+            .prose h3 {
+                font-size: 1.25rem;
+            }
+            
+            .tab-button {
+                padding: 0.75rem 1rem;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+    
+    <!-- Metadata for Component Organization -->
+    <!-- Chosen Palette: #0066CC (Blue), #00AA00 (Green), #CC0000 (Red), #FDFBF8 (Near-white background), #1A1A1A (Near-black text) -->
+    <!-- Application Structure: Header with learning objectives, Tabbed interface for content organization, Calculator grid layout for inputs and results, Real CPU comparison table -->
+    <!-- Visualization: All diagrams and complex visualizations use semantic HTML + Tailwind CSS, no external images or SVG -->
+</head>
+<body>
+    <!-- Accessibility: Skip to Content Link -->
+    <a id="skip-to-content" href="#main-content" class="skip-link">Skip to main content</a>
+    
+    <!-- Main Content -->
+    <main id="main-content" class="min-h-screen bg-gradient-to-br from-blue-50 to-slate-50 py-8 px-4">
+        <div class="max-w-5xl mx-auto">
+            
+            <!-- Header Section -->
+            <header class="mb-8">
+                <h1 class="text-4xl md:text-5xl font-bold text-blue-600 mb-2">
+                    Performance Basics & Modern Architecture
+                </h1>
+                <p class="text-xl text-gray-700 mb-4">Interactive Performance Calculator for CSC210 Weeks 15-16</p>
+                
+                <!-- Learning Objectives Card -->
+                <div class="bg-white border-l-4 border-blue-600 rounded-lg p-6 shadow-md">
+                    <h2 class="text-2xl font-bold text-blue-600 mb-4">Learning Objectives</h2>
+                    <ul class="space-y-2 text-gray-800">
+                        <li class="flex items-start">
+                            <span class="text-blue-600 font-bold mr-3">✓</span>
+                            <span>Calculate execution time using the performance equation: T_exec = (IC × CPI) ÷ Clock_Rate</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-blue-600 font-bold mr-3">✓</span>
+                            <span>Manipulate the three levers of performance and observe real-time impacts</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-blue-600 font-bold mr-3">✓</span>
+                            <span>Evaluate performance tradeoffs by comparing different optimization scenarios</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-blue-600 font-bold mr-3">✓</span>
+                            <span>Predict speedup factors from architectural changes</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-blue-600 font-bold mr-3">✓</span>
+                            <span>Connect abstract concepts to real CPU data</span>
+                        </li>
+                    </ul>
+                </div>
+            </header>
+            
+            <!-- Tabbed Interface -->
+            <div class="tab-container">
+                <!-- Tab Navigation -->
+                <div class="tab-list" role="tablist">
+                    <button 
+                        role="tab" 
+                        aria-selected="true" 
+                        aria-controls="tab-concepts" 
+                        data-tab="concepts"
+                        class="tab-button"
+                    >
+                        The Performance Equation
+                    </button>
+                    <button 
+                        role="tab" 
+                        aria-selected="false" 
+                        aria-controls="tab-calculator" 
+                        data-tab="calculator"
+                        class="tab-button"
+                    >
+                        Interactive Calculator
+                    </button>
+                    <button 
+                        role="tab" 
+                        aria-selected="false" 
+                        aria-controls="tab-cpus" 
+                        data-tab="cpus"
+                        class="tab-button"
+                    >
+                        Real CPU Examples
+                    </button>
+                </div>
+                
+                <!-- TAB 1: Foundational Concepts -->
+                <div id="tab-concepts" class="tab-content" data-active="true">
+                    <div class="prose max-w-none">
+                        
+                        <h2>The Performance Equation: Your CPU's Speed Card</h2>
+                        
+                        <p>You've built a CPU. It works. But how <strong>fast</strong> is it?</p>
+                        
+                        <p>That question—seemingly simple—requires understanding three independent factors that multiply together to determine your program's execution time. This module teaches you the <strong>performance equation</strong> that professionals use to analyze CPUs every day.</p>
+                        
+                        <h3>The Golden Equation</h3>
+                        
+                        <pre><code>Execution Time = Instruction Count × CPI ÷ Clock Rate</code></pre>
+                        
+                        <p>Let's break this down with a real example from your Week 14 CPU.</p>
+                        
+                        <h3>What Each Factor Means</h3>
+                        
+                        <h4>Instruction Count (IC)</h4>
+                        
+                        <p><strong>Definition:</strong> The total number of instructions your program executes.</p>
+                        
+                        <p><strong>Example:</strong> A sorting algorithm that runs 10,000 instructions has IC = 10,000.</p>
+                        
+                        <p><strong>What it depends on:</strong></p>
+                        <ul>
+                            <li>Your algorithm (recursive vs. iterative)</li>
+                            <li>Your compiler (optimization level)</li>
+                            <li>The specific task you're solving</li>
+                        </ul>
+                        
+                        <p><strong>Can you change it?</strong> Yes! Better algorithms = fewer instructions.</p>
+                        
+                        <h4>Cycles Per Instruction (CPI)</h4>
+                        
+                        <p><strong>Definition:</strong> On average, how many clock cycles does each instruction take to complete?</p>
+                        
+                        <p><strong>Example:</strong></p>
+                        <ul>
+                            <li>Your simple CPU from Week 14: MOV takes 1 cycle, ADD takes 3 cycles, LOAD takes 5 cycles</li>
+                            <li>Average across a program: CPI = 2.5 (some instructions fast, some slow)</li>
+                        </ul>
+                        
+                        <p><strong>What it depends on:</strong></p>
+                        <ul>
+                            <li>Your CPU design (simple vs. pipelined vs. multi-stage)</li>
+                            <li>The instruction type (memory access is expensive)</li>
+                            <li>How well your pipeline handles hazards</li>
+                        </ul>
+                        
+                        <p><strong>Can you change it?</strong> Yes! Week 16 shows how pipelining and caching reduce CPI.</p>
+                        
+                        <h4>Clock Rate (f)</h4>
+                        
+                        <p><strong>Definition:</strong> How many times per second your CPU "ticks" (measured in MHz or GHz).</p>
+                        
+                        <p><strong>Example:</strong></p>
+                        <ul>
+                            <li>Your simulated CPU: 1 MHz (1 million ticks per second)</li>
+                            <li>Modern phones: 2-3 GHz (2-3 billion ticks per second)</li>
+                        </ul>
+                        
+                        <p><strong>What it depends on:</strong></p>
+                        <ul>
+                            <li>Transistor speed (technology node: 5nm, 7nm, etc.)</li>
+                            <li>Circuit design (how much work happens per cycle)</li>
+                            <li>Power budget (faster = hotter)</li>
+                        </ul>
+                        
+                        <p><strong>Can you change it?</strong> Yes, but there are limits. Week 15 explores this tension.</p>
+                        
+                        <h3>Putting It Together: A Complete Example</h3>
+                        
+                        <p><strong>Your Week 14 CPU Running a Loop:</strong></p>
+                        
+                        <pre><code>Program: Sum 100 numbers in an array
+
+Instructions needed:
+  - Setup (load array address, initialize sum): 3 instructions
+  - Loop body (load element, add to sum, increment counter): 3 instructions
+  - Execute loop 100 times: 3 × 100 = 300 instructions
+  - Cleanup (store result): 1 instruction
+  Total IC = 305 instructions
+
+CPI (average):
+  - Simple instructions (MOV, INC): 1 cycle each (80% of program) = 0.8 cycles
+  - Load/Store instructions: 5 cycles each (20% of program) = 1.0 cycles
+  - Average CPI = 0.8 + 1.0 = 1.8 cycles/instruction
+
+Clock Rate:
+  - Your simulated CPU: 1 MHz (1,000,000 cycles/second)
+
+Execution Time:
+  T = 305 × 1.8 ÷ 1,000,000 = 549 ÷ 1,000,000 = 0.000549 seconds = 0.549 milliseconds</code></pre>
+                        
+                        <p><strong>Translation:</strong> Your CPU executes the sorting algorithm in half a millisecond. Not bad for a hand-built design!</p>
+                        
+                        <h3>The Three Levers of Performance</h3>
+                        
+                        <p>Here's the brilliant insight: You have <strong>three independent knobs</strong> to improve performance. Each one is controlled differently.</p>
+                        
+                        <h4>Lever 1: Instruction Count (Software)</h4>
+                        
+                        <p><strong>How to improve:</strong> Better algorithms, compiler optimization, avoiding redundant operations.</p>
+                        
+                        <p><strong>Cost:</strong> Engineering time, complexity.</p>
+                        
+                        <p><strong>Tradeoff:</strong> Sometimes a longer program is clearer and easier to debug.</p>
+                        
+                        <p><strong>Example:</strong></p>
+                        
+                        <pre><code>Loop v1 (inefficient):
+  for i = 0 to 100:
+    multiply array[i] by 2
+    add array[i] to sum
+    store array[i]
+  Result: 300 instructions
+
+Loop v2 (optimized):
+  for i = 0 to 100:
+    sum += array[i] * 2
+  Result: 150 instructions
+  
+Speedup: 300 ÷ 150 = 2x (just from better code!)</code></pre>
+                        
+                        <h4>Lever 2: CPI (CPU Design)</h4>
+                        
+                        <p><strong>How to improve:</strong> Pipelining, caching, superscalar execution, out-of-order dispatch.</p>
+                        
+                        <p><strong>Cost:</strong> Circuit complexity, more transistors, more power.</p>
+                        
+                        <p><strong>Tradeoff:</strong> More complex designs are harder to debug and more prone to bugs.</p>
+                        
+                        <p><strong>Example (from Week 16):</strong></p>
+                        
+                        <pre><code>Simple non-pipelined CPU: CPI = 4.0 (all instructions take 4 cycles)
+Pipelined CPU: CPI = 1.2 (overlapping stages, but some hazard stalls)
+Speedup: 4.0 ÷ 1.2 = 3.3x (just from pipelining!)</code></pre>
+                        
+                        <h4>Lever 3: Clock Rate (Technology)</h4>
+                        
+                        <p><strong>How to improve:</strong> Faster transistors (smaller process: 5nm vs. 7nm), better circuit design, more power.</p>
+                        
+                        <p><strong>Cost:</strong> Expensive fabrication, power consumption, heat management.</p>
+                        
+                        <p><strong>Tradeoff:</strong> Faster clocks often require more power, generating more heat.</p>
+                        
+                        <p><strong>Example:</strong></p>
+                        
+                        <pre><code>Your simulated CPU: 1 MHz
+Modern CPU: 3 GHz
+Multiplier: 3,000x just from clock speed!
+(But also requires advanced fabrication, costs billions of dollars)</code></pre>
+                        
+                        <h3>The Key Insight</h3>
+                        
+                        <div class="info-box success">
+                            <strong>You cannot just increase clock speed to get faster programs.</strong>
+                            <p style="margin-top: 0.5rem;">Here's why: If you push the clock faster, the circuit can't complete all its work in one cycle. You either:</p>
+                            <ul style="margin-top: 0.5rem;">
+                                <li>Get wrong answers (bad!)</li>
+                                <li>Add extra cycles to complete the work (increasing CPI—defeats the purpose!)</li>
+                                <li>Spend billions on advanced transistor technology (expensive!)</li>
+                            </ul>
+                            <p style="margin-top: 0.5rem;"><strong>This is the fundamental tradeoff in CPU design</strong>, and it's why every CPU is a carefully engineered balance of these three factors.</p>
+                        </div>
+                        
+                        <h3>Real-World Examples</h3>
+                        
+                        <h4>Example 1: Mobile CPU (Apple A17)</h4>
+                        
+                        <pre><code>Goal: Fast, power-efficient
+
+Design choices:
+  Clock Rate: 3.8 GHz (high, but not extreme)
+  CPI: ~1.5 (good pipelining, caching, but power-limited)
+  IC: Optimized (efficient instruction set, ARM ISA)
+  
+Result: Fast enough for 4K video, good battery life</code></pre>
+                        
+                        <h4>Example 2: Server CPU (Intel Xeon)</h4>
+                        
+                        <pre><code>Goal: Maximum throughput
+
+Design choices:
+  Clock Rate: 3.0 GHz (slightly lower than consumer)
+  CPI: ~0.7 (excellent pipelining, large caches, out-of-order execution)
+  IC: Optimized for data center workloads
+  
+Result: Handles millions of concurrent requests</code></pre>
+                        
+                        <h4>Example 3: GPU (NVIDIA)</h4>
+                        
+                        <pre><code>Goal: Massive parallelism for AI/graphics
+
+Design choices:
+  Clock Rate: 2.5 GHz (lower)
+  Cores: Thousands (vs. dozens in CPUs)
+  CPI: Varies wildly (depends on data locality)
+  
+Result: 100x+ faster than CPU for parallel workloads</code></pre>
+                        
+                        <h3>Why This Matters</h3>
+                        
+                        <p><strong>For you as a student:</strong> Understanding the performance equation lets you:</p>
+                        <ul>
+                            <li>Predict how changes will affect your CPU</li>
+                            <li>Make informed design decisions (is pipelining worth the complexity?)</li>
+                            <li>Read technical specs and understand what they mean</li>
+                            <li>Evaluate "claims" (faster clock ≠ faster program)</li>
+                        </ul>
+                        
+                        <p><strong>For the real world:</strong> Every CPU engineer uses this equation daily:</p>
+                        
+                        <pre><code>"If we add pipelining, CPI drops from 4 to 1.5, but clock can go from 2 GHz to 4 GHz. Net speedup?"
+  - T_old = IC × 4 ÷ 2000 MHz
+  - T_new = IC × 1.5 ÷ 4000 MHz
+  - Speedup = (IC × 4 ÷ 2000) ÷ (IC × 1.5 ÷ 4000) ≈ 5.3x
+  
+"Our memory is slow. Caching improves effective latency. What's the new CPI?"</code></pre>
+                        
+                    </div>
+                </div>
+                
+                <!-- TAB 2: Interactive Calculator -->
+                <div id="tab-calculator" class="tab-content" data-active="false">
+                    <div class="prose max-w-none mb-8">
+                        <h2>Interactive Performance Calculator</h2>
+                        
+                        <p>This interactive tool lets you <strong>play with all three levers</strong> and see how your choices affect execution time. You have two modes:</p>
+                        
+                        <h3>1. Try the Built-in Scenarios</h3>
+                        
+                        <p>These scenarios show real optimization strategies used by CPU engineers:</p>
+                        
+                        <ul>
+                            <li><strong>The Clock Doubling Dream:</strong> What if we just run the CPU twice as fast?</li>
+                            <li><strong>The Pipelining Breakthrough:</strong> Redesign with instruction pipelining (CPI 2.0 → 1.2)</li>
+                            <li><strong>The Caching Revolution:</strong> Add L1/L2 caches to hide memory latency (CPI 2.0 → 0.8)</li>
+                            <li><strong>The Algorithm Optimization:</strong> Better code reduces instruction count in half</li>
+                            <li><strong>The Modern CPU:</strong> Combine all optimizations—see the power of compounding improvements</li>
+                            <li><strong>The Pipelining Hazard Reality:</strong> Pipelining without hazard management might not help</li>
+                        </ul>
+                        
+                        <h3>2. Build Your Own</h3>
+                        
+                        <p>After exploring scenarios, use the sliders to <strong>design your own custom CPU</strong> and instantly see the execution time. Experiment and discover!</p>
+                        
+                    </div>
+                    
+                    <!-- Calculator Interface -->
+                    <div class="calculator-container">
+                        <!-- Instruction Count Slider -->
+                        <div class="slider-group">
+                            <label for="ic-slider">Instruction Count (IC)</label>
+                            <div>
+                                <span class="slider-value" id="ic-display">500</span>
+                                <span class="unit">instructions</span>
+                            </div>
+                            <input type="range" id="ic-slider" min="100" max="5000" step="50" value="500" aria-label="Instruction count">
+                            <div class="slider-group" style="background-color: transparent; border: none; padding: 1rem 0;">
+                                <p style="font-size: 0.95rem; color: #666666; margin-bottom: 0.5rem;"><strong>Presets:</strong></p>
+                                <div class="preset-buttons">
+                                    <button class="preset-button" data-ic="200">Simple Algorithm</button>
+                                    <button class="preset-button" data-ic="500">Average Program</button>
+                                    <button class="preset-button" data-ic="1000">Complex Algorithm</button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- CPI Slider -->
+                        <div class="slider-group">
+                            <label for="cpi-slider">Cycles Per Instruction (CPI)</label>
+                            <div>
+                                <span class="slider-value" id="cpi-display">2.0</span>
+                                <span class="unit">cycles/instruction</span>
+                            </div>
+                            <input type="range" id="cpi-slider" min="0.5" max="8.0" step="0.1" value="2.0" aria-label="Cycles per instruction">
+                            <div class="slider-group" style="background-color: transparent; border: none; padding: 1rem 0;">
+                                <p style="font-size: 0.95rem; color: #666666; margin-bottom: 0.5rem;"><strong>Presets:</strong></p>
+                                <div class="preset-buttons">
+                                    <button class="preset-button" data-cpi="1.2">Pipelined</button>
+                                    <button class="preset-button" data-cpi="4.0">Simple CPU</button>
+                                    <button class="preset-button" data-cpi="0.8">Cached CPU</button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Clock Rate Slider -->
+                        <div class="slider-group">
+                            <label for="clock-slider">Clock Rate (MHz)</label>
+                            <div>
+                                <span class="slider-value" id="clock-display">1</span>
+                                <span class="unit">MHz</span>
+                            </div>
+                            <input type="range" id="clock-slider" min="0.5" max="10000" step="10" value="1" aria-label="Clock rate in MHz">
+                            <div class="slider-group" style="background-color: transparent; border: none; padding: 1rem 0;">
+                                <p style="font-size: 0.95rem; color: #666666; margin-bottom: 0.5rem;"><strong>Presets:</strong></p>
+                                <div class="preset-buttons">
+                                    <button class="preset-button" data-clock="1">Your CPU</button>
+                                    <button class="preset-button" data-clock="3000">Modern Phone</button>
+                                    <button class="preset-button" data-clock="5500">High-End Desktop</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Results Display -->
+                    <div class="results-container mt-8">
+                        <h3 style="margin-top: 0; color: #0066CC;">Execution Time Calculation</h3>
+                        
+                        <div class="result-label">Formula:</div>
+                        <div style="background-color: #F0F0F0; padding: 1rem; border-radius: 4px; margin-bottom: 1.5rem; font-family: 'Courier New', monospace; color: #CC0000;">
+                            T_exec = (IC × CPI) ÷ Clock_Rate
+                        </div>
+                        
+                        <div class="result-label">Your Result:</div>
+                        <div class="result-value" id="execution-time">1.000</div>
+                        <div style="color: #666666; margin-bottom: 1.5rem; font-size: 0.95rem;">
+                            <span id="time-unit">ms</span> (milliseconds)
+                        </div>
+                        
+                        <hr style="margin: 1.5rem 0; border: none; border-top: 1px solid #DDDDDD;">
+                        
+                        <h4 style="margin-top: 1.5rem; color: #0066CC;">Comparison to Baseline</h4>
+                        
+                        <div class="comparison-row">
+                            <span class="comparison-label">Baseline Execution Time:</span>
+                            <span class="comparison-value">1.000 ms</span>
+                        </div>
+                        
+                        <div class="comparison-row">
+                            <span class="comparison-label">Your Execution Time:</span>
+                            <span class="comparison-value" id="current-time">1.000 ms</span>
+                        </div>
+                        
+                        <div class="comparison-row" style="background-color: #E6FFE6; border: 1px solid #00AA00;">
+                            <span class="comparison-label">Speedup Factor:</span>
+                            <span class="comparison-value faster" id="speedup-factor">1.00x</span>
+                        </div>
+                        
+                        <div class="speedup-gauge">
+                            <div class="gauge-label">Performance Improvement</div>
+                            <div class="gauge-bar">
+                                <div class="gauge-fill" id="gauge-fill" style="width: 50%;"></div>
+                            </div>
+                            <div class="gauge-value" id="speedup-display">1.00x</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Scenario Buttons -->
+                    <div class="mt-8">
+                        <h3 style="color: #0066CC;">Try Built-in Scenarios</h3>
+                        <p style="color: #666666; margin-bottom: 1.5rem;">Click any scenario to auto-populate all three sliders and see the results:</p>
+                        
+                        <div class="scenario-buttons">
+                            <button class="scenario-button" data-scenario="clock-doubling">
+                                <strong>⚡ The Clock Doubling Dream</strong>
+                                <span style="font-size: 0.85rem; display: block; margin-top: 0.25rem; opacity: 0.9;">What if we run twice as fast?</span>
+                            </button>
+                            <button class="scenario-button" data-scenario="pipelining">
+                                <strong>🔄 The Pipelining Breakthrough</strong>
+                                <span style="font-size: 0.85rem; display: block; margin-top: 0.25rem; opacity: 0.9;">Overlapping instruction stages</span>
+                            </button>
+                            <button class="scenario-button" data-scenario="caching">
+                                <strong>💾 The Caching Revolution</strong>
+                                <span style="font-size: 0.85rem; display: block; margin-top: 0.25rem; opacity: 0.9;">Hide memory latency with L1/L2 caches</span>
+                            </button>
+                            <button class="scenario-button" data-scenario="algorithm">
+                                <strong>📝 The Algorithm Optimization</strong>
+                                <span style="font-size: 0.85rem; display: block; margin-top: 0.25rem; opacity: 0.9;">Better code, fewer instructions</span>
+                            </button>
+                            <button class="scenario-button" data-scenario="modern">
+                                <strong>🚀 The Modern CPU</strong>
+                                <span style="font-size: 0.85rem; display: block; margin-top: 0.25rem; opacity: 0.9;">All optimizations combined</span>
+                            </button>
+                            <button class="scenario-button" data-scenario="hazards">
+                                <strong>⚠️ The Pipelining Hazard Reality</strong>
+                                <span style="font-size: 0.85rem; display: block; margin-top: 0.25rem; opacity: 0.9;">Pipelining without hazard management</span>
+                            </button>
+                        </div>
+                        
+                        <!-- Scenario Description -->
+                        <div class="scenario-description" id="scenario-description" style="display: none; margin-top: 1.5rem;">
+                            <strong>Scenario Insight:</strong>
+                            <p id="scenario-text" style="margin-top: 0.5rem; margin-bottom: 0;"></p>
+                        </div>
+                    </div>
+                    
+                    <!-- Reset Button -->
+                    <div style="margin-top: 2rem; text-align: center;">
+                        <button class="button-secondary" id="reset-button">↻ Reset to Baseline</button>
+                    </div>
+                </div>
+                
+                <!-- TAB 3: Real CPU Examples -->
+                <div id="tab-cpus" class="tab-content" data-active="false">
+                    <div class="prose max-w-none mb-8">
+                        <h2>Real CPU Examples</h2>
+                        
+                        <p>Here's how <strong>real CPUs</strong> from history and today compare using the performance equation. Notice how all three factors—Instruction Count, CPI, and Clock Rate—change over time and across different use cases.</p>
+                        
+                        <p>The table below shows estimated parameters for well-known CPUs running a standard 500-instruction test program. Your speedup factor shows how much faster each CPU is compared to your Week 14 simulated CPU.</p>
+                    </div>
+                    
+                    <div class="cpu-table-wrapper">
+                        <table class="w-full text-sm">
+                            <thead>
+                                <tr style="background-color: #0066CC; color: white;">
+                                    <th style="padding: 1rem; text-align: left;">CPU Model</th>
+                                    <th style="padding: 1rem; text-align: center;">Year</th>
+                                    <th style="padding: 1rem; text-align: center;">Clock (MHz)</th>
+                                    <th style="padding: 1rem; text-align: center;">CPI</th>
+                                    <th style="padding: 1rem; text-align: center;">Time (ms)</th>
+                                    <th style="padding: 1rem; text-align: center;">Speedup</th>
+                                    <th style="padding: 1rem; text-align: left;">Context</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr style="background-color: #F9F9F9;">
+                                    <td style="padding: 1rem; border: 1px solid #DDDDDD;"><strong>Your Week 14 CPU</strong></td>
+                                    <td style="padding: 1rem; border: 1px solid #DDDDDD; text-align: center;">2025</td>
+                                    <td style="padding: 1rem; border: 1px solid #DDDDDD; text-align: center;">1</td>
+                                    <td style="padding: 1rem; border: 1px solid #DDDDDD; text-align: center;">2.0</td>
+                                    <td style="padding: 1rem; border: 1px solid #DDDDDD; text-align: center;"><strong>1.000</strong></td>
+                                    <td style="padding: 1rem; border: 1px solid #DDDDDD; text-align: center;"><strong style="color: #0066CC;">1.0x</strong></td>
+                                    <td style="padding: 1rem; border: 1px solid #DDDDDD;">Educational; prioritizes simplicity</td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 1rem; border: 1px solid #DDDDDD;">Intel 4004</td>
+                                    <td style="padding: 1rem; border: 1px solid #DDDDDD; text-align: center;">1971</td>
+                                    <td style="padding: 1rem; border: 1px solid #DDDDDD; text-align: center;">0.74</td>
+                                    <td style="padding: 1rem; border: 1px solid #DDDDDD; text-align: center;">10.0</td>
+                                    <td style="padding: 1rem; border: 1px solid #DDDDDD; text-align: center;">6,756 ms</td>
+                                    <td style="padding: 1rem; border: 1px solid #DDDDDD; text-align: center;"><span style="color: #CC0000;">0.0001x</span></td>
+                                    <td style="padding: 1rem; border: 1px solid #DDDDDD;">First CPU; slow by today's standards</td>
+                                </tr>
+                                <tr style="background-color: #F9F9F9;">
+                                    <td style="padding: 1rem; border: 1px solid #DDDDDD;">Intel Pentium (1993)</td>
+                                    <td style="padding: 1rem; border: 1px solid #DDDDDD; text-align: center;">1993</td>
+                                    <td style="padding: 1rem; border: 1px solid #DDDDDD; text-align: center;">60</td>
+                                    <td style="padding: 1rem; border: 1px solid #DDDDDD; text-align: center;">1.5</td>
+                                    <td style="padding: 1rem; border: 1px solid #DDDDDD; text-align: center;">0.0125 ms</td>
+                                    <td style="padding: 1rem; border: 1px solid #DDDDDD; text-align: center;"><span style="color: #00AA00;">80x</span></td>
+                                    <td style="padding: 1rem; border: 1px solid #DDDDDD;">Early superscalar</td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 1rem; border: 1px solid #DDDDDD;">Intel Core 2 Duo (2006)</td>
+                                    <td style="padding: 1rem; border: 1px solid #DDDDDD; text-align: center;">2006</td>
+                                    <td style="padding: 1rem; border: 1px solid #DDDDDD; text-align: center;">1,600</td>
+                                    <td style="padding: 1rem; border: 1px solid #DDDDDD; text-align: center;">0.9</td>
+                                    <td style="padding: 1rem; border: 1px solid #DDDDDD; text-align: center;">0.00028 ms</td>
+                                    <td style="padding: 1rem; border: 1px solid #DDDDDD; text-align: center;"><span style="color: #00AA00;">3,571x</span></td>
+                                    <td style="padding: 1rem; border: 1px solid #DDDDDD;">Deep pipeline, large caches</td>
+                                </tr>
+                                <tr style="background-color: #F9F9F9;">
+                                    <td style="padding: 1rem; border: 1px solid #DDDDDD;">Apple A17 Pro (2023)</td>
+                                    <td style="padding: 1rem; border: 1px solid #DDDDDD; text-align: center;">2023</td>
+                                    <td style="padding: 1rem; border: 1px solid #DDDDDD; text-align: center;">3,800</td>
+                                    <td style="padding: 1rem; border: 1px solid #DDDDDD; text-align: center;">0.8</td>
+                                    <td style="padding: 1rem; border: 1px solid #DDDDDD; text-align: center;">0.000164 ms</td>
+                                    <td style="padding: 1rem; border: 1px solid #DDDDDD; text-align: center;"><span style="color: #00AA00;">6,098x</span></td>
+                                    <td style="padding: 1rem; border: 1px solid #DDDDDD;">Modern mobile; balanced design</td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 1rem; border: 1px solid #DDDDDD;">Intel Core i9-14900K (2024)</td>
+                                    <td style="padding: 1rem; border: 1px solid #DDDDDD; text-align: center;">2024</td>
+                                    <td style="padding: 1rem; border: 1px solid #DDDDDD; text-align: center;">6,000</td>
+                                    <td style="padding: 1rem; border: 1px solid #DDDDDD; text-align: center;">0.6</td>
+                                    <td style="padding: 1rem; border: 1px solid #DDDDDD; text-align: center;">0.0000833 ms</td>
+                                    <td style="padding: 1rem; border: 1px solid #DDDDDD; text-align: center;"><span style="color: #00AA00;">12,001x</span></td>
+                                    <td style="padding: 1rem; border: 1px solid #DDDDDD;">High-end desktop; maximum speed</td>
+                                </tr>
+                                <tr style="background-color: #F9F9F9;">
+                                    <td style="padding: 1rem; border: 1px solid #DDDDDD;">Apple M4 Max (2024)</td>
+                                    <td style="padding: 1rem; border: 1px solid #DDDDDD; text-align: center;">2024</td>
+                                    <td style="padding: 1rem; border: 1px solid #DDDDDD; text-align: center;">4,400</td>
+                                    <td style="padding: 1rem; border: 1px solid #DDDDDD; text-align: center;">0.75</td>
+                                    <td style="padding: 1rem; border: 1px solid #DDDDDD; text-align: center;">0.000114 ms</td>
+                                    <td style="padding: 1rem; border: 1px solid #DDDDDD; text-align: center;"><span style="color: #00AA00;">8,772x</span></td>
+                                    <td style="padding: 1rem; border: 1px solid #DDDDDD;">Professional laptop; efficiency</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div class="prose max-w-none mt-8">
+                        <h3>Key Observations</h3>
+                        
+                        <p><strong>1. The Power of Compounding:</strong> Notice how Intel 4004 is 0.0001x your CPU (6,756ms vs. 1ms). This isn't just one factor—it's all three:</p>
+                        <ul>
+                            <li>Clock: 0.74 MHz vs. your 1 MHz (slower)</li>
+                            <li>CPI: 10.0 vs. your 2.0 (much slower design)</li>
+                            <li>Combined: 0.74 ÷ (1 × 10 ÷ 2) = 0.0001x</li>
+                        </ul>
+                        
+                        <p><strong>2. Moore's Law in Action:</strong> CPUs have improved roughly 10,000x in 50 years. That's what happens when you optimize all three levers relentlessly.</p>
+                        
+                        <p><strong>3. The Clock Saturation:</strong> Notice that modern CPUs (i9, A17, M4) have similar clock rates (3.8-6 GHz) but can't go much faster. We've hit the limits of what's physically possible without consuming too much power. Future improvements come from reducing CPI (better architecture) rather than increasing clock.</p>
+                        
+                        <p><strong>4. Different Goals, Different Designs:</strong></p>
+                        <ul>
+                            <li><strong>Mobile (A17):</strong> Lower clock (3.8 GHz), good CPI (0.8), focuses on battery life</li>
+                            <li><strong>Desktop (i9-14900K):</strong> Highest clock (6 GHz), best CPI (0.6), accepts high power consumption</li>
+                            <li><strong>Professional (M4 Max):</strong> Middle ground (4.4 GHz, 0.75 CPI), balances performance and efficiency</li>
+                        </ul>
+                        
+                        <p><strong>5. Your CPU in Context:</strong> Your Week 14 design is 12,000x slower than the i9-14900K. But you designed it from scratch in 14 weeks! Intel took 50+ years and billions of dollars to get there. You've learned the fundamental principles that enable all this performance.</p>
+                    </div>
+                </div>
+                
+            </div> <!-- End Tab Container -->
+            
+        </div> <!-- End max-w-5xl container -->
+    </main>
+    
+    <!-- JavaScript will go in Part 2 -->
+    <script>
+        /* ========================================================
+   CSC210 Week 15-16 INTERACTIVE PERFORMANCE CALCULATOR
+   PART 2: COMPLETE JAVASCRIPT
+   
+   This script handles:
+   - Tab navigation and switching
+   - Slider interactions and real-time updates
+   - Performance calculation engine
+   - Preset button functionality
+   - Scenario loading
+   - Results display and unit scaling
+   - Gauge visualization
+   ======================================================== */
+
+// DOMContentLoaded wrapper for safe DOM manipulation
+document.addEventListener('DOMContentLoaded', function() {
+    
+    /* ========================================================
+       1. STATE MANAGEMENT (Session-only, no localStorage)
+       ======================================================== */
+    
+    const appState = {
+        // Main calculator values
+        instructionCount: 500,
+        cpi: 2.0,
+        clockRateMHz: 1,
+        
+        // Baseline for comparison
+        baselineExecutionTime: 1.0, // in milliseconds
+        
+        // Scenario data
+        scenarios: {
+            'clock-doubling': {
+                name: 'The Clock Doubling Dream',
+                ic: 500,
+                cpi: 2.0,
+                clock: 2,
+                insight: 'Doubling clock cuts execution time in half (when other factors constant). This seems ideal, but clock speed is limited by physics and power consumption.'
+            },
+            'pipelining': {
+                name: 'The Pipelining Breakthrough',
+                ic: 500,
+                cpi: 1.2,
+                clock: 1,
+                insight: 'Pipelining reduces CPI by overlapping instruction stages. This is a 1.67x speedup without touching the clock or algorithm. Week 16 Part 1 explores this technique.'
+            },
+            'caching': {
+                name: 'The Caching Revolution',
+                ic: 500,
+                cpi: 0.8,
+                clock: 1,
+                insight: 'Caching is incredibly effective for programs with good locality. Most LOAD instructions hit cache (4 ns) instead of RAM (100 ns), dramatically reducing CPI. Week 16 Part 2 explains why.'
+            },
+            'algorithm': {
+                name: 'The Algorithm Optimization',
+                ic: 250,
+                cpi: 2.0,
+                clock: 1,
+                insight: 'Software optimization (better algorithm, compiler improvements) gives a 2x speedup. Software matters as much as hardware!'
+            },
+            'modern': {
+                name: 'The Modern CPU',
+                ic: 500,
+                cpi: 0.6,
+                clock: 3000,
+                insight: 'Modern CPUs achieve 10,000x+ speedups by optimizing all three levers. The improvements compound dramatically. This is why your phone is so much faster than CPUs from the 1980s.'
+            },
+            'hazards': {
+                name: 'The Pipelining Hazard Reality',
+                ic: 500,
+                cpi: 2.0,
+                clock: 2,
+                insight: 'Pipelining without hazard management (forwarding, branch prediction) doesn\'t help—it just adds complexity. Week 16 Part 1 explains the solutions to pipeline hazards.'
+            }
+        }
+    };
+    
+    /* ========================================================
+       2. DOM ELEMENT REFERENCES
+       ======================================================== */
+    
+    const dom = {
+        // Sliders
+        icSlider: document.getElementById('ic-slider'),
+        cpiSlider: document.getElementById('cpi-slider'),
+        clockSlider: document.getElementById('clock-slider'),
+        
+        // Display values
+        icDisplay: document.getElementById('ic-display'),
+        cpiDisplay: document.getElementById('cpi-display'),
+        clockDisplay: document.getElementById('clock-display'),
+        
+        // Results
+        executionTime: document.getElementById('execution-time'),
+        currentTime: document.getElementById('current-time'),
+        speedupFactor: document.getElementById('speedup-factor'),
+        speedupDisplay: document.getElementById('speedup-display'),
+        gaugeFill: document.getElementById('gauge-fill'),
+        timeUnit: document.getElementById('time-unit'),
+        
+        // Buttons
+        presetButtons: document.querySelectorAll('.preset-button'),
+        scenarioButtons: document.querySelectorAll('.scenario-button'),
+        resetButton: document.getElementById('reset-button'),
+        
+        // Scenario description
+        scenarioDescription: document.getElementById('scenario-description'),
+        scenarioText: document.getElementById('scenario-text'),
+        
+        // Tabs
+        tabButtons: document.querySelectorAll('[role="tab"]'),
+        tabContents: document.querySelectorAll('.tab-content')
+    };
+    
+    /* ========================================================
+       3. CALCULATION ENGINE
+       ======================================================== */
+    
+    /**
+     * Calculate execution time using the performance equation
+     * T_exec = (IC × CPI) ÷ Clock_Rate_MHz
+     * 
+     * @returns {number} Execution time in milliseconds
+     */
+    function calculateExecutionTime() {
+        const numerator = appState.instructionCount * appState.cpi;
+        const denominator = appState.clockRateMHz * 1_000_000; // Convert MHz to Hz
+        const timeInSeconds = numerator / denominator;
+        return timeInSeconds * 1000; // Convert to milliseconds
+    }
+    
+    /**
+     * Format time with appropriate units (ms, μs, ns)
+     * 
+     * @param {number} milliseconds - Time in milliseconds
+     * @returns {object} {value: number, unit: string}
+     */
+    function formatTime(milliseconds) {
+        if (milliseconds >= 1) {
+            return { value: milliseconds.toFixed(3), unit: 'ms' };
+        } else if (milliseconds >= 0.001) {
+            return { value: (milliseconds * 1000).toFixed(2), unit: 'μs' };
+        } else {
+            return { value: (milliseconds * 1_000_000).toFixed(2), unit: 'ns' };
+        }
+    }
+    
+    /**
+     * Calculate speedup factor compared to baseline
+     * 
+     * @param {number} currentTime - Current execution time in ms
+     * @returns {number} Speedup multiplier
+     */
+    function calculateSpeedup(currentTime) {
+        return appState.baselineExecutionTime / currentTime;
+    }
+    
+    /**
+     * Calculate gauge position (0-100%) with logarithmic scaling
+     * This ensures the gauge is visually meaningful across huge speed ranges
+     * 
+     * @param {number} speedup - Speedup factor
+     * @returns {number} Percentage (0-100)
+     */
+    function calculateGaugePosition(speedup) {
+        // Use logarithmic scaling to handle large speedup ranges
+        // Map: 1x = 50%, 10x = 65%, 100x = 80%, 1000x = 95%
+        if (speedup <= 1) return 50; // Baseline position
+        
+        const logSpeedup = Math.log10(speedup);
+        const position = 50 + (logSpeedup * 15); // 15% per order of magnitude
+        return Math.min(position, 99); // Cap at 99%
+    }
+    
+    /**
+     * Update all display values based on current state
+     */
+    function updateDisplay() {
+        // Update slider displays
+        dom.icDisplay.textContent = appState.instructionCount.toLocaleString();
+        dom.cpiDisplay.textContent = appState.cpi.toFixed(1);
+        dom.clockDisplay.textContent = appState.clockRateMHz >= 1000 
+            ? (appState.clockRateMHz / 1000).toFixed(1) + 'G'
+            : appState.clockRateMHz.toFixed(0);
+        
+        // Calculate execution time
+        const execTime = calculateExecutionTime();
+        const formattedTime = formatTime(execTime);
+        
+        // Update results display
+        dom.executionTime.textContent = formattedTime.value;
+        dom.timeUnit.textContent = formattedTime.unit + ' (' + 
+            (formattedTime.unit === 'ms' ? 'milliseconds' : 
+             formattedTime.unit === 'μs' ? 'microseconds' : 'nanoseconds') + ')';
+        
+        // Update comparison
+        const speedup = calculateSpeedup(execTime);
+        dom.currentTime.textContent = formattedTime.value + ' ' + formattedTime.unit;
+        dom.speedupFactor.textContent = speedup.toFixed(2) + 'x';
+        dom.speedupDisplay.textContent = speedup.toFixed(2) + 'x';
+        
+        // Update speedup color coding
+        if (speedup > 1.01) {
+            dom.speedupFactor.classList.remove('slower');
+            dom.speedupFactor.classList.add('faster');
+            dom.speedupDisplay.style.color = '#00AA00';
+        } else if (speedup < 0.99) {
+            dom.speedupFactor.classList.remove('faster');
+            dom.speedupFactor.classList.add('slower');
+            dom.speedupDisplay.style.color = '#CC0000';
+        } else {
+            dom.speedupFactor.classList.remove('faster', 'slower');
+            dom.speedupDisplay.style.color = '#0066CC';
+        }
+        
+        // Update gauge
+        const gaugePosition = calculateGaugePosition(speedup);
+        dom.gaugeFill.style.width = gaugePosition + '%';
+        
+        // Hide scenario description when sliders change
+        dom.scenarioDescription.style.display = 'none';
+    }
+    
+    /* ========================================================
+       4. EVENT LISTENERS - SLIDERS
+       ======================================================== */
+    
+    dom.icSlider.addEventListener('input', function() {
+        appState.instructionCount = parseInt(this.value);
+        updateDisplay();
+    });
+    
+    dom.cpiSlider.addEventListener('input', function() {
+        appState.cpi = parseFloat(this.value);
+        updateDisplay();
+    });
+    
+    dom.clockSlider.addEventListener('input', function() {
+        appState.clockRateMHz = parseInt(this.value);
+        updateDisplay();
+    });
+    
+    /* ========================================================
+       5. EVENT LISTENERS - PRESET BUTTONS
+       ======================================================== */
+    
+    dom.presetButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            // Determine which slider this preset belongs to based on parent
+            const parent = this.closest('.slider-group');
+            
+            if (parent.contains(dom.icSlider)) {
+                const value = parseInt(this.dataset.ic);
+                appState.instructionCount = value;
+                dom.icSlider.value = value;
+            } else if (parent.contains(dom.cpiSlider)) {
+                const value = parseFloat(this.dataset.cpi);
+                appState.cpi = value;
+                dom.cpiSlider.value = value;
+            } else if (parent.contains(dom.clockSlider)) {
+                const value = parseInt(this.dataset.clock);
+                appState.clockRateMHz = value;
+                dom.clockSlider.value = value;
+            }
+            
+            updateDisplay();
+        });
+    });
+    
+    /* ========================================================
+       6. EVENT LISTENERS - SCENARIO BUTTONS
+       ======================================================== */
+    
+    dom.scenarioButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const scenarioKey = this.dataset.scenario;
+            const scenario = appState.scenarios[scenarioKey];
+            
+            if (scenario) {
+                // Update state with scenario values
+                appState.instructionCount = scenario.ic;
+                appState.cpi = scenario.cpi;
+                appState.clockRateMHz = scenario.clock;
+                
+                // Update slider values
+                dom.icSlider.value = scenario.ic;
+                dom.cpiSlider.value = scenario.cpi;
+                dom.clockSlider.value = scenario.clock;
+                
+                // Update display
+                updateDisplay();
+                
+                // Show scenario description
+                dom.scenarioText.textContent = scenario.insight;
+                dom.scenarioDescription.style.display = 'block';
+                
+                // Scroll to results
+                setTimeout(() => {
+                    document.getElementById('execution-time').scrollIntoView({ behavior: 'smooth' });
+                }, 100);
+            }
+        });
+    });
+    
+    /* ========================================================
+       7. EVENT LISTENERS - RESET BUTTON
+       ======================================================== */
+    
+    dom.resetButton.addEventListener('click', function() {
+        // Reset to baseline values
+        appState.instructionCount = 500;
+        appState.cpi = 2.0;
+        appState.clockRateMHz = 1;
+        
+        // Reset sliders
+        dom.icSlider.value = 500;
+        dom.cpiSlider.value = 2.0;
+        dom.clockSlider.value = 1;
+        
+        // Update display
+        updateDisplay();
+        
+        // Hide scenario description
+        dom.scenarioDescription.style.display = 'none';
+    });
+    
+    /* ========================================================
+       8. EVENT LISTENERS - TAB NAVIGATION
+       ======================================================== */
+    
+    dom.tabButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const tabName = this.dataset.tab;
+            
+            // Update tab button states
+            dom.tabButtons.forEach(btn => {
+                btn.setAttribute('aria-selected', 'false');
+            });
+            this.setAttribute('aria-selected', 'true');
+            
+            // Update tab content visibility
+            dom.tabContents.forEach(content => {
+                if (content.id === 'tab-' + tabName) {
+                    content.setAttribute('data-active', 'true');
+                } else {
+                    content.setAttribute('data-active', 'false');
+                }
+            });
+        });
+        
+        // Keyboard support for tabs (Arrow keys)
+        button.addEventListener('keydown', function(e) {
+            let targetButton = null;
+            
+            if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+                // Next tab
+                const currentIndex = Array.from(dom.tabButtons).indexOf(this);
+                if (currentIndex < dom.tabButtons.length - 1) {
+                    targetButton = dom.tabButtons[currentIndex + 1];
+                }
+            } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+                // Previous tab
+                const currentIndex = Array.from(dom.tabButtons).indexOf(this);
+                if (currentIndex > 0) {
+                    targetButton = dom.tabButtons[currentIndex - 1];
+                }
+            }
+            
+            if (targetButton) {
+                e.preventDefault();
+                targetButton.focus();
+                targetButton.click();
+            }
+        });
+    });
+    
+    /* ========================================================
+       9. KEYBOARD ACCESSIBILITY
+       ======================================================== */
+    
+    // Allow ENTER to activate preset/scenario buttons
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' && (
+            e.target.classList.contains('preset-button') ||
+            e.target.classList.contains('scenario-button')
+        )) {
+            e.target.click();
+        }
+    });
+    
+    /* ========================================================
+       10. INITIALIZATION
+       ======================================================== */
+    
+    // Initial display update
+    updateDisplay();
+    
+    console.log('CSC210 Week 15-16 Performance Calculator initialized successfully');
+    console.log('Baseline state:', appState);
+    
+}); // End DOMContentLoaded
+
+    </script>
+    
+</body>
+</html>
