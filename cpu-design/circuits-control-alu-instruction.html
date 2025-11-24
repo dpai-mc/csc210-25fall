@@ -200,10 +200,43 @@
                         <figcaption class="text-sm text-gray-500 mt-2">Figure 1: Tunnel wiring element</figcaption>
                     </figure>
 
-                    <p><strong>Video Explanation:</strong> This video explains how "tunnels" work in Logisim.</p>
-                    <div class="aspect-w-16 aspect-h-9 my-4">
-                        <iframe class="w-full h-64 md:h-96 rounded-lg shadow-md" src="https://www.youtube.com/embed/Z6usYyBZaF0" title="Logisim Tunnel Explanation" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    <p><strong>Video Explanation:</strong> This video explains how "tunnels" work in Logisim. Use the transcript panel to navigate or click any transcript line to jump to that moment.</p>
+                    
+                    <!-- Tunnel Video and Transcript Container -->
+                    <div class="flex flex-col lg:flex-row gap-4 w-full my-6">
+                      <!-- Video Player Section: 66% width on large screens -->
+                      <div class="w-full lg:w-2/3 flex-shrink-0">
+                        <div id="tunnel-video-container" style="width: 100%; height: 0; padding-bottom: 56.25%; position: relative;">
+                          <iframe id="tunnel-player"
+                                  style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"
+                                  src="https://www.youtube.com/embed/Z6usYyBZaF0?enablejsapi=1"
+                                  title="Logisim Tunnel Explanation"
+                                  frameborder="0"
+                                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                  referrerpolicy="strict-origin-when-cross-origin"
+                                  allowfullscreen>
+                          </iframe>
+                        </div>
+                      </div>
+
+                      <!-- Transcript Container Section: 33% width on large screens -->
+                      <div class="w-full lg:w-1/3 flex-shrink-0">
+                        <div id="tunnel-transcript-container" class="h-96 overflow-y-scroll bg-white shadow-inner p-4 rounded-lg border border-gray-300">
+                          <p class="text-gray-500 text-center">Loading transcript...</p>
+                        </div>
+                      </div>
                     </div>
+
+                    <!-- CSS for tunnel transcript highlighting -->
+                    <style>
+                      .tunnel-active-line {
+                        background-color: #f0f7ff;
+                        font-weight: 600;
+                        border-left: 4px solid #1e88e5;
+                        padding-left: 12px;
+                        transition: background-color 0.2s;
+                      }
+                    </style>
 
                     <hr class="my-8 border-gray-200">
 
@@ -261,11 +294,43 @@
             <div id="tab5" role="tabpanel" aria-labelledby="btn-tab5" class="hidden p-6 sm:p-8 focus:outline-none" tabindex="0">
                 <div class="prose max-w-none">
                     <h2>Video Description of Operation</h2>
-                    <p>The following video walks through the detailed operation of the ALU instruction within the circuit.</p>
+                    <p>The following video walks through the detailed operation of the ALU instruction within the circuit. Use the transcript panel to navigate or click any transcript line to jump to that moment.</p>
                     
-                    <div class="aspect-w-16 aspect-h-9 my-6">
-                        <iframe class="w-full h-64 md:h-[500px] rounded-lg shadow-md" src="https://www.youtube.com/embed/Ni2EHHkhHms" title="Demonstration of ALU Instruction" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    <!-- ALU Video and Transcript Container -->
+                    <div class="flex flex-col lg:flex-row gap-4 w-full my-6">
+                      <!-- Video Player Section: 66% width on large screens -->
+                      <div class="w-full lg:w-2/3 flex-shrink-0">
+                        <div id="alu-video-container" style="width: 100%; height: 0; padding-bottom: 56.25%; position: relative;">
+                          <iframe id="alu-player"
+                                  style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"
+                                  src="https://www.youtube.com/embed/Ni2EHHkhHms?enablejsapi=1"
+                                  title="Demonstration of ALU Instruction"
+                                  frameborder="0"
+                                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                  referrerpolicy="strict-origin-when-cross-origin"
+                                  allowfullscreen>
+                          </iframe>
+                        </div>
+                      </div>
+
+                      <!-- Transcript Container Section: 33% width on large screens -->
+                      <div class="w-full lg:w-1/3 flex-shrink-0">
+                        <div id="alu-transcript-container" class="h-96 overflow-y-scroll bg-white shadow-inner p-4 rounded-lg border border-gray-300">
+                          <p class="text-gray-500 text-center">Loading transcript...</p>
+                        </div>
+                      </div>
                     </div>
+
+                    <!-- CSS for ALU transcript highlighting -->
+                    <style>
+                      .alu-active-line {
+                        background-color: #f0f7ff;
+                        font-weight: 600;
+                        border-left: 4px solid #1e88e5;
+                        padding-left: 12px;
+                        transition: background-color 0.2s;
+                      }
+                    </style>
                 </div>
             </div>
 
@@ -282,16 +347,616 @@
     </footer>
 
     <script>
+        // ============== TUNNEL VIDEO STATE ==============
+        const TUNNEL_VIDEO_ID = 'Z6usYyBZaF0';
+        let tunnelPlayer;
+        let tunnelTimeUpdater;
+        let tunnelParsedTranscript = [];
+        let tunnelVideoInitialized = false;
+
+        const tunnelVttContent = `WEBVTT
+
+00:00.000 --> 00:12.080
+hello in this video I just want to show you how these little tunnel things work
+
+00:12.080 --> 00:20.680
+so if you go into wiring you can have these tunnels and you can bring them in and I'm
+
+00:20.680 --> 00:26.280
+gonna bring in two tunnels right now they're named the same thing I'm gonna rename them
+
+00:26.280 --> 00:40.660
+just test one and I'll name this one test one and so what they do is how they work if I have
+
+00:40.660 --> 00:56.180
+an input and let's face this East so if I have an input I'm going to connect test
+
+00:56.180 --> 00:56.260
+one and I'll name this one test one and so what they do is how they work if I have an input and
+
+00:56.260 --> 00:59.020
+I'll name this one test one and so what they do is how they work if I have an input and I'm going to
+
+00:59.020 --> 01:19.760
+connect an output to the other test one okay so what happens is it just connects them so this
+
+01:19.760 --> 01:26.160
+input whatever this is going into this test one comes out to this test one so when I change this
+
+01:26.160 --> 01:31.500
+to one so if I go into simulation mode I change this the input to one the outputs
+
+01:31.500 --> 01:38.520
+one input to zero output zero okay and so you just do it by name if you change
+
+01:38.520 --> 01:46.840
+the name so if I change the name of this output one to something like test two
+
+01:47.080 --> 01:54.160
+they're no longer connected okay they're only connected by name so I have to be
+
+01:54.160 --> 01:57.520
+the same name and then you can just basically use it to jump from one place
+
+01:57.520 --> 02:04.420
+to another place in your circuit diagram without actually having to draw a big
+
+02:04.420 --> 02:10.640
+long line okay and they call it a tunnel because it's tunneling effectively from
+
+02:10.640 --> 02:16.140
+one place to another place but essentially it's a jumper it jumps from
+
+02:16.140 --> 02:21.100
+this test to this test it just basically says hey yes somewhere you have a wire
+
+02:21.100 --> 02:24.160
+connecting these two we just don't know how it got there but it does
+
+02:24.160 --> 02:29.540
+and it makes it easier to draw some things and makes it clearer sometimes to
+
+02:29.540 --> 02:34.540
+draw stuff so that's how these little tunnels work`;
+
+        // ============== ALU VIDEO STATE ==============
+        const ALU_VIDEO_ID = 'Ni2EHHkhHms';
+        let aluPlayer;
+        let aluTimeUpdater;
+        let aluParsedTranscript = [];
+        let aluVideoInitialized = false;
+
+        const aluVttContent = `WEBVTT
+
+00:00.000 --> 00:14.400
+Aloha. In this video here I'm going to walk through the ALU example basically
+
+00:14.400 --> 00:20.640
+controlling it using our instruction register. So what we really
+
+00:20.640 --> 00:25.640
+want to do, what we really need to do, at least one of the things we need to do, is
+
+00:25.640 --> 00:32.420
+we need to look at this ALU instruction. So we have an 8-bit instruction where
+
+00:32.420 --> 00:38.540
+bit 0 is 1, bit 1, 2, and 3 are the ALU instruction codes, and for this
+
+00:38.540 --> 00:42.840
+example we're going to use 0 0 0 for addition because we have these
+
+00:42.840 --> 00:48.080
+operations here 0 0 0 0 0 1, okay, for the different operations. Right now we're
+
+00:48.080 --> 00:52.320
+just going to do the addition. Since we just did addition we're going to do it
+
+00:52.320 --> 00:55.640
+using the instruction rather than hard-coding it
+
+00:55.640 --> 00:59.900
+just in the stepper. Okay, so now we're going to do the same kind of thing but
+
+00:59.900 --> 01:05.780
+we're going to control it using our instruction register. Okay, so we have
+
+01:05.780 --> 01:11.060
+those three and then we have bits 4 and 5 will be one register we're using and
+
+01:11.060 --> 01:17.360
+bit 6 and 7 will be a second register where we identify them as if I use 0 0
+
+01:17.360 --> 01:25.640
+it'll be R 0, 0 1 R 1, 1 0 R 2, 1 1 R 3. So in this case what we're going to do
+
+01:25.640 --> 01:35.840
+is we're going to use R 2 and R 3, okay, and so we're going to have to put this
+
+01:35.840 --> 01:40.700
+into our instruction register. So we've hard-coded our instruction register. I
+
+01:40.700 --> 01:47.920
+moved it off of the, I took off the set and set that to 1 and I made it a
+
+01:47.920 --> 01:53.000
+hard-code value so we want it to be an ALU so that means that first one has to
+
+01:53.000 --> 01:55.480
+be a 1 0 0 0.
+
+01:55.640 --> 02:09.080
+And then we want to use registers 2, 1 0 and 3, 1 1. Okay, so that matches our ALU
+
+02:09.080 --> 02:18.280
+instruction where reg A here is 1 0 for R 2 and reg B here is 1 1 for R 3. Okay,
+
+02:18.280 --> 02:24.440
+so we need to set that and then what we need to do also is we need to put, so I've
+
+02:24.440 --> 02:25.620
+taken the inputs off of the instruction register and I've put them in the
+
+02:25.620 --> 02:33.660
+off for R 2 and R 3 and so we need to put a values in for these. In order to do
+
+02:33.660 --> 02:39.720
+an addition we need to put these values in. So I'm going to have R 2 plus R 3. So
+
+02:39.720 --> 02:49.860
+R 2 is just 1 1 which is 3. R 3 is 1 1 0 which is 6. So 3 plus 6 is 9. So our
+
+02:49.860 --> 02:55.180
+result should be 9. Okay, so let's take a quick look at our
+
+02:55.180 --> 03:09.380
+control unit so that we see how this is wired up. So when we look at our control
+
+03:09.380 --> 03:14.900
+unit here it's gotten much more complicated. I'm using these tunnels. Okay,
+
+03:14.900 --> 03:22.680
+the initial starting point here is for 1 we're just sending 1 on bus 1. This is
+
+03:22.680 --> 03:24.220
+our program counter thing.
+
+03:25.180 --> 03:38.700
+Enabled comes down, right, and nothing else right now is enabled and we don't
+
+03:38.700 --> 03:43.800
+have anything for the registers. Now our instruction register we've plumbed. The
+
+03:43.800 --> 03:49.500
+initial one is this green line that comes up here and we're using, remember,
+
+03:49.500 --> 03:54.260
+using 4, 5, and 6 for addition. Okay, so we're taking stepper 4 and ending it,
+
+03:54.260 --> 03:58.520
+stepper 5 and ending it, and stepper 6 and ending it with the 1 saying this is
+
+03:58.520 --> 04:07.660
+an ALU instruction so we want to use you guys. Okay, and then we have this
+
+04:10.300 --> 04:18.260
+secondary code here. We have 0 0 0 for addition. Okay, so when there's 0 0 0 this
+
+04:18.260 --> 04:23.660
+will be 0 and this would be 1. In all of the cases it will be 0. Okay, so for only
+
+04:23.660 --> 04:31.180
+addition this becomes 1 and we're adding it in to this stepper 6 to set our
+
+04:31.180 --> 04:42.720
+Reg B. Okay, so what we're doing here is Reg A comes up. Okay, and we have a 1 0.
+
+04:42.720 --> 04:51.620
+Okay, so we put it into this 2 by 4 decoder. We have a 1 and a 0 which is register 2 so 2 is active and this
+
+04:51.620 --> 04:53.600
+register 2 so 2 is active and this
+
+04:53.600 --> 05:00.360
+going to so to and to enable and then whenever we enable reg a to say hey get
+
+05:00.360 --> 05:06.020
+the value from reg a the third one the third leg here will be enabled and we'll
+
+05:06.020 --> 05:15.720
+have register two will be out for register B we have they're both high so
+
+05:15.720 --> 05:21.940
+it's the third one and we're also going to use this as our output register okay
+
+05:21.940 --> 05:25.000
+so what we're going to do is we're going to take two and three add them together
+
+05:25.000 --> 05:38.620
+and write the result into three all right so let's go back to our CPU so two
+
+05:38.620 --> 05:42.880
+or three or write them together and we're going to stick it into three now
+
+05:42.880 --> 05:47.200
+when we get there we won't be able to stick it into three because three here
+
+05:47.200 --> 05:51.460
+is disconnected for the input side
+
+05:51.940 --> 05:57.700
+all right again when we look at our control unit again remember we don't do
+
+05:57.700 --> 06:00.720
+anything till four so that means we have twelve clock pulses before we do
+
+06:00.720 --> 06:09.660
+anything so we'll go back into our CPU and we'll start our clock pulses three
+
+06:09.660 --> 06:17.420
+four five six seven eight nine ten eleven twelve okay so 12 is our first
+
+06:17.420 --> 06:21.940
+step notice what it did is it enabled our three because that's our first one
+
+06:21.940 --> 06:32.740
+that we connect selected okay and enabled our three which was reg B okay
+
+06:32.740 --> 06:42.360
+because we connected reg B to step four reg A is connected to step four five
+
+06:42.360 --> 06:51.500
+okay and the result is connected to stepper six okay so reg B is three okay
+
+06:51.500 --> 06:59.120
+that's activated and temp s which is means set what's intent is activated so
+
+06:59.120 --> 07:03.260
+what this will do is I come to reg B it'll come down here and I'll find Oh
+
+07:03.260 --> 07:08.900
+reg B is our three it'll take the value of our three put it on the bus read it
+
+07:08.900 --> 07:15.140
+into temp s not yet but temp s is going to be on and when we hit select set
+
+07:15.140 --> 07:22.080
+remember enable set set enable when you turn set high then tempest will be high
+
+07:22.080 --> 07:33.920
+and we'll read tempest now we will put it into tempest okay so so on here we
+
+07:33.920 --> 07:42.940
+should be reading 0 1 1 or 6 0 1 1 so that's 6 it's on the bus when I clock
+
+07:42.940 --> 07:50.660
+again tempest will become high and that will take this 0 1 1 and stick it into
+
+07:50.660 --> 08:02.620
+al you be okay then take the set off take the enable off right and now we're
+
+08:02.620 --> 08:12.700
+moved on to step 5 but nothing's enabled yet so I'll go to step 5
+
+08:12.700 --> 08:12.800
+you
+
+08:12.940 --> 08:22.060
+but enable on well enable now it's grabbing the value in r2 putting that on
+
+08:22.060 --> 08:29.320
+the bus okay so everywhere it's on the bus r2 is on the bus everything on the
+
+08:29.320 --> 08:41.340
+bus goes into a automatically for the ALU so I have enable enable means r2
+
+08:41.340 --> 08:42.940
+because now we're
+
+08:42.940 --> 08:55.600
+on step 5 which is reg a so reg a is this bottom one okay which is set to 2 1 0 so
+
+08:55.600 --> 09:05.380
+2 is active so we're getting our 2 out onto the bus all right so when I clock
+
+09:05.380 --> 09:12.740
+again okay it's the set
+
+09:12.940 --> 09:23.740
+and then we have to use two find out so hopefully you have found this simple
+
+09:23.740 --> 09:31.740
+managing the timeanni集ar and check and I want you to also you can use a
+
+09:31.740 --> 09:37.660
+calculator and try it any others course in general too okay so now make sure you
+
+09:37.660 --> 09:39.640
+and make sure you use a calculator because you want to alu because here's
+
+09:39.640 --> 09:41.780
+we need to modify that type of thing over here we just need to saved to nine and
+
+09:41.780 --> 09:48.920
+we just choose when do we grab it and stick it in the accumulator okay so we
+
+09:48.920 --> 09:57.040
+have nine in the ALU we'll take the set off take the enable off and now we're
+
+09:57.040 --> 10:10.020
+gonna be on to step six which is really the output okay so and the enable the
+
+10:10.020 --> 10:15.600
+accumulator again to get the output so enable the accumulator to get what's in
+
+10:15.600 --> 10:20.420
+the accumulator on to the bus and then we set reg B to take what's on the bus
+
+10:20.420 --> 10:30.660
+and put it into reg B all right so clock this what's in the accumulator is 9 1
+
+10:30.660 --> 10:39.660
+plus 8 is 9 it puts it on the bus okay when we look we're gonna try to put it
+
+10:39.660 --> 10:40.000
+into reg B
+
+10:40.000 --> 10:46.240
+three okay which is already set for high we can't actually put it in because our
+
+10:46.240 --> 10:52.300
+input is disconnected but if we could put it in if this was just connected to
+
+10:52.300 --> 10:58.420
+the water to the bus directly rather than manually set then these values here
+
+10:58.420 --> 11:05.000
+would set to one and everything else would be zero do our clock pulse here
+
+11:05.000 --> 11:09.640
+comes set so this would be set this will be when it would read it again
+
+11:09.640 --> 11:14.080
+because we disconnected to do it manually it won't read it then we take
+
+11:14.080 --> 11:22.740
+set off it's all set taken able off and we're cycled back around to the beginning
+
+11:22.740 --> 11:32.520
+okay so that's how this ALU Operation works the input comes in and it defines
+
+11:32.520 --> 11:37.200
+ALU operations your risks or defends the code in this case we're just
+
+11:37.200 --> 11:39.040
+doing the addition not shift right列
+
+11:39.040 --> 11:39.500
+Vogt
+
+11:39.640 --> 11:45.400
+not shift left all those kind of things we're just doing the addition okay and
+
+11:45.400 --> 11:52.720
+then we have two registers that we can identify the second register is also the
+
+11:52.720 --> 12:02.120
+output register okay and so that's how this ALU instruction can
+
+12:02.120 --> 12:08.240
+be read out into the instruction register and used to do a process within
+
+12:08.240 --> 12:10.780
+the CPU`;
+
+        // ============== CORE UTILITIES ==============
+        function timeToSeconds(timeStr) {
+            if (!timeStr) return 0;
+            const parts = timeStr.trim().split(':');
+            if (parts.length === 2) {
+                let minutes = parseInt(parts[0]) || 0;
+                let seconds = parseFloat(parts[1]) || 0;
+                return minutes * 60 + seconds;
+            } else if (parts.length === 3) {
+                let hours = parseInt(parts[0]) || 0;
+                let minutes = parseInt(parts[1]) || 0;
+                let seconds = parseFloat(parts[2]) || 0;
+                return hours * 3600 + minutes * 60 + seconds;
+            }
+            return 0;
+        }
+
+        function parseVtt(vttText) {
+            const cues = vttText.trim().split(/\n\n+/);
+            const parsedCues = [];
+            cues.forEach(cueBlock => {
+                if (cueBlock.startsWith('WEBVTT') || cueBlock.trim() === '') return;
+                const lines = cueBlock.trim().split('\n');
+                const timeLine = lines.find(line => line.includes('-->'));
+                if (!timeLine) return;
+                const [startTimeStr, endTimeStr] = timeLine.split(' --> ');
+                const textLines = lines.slice(lines.indexOf(timeLine) + 1);
+                parsedCues.push({
+                    start: timeToSeconds(startTimeStr),
+                    end: timeToSeconds(endTimeStr),
+                    text: textLines.join(' ').trim()
+                });
+            });
+            return parsedCues;
+        }
+
+        // ============== TUNNEL VIDEO FUNCTIONS ==============
+        function populateTunnelTranscript() {
+            const container = document.getElementById('tunnel-transcript-container');
+            if (!container) return;
+            container.innerHTML = '';
+            tunnelParsedTranscript.forEach(cue => {
+                const lineElement = document.createElement('div');
+                lineElement.className = 'transcript-line p-2 cursor-pointer hover:bg-gray-100 rounded-lg';
+                lineElement.dataset.start = cue.start;
+                lineElement.dataset.end = cue.end;
+                lineElement.textContent = cue.text;
+                lineElement.setAttribute('role', 'button');
+                lineElement.setAttribute('tabindex', '0');
+                const seekToTime = () => {
+                    if (tunnelPlayer && tunnelPlayer.seekTo) {
+                        tunnelPlayer.seekTo(cue.start, true);
+                        tunnelPlayer.playVideo();
+                    }
+                };
+                lineElement.addEventListener('click', seekToTime);
+                lineElement.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        seekToTime();
+                    }
+                });
+                container.appendChild(lineElement);
+            });
+        }
+
+        function highlightTunnelLine() {
+            if (!tunnelPlayer || !tunnelPlayer.getCurrentTime) return;
+            const currentTime = tunnelPlayer.getCurrentTime();
+            const lines = document.querySelectorAll('#tunnel-transcript-container .transcript-line');
+            lines.forEach(line => {
+                const start = parseFloat(line.dataset.start);
+                const end = parseFloat(line.dataset.end);
+                if (currentTime >= start && currentTime < end) {
+                    if (!line.classList.contains('tunnel-active-line')) {
+                        document.querySelector('.tunnel-active-line')?.classList.remove('tunnel-active-line');
+                        line.classList.add('tunnel-active-line');
+                        line.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
+                } else {
+                    line.classList.remove('tunnel-active-line');
+                }
+            });
+        }
+
+        function syncTunnelHeight() {
+            const mediaQuery = window.matchMedia('(min-width: 1024px)');
+            const videoContainer = document.getElementById('tunnel-video-container');
+            const transcriptContainer = document.getElementById('tunnel-transcript-container');
+            if (!videoContainer || !transcriptContainer) return;
+            if (mediaQuery.matches) {
+                const videoHeight = videoContainer.offsetHeight;
+                transcriptContainer.style.maxHeight = videoHeight + 'px';
+            } else {
+                transcriptContainer.style.maxHeight = '24rem';
+            }
+        }
+
+        function onTunnelPlayerStateChange(event) {
+            clearInterval(tunnelTimeUpdater);
+            if (event.data === YT.PlayerState.PLAYING) {
+                tunnelTimeUpdater = setInterval(highlightTunnelLine, 300);
+            }
+        }
+
+        function initializeTunnelVideo() {
+            if (tunnelVideoInitialized) return;
+            tunnelVideoInitialized = true;
+            tunnelParsedTranscript = parseVtt(tunnelVttContent);
+            populateTunnelTranscript();
+            syncTunnelHeight();
+            if (!tunnelPlayer) {
+                tunnelPlayer = new YT.Player('tunnel-player', {
+                    events: { 'onStateChange': onTunnelPlayerStateChange }
+                });
+            }
+        }
+
+        // ============== ALU VIDEO FUNCTIONS ==============
+        function populateAluTranscript() {
+            const container = document.getElementById('alu-transcript-container');
+            if (!container) return;
+            container.innerHTML = '';
+            aluParsedTranscript.forEach(cue => {
+                const lineElement = document.createElement('div');
+                lineElement.className = 'transcript-line p-2 cursor-pointer hover:bg-gray-100 rounded-lg';
+                lineElement.dataset.start = cue.start;
+                lineElement.dataset.end = cue.end;
+                lineElement.textContent = cue.text;
+                lineElement.setAttribute('role', 'button');
+                lineElement.setAttribute('tabindex', '0');
+                const seekToTime = () => {
+                    if (aluPlayer && aluPlayer.seekTo) {
+                        aluPlayer.seekTo(cue.start, true);
+                        aluPlayer.playVideo();
+                    }
+                };
+                lineElement.addEventListener('click', seekToTime);
+                lineElement.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        seekToTime();
+                    }
+                });
+                container.appendChild(lineElement);
+            });
+        }
+
+        function highlightAluLine() {
+            if (!aluPlayer || !aluPlayer.getCurrentTime) return;
+            const currentTime = aluPlayer.getCurrentTime();
+            const lines = document.querySelectorAll('#alu-transcript-container .transcript-line');
+            lines.forEach(line => {
+                const start = parseFloat(line.dataset.start);
+                const end = parseFloat(line.dataset.end);
+                if (currentTime >= start && currentTime < end) {
+                    if (!line.classList.contains('alu-active-line')) {
+                        document.querySelector('.alu-active-line')?.classList.remove('alu-active-line');
+                        line.classList.add('alu-active-line');
+                        line.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
+                } else {
+                    line.classList.remove('alu-active-line');
+                }
+            });
+        }
+
+        function syncAluHeight() {
+            const mediaQuery = window.matchMedia('(min-width: 1024px)');
+            const videoContainer = document.getElementById('alu-video-container');
+            const transcriptContainer = document.getElementById('alu-transcript-container');
+            if (!videoContainer || !transcriptContainer) return;
+            if (mediaQuery.matches) {
+                const videoHeight = videoContainer.offsetHeight;
+                transcriptContainer.style.maxHeight = videoHeight + 'px';
+            } else {
+                transcriptContainer.style.maxHeight = '24rem';
+            }
+        }
+
+        function onAluPlayerStateChange(event) {
+            clearInterval(aluTimeUpdater);
+            if (event.data === YT.PlayerState.PLAYING) {
+                aluTimeUpdater = setInterval(highlightAluLine, 300);
+            }
+        }
+
+        function initializeAluVideo() {
+            if (aluVideoInitialized) return;
+            aluVideoInitialized = true;
+            aluParsedTranscript = parseVtt(aluVttContent);
+            populateAluTranscript();
+            syncAluHeight();
+            if (!aluPlayer) {
+                aluPlayer = new YT.Player('alu-player', {
+                    events: { 'onStateChange': onAluPlayerStateChange }
+                });
+            }
+        }
+
+        // ============== TAB SWITCHING LOGIC ==============
         function switchTab(tabId) {
-            // Get all tabs and panels
             const tabs = document.querySelectorAll('[role="tab"]');
             const panels = document.querySelectorAll('[role="tabpanel"]');
 
-            // Loop through tabs to update state
             tabs.forEach(tab => {
                 const isSelected = tab.getAttribute('onclick').includes(tabId);
                 tab.setAttribute('aria-selected', isSelected);
-                
                 if (isSelected) {
                     tab.classList.remove('tab-inactive');
                     tab.classList.add('tab-active');
@@ -301,10 +966,15 @@
                 }
             });
 
-            // Loop through panels to show/hide
             panels.forEach(panel => {
                 if (panel.id === tabId) {
                     panel.classList.remove('hidden');
+                    // Initialize appropriate video when tab is shown
+                    if (tabId === 'tab2') {
+                        initializeTunnelVideo();
+                    } else if (tabId === 'tab5') {
+                        initializeAluVideo();
+                    }
                 } else {
                     panel.classList.add('hidden');
                 }
@@ -318,7 +988,7 @@
 
             const tabs = Array.from(document.querySelectorAll('[role="tab"]'));
             const index = tabs.indexOf(currentTab);
-            
+
             let nextIndex = null;
 
             if (e.key === 'ArrowRight') {
@@ -333,7 +1003,25 @@
                 tabs[nextIndex].click();
             }
         });
+
+        // ============== YOUTUBE API INITIALIZATION ==============
+        document.addEventListener('DOMContentLoaded', () => {
+            if (typeof(YT) == 'undefined' || typeof(YT.Player) == 'undefined') {
+                const tag = document.createElement('script');
+                tag.src = "https://www.youtube.com/iframe_api";
+                document.head.appendChild(tag);
+            }
+
+            // Handle resize
+            let resizeTimeout;
+            window.addEventListener('resize', () => {
+                clearTimeout(resizeTimeout);
+                resizeTimeout = setTimeout(() => {
+                    if (tunnelVideoInitialized) syncTunnelHeight();
+                    if (aluVideoInitialized) syncAluHeight();
+                }, 250);
+            });
+        });
     </script>
 </body>
 </html>
-
