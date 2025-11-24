@@ -103,10 +103,8 @@
     </style>
 </head>
 <body class="bg-bg-light text-text-dark font-sans">
-    <!-- Skip to Content Link -->
     <a href="#main-content" class="skip-to-content">Skip to Main Content</a>
 
-    <!-- Header -->
     <header class="bg-white shadow-sm border-b border-gray-200">
         <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
             <h1 class="text-3xl sm:text-4xl font-bold text-text-dark mb-2">Control Unit for Clear Flags Instruction</h1>
@@ -114,12 +112,9 @@
         </div>
     </header>
 
-    <!-- Main Content -->
     <main id="main-content" class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         
-        <!-- Tabbed Interface -->
         <div class="mb-12">
-            <!-- Tab List -->
             <div role="tablist" class="flex flex-wrap gap-0 border-b-2 border-gray-300 mb-8" aria-label="Instructional Content Tabs">
                 <button 
                     role="tab"
@@ -147,9 +142,6 @@
                 </button>
             </div>
 
-            <!-- Tab Panels -->
-            
-            <!-- Panel 1: Clear Flags Instructions -->
             <div 
                 role="tabpanel"
                 id="panel-clear-flags-instructions"
@@ -161,7 +153,6 @@
                 
                 <p>The Operation instruction is an 8-bit value that is broken down as follows:</p>
 
-                <!-- Instruction Format Table -->
                 <div class="overflow-x-auto">
                     <table>
                         <thead>
@@ -214,7 +205,6 @@
                 <p>By setting FLAG_S = 1 when the BUS is all zeros, all flags are captured as 0, effectively clearing them before the next operation begins.</p>
             </div>
 
-            <!-- Panel 2: Control Unit Diagram -->
             <div 
                 role="tabpanel"
                 id="panel-control-unit"
@@ -237,7 +227,6 @@
                 </figure>
             </div>
 
-            <!-- Panel 3: Video -->
             <div 
                 role="tabpanel"
                 id="panel-video"
@@ -249,23 +238,49 @@
                 
                 <p>The following video walks through the Clear Flags Instruction control unit diagram and explains how the FLAG_S signal manages the flag clearing operation:</p>
                 
-                <p><a href="https://youtu.be/7Wz7RNHX7zY" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:text-blue-800 underline">Clear Flags Instruction (YouTube)</a></p>
-                
-                <p class="text-sm text-gray-600">Opens in a new window. For best accessibility, ensure captions are enabled on the video.</p>
-            </div>
+                <div class="flex flex-col lg:flex-row gap-4 w-full mt-6">
+                    <div class="w-full lg:w-2/3 flex-shrink-0">
+                        <div id="video-container" style="width: 100%; height: 0; padding-bottom: 56.25%; position: relative;">
+                            <iframe id="youtube-player"
+                                    style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"
+                                    src="https://www.youtube.com/embed/7Wz7RNHX7zY?enablejsapi=1"
+                                    title="Lecture Video"
+                                    frameborder="0"
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                    referrerpolicy="strict-origin-when-cross-origin"
+                                    allowfullscreen>
+                            </iframe>
+                        </div>
+                    </div>
+
+                    <div class="w-full lg:w-1/3 flex-shrink-0">
+                        <div id="transcript-container" class="h-96 overflow-y-scroll bg-white shadow-inner p-4 rounded-lg border border-gray-300">
+                            <p class="text-gray-500 text-center">Loading transcript...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <style>
+                    .active-transcript-line {
+                        background-color: #f0f7ff;
+                        font-weight: 600;
+                        border-left: 4px solid #1e88e5;
+                        padding-left: 12px;
+                        transition: background-color 0.2s;
+                    }
+                </style>
+                </div>
 
         </div>
 
     </main>
 
-    <!-- Footer -->
     <footer class="bg-gray-100 border-t border-gray-300 mt-16 py-8">
         <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-gray-600 text-sm">
             <p>&copy; 2024 Mendocino College Computer Science Department. Instructional materials for CSC210: Computer Organization & Architecture.</p>
         </div>
     </footer>
 
-    <!-- Tab Switching JavaScript -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const tabButtons = document.querySelectorAll('[role="tab"]');
@@ -324,6 +339,268 @@
                     }
                 });
             });
+        });
+    </script>
+
+    <script>
+        // 1. CONFIGURATION
+        const VIDEO_ID = '7Wz7RNHX7zY';
+        let player;
+        let timeUpdater;
+        let parsedTranscript = [];
+
+        const vttContent = `WEBVTT
+
+00:00.000 --> 00:12.440
+aloha this is just a really quick video to talk about control flags and setting them clearing
+
+00:12.440 --> 00:18.840
+them to set them all to zero so the instruction code is zero one one zero I didn't actually put
+
+00:18.840 --> 00:25.440
+together the CPU for this I just did the control part the control unit part because it's fairly
+
+00:25.440 --> 00:38.040
+simple but basically what happens is when we look at this what happens is when we go to clear the
+
+00:38.040 --> 00:44.680
+set the flags we're gonna do is we're gonna take bus one which is going to be one and 
+
+00:44.680 --> 00:50.860
+actually it's gonna end up in the accumulator and add one it's actually gonna end up in the accumulator but when
+
+00:50.860 --> 00:55.320
+it goes into the ALU that's one goes into ALU is
+
+00:55.440 --> 01:05.100
+and we have 0 on our bus then all of these elements carry out will be 0
+
+01:05.100 --> 01:14.280
+because basically carry out will be 0 a will not be larger because B is 1 and a
+
+01:14.280 --> 01:21.060
+is 0 they won't be equals and it's not 0 so all these will be zeros and so when I
+
+01:21.060 --> 01:26.960
+set the flags it'll take these values 
+
+01:26.960 --> 01:34.680
+and set them all to 0 that's basically all that it does and so you enable it and nothing gets turned on because
+
+01:34.680 --> 01:41.880
+there's no enables right and then you set it well we should get I should get
+
+01:41.880 --> 01:44.660
+over to four
+
+01:49.420 --> 01:51.040
+so here's four
+
+01:51.040 --> 01:59.600
+on i enable nothing's enabled it doesn't do anything okay when i set it we'll set the flags
+
+01:59.600 --> 02:10.240
+to be whatever's the output on the bus okay so basically not the bus i mean it'll set the flags
+
+02:10.240 --> 02:14.320
+to be whatever's the output of the alu which since 
+
+02:14.320 --> 02:19.900
+the alu is always running okay if we look at a cpu since the alu is always running
+
+02:19.900 --> 02:29.060
+okay and i have zero zero zero zero and then a b will be one because bus one is high
+
+02:29.060 --> 02:36.560
+the output will be one carry out be zero zero will be zero larger will be zero and equals will be zero
+
+02:36.560 --> 02:40.040
+okay so
+
+02:40.040 --> 02:44.300
+um it'll all be zero
+
+02:44.320 --> 02:49.660
+so we reset basically we've reset all the flags to zero by doing that
+
+02:49.660 --> 02:56.500
+okay so that's really all i wanted to say about that one
+
+02:56.500 --> 03:02.580
+it's pretty straightforward for clear flags
+
+03:02.580 --> 03:07.640
+in terms of the whole cycle
+
+03:07.640 --> 03:14.080
+and that's the last one we had in terms of what our control unit
+
+03:14.080 --> 03:14.300
+is going to do in terms of what our control unit is going to do in terms of what our control unit
+
+03:14.320 --> 03:14.680
+does`;
+
+        // 2. CORE UTILITIES
+        function timeToSeconds(timeStr) {
+            if (!timeStr) return 0;
+            const parts = timeStr.trim().split(':');
+            
+            // Handle both MM:SS.mmm and HH:MM:SS.mmm formats
+            if (parts.length === 2) {
+                // MM:SS.mmm format
+                let minutes = parseInt(parts[0]) || 0;
+                let seconds = parseFloat(parts[1]) || 0;
+                return minutes * 60 + seconds;
+            } else if (parts.length === 3) {
+                // HH:MM:SS.mmm format
+                let hours = parseInt(parts[0]) || 0;
+                let minutes = parseInt(parts[1]) || 0;
+                let seconds = parseFloat(parts[2]) || 0;
+                return hours * 3600 + minutes * 60 + seconds;
+            }
+            return 0;
+        }
+
+        function parseVtt(vttText) {
+            const cues = vttText.trim().split(/\n\n+/);
+            const parsedCues = [];
+            
+            cues.forEach(cueBlock => {
+                if (cueBlock.startsWith('WEBVTT') || cueBlock.trim() === '') return;
+                
+                const lines = cueBlock.trim().split('\n');
+                const timeLine = lines.find(line => line.includes('-->'));
+                if (!timeLine) return;
+
+                const [startTimeStr, endTimeStr] = timeLine.split(' --> ');
+                const textLines = lines.slice(lines.indexOf(timeLine) + 1);
+                
+                parsedCues.push({
+                    start: timeToSeconds(startTimeStr),
+                    end: timeToSeconds(endTimeStr),
+                    text: textLines.join(' ').trim()
+                });
+            });
+            return parsedCues;
+        }
+
+        // 3. TRANSCRIPT RENDERING AND INTERACTIVITY
+        function populateTranscript() {
+            const container = document.getElementById('transcript-container');
+            container.innerHTML = '';
+
+            parsedTranscript.forEach(cue => {
+                const lineElement = document.createElement('div');
+                lineElement.className = 'transcript-line p-2 cursor-pointer hover:bg-gray-100 rounded-lg';
+                lineElement.dataset.start = cue.start;
+                lineElement.dataset.end = cue.end;
+                lineElement.textContent = cue.text;
+                lineElement.setAttribute('role', 'button');
+                lineElement.setAttribute('tabindex', '0');
+
+                const seekToTime = () => {
+                    if (player && player.seekTo) {
+                        player.seekTo(cue.start, true);
+                        player.playVideo();
+                    }
+                };
+                
+                lineElement.addEventListener('click', seekToTime);
+                lineElement.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') { 
+                        e.preventDefault(); 
+                        seekToTime(); 
+                    }
+                });
+
+                container.appendChild(lineElement);
+            });
+        }
+
+        // 4. SYNC LOGIC
+        function highlightCurrentLine() {
+            if (!player || !player.getCurrentTime) return;
+
+            const currentTime = player.getCurrentTime();
+            const lines = document.querySelectorAll('#transcript-container .transcript-line');
+            let foundActive = false;
+
+            lines.forEach(line => {
+                const start = parseFloat(line.dataset.start);
+                const end = parseFloat(line.dataset.end);
+
+                if (currentTime >= start && currentTime < end) {
+                    if (!line.classList.contains('active-transcript-line')) {
+                        document.querySelector('.active-transcript-line')?.classList.remove('active-transcript-line');
+                        line.classList.add('active-transcript-line');
+                        line.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
+                    foundActive = true;
+                } else {
+                    line.classList.remove('active-transcript-line');
+                }
+            });
+        }
+
+        // 5. HEIGHT SYNCHRONIZATION (Transcript matches video container)
+        function syncTranscriptHeight() {
+            const mediaQuery = window.matchMedia('(min-width: 1024px)');
+            const videoContainer = document.getElementById('video-container');
+            const transcriptContainer = document.getElementById('transcript-container');
+            
+            if (!videoContainer || !transcriptContainer) return;
+            
+            if (mediaQuery.matches) {
+                // On large screens, match the video container height
+                const videoHeight = videoContainer.offsetHeight;
+                transcriptContainer.style.maxHeight = videoHeight + 'px';
+            } else {
+                // On small screens, use default height (h-96 = 24rem)
+                transcriptContainer.style.maxHeight = '24rem';
+            }
+        }
+
+        // 6. YOUTUBE API HANDLERS
+        window.onYouTubeIframeAPIReady = function() {
+            player = new YT.Player('youtube-player', {
+                videoId: VIDEO_ID,
+                events: {
+                    'onStateChange': onPlayerStateChange
+                }
+            });
+        };
+
+        function onPlayerStateChange(event) {
+            clearInterval(timeUpdater);
+            if (event.data === YT.PlayerState.PLAYING) {
+                timeUpdater = setInterval(highlightCurrentLine, 300);
+            }
+        }
+
+        // 7. INITIALIZATION
+        document.addEventListener('DOMContentLoaded', () => {
+            parsedTranscript = parseVtt(vttContent);
+            populateTranscript();
+            
+            // Sync transcript height on page load
+            setTimeout(syncTranscriptHeight, 100);
+
+            // Load the YouTube IFrame Player API script if not present
+            if (typeof(YT) == 'undefined' || typeof(YT.Player) == 'undefined') {
+                const tag = document.createElement('script');
+                tag.src = "https://www.youtube.com/iframe_api";
+                document.head.appendChild(tag);
+            } else {
+                onYouTubeIframeAPIReady();
+            }
+        });
+
+        // Handle window resize with debouncing to sync transcript height
+        let resizeTimeout;
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(syncTranscriptHeight, 250);
         });
     </script>
 </body>
