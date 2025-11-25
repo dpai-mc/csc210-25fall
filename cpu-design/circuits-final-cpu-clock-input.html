@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Clock Input Modification</title>
+    <title>Circuits: Final CPU - Clock Input</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwindConfig = {
@@ -28,83 +28,15 @@
     <style>
         * { @apply !bg-white dark:!bg-white !text-gray-900 dark:!text-gray-900; }
         html, body { background-color: #FDFBF8; color: #1A1A1A; font-family: 'Inter', sans-serif; }
-        .prose { @apply text-gray-900; }
+        .prose { @apply text-gray-900 leading-relaxed; }
         .prose a { @apply text-blue-600 underline hover:text-blue-700 font-medium; }
-        .prose h2, .prose h3, .prose h4 { @apply text-gray-900 font-bold mt-6 mb-3; }
-        .prose h2 { @apply text-2xl; }
-        .prose h3 { @apply text-xl; }
-        
-        /* Tab navigation styling */
-        [role="tablist"] {
-            @apply flex flex-wrap gap-4 border-b-2 border-gray-300 bg-white;
-            overflow-x: auto;
-            scroll-behavior: smooth;
-        }
-
-        /* Individual tab button styling */
-        [role="tab"] {
-            @apply px-6 py-4 font-semibold text-base transition-all duration-200 whitespace-nowrap;
-            @apply border-b-4 border-transparent;
-            @apply hover:bg-gray-100 cursor-pointer;
-            position: relative;
-            flex-shrink: 0;
-        }
-
-        /* Active tab styling */
-        [role="tab"][aria-selected="true"] {
-            @apply text-blue-600 border-b-4 border-blue-600 bg-blue-50;
-        }
-
-        /* Inactive tab styling */
-        [role="tab"][aria-selected="false"] {
-            @apply text-gray-600 border-b-4 border-transparent;
-            @apply hover:text-gray-900;
-        }
-
-        /* Focus state for accessibility */
-        [role="tab"]:focus-visible {
-            @apply outline-none ring-2 ring-offset-2 ring-blue-600;
-        }
-        
-        /* Panel styling */
-        [role="tabpanel"] {
-            @apply hidden p-8 bg-white rounded-b-lg;
-            animation: fadeIn 0.3s ease-in-out;
-        }
-
-        [role="tabpanel"][aria-hidden="false"] {
-            @apply block;
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(4px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
+        .prose h1 { @apply text-4xl font-bold text-gray-900 mt-0 mb-6; }
+        .prose h2 { @apply text-2xl font-bold text-gray-900 mt-8 mb-4; }
+        .prose p { @apply mb-4; }
         
         /* Skip to Content */
         .skip-link {
             @apply absolute top-0 left-0 px-4 py-2 bg-blue-600 text-white -translate-y-full focus:translate-y-0 z-50 transition-transform font-medium;
-        }
-        
-        /* Responsive tab styling for mobile */
-        @media (max-width: 640px) {
-            [role="tablist"] {
-                @apply gap-2;
-            }
-            
-            [role="tab"] {
-                @apply px-3 py-3 text-sm;
-            }
-            
-            [role="tabpanel"] {
-                @apply p-6;
-            }
         }
     </style>
 </head>
@@ -112,74 +44,41 @@
     <!-- Skip to Content Link -->
     <a href="#main-content" class="skip-link">Skip to main content</a>
 
-    <!-- Header -->
-    <header class="bg-white border-b border-gray-200 py-6 mb-8">
-        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h1 class="text-4xl font-bold text-gray-900 mb-2">Clock Input Modification</h1>
-        </div>
-    </header>
-
     <!-- Main Content -->
-    <main id="main-content" class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
-        
-        <!-- Tabbed Interface -->
-        <div class="mb-8">
+    <main id="main-content" class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <article class="prose">
+            <h1>Clock Input Modification</h1>
             
-
-            <!-- Overview Panel -->
-            <section role="tabpanel" id="overview-panel" aria-labelledby="overview-tab" aria-hidden="false">
-                <div class="prose space-y-4">
-                    <p>The "Clock" needs to be modified so that we no longer have to manually cycle it. In order to run programs, we are going to invoke the "Ticks Enabled" option to automatically run our Assembly programs in the CPU. In order to do this, we need to change the clock to a single input and also to add the "End" bit which will disable the clock cycling at the end of our assembly program.</p>
-                    
-                    <p>Since the "END" tunnel is "NOTted" and then "ANDed" with the Clock input, whenever "END" is high, the output from the AND gate is low so the clock never cycles.</p>
-                </div>
-            </section>
-
-            <!-- Diagrams Panel -->
-            <section role="tabpanel" id="diagrams-panel" aria-labelledby="diagrams-tab" aria-hidden="true">
-                <div class="prose space-y-6">
-                    <div>
-                        <h3 class="text-lg font-bold mb-3">OLD</h3>
-                        <figure class="my-6">
-                            <img src="images/clockin-old.png" 
-                                 alt="ClockIn_OLD.png" 
-                                 class="max-w-full h-auto rounded-lg border border-gray-300 shadow-sm mx-auto"
-                                 style="max-width: 640px;"
-                                 loading="lazy">
-                        </figure>
-                    </div>
-                    
-                    <div>
-                        <h3 class="text-lg font-bold mb-3">NEW</h3>
-                        <figure class="my-6">
-                            <img src="images/clockin-new.png" 
-                                 alt="ClockIn_NEW.png" 
-                                 class="max-w-full h-auto rounded-lg border border-gray-300 shadow-sm mx-auto"
-                                 style="max-width: 640px;"
-                                 loading="lazy">
-                        </figure>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Design & Logic Panel -->
-            <section role="tabpanel" id="logic-panel" aria-labelledby="logic-tab" aria-hidden="true">
-                <div class="prose space-y-4">
-                    <p>Also, note the addition of output pins for "clke" and "clks".</p>
-                    
-                    <p>There is also an output pin and tunnel added to the "clk" output labeled "clkl" which stands for the Clock signal we need to "Load" our program.</p>
-                    
-                    <p>The addition of these output pins is necessary in order to be able to view the status of these signals at the next higher level.</p>
-                </div>
-            </section>
-
-            <!-- Implementation Details Panel -->
-            <section role="tabpanel" id="details-panel" aria-labelledby="details-tab" aria-hidden="true">
-                <div class="prose space-y-4">
-                    <p>The addition of these output pins is necessary in order to be able to view the status of these signals at the next higher level.</p>
-                </div>
-            </section>
-        </div>
+            <p>The "Clock" needs to be modified so that we no longer have to manually cycle it. In order to run programs, we are going to invoke the "Ticks Enabled" option to automatically run our Assembly programs in the CPU. In order to do this, we need to change the clock to a single input and also to add the "End" bit which will disable the clock cycling at the end of our assembly program.</p>
+            
+            <p>Since the "END" tunnel is "NOTted" and then "ANDed" with the Clock input, whenever "END" is high, the output from the AND gate is low so the clock never cycles.</p>
+            
+            <h2>OLD</h2>
+            
+            <figure class="my-6">
+                <img src="images/clockin-old.png" 
+                     alt="ClockIn_OLD.png" 
+                     class="max-w-full h-auto rounded-lg border border-gray-300 shadow-sm mx-auto"
+                     style="max-width: 640px;"
+                     loading="lazy">
+            </figure>
+            
+            <h2>NEW</h2>
+            
+            <figure class="my-6">
+                <img src="images/clockin-new.png" 
+                     alt="ClockIn_NEW.png" 
+                     class="max-w-full h-auto rounded-lg border border-gray-300 shadow-sm mx-auto"
+                     style="max-width: 640px;"
+                     loading="lazy">
+            </figure>
+            
+            <p>Also, note the addition of output pins for "clke" and "clks".</p>
+            
+            <p>There is also an output pin and tunnel added to the "clk" output labeled "clkl" which stands for the Clock signal we need to "Load" our program.</p>
+            
+            <p>The addition of these output pins is necessary in order to be able to view the status of these signals at the next higher level.</p>
+        </article>
     </main>
 
     <!-- Footer -->
@@ -189,49 +88,5 @@
             <p class="mt-2 text-xs">Last updated: November 2025</p>
         </div>
     </footer>
-
-    <!-- Tab Navigation Script -->
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const tabs = document.querySelectorAll('[role="tab"]');
-            const panels = document.querySelectorAll('[role="tabpanel"]');
-
-            tabs.forEach((tab, index) => {
-                tab.addEventListener('click', function() {
-                    // Hide all panels
-                    panels.forEach(panel => {
-                        panel.setAttribute('aria-hidden', 'true');
-                    });
-                    // Deselect all tabs
-                    tabs.forEach(t => {
-                        t.setAttribute('aria-selected', 'false');
-                    });
-                    
-                    // Show selected panel
-                    const panelId = this.getAttribute('aria-controls');
-                    document.getElementById(panelId).setAttribute('aria-hidden', 'false');
-                    
-                    // Select clicked tab
-                    this.setAttribute('aria-selected', 'true');
-                });
-
-                // Keyboard navigation: Arrow keys
-                tab.addEventListener('keydown', function(e) {
-                    let targetIndex = index;
-                    
-                    if (e.key === 'ArrowLeft') {
-                        e.preventDefault();
-                        targetIndex = (index - 1 + tabs.length) % tabs.length;
-                    } else if (e.key === 'ArrowRight') {
-                        e.preventDefault();
-                        targetIndex = (index + 1) % tabs.length;
-                    }
-                    
-                    tabs[targetIndex].focus();
-                    tabs[targetIndex].click();
-                });
-            });
-        });
-    </script>
 </body>
 </html>
