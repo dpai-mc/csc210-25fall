@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clock Input Modification</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwindConfig = {
+            theme: {
+                extend: {
+                    colors: {
+                        background: '#FDFBF8',
+                        primary: '#1A1A1A',
+                        accent: '#2563eb'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif']
+                    }
+                }
+            },
+            corePlugins: {
+                darkMode: false
+            }
+        }
+    </script>
+    <style>
+        * { @apply !bg-white dark:!bg-white !text-primary dark:!text-primary; }
+        html, body { background-color: #FDFBF8; color: #1A1A1A; }
+        .prose { @apply text-primary; }
+        .prose a { @apply text-accent underline hover:opacity-80; }
+        .prose h2, .prose h3, .prose h4 { @apply text-primary font-bold mt-6 mb-3; }
+        .prose h2 { @apply text-2xl; }
+        .prose h3 { @apply text-xl; }
+        
+        /* Tab styling */
+        [role="tab"] {
+            @apply px-4 py-3 font-medium rounded-t-lg transition-colors;
+        }
+        [role="tab"][aria-selected="true"] {
+            @apply bg-accent text-white;
+        }
+        [role="tab"][aria-selected="false"] {
+            @apply bg-gray-200 text-primary hover:bg-gray-300;
+        }
+        [role="tab"]:focus {
+            @apply outline-none ring-2 ring-accent ring-offset-2;
+        }
+        
+        /* Panel styling */
+        [role="tabpanel"] {
+            @apply hidden p-6 bg-white border border-gray-300 rounded-b-lg;
+        }
+        [role="tabpanel"][aria-hidden="false"] {
+            @apply block;
+        }
+        
+        /* Skip to Content */
+        .skip-link {
+            @apply absolute top-0 left-0 px-4 py-2 bg-accent text-white -translate-y-full focus:translate-y-0 z-50 transition-transform;
+        }
+        
+        /* Image styling */
+        .img-container {
+            @apply my-6 flex flex-col items-center;
+        }
+        .img-container img {
+            @apply max-w-full h-auto rounded-lg shadow-md;
+        }
+        .img-caption {
+            @apply text-sm text-gray-600 italic mt-2 text-center;
+        }
+        
+        /* Asset table styling */
+        .asset-table {
+            @apply w-full border-collapse;
+        }
+        .asset-table thead {
+            @apply bg-gray-100;
+        }
+        .asset-table th {
+            @apply border border-gray-300 px-4 py-2 text-left font-bold;
+        }
+        .asset-table td {
+            @apply border border-gray-300 px-4 py-2;
+        }
+        .asset-table tr:nth-child(even) {
+            @apply bg-gray-50;
+        }
+        
+        /* Placeholder alert */
+        .placeholder-note {
+            @apply bg-yellow-100 border-l-4 border-yellow-500 p-4 mb-4;
+        }
+        .placeholder-note p {
+            @apply text-yellow-800 m-0;
+        }
+    </style>
+</head>
+<body class="font-sans" style="background-color: #FDFBF8; color: #1A1A1A;">
+    <!-- Skip to Content Link -->
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+
+    <!-- Header -->
+    <header class="bg-white border-b border-gray-200 py-6 mb-8">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h1 class="text-4xl font-bold text-primary mb-2">Clock Input Modification</h1>
+            <p class="text-gray-600">Understanding how to modify the clock circuit for automated program execution</p>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main id="main-content" class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
+        
+        <!-- Tabbed Interface -->
+        <div class="mb-8">
+            <div role="tablist" class="flex flex-wrap gap-2 mb-0 border-b border-gray-300" aria-label="Clock Input content sections">
+                <button role="tab" aria-selected="true" aria-controls="overview-panel" id="overview-tab" class="focus:outline-none">
+                    Overview
+                </button>
+                <button role="tab" aria-selected="false" aria-controls="logic-panel" id="logic-tab" class="focus:outline-none">
+                    Design & Logic
+                </button>
+                <button role="tab" aria-selected="false" aria-controls="diagrams-panel" id="diagrams-tab" class="focus:outline-none">
+                    Diagrams
+                </button>
+                <button role="tab" aria-selected="false" aria-controls="details-panel" id="details-tab" class="focus:outline-none">
+                    Implementation Details
+                </button>
+                <button role="tab" aria-selected="false" aria-controls="assets-panel" id="assets-tab" class="focus:outline-none">
+                    Assets
+                </button>
+            </div>
+
+            <!-- Overview Panel -->
+            <section role="tabpanel" id="overview-panel" aria-labelledby="overview-tab" aria-hidden="false">
+                <div class="prose">
+                    <h2>Purpose of Clock Input Modification</h2>
+                    <p>The "Clock" circuit needs to be modified so that we no longer have to manually cycle it. In order to run programs, we are going to invoke the "Ticks Enabled" option to automatically run our Assembly programs in the CPU. This modification enables automated program execution by converting the clock to a single input and adding the "End" bit functionality.</p>
+                    <p>The key improvement is that the clock can now be automatically controlled, eliminating the need for manual intervention during program execution. This is essential for testing and verifying that our CPU behaves correctly when executing complete programs.</p>
+                </div>
+            </section>
+
+            <!-- Design & Logic Panel -->
+            <section role="tabpanel" id="logic-panel" aria-labelledby="logic-tab" aria-hidden="true">
+                <div class="prose">
+                    <h2>How the Modification Works</h2>
+                    <h3>The END Bit Logic</h3>
+                    <p>In order to achieve automatic clock cycling, we need to change the clock to a single input and also add the "End" bit, which will disable the clock cycling at the end of our assembly program.</p>
+                    <p>The implementation uses a NOT gate and an AND gate to manage this behavior:</p>
+                    <ul>
+                        <li>The "END" tunnel is NOTted (inverted)</li>
+                        <li>The result is ANDed with the Clock input</li>
+                        <li>When "END" is high (true), the NOT gate outputs low (false)</li>
+                        <li>When low is ANDed with the Clock input, the output from the AND gate is always low</li>
+                        <li>Result: The clock never cycles once END is high, cleanly halting program execution</li>
+                    </ul>
+                    <p>This elegant design ensures that when a program completes and the END signal is asserted, the clock automatically stops, preventing any further instruction execution.</p>
+                </div>
+            </section>
+
+            <!-- Diagrams Panel -->
+            <section role="tabpanel" id="diagrams-panel" aria-labelledby="diagrams-tab" aria-hidden="true">
+                <div class="prose">
+                    <h2>Circuit Diagrams: Before and After</h2>
+                    
+                    <h3>OLD Clock Configuration</h3>
+                    <p>The original clock configuration required manual cycling:</p>
+                    <div class="img-container">
+                        <img src="images/clockin-old.jpg" alt="OLD clock input configuration showing the previous manual cycling setup">
+                        <span class="img-caption">Figure 1: Original Clock Input Configuration</span>
+                    </div>
+                    
+                    <h3>NEW Clock Configuration</h3>
+                    <p>The updated clock configuration with END bit integration and automated control:</p>
+                    <div class="img-container">
+                        <img src="images/clockin-new.jpg" alt="NEW clock input configuration showing the modified setup with END bit logic and automatic cycling control">
+                        <span class="img-caption">Figure 2: Modified Clock Input Configuration with END Bit Control</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Implementation Details Panel -->
+            <section role="tabpanel" id="details-panel" aria-labelledby="details-tab" aria-hidden="true">
+                <div class="prose">
+                    <h2>Output Pins and Implementation Details</h2>
+                    
+                    <h3>New Output Pins</h3>
+                    <p>Note the addition of output pins for clock-related signals:</p>
+                    <ul>
+                        <li><strong>clke</strong> – Clock enable signal (output pin)</li>
+                        <li><strong>clks</strong> – Clock status signal (output pin)</li>
+                    </ul>
+                    
+                    <h3>Load Clock Signal</h3>
+                    <p>There is also an output pin and tunnel added to the "clk" output labeled "clkl", which stands for the Clock signal we need to "Load" our program. This signal is critical for synchronizing program loading with the clock cycle.</p>
+                    
+                    <h3>Why These Output Pins Matter</h3>
+                    <p>The addition of these output pins is necessary in order to be able to view the status of these signals at the next higher level. When working with hierarchical circuit design in Logisim, we need to expose internal signals to parent circuits so that:</p>
+                    <ul>
+                        <li>We can monitor and verify that the clock modification is functioning correctly</li>
+                        <li>Higher-level control circuits can coordinate with the clock signals</li>
+                        <li>We can debug timing and synchronization issues during program execution</li>
+                        <li>Future modules can access these signals for their own operations</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Assets Panel -->
+            <section role="tabpanel" id="assets-panel" aria-labelledby="assets-tab" aria-hidden="true">
+                <div class="prose">
+                    <h2>Assets Register</h2>
+                    <p>This table documents all embedded and linked resources for this instructional page. All assets are currently stored as relative URLs and will be migrated to GitHub-hosted versions.</p>
+                </div>
+                
+                <div class="overflow-x-auto mt-6">
+                    <table class="asset-table">
+                        <thead>
+                            <tr>
+                                <th>Type</th>
+                                <th>Title / Alt Text</th>
+                                <th>Current Relative URL</th>
+                                <th>Planned GitHub URL</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Image</td>
+                                <td>OLD clock input configuration</td>
+                                <td>images/clockin-old.jpg</td>
+                                <td>https://github.com/ORG/REPO/assets/cpu/clock/clockin-old.jpg</td>
+                            </tr>
+                            <tr>
+                                <td>Image</td>
+                                <td>NEW clock input configuration with END bit</td>
+                                <td>images/clockin-new.jpg</td>
+                                <td>https://github.com/ORG/REPO/assets/cpu/clock/clockin-new.jpg</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="placeholder-note mt-6">
+                    <p><strong>Migration Note:</strong> All images referenced in this page are currently served as relative URLs from the images/ directory. These will be migrated to GitHub-hosted versions. Update the URLs in the asset register as migration progresses.</p>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-gray-200 mt-12 py-6 text-center text-sm text-gray-600">
+        <div class="max-w-4xl mx-auto px-4">
+            <p>Clock Input Modification • CSC210 Computer Organization & Architecture</p>
+            <p class="mt-2 text-xs">Last updated: November 2025</p>
+        </div>
+    </footer>
+
+    <!-- Tab Navigation Script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const tabs = document.querySelectorAll('[role="tab"]');
+            const panels = document.querySelectorAll('[role="tabpanel"]');
+
+            tabs.forEach((tab, index) => {
+                tab.addEventListener('click', function() {
+                    // Hide all panels
+                    panels.forEach(panel => {
+                        panel.setAttribute('aria-hidden', 'true');
+                    });
+                    // Deselect all tabs
+                    tabs.forEach(t => {
+                        t.setAttribute('aria-selected', 'false');
+                    });
+                    
+                    // Show selected panel
+                    const panelId = this.getAttribute('aria-controls');
+                    document.getElementById(panelId).setAttribute('aria-hidden', 'false');
+                    
+                    // Select clicked tab
+                    this.setAttribute('aria-selected', 'true');
+                });
+
+                // Keyboard navigation: Arrow keys
+                tab.addEventListener('keydown', function(e) {
+                    let targetIndex = index;
+                    
+                    if (e.key === 'ArrowLeft') {
+                        e.preventDefault();
+                        targetIndex = (index - 1 + tabs.length) % tabs.length;
+                    } else if (e.key === 'ArrowRight') {
+                        e.preventDefault();
+                        targetIndex = (index + 1) % tabs.length;
+                    }
+                    
+                    tabs[targetIndex].focus();
+                    tabs[targetIndex].click();
+                });
+            });
+        });
+    </script>
+</body>
+</html>
