@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>BUS Output and Pull Down Behavior</title>
+  </head>
+  <body>
+    <h1> BUS Output and Pull Down Behavior</h1>
+    <p>We need to add an 8-bit output to our "Bus" so that we can see at the next higher level what is on the "Bus" at any given point in time. Additionally, we want to give all of the connections to the "Bus" a "Pull Down" behavior meaning that every time we start up the simulation, these will all "Pull Down" to the state of "0" ensuring that our "Bus" always starts out empty.</p>
+<table style="border-collapse: collapse; width: 97.9497%;" border="1">
+    <tbody>
+        <tr>
+            <td style="width: 49.9524%;"><img id="960434" src="https://mendocino.instructure.com/courses/19705/files/2501460/preview" alt="BusOutput.png" data-api-endpoint="https://mendocino.instructure.com/api/v1/courses/19705/files/2501460" data-api-returntype="File" /></td>
+            <td style="width: 49.9524%;"><img id="960433" src="https://mendocino.instructure.com/courses/19705/files/2501435/preview" alt="BusOutputPD.png" data-api-endpoint="https://mendocino.instructure.com/api/v1/courses/19705/files/2501435" data-api-returntype="File" /></td>
+        </tr>
+    </tbody>
+</table>
+<p>In order to set elements to "Pull Down," you will have to edit those specific circuits that hold the input and/or output to be modified. For example, you can modify all of the registers (R0-R4, assuming you used the same circuit for each) by opening up the 8-bit register circuit and checking/changing the input and output behavior to "Pull Down."</p>
+<p><img id="960435" src="https://mendocino.instructure.com/courses/19705/files/2501459/preview" alt="RegistersPD.png" data-api-endpoint="https://mendocino.instructure.com/api/v1/courses/19705/files/2501459" data-api-returntype="File" /></p>
+<p>Items that should be set to "Pull Down"</p>
+<p>Inputs/Outputs for:</p>
+<ul>
+    <li>R0-R4</li>
+    <li>ALU
+        <ul>
+            <li>8-bit inputs a, b</li>
+            <li>8-bit output c</li>
+            <li>1-bit inputs a, b, c for Operation Code</li>
+            <li>1-bit outputs a larger, equal, zero, and carry out</li>
+        </ul>
+    </li>
+    <li>TMP
+        <ul>
+            <li>8-bit input and output</li>
+        </ul>
+    </li>
+    <li>Accumulator
+        <ul>
+            <li>8-bit input and output</li>
+            <li>1-bit inputs for s and e</li>
+        </ul>
+    </li>
+    <li>BUS-1
+        <ul>
+            <li>8-bit input and output</li>
+            <li>1-bit input "bus1"</li>
+        </ul>
+    </li>
+    <li>PC</li>
+    <li>IR</li>
+    <li>RAM
+        <ul>
+            <li>8-bit "address", i (input), o (output)</li>
+            <li>1-bit reset</li>
+        </ul>
+    </li>
+</ul>
+  </body>
+</html>
