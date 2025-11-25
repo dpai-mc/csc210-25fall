@@ -33,26 +33,57 @@
         .prose h2 { @apply text-2xl; }
         .prose h3 { @apply text-xl; }
         
-        /* Tab styling */
+        /* Tab navigation styling */
+        [role="tablist"] {
+            @apply flex flex-wrap gap-2 border-b-2 border-gray-300 bg-white;
+            overflow-x: auto;
+            scroll-behavior: smooth;
+        }
+
+        /* Individual tab button styling */
         [role="tab"] {
-            @apply px-4 py-3 font-medium rounded-t-lg transition-colors;
+            @apply px-6 py-4 font-semibold text-base transition-all duration-200 whitespace-nowrap;
+            @apply border-b-4 border-transparent;
+            @apply hover:bg-gray-100 cursor-pointer;
+            position: relative;
+            flex-shrink: 0;
         }
+
+        /* Active tab styling */
         [role="tab"][aria-selected="true"] {
-            @apply bg-accent text-white;
+            @apply text-accent border-b-4 border-accent bg-blue-50;
         }
+
+        /* Inactive tab styling */
         [role="tab"][aria-selected="false"] {
-            @apply bg-gray-200 text-primary hover:bg-gray-300;
+            @apply text-gray-600 border-b-4 border-transparent;
+            @apply hover:text-primary;
         }
-        [role="tab"]:focus {
-            @apply outline-none ring-2 ring-accent ring-offset-2;
+
+        /* Focus state for accessibility */
+        [role="tab"]:focus-visible {
+            @apply outline-none ring-2 ring-offset-2 ring-accent;
         }
         
         /* Panel styling */
         [role="tabpanel"] {
-            @apply hidden p-6 bg-white border border-gray-300 rounded-b-lg;
+            @apply hidden p-8 bg-white rounded-b-lg;
+            animation: fadeIn 0.3s ease-in-out;
         }
+
         [role="tabpanel"][aria-hidden="false"] {
             @apply block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(4px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
         
         /* Skip to Content */
@@ -95,6 +126,17 @@
         .placeholder-note p {
             @apply text-yellow-800 m-0;
         }
+
+        /* Responsive tab styling for mobile */
+        @media (max-width: 640px) {
+            [role="tab"] {
+                @apply px-4 py-3 text-sm;
+            }
+            
+            [role="tabpanel"] {
+                @apply p-6;
+            }
+        }
     </style>
 </head>
 <body class="font-sans" style="background-color: #FDFBF8; color: #1A1A1A;">
@@ -114,7 +156,7 @@
         
         <!-- Tabbed Interface -->
         <div class="mb-8">
-            <div role="tablist" class="flex flex-wrap gap-2 mb-0 border-b border-gray-300" aria-label="Clock Input content sections">
+            <div role="tablist" class="flex flex-wrap border-b-2 border-gray-300 bg-white -mx-4 sm:mx-0 px-4" aria-label="Clock Input content sections">
                 <button role="tab" aria-selected="true" aria-controls="overview-panel" id="overview-tab" class="focus:outline-none">
                     Overview
                 </button>
