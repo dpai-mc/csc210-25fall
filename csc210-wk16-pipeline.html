@@ -128,18 +128,35 @@
             justify-content: center;
         }
 
-        .nav-links a {
-            background: #3b82f6;
-            color: white;
+        .nav-links button {
+            background: #d1d5db;
+            color: #374151;
             padding: 10px 20px;
             border-radius: 6px;
             text-decoration: none;
-            transition: background 0.3s;
+            transition: all 0.3s;
             font-weight: 500;
+            border: none;
+            cursor: pointer;
+            font-size: 0.95rem;
         }
 
-        .nav-links a:hover {
-            background: #1e40af;
+        .nav-links button:hover {
+            background: #9ca3af;
+            color: white;
+        }
+
+        .nav-links button.active {
+            background: #3b82f6;
+            color: white;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
         }
 
         .interactive-section {
@@ -313,16 +330,16 @@
         </div>
 
         <div class="nav-links">
-            <a href="#foundation">Foundation</a>
-            <a href="#hazards">Pipeline Hazards</a>
-            <a href="#simulator">Interactive Simulator</a>
-            <a href="#activities">Activities</a>
-            <a href="#cpu-examples">Real CPUs</a>
+            <button class="tab-button active" data-tab="foundation">Foundation</button>
+            <button class="tab-button" data-tab="hazards">Pipeline Hazards</button>
+            <button class="tab-button" data-tab="simulator">Interactive Simulator</button>
+            <button class="tab-button" data-tab="activities">Activities</button>
+            <button class="tab-button" data-tab="cpu-examples">Real CPUs</button>
         </div>
 
-        <section id="foundation">
-            <div class="section-heading">Part 1: The Pipeline Revolution</div>
-
+       <div id="foundation" class="tab-content active">
+            <section>
+                <div class="section-heading">Part 1: The Pipeline Revolution</div>
             <div class="content-block">
                 <h3 class="subsection-heading">Sequential vs. Pipelined Execution</h3>
                 <p>The fundamental problem: <span class="highlight">CPUs take multiple clock cycles to execute one instruction.</span></p>
@@ -406,11 +423,13 @@ Example: 1000 instructions
                 </table>
                 <p><strong>Observation:</strong> Modern pipelines are much deeper (8-19 stages). Deeper pipelines enable higher clock speeds but introduce more hazard opportunities.</p>
             </div>
-        </section>
+            </section>
+        </div>
 
-        <section id="hazards">
-            <div class="section-heading">Part 2: Pipeline Hazards - When Parallelism Breaks</div>
-
+        <div id="hazards" class="tab-content">
+            <section>
+                <div class="section-heading">Part 2: Pipeline Hazards - When Parallelism Breaks</div>
+           
             <div class="content-block">
                 <h3 class="subsection-heading">Hazard 1: Data Hazards (Read-After-Write Dependencies)</h3>
 
@@ -512,9 +531,11 @@ Mitigation: Replicate hardware (dual-ported memory, multiple ALUs)
                     </tbody>
                 </table>
             </div>
-        </section>
-
-        <section id="simulator">
+            </section>
+        </div>
+        
+        <div id+="simulator" class="tab-content">
+        <section>
             <div class="section-heading">Part 3: Interactive Pipeline Simulator</div>
 
             <div class="interactive-section">
@@ -589,8 +610,11 @@ Mitigation: Replicate hardware (dual-ported memory, multiple ALUs)
                 </div>
             </div>
         </section>
+        </div>
 
-        <section id="activities">
+        <div id="activities" class="tab-content">
+            <section>
+        
             <div class="section-heading">Part 4: Learning Activities</div>
 
             <div class="content-block">
@@ -661,9 +685,11 @@ Questions:
    (Hint: More stages = more hazard opportunities)
                 </div>
             </div>
-        </section>
+            </section>
+        </div>
 
-        <section id="cpu-examples">
+        <div id="cpu-examples" class="tab-content">
+            <section>
             <div class="section-heading">Part 5: Real CPU Pipeline Designs</div>
 
             <div class="content-block">
@@ -721,7 +747,8 @@ Out-of-order CPU:
                 <div class="list-item"><strong>Deeper pipelines trade off:</strong> Higher clock speed vs. more hazard opportunities</div>
                 <div class="list-item"><strong>Out-of-order execution:</strong> Further improvement by executing independent instructions ahead of dependencies</div>
             </div>
-        </section>
+            </section>
+        </div>
 
         <div class="content-block" style="margin-top: 40px; background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-left-color: #3b82f6;">
             <h3 class="subsection-heading" style="color: #1e40af;">Next: Week 16 Part 2 - Memory Hierarchy & Caching</h3>
@@ -976,10 +1003,34 @@ function resetSimulation() {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
-    document.getElementById('run-simulation').addEventListener('click', runSimulation);
-    document.getElementById('step-forward').addEventListener('click', stepForward);
-    document.getElementById('reset-simulation').addEventListener('click', resetSimulation);
-});
+            document.getElementById('run-simulation').addEventListener('click', runSimulation);
+            document.getElementById('step-forward').addEventListener('click', stepForward);
+            document.getElementById('reset-simulation').addEventListener('click', resetSimulation);
+
+            // Tab functionality
+            const tabButtons = document.querySelectorAll('.tab-button');
+            const tabContents = document.querySelectorAll('.tab-content');
+
+            tabButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const tabName = this.getAttribute('data-tab');
+
+                    // Hide all tabs
+                    tabContents.forEach(content => {
+                        content.classList.remove('active');
+                    });
+
+                    // Remove active class from all buttons
+                    tabButtons.forEach(btn => {
+                        btn.classList.remove('active');
+                    });
+
+                    // Show selected tab
+                    document.getElementById(tabName).classList.add('active');
+                    this.classList.add('active');
+                });
+            });
+        });
     </script>
 </body>
 </html>
