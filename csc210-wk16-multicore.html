@@ -128,18 +128,35 @@
             justify-content: center;
         }
 
-        .nav-links a {
-            background: #9333ea;
-            color: white;
+        .nav-links button {
+            background: #d1d5db;
+            color: #374151;
             padding: 10px 20px;
             border-radius: 6px;
             text-decoration: none;
-            transition: background 0.3s;
+            transition: all 0.3s;
             font-weight: 500;
+            border: none;
+            cursor: pointer;
+            font-size: 0.95rem;
         }
 
-        .nav-links a:hover {
-            background: #6b21a8;
+        .nav-links button:hover {
+            background: #9ca3af;
+            color: white;
+        }
+
+        .nav-links button.active {
+            background: #9333ea;
+            color: white;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
         }
 
         .interactive-section {
@@ -311,16 +328,16 @@
         </div>
 
         <div class="nav-links">
-            <a href="#foundation">Foundation</a>
-            <a href="#amdahl">Amdahl's Law</a>
-            <a href="#simulator">Interactive Simulator</a>
-            <a href="#activities">Activities</a>
-            <a href="#cpu-examples">Real CPUs</a>
+            <button class="tab-button active" data-tab="foundation">Foundation</button>
+            <button class="tab-button" data-tab="amdahl">Amdahl's Law</button>
+            <button class="tab-button" data-tab="simulator">Interactive Simulator</button>
+            <button class="tab-button" data-tab="activities">Activities</button>
+            <button class="tab-button" data-tab="cpu-examples">Real CPUs</button>
         </div>
 
-        <section id="foundation">
-            <div class="section-heading">Part 1: The Promise and Reality of Multicore</div>
-
+        <div id="foundation" class="tab-content active">
+            <section>
+                <div class="section-heading">Part 1: The Promise and Reality of Multicore</div>
             <div class="content-block">
                 <h3 class="subsection-heading">The Promise: Linear Speedup</h3>
                 <p>If one core executes a program in 10 seconds, intuitively:</p>
@@ -361,9 +378,11 @@ Parallel fraction: 7/10 = 70%
 
                 <p><span class="highlight">Real programs typically have 5-30% sequential code.</span> This fundamentally limits speedup regardless of core count.</p>
             </div>
-        </section>
+            </section>
+        </div>
 
-        <section id="amdahl">
+        <div id="amdahl" class="tab-content">
+            <section>
             <div class="section-heading">Part 2: Amdahl's Law - The Mathematical Reality</div>
 
             <div class="content-block">
@@ -524,8 +543,9 @@ Even though 4 cores available, only 1 is fully utilized!
                 <p><strong>Observation:</strong> Doubling core count gives much smaller than 2× speedup once F_sequential is significant.</p>
             </div>
         </section>
-
-        <section id="simulator">
+        </div>
+        <div id="simulator" class="tab-content">
+        <section>
             <div class="section-heading">Part 3: Interactive Amdahl's Law Calculator</div>
 
             <div class="interactive-section">
@@ -577,8 +597,11 @@ Even though 4 cores available, only 1 is fully utilized!
                 </div>
             </div>
         </section>
-
-        <section id="activities">
+        </div>
+        
+        <div id="activities" class="tab-content">
+            <section>
+        
             <div class="section-heading">Part 4: Learning Activities</div>
 
             <div class="content-block">
@@ -654,8 +677,10 @@ Question: Which is faster with 8 cores?
                 <p><strong>Answer:</strong> Approach B is much better (max 20× speedup vs. 1.7× speedup).</p>
             </div>
         </section>
+        </div>
 
-        <section id="cpu-examples">
+        <div id="cpu-examples" class="tab-content">
+        <section>
             <div class="section-heading">Part 5: Real Multicore CPU Designs</div>
 
             <div class="content-block">
@@ -731,6 +756,7 @@ Cost: Additional memory traffic, synchronization latency.
                 <div class="list-item"><strong>Programming challenge:</strong> Writing efficient parallel code is harder than single-threaded</div>
             </div>
         </section>
+        </div>
 
         <div class="content-block" style="margin-top: 40px; background: linear-gradient(135deg, #faf5ff 0%, #e9d5ff 100%); border-left-color: #c084fc;">
             <h3 class="subsection-heading" style="color: #6b21a8;">Conclusion: Putting It All Together</h3>
@@ -816,6 +842,30 @@ Cost: Additional memory traffic, synchronization latency.
             document.getElementById('calculate-amdahl').addEventListener('click', calculateAmdahl);
             
             updateDisplay();
+
+            // Tab functionality
+            const tabButtons = document.querySelectorAll('.tab-button');
+            const tabContents = document.querySelectorAll('.tab-content');
+
+            tabButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const tabName = this.getAttribute('data-tab');
+
+                    // Hide all tabs
+                    tabContents.forEach(content => {
+                        content.classList.remove('active');
+                    });
+
+                    // Remove active class from all buttons
+                    tabButtons.forEach(btn => {
+                        btn.classList.remove('active');
+                    });
+
+                    // Show selected tab
+                    document.getElementById(tabName).classList.add('active');
+                    this.classList.add('active');
+                });
+            });
         });
     </script>
 </body>
