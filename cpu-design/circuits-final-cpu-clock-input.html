@@ -11,8 +11,9 @@
                 extend: {
                     colors: {
                         background: '#FDFBF8',
-                        primary: '#1A1A1A',
-                        accent: '#2563eb'
+                        'text-primary': '#1A1A1A',
+                        'accent-blue': '#2563EB',
+                        'code-gray': '#4B5563'
                     },
                     fontFamily: {
                         sans: ['Inter', 'sans-serif']
@@ -25,11 +26,11 @@
         }
     </script>
     <style>
-        * { @apply !bg-white dark:!bg-white !text-primary dark:!text-primary; }
-        html, body { background-color: #FDFBF8; color: #1A1A1A; }
-        .prose { @apply text-primary; }
-        .prose a { @apply text-accent underline hover:opacity-80; }
-        .prose h2, .prose h3, .prose h4 { @apply text-primary font-bold mt-6 mb-3; }
+        * { @apply !bg-white dark:!bg-white !text-gray-900 dark:!text-gray-900; }
+        html, body { background-color: #FDFBF8; color: #1A1A1A; font-family: 'Inter', sans-serif; }
+        .prose { @apply text-gray-900; }
+        .prose a { @apply text-blue-600 underline hover:text-blue-700 font-medium; }
+        .prose h2, .prose h3, .prose h4 { @apply text-gray-900 font-bold mt-6 mb-3; }
         .prose h2 { @apply text-2xl; }
         .prose h3 { @apply text-xl; }
         
@@ -51,18 +52,18 @@
 
         /* Active tab styling */
         [role="tab"][aria-selected="true"] {
-            @apply text-accent border-b-4 border-accent bg-blue-50;
+            @apply text-blue-600 border-b-4 border-blue-600 bg-blue-50;
         }
 
         /* Inactive tab styling */
         [role="tab"][aria-selected="false"] {
             @apply text-gray-600 border-b-4 border-transparent;
-            @apply hover:text-primary;
+            @apply hover:text-gray-900;
         }
 
         /* Focus state for accessibility */
         [role="tab"]:focus-visible {
-            @apply outline-none ring-2 ring-offset-2 ring-accent;
+            @apply outline-none ring-2 ring-offset-2 ring-blue-600;
         }
         
         /* Panel styling */
@@ -88,45 +89,9 @@
         
         /* Skip to Content */
         .skip-link {
-            @apply absolute top-0 left-0 px-4 py-2 bg-accent text-white -translate-y-full focus:translate-y-0 z-50 transition-transform;
+            @apply absolute top-0 left-0 px-4 py-2 bg-blue-600 text-white -translate-y-full focus:translate-y-0 z-50 transition-transform font-medium;
         }
         
-        /* Image styling */
-        .img-container {
-            @apply my-6 flex flex-col items-center;
-        }
-        .img-container img {
-            @apply max-w-full h-auto rounded-lg shadow-md;
-        }
-        .img-caption {
-            @apply text-sm text-gray-600 italic mt-2 text-center;
-        }
-        
-        /* Asset table styling */
-        .asset-table {
-            @apply w-full border-collapse;
-        }
-        .asset-table thead {
-            @apply bg-gray-100;
-        }
-        .asset-table th {
-            @apply border border-gray-300 px-4 py-2 text-left font-bold;
-        }
-        .asset-table td {
-            @apply border border-gray-300 px-4 py-2;
-        }
-        .asset-table tr:nth-child(even) {
-            @apply bg-gray-50;
-        }
-        
-        /* Placeholder alert */
-        .placeholder-note {
-            @apply bg-yellow-100 border-l-4 border-yellow-500 p-4 mb-4;
-        }
-        .placeholder-note p {
-            @apply text-yellow-800 m-0;
-        }
-
         /* Responsive tab styling for mobile */
         @media (max-width: 640px) {
             [role="tab"] {
@@ -146,7 +111,7 @@
     <!-- Header -->
     <header class="bg-white border-b border-gray-200 py-6 mb-8">
         <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h1 class="text-4xl font-bold text-primary mb-2">Clock Input Modification</h1>
+            <h1 class="text-4xl font-bold text-gray-900 mb-2">Clock Input Modification</h1>
             <p class="text-gray-600">Understanding how to modify the clock circuit for automated program execution</p>
         </div>
     </header>
@@ -168,9 +133,6 @@
                 </button>
                 <button role="tab" aria-selected="false" aria-controls="details-panel" id="details-tab" class="focus:outline-none">
                     Implementation Details
-                </button>
-                <button role="tab" aria-selected="false" aria-controls="assets-panel" id="assets-tab" class="focus:outline-none">
-                    Assets
                 </button>
             </div>
 
@@ -208,17 +170,29 @@
                     
                     <h3>OLD Clock Configuration</h3>
                     <p>The original clock configuration required manual cycling:</p>
-                    <div class="img-container">
-                        <img src="images/clockin-old.jpg" alt="OLD clock input configuration showing the previous manual cycling setup">
-                        <span class="img-caption">Figure 1: Original Clock Input Configuration</span>
-                    </div>
+                    <figure class="my-6">
+                        <img src="images/clockin-old.png" 
+                             alt="OLD clock input configuration showing the previous manual cycling setup" 
+                             class="max-w-full h-auto rounded-lg border border-gray-300 shadow-sm mx-auto"
+                             style="max-width: 640px;"
+                             loading="lazy">
+                        <figcaption class="text-sm text-gray-600 text-center mt-2 italic">
+                            Figure 1: Original Clock Input Configuration
+                        </figcaption>
+                    </figure>
                     
                     <h3>NEW Clock Configuration</h3>
                     <p>The updated clock configuration with END bit integration and automated control:</p>
-                    <div class="img-container">
-                        <img src="images/clockin-new.jpg" alt="NEW clock input configuration showing the modified setup with END bit logic and automatic cycling control">
-                        <span class="img-caption">Figure 2: Modified Clock Input Configuration with END Bit Control</span>
-                    </div>
+                    <figure class="my-6">
+                        <img src="images/clockin-new.png" 
+                             alt="NEW clock input configuration showing the modified setup with END bit logic and automatic cycling control" 
+                             class="max-w-full h-auto rounded-lg border border-gray-300 shadow-sm mx-auto"
+                             style="max-width: 640px;"
+                             loading="lazy">
+                        <figcaption class="text-sm text-gray-600 text-center mt-2 italic">
+                            Figure 2: Modified Clock Input Configuration with END Bit Control
+                        </figcaption>
+                    </figure>
                 </div>
             </section>
 
@@ -245,45 +219,6 @@
                         <li>We can debug timing and synchronization issues during program execution</li>
                         <li>Future modules can access these signals for their own operations</li>
                     </ul>
-                </div>
-            </section>
-
-            <!-- Assets Panel -->
-            <section role="tabpanel" id="assets-panel" aria-labelledby="assets-tab" aria-hidden="true">
-                <div class="prose">
-                    <h2>Assets Register</h2>
-                    <p>This table documents all embedded and linked resources for this instructional page. All assets are currently stored as relative URLs and will be migrated to GitHub-hosted versions.</p>
-                </div>
-                
-                <div class="overflow-x-auto mt-6">
-                    <table class="asset-table">
-                        <thead>
-                            <tr>
-                                <th>Type</th>
-                                <th>Title / Alt Text</th>
-                                <th>Current Relative URL</th>
-                                <th>Planned GitHub URL</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>Image</td>
-                                <td>OLD clock input configuration</td>
-                                <td>images/clockin-old.jpg</td>
-                                <td>https://github.com/ORG/REPO/assets/cpu/clock/clockin-old.jpg</td>
-                            </tr>
-                            <tr>
-                                <td>Image</td>
-                                <td>NEW clock input configuration with END bit</td>
-                                <td>images/clockin-new.jpg</td>
-                                <td>https://github.com/ORG/REPO/assets/cpu/clock/clockin-new.jpg</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-                
-                <div class="placeholder-note mt-6">
-                    <p><strong>Migration Note:</strong> All images referenced in this page are currently served as relative URLs from the images/ directory. These will be migrated to GitHub-hosted versions. Update the URLs in the asset register as migration progresses.</p>
                 </div>
             </section>
         </div>
