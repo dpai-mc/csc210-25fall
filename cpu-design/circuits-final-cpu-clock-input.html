@@ -36,7 +36,7 @@
         
         /* Tab navigation styling */
         [role="tablist"] {
-            @apply flex flex-wrap gap-2 border-b-2 border-gray-300 bg-white;
+            @apply flex flex-wrap gap-4 border-b-2 border-gray-300 bg-white;
             overflow-x: auto;
             scroll-behavior: smooth;
         }
@@ -94,8 +94,12 @@
         
         /* Responsive tab styling for mobile */
         @media (max-width: 640px) {
+            [role="tablist"] {
+                @apply gap-2;
+            }
+            
             [role="tab"] {
-                @apply px-4 py-3 text-sm;
+                @apply px-3 py-3 text-sm;
             }
             
             [role="tabpanel"] {
@@ -112,7 +116,6 @@
     <header class="bg-white border-b border-gray-200 py-6 mb-8">
         <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
             <h1 class="text-4xl font-bold text-gray-900 mb-2">Clock Input Modification</h1>
-            <p class="text-gray-600">Understanding how to modify the clock circuit for automated program execution</p>
         </div>
     </header>
 
@@ -121,104 +124,59 @@
         
         <!-- Tabbed Interface -->
         <div class="mb-8">
-            <div role="tablist" class="flex flex-wrap border-b-2 border-gray-300 bg-white -mx-4 sm:mx-0 px-4" aria-label="Clock Input content sections">
-                <button role="tab" aria-selected="true" aria-controls="overview-panel" id="overview-tab" class="focus:outline-none">
-                    Overview
-                </button>
-                <button role="tab" aria-selected="false" aria-controls="logic-panel" id="logic-tab" class="focus:outline-none">
-                    Design & Logic
-                </button>
-                <button role="tab" aria-selected="false" aria-controls="diagrams-panel" id="diagrams-tab" class="focus:outline-none">
-                    Diagrams
-                </button>
-                <button role="tab" aria-selected="false" aria-controls="details-panel" id="details-tab" class="focus:outline-none">
-                    Implementation Details
-                </button>
-            </div>
+            
 
             <!-- Overview Panel -->
             <section role="tabpanel" id="overview-panel" aria-labelledby="overview-tab" aria-hidden="false">
-                <div class="prose">
-                    <h2>Purpose of Clock Input Modification</h2>
-                    <p>The "Clock" circuit needs to be modified so that we no longer have to manually cycle it. In order to run programs, we are going to invoke the "Ticks Enabled" option to automatically run our Assembly programs in the CPU. This modification enables automated program execution by converting the clock to a single input and adding the "End" bit functionality.</p>
-                    <p>The key improvement is that the clock can now be automatically controlled, eliminating the need for manual intervention during program execution. This is essential for testing and verifying that our CPU behaves correctly when executing complete programs.</p>
-                </div>
-            </section>
-
-            <!-- Design & Logic Panel -->
-            <section role="tabpanel" id="logic-panel" aria-labelledby="logic-tab" aria-hidden="true">
-                <div class="prose">
-                    <h2>How the Modification Works</h2>
-                    <h3>The END Bit Logic</h3>
-                    <p>In order to achieve automatic clock cycling, we need to change the clock to a single input and also add the "End" bit, which will disable the clock cycling at the end of our assembly program.</p>
-                    <p>The implementation uses a NOT gate and an AND gate to manage this behavior:</p>
-                    <ul>
-                        <li>The "END" tunnel is NOTted (inverted)</li>
-                        <li>The result is ANDed with the Clock input</li>
-                        <li>When "END" is high (true), the NOT gate outputs low (false)</li>
-                        <li>When low is ANDed with the Clock input, the output from the AND gate is always low</li>
-                        <li>Result: The clock never cycles once END is high, cleanly halting program execution</li>
-                    </ul>
-                    <p>This elegant design ensures that when a program completes and the END signal is asserted, the clock automatically stops, preventing any further instruction execution.</p>
+                <div class="prose space-y-4">
+                    <p>The "Clock" needs to be modified so that we no longer have to manually cycle it. In order to run programs, we are going to invoke the "Ticks Enabled" option to automatically run our Assembly programs in the CPU. In order to do this, we need to change the clock to a single input and also to add the "End" bit which will disable the clock cycling at the end of our assembly program.</p>
+                    
+                    <p>Since the "END" tunnel is "NOTted" and then "ANDed" with the Clock input, whenever "END" is high, the output from the AND gate is low so the clock never cycles.</p>
                 </div>
             </section>
 
             <!-- Diagrams Panel -->
             <section role="tabpanel" id="diagrams-panel" aria-labelledby="diagrams-tab" aria-hidden="true">
-                <div class="prose">
-                    <h2>Circuit Diagrams: Before and After</h2>
+                <div class="prose space-y-6">
+                    <div>
+                        <h3 class="text-lg font-bold mb-3">OLD</h3>
+                        <figure class="my-6">
+                            <img src="images/clockin-old.png" 
+                                 alt="ClockIn_OLD.png" 
+                                 class="max-w-full h-auto rounded-lg border border-gray-300 shadow-sm mx-auto"
+                                 style="max-width: 640px;"
+                                 loading="lazy">
+                        </figure>
+                    </div>
                     
-                    <h3>OLD Clock Configuration</h3>
-                    <p>The original clock configuration required manual cycling:</p>
-                    <figure class="my-6">
-                        <img src="images/clockin-old.png" 
-                             alt="OLD clock input configuration showing the previous manual cycling setup" 
-                             class="max-w-full h-auto rounded-lg border border-gray-300 shadow-sm mx-auto"
-                             style="max-width: 640px;"
-                             loading="lazy">
-                        <figcaption class="text-sm text-gray-600 text-center mt-2 italic">
-                            Figure 1: Original Clock Input Configuration
-                        </figcaption>
-                    </figure>
+                    <div>
+                        <h3 class="text-lg font-bold mb-3">NEW</h3>
+                        <figure class="my-6">
+                            <img src="images/clockin-new.png" 
+                                 alt="ClockIn_NEW.png" 
+                                 class="max-w-full h-auto rounded-lg border border-gray-300 shadow-sm mx-auto"
+                                 style="max-width: 640px;"
+                                 loading="lazy">
+                        </figure>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Design & Logic Panel -->
+            <section role="tabpanel" id="logic-panel" aria-labelledby="logic-tab" aria-hidden="true">
+                <div class="prose space-y-4">
+                    <p>Also, note the addition of output pins for "clke" and "clks".</p>
                     
-                    <h3>NEW Clock Configuration</h3>
-                    <p>The updated clock configuration with END bit integration and automated control:</p>
-                    <figure class="my-6">
-                        <img src="images/clockin-new.png" 
-                             alt="NEW clock input configuration showing the modified setup with END bit logic and automatic cycling control" 
-                             class="max-w-full h-auto rounded-lg border border-gray-300 shadow-sm mx-auto"
-                             style="max-width: 640px;"
-                             loading="lazy">
-                        <figcaption class="text-sm text-gray-600 text-center mt-2 italic">
-                            Figure 2: Modified Clock Input Configuration with END Bit Control
-                        </figcaption>
-                    </figure>
+                    <p>There is also an output pin and tunnel added to the "clk" output labeled "clkl" which stands for the Clock signal we need to "Load" our program.</p>
+                    
+                    <p>The addition of these output pins is necessary in order to be able to view the status of these signals at the next higher level.</p>
                 </div>
             </section>
 
             <!-- Implementation Details Panel -->
             <section role="tabpanel" id="details-panel" aria-labelledby="details-tab" aria-hidden="true">
-                <div class="prose">
-                    <h2>Output Pins and Implementation Details</h2>
-                    
-                    <h3>New Output Pins</h3>
-                    <p>Note the addition of output pins for clock-related signals:</p>
-                    <ul>
-                        <li><strong>clke</strong> – Clock enable signal (output pin)</li>
-                        <li><strong>clks</strong> – Clock status signal (output pin)</li>
-                    </ul>
-                    
-                    <h3>Load Clock Signal</h3>
-                    <p>There is also an output pin and tunnel added to the "clk" output labeled "clkl", which stands for the Clock signal we need to "Load" our program. This signal is critical for synchronizing program loading with the clock cycle.</p>
-                    
-                    <h3>Why These Output Pins Matter</h3>
-                    <p>The addition of these output pins is necessary in order to be able to view the status of these signals at the next higher level. When working with hierarchical circuit design in Logisim, we need to expose internal signals to parent circuits so that:</p>
-                    <ul>
-                        <li>We can monitor and verify that the clock modification is functioning correctly</li>
-                        <li>Higher-level control circuits can coordinate with the clock signals</li>
-                        <li>We can debug timing and synchronization issues during program execution</li>
-                        <li>Future modules can access these signals for their own operations</li>
-                    </ul>
+                <div class="prose space-y-4">
+                    <p>The addition of these output pins is necessary in order to be able to view the status of these signals at the next higher level.</p>
                 </div>
             </section>
         </div>
