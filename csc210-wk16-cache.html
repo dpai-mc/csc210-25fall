@@ -128,20 +128,36 @@
             justify-content: center;
         }
 
-        .nav-links a {
-            background: #10b981;
-            color: white;
+        .nav-links button {
+            background: #d1d5db;
+            color: #374151;
             padding: 10px 20px;
             border-radius: 6px;
             text-decoration: none;
-            transition: background 0.3s;
+            transition: all 0.3s;
             font-weight: 500;
+            border: none;
+            cursor: pointer;
+            font-size: 0.95rem;
         }
 
-        .nav-links a:hover {
-            background: #047857;
+        .nav-links button:hover {
+            background: #9ca3af;
+            color: white;
         }
 
+        .nav-links button.active {
+            background: #10b981;
+            color: white;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
         .interactive-section {
             background: #f0fdf4;
             padding: 30px;
@@ -311,17 +327,17 @@
             <p style="font-size: 0.95rem; margin-top: 10px;">Interactive Learning Module for Memory Performance Optimization</p>
         </div>
 
-        <div class="nav-links">
-            <a href="#foundation">Foundation</a>
-            <a href="#concepts">Key Concepts</a>
-            <a href="#simulator">Interactive Simulator</a>
-            <a href="#activities">Activities</a>
-            <a href="#cpu-examples">Real CPUs</a>
+<div class="nav-links">
+            <button class="tab-button active" data-tab="foundation">Foundation</button>
+            <button class="tab-button" data-tab="concepts">Key Concepts</button>
+            <button class="tab-button" data-tab="simulator">Interactive Simulator</button>
+            <button class="tab-button" data-tab="activities">Activities</button>
+            <button class="tab-button" data-tab="cpu-examples">Real CPUs</button>
         </div>
 
-        <section id="foundation">
-            <div class="section-heading">Part 1: The Memory Hierarchy Problem</div>
-
+        <div id="foundation" class="tab-content active">
+            <section>
+                <div class="section-heading">Part 1. The Memory Hierarchy Problem</div>
             <div class="content-block">
                 <h3 class="subsection-heading">The Fundamental Mismatch</h3>
                 <p>Your CPU can execute an instruction in <strong>1 nanosecond</strong> (at 1 GHz).</p>
@@ -394,10 +410,13 @@ for (int i = 0; i < 1000; i++) {
                     <strong>The Cache Bet:</strong> "Most programs access the same small set of data repeatedly." By keeping recently-accessed data in fast cache, we exploit this pattern to achieve near-register speeds without the cost of huge register files.
                 </div>
             </div>
-        </section>
+            </section>
+        </div>
 
-        <section id="concepts">
-            <div class="section-heading">Part 2: How Caches Work</div>
+        <div id="concepts" class="tab-content">
+            <section>
+                <div class="section-heading">Part 2: How Caches Work</div>
+
 
             <div class="content-block">
                 <h3 class="subsection-heading">Cache Operation: Hit or Miss</h3>
@@ -520,10 +539,12 @@ Disadvantage: Must search all entries (slow, expensive)
                     <p>Multiple addresses map to same cache location. Solution: increase associativity (but more complex hardware).</p>
                 </div>
             </div>
-        </section>
+            </section>
+        </div>
 
-        <section id="simulator">
-            <div class="section-heading">Part 3: Interactive Cache Simulator</div>
+        <div id="simulator" class="tab-content">
+            <section>
+                <div class="section-heading">Part 3: Interactive Cache Simulator</div>
 
             <div class="interactive-section">
                 <h3>Cache Configuration & Hit Rate Calculator</h3>
@@ -581,10 +602,12 @@ Disadvantage: Must search all entries (slow, expensive)
                     </div>
                 </div>
             </div>
-        </section>
+            </section>
+        </div>
 
-        <section id="activities">
-            <div class="section-heading">Part 4: Learning Activities</div>
+        <div id="activities" class="tab-content">
+            <section>
+                <div class="section-heading">Part 4: Learning Activities</div>
 
             <div class="content-block">
                 <h3 class="subsection-heading">Activity 1: Predict Cache Behavior</h3>
@@ -649,10 +672,12 @@ Questions:
 3. Why do all real CPUs use three levels?
                 </div>
             </div>
-        </section>
-
-        <section id="cpu-examples">
-            <div class="section-heading">Part 5: Real CPU Cache Hierarchies</div>
+            </section>
+        </div>
+        
+        <div id="cpu-examples" class="tab-content">
+            <section>
+                <div class="section-heading">Part 5: Real CPU Cache Hierarchies</div>
 
             <div class="content-block">
                 <h3 class="subsection-heading">ARM Cortex-A72: Balanced Design</h3>
@@ -692,7 +717,8 @@ Questions:
                 <div class="list-item"><strong>EMAT of ~10 ns</strong> enables pipelining to work (multiple instructions in flight)</div>
                 <div class="list-item"><strong>Code optimization for cache</strong> (sequential access, loop blocking) can provide 5-10× speedup</div>
             </div>
-        </section>
+            </section>
+        </div>
 
         <div class="content-block" style="margin-top: 40px; background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border-left-color: #10b981;">
             <h3 class="subsection-heading" style="color: #047857;">Next: Week 16 Part 3 - Multicore & Parallel Processing</h3>
@@ -852,6 +878,30 @@ Questions:
         document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('run-cache-sim').addEventListener('click', runCacheSimulation);
             document.getElementById('reset-cache').addEventListener('click', resetCache);
+
+            // Tab functionality
+            const tabButtons = document.querySelectorAll('.tab-button');
+            const tabContents = document.querySelectorAll('.tab-content');
+
+            tabButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const tabName = this.getAttribute('data-tab');
+
+                    // Hide all tabs
+                    tabContents.forEach(content => {
+                        content.classList.remove('active');
+                    });
+
+                    // Remove active class from all buttons
+                    tabButtons.forEach(btn => {
+                        btn.classList.remove('active');
+                    });
+
+                    // Show selected tab
+                    document.getElementById(tabName).classList.add('active');
+                    this.classList.add('active');
+                });
+            });
         });
     </script>
 </body>
