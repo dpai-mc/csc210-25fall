@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSC210 Week 16 Part 3: Multicore & Parallel Processing</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', sans-serif;
+            background-color: #FDFBF8;
+            color: #2C2C2C;
+            line-height: 1.6;
+        }
+
+        .container-custom {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header-section {
+            background: linear-gradient(135deg, #9333ea 0%, #c084fc 100%);
+            color: white;
+            padding: 60px 20px;
+            text-align: center;
+            border-radius: 8px;
+            margin-bottom: 40px;
+        }
+
+        .header-section h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .section-heading {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #6b21a8;
+            margin: 40px 0 20px 0;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #c084fc;
+        }
+
+        .subsection-heading {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #7c3aed;
+            margin: 25px 0 15px 0;
+        }
+
+        .content-block {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            border-left: 4px solid #c084fc;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .content-block p {
+            margin-bottom: 15px;
+            text-align: justify;
+        }
+
+        .code-block {
+            background: #f3f4f6;
+            border: 1px solid #e5e7eb;
+            border-radius: 6px;
+            padding: 15px;
+            margin: 15px 0;
+            overflow-x: auto;
+            font-family: 'Monaco', 'Courier New', monospace;
+            font-size: 0.9rem;
+            line-height: 1.4;
+            color: #1f2937;
+        }
+
+        .example-box {
+            background: #faf5ff;
+            border-left: 4px solid #c084fc;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 6px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: white;
+            border-radius: 6px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        thead {
+            background: #6b21a8;
+            color: white;
+        }
+
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        tbody tr:hover {
+            background: #f3f4f6;
+        }
+
+        .nav-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 30px 0;
+            justify-content: center;
+        }
+
+        .nav-links a {
+            background: #9333ea;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 6px;
+            text-decoration: none;
+            transition: background 0.3s;
+            font-weight: 500;
+        }
+
+        .nav-links a:hover {
+            background: #6b21a8;
+        }
+
+        .interactive-section {
+            background: #faf5ff;
+            padding: 30px;
+            border-radius: 8px;
+            margin: 30px 0;
+            border: 2px solid #c084fc;
+        }
+
+        .interactive-section h3 {
+            color: #6b21a8;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .control-group {
+            margin: 15px 0;
+        }
+
+        .control-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+            color: #1f2937;
+        }
+
+        .control-group input,
+        .control-group button {
+            padding: 8px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 4px;
+            font-size: 0.95rem;
+            background: white;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .control-group button {
+            background: #9333ea;
+            color: white;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .control-group button:hover {
+            background: #6b21a8;
+        }
+
+        .results-box {
+            background: white;
+            border: 2px solid #c084fc;
+            border-radius: 6px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .results-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin: 10px 0;
+        }
+
+        .result-item {
+            padding: 10px;
+            background: #f3f4f6;
+            border-radius: 4px;
+        }
+
+        .result-item .label {
+            font-size: 0.85rem;
+            color: #6b7280;
+            font-weight: 500;
+            text-transform: uppercase;
+        }
+
+        .result-item .value {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #6b21a8;
+            margin-top: 5px;
+        }
+
+        .activity-item {
+            background: white;
+            border-left: 4px solid #c084fc;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 6px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        .activity-item h4 {
+            color: #6b21a8;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .highlight {
+            background: #fef08a;
+            padding: 2px 4px;
+            border-radius: 2px;
+        }
+
+        .formula-box {
+            background: white;
+            border: 2px solid #6b21a8;
+            border-radius: 6px;
+            padding: 20px;
+            margin: 20px 0;
+            font-family: 'Monaco', 'Courier New', monospace;
+            text-align: center;
+            font-size: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .header-section h1 {
+                font-size: 1.8rem;
+            }
+
+            .results-row {
+                grid-template-columns: 1fr;
+            }
+
+            .content-block {
+                padding: 20px;
+            }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .list-item {
+            margin: 10px 0 10px 20px;
+            padding-left: 10px;
+            border-left: 3px solid #c084fc;
+        }
+
+        .step-counter {
+            display: inline-block;
+            background: #9333ea;
+            color: white;
+            width: 28px;
+            height: 28px;
+            line-height: 28px;
+            text-align: center;
+            border-radius: 50%;
+            font-weight: 700;
+            margin-right: 10px;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-custom">
+        <div class="header-section">
+            <h1>Multicore & Parallel Processing</h1>
+            <p>Week 16 Part 3 - CSC210 Computer Organization & Architecture</p>
+            <p style="font-size: 0.95rem; margin-top: 10px;">Interactive Learning Module for Parallel Computing & CPU Design</p>
+        </div>
+
+        <div class="nav-links">
+            <a href="#foundation">Foundation</a>
+            <a href="#amdahl">Amdahl's Law</a>
+            <a href="#simulator">Interactive Simulator</a>
+            <a href="#activities">Activities</a>
+            <a href="#cpu-examples">Real CPUs</a>
+        </div>
+
+        <section id="foundation">
+            <div class="section-heading">Part 1: The Promise and Reality of Multicore</div>
+
+            <div class="content-block">
+                <h3 class="subsection-heading">The Promise: Linear Speedup</h3>
+                <p>If one core executes a program in 10 seconds, intuitively:</p>
+                <div class="code-block">
+2 cores  → 5 seconds (2× speedup)
+4 cores  → 2.5 seconds (4× speedup)
+8 cores  → 1.25 seconds (8× speedup)
+16 cores → 0.625 seconds (16× speedup)
+
+Perfect scaling: N cores = N× speedup
+                </div>
+                <p>This is the dream of parallel computing. More cores = proportionally faster execution.</p>
+            </div>
+
+            <div class="content-block">
+                <h3 class="subsection-heading">The Reality: Not All Code Parallelizes</h3>
+                <p><span class="highlight">Gene Amdahl's Insight (1967):</span> Not all program code can be parallelized.</p>
+                <div class="code-block">
+Example 10-second program:
+  - 7 seconds: Parallelizable (can split across cores)
+  - 3 seconds: Sequential (only one core can execute)
+
+Sequential fraction: 3/10 = 30%
+Parallel fraction: 7/10 = 70%
+                </div>
+
+                <div class="example-box">
+                    <strong>The Problem:</strong> No matter how many cores you have, the sequential part must execute on ONE core. It becomes a bottleneck.
+                </div>
+            </div>
+
+            <div class="content-block">
+                <h3 class="subsection-heading">Examples of Sequential Code</h3>
+                <div class="list-item">I/O Operations: Reading files, network communication (only one thread gets the data)</div>
+                <div class="list-item">Synchronization: Locks, barriers (cores wait for each other)</div>
+                <div class="list-item">Data Dependencies: Instruction Y depends on X (Y can't start until X completes)</div>
+                <div class="list-item">Algorithms: Some algorithms are inherently sequential (linked-list traversal)</div>
+
+                <p><span class="highlight">Real programs typically have 5-30% sequential code.</span> This fundamentally limits speedup regardless of core count.</p>
+            </div>
+        </section>
+
+        <section id="amdahl">
+            <div class="section-heading">Part 2: Amdahl's Law - The Mathematical Reality</div>
+
+            <div class="content-block">
+                <h3 class="subsection-heading">Amdahl's Law Formula</h3>
+
+                <div class="formula-box">
+                    <strong>Speedup = 1 / (F_sequential + F_parallel / N)</strong><br><br>
+                    Where:<br>
+                    F_sequential = fraction of code that runs sequentially<br>
+                    F_parallel = fraction of code that parallelize (always = 1 - F_sequential)<br>
+                    N = number of cores
+                </div>
+
+                <p><strong>Example Calculation:</strong> 30% sequential code, 4 cores</p>
+                <div class="code-block">
+F_sequential = 0.30
+F_parallel = 0.70
+N = 4
+
+Speedup = 1 / (0.30 + 0.70/4)
+        = 1 / (0.30 + 0.175)
+        = 1 / 0.475
+        = 2.11×
+
+4 cores gives only 2.11× speedup (not 4×!)
+Lost to sequential bottleneck: 4 - 2.11 = 1.89×
+                </div>
+
+                <p>The sequential portion (0.30, or 3 seconds) is a <span class="highlight">bottleneck</span>. All cores must wait for it.</p>
+            </div>
+
+            <div class="content-block">
+                <h3 class="subsection-heading">Maximum Possible Speedup (N → ∞)</h3>
+
+                <p>Even with infinite cores, there's a hard limit:</p>
+
+                <div class="formula-box">
+                    <strong>Max Speedup = 1 / F_sequential</strong>
+                </div>
+
+                <p><strong>Examples:</strong></p>
+                <div class="code-block">
+F_sequential = 10%  → Max Speedup = 10× (no matter how many cores)
+F_sequential = 20%  → Max Speedup = 5×
+F_sequential = 30%  → Max Speedup = 3.3×
+F_sequential = 50%  → Max Speedup = 2×
+
+Lesson: Even optimized parallel code with only 10% sequential
+        has a hard 10× speedup ceiling.
+                </div>
+
+                <div class="example-box">
+                    <strong>Key Insight:</strong> The sequential fraction directly determines maximum achievable speedup. Reducing sequential code by even 5% significantly increases max speedup.
+                </div>
+            </div>
+
+            <div class="content-block">
+                <h3 class="subsection-heading">Synchronization Overhead: The Hidden Sequential Cost</h3>
+
+                <p>Even "parallel" code has hidden sequential costs:</p>
+                <div class="code-block">
+// Naive parallel summation
+for (int i=0; i<N; i++) {
+    lock(sum_mutex);     // ← Only one core at a time
+    sum += partial[i];   // ← 1 cycle of work
+    unlock(sum_mutex);   // ← Lock overhead: 100+ cycles
+}
+
+Lock cost >> actual work!
+Synchronization becomes sequential bottleneck.
+                </div>
+
+                <p><strong>Solution: Minimize synchronization</strong></p>
+                <div class="code-block">
+// Better: Thread-local sums
+sum_local = 0;
+for (int i=start; i<end; i++) {
+    sum_local += partial[i];  // ← No lock needed!
+}
+lock(sum_mutex);
+sum += sum_local;              // ← Lock once at end
+unlock(sum_mutex);
+
+Synchronization cost amortized over many additions.
+                </div>
+            </div>
+
+            <div class="content-block">
+                <h3 class="subsection-heading">Load Imbalance: Another Source of Sequential Cost</h3>
+
+                <p>If work isn't evenly distributed, some cores sit idle:</p>
+                <div class="code-block">
+Task A: 1000 cycles (Core 0)
+Task B:  500 cycles (Core 1)
+Task C:  200 cycles (Core 2)
+Task D:  100 cycles (Core 3)
+
+Total time: 1000 cycles (limited by longest task)
+
+Core 0: ████████████████ (working)
+Core 1: ████████         (idle 500 cycles)
+Core 2: ████             (idle 800 cycles)
+Core 3: ██               (idle 900 cycles)
+
+Utilization: (1000+500+200+100)/(1000×4) = 45%
+
+Even though 4 cores available, only 1 is fully utilized!
+                </div>
+
+                <p><span class="highlight">This is a form of sequential penalty:</span> The longest task determines total time.</p>
+            </div>
+
+            <div class="content-block">
+                <h3 class="subsection-heading">Real Multicore Performance</h3>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Sequential Fraction</th>
+                            <th>Max Speedup</th>
+                            <th>4-Core Speedup</th>
+                            <th>8-Core Speedup</th>
+                            <th>16-Core Speedup</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>10% (embarrassingly parallel)</td>
+                            <td>10×</td>
+                            <td>3.5×</td>
+                            <td>5.7×</td>
+                            <td>8.5×</td>
+                        </tr>
+                        <tr>
+                            <td>20% (mostly parallel)</td>
+                            <td>5×</td>
+                            <td>2.5×</td>
+                            <td>3.6×</td>
+                            <td>4.7×</td>
+                        </tr>
+                        <tr>
+                            <td>30% (mixed)</td>
+                            <td>3.3×</td>
+                            <td>2.1×</td>
+                            <td>2.6×</td>
+                            <td>3.1×</td>
+                        </tr>
+                        <tr>
+                            <td>50% (limited parallelism)</td>
+                            <td>2×</td>
+                            <td>1.6×</td>
+                            <td>1.8×</td>
+                            <td>1.9×</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <p><strong>Observation:</strong> Doubling core count gives much smaller than 2× speedup once F_sequential is significant.</p>
+            </div>
+        </section>
+
+        <section id="simulator">
+            <div class="section-heading">Part 3: Interactive Amdahl's Law Calculator</div>
+
+            <div class="interactive-section">
+                <h3>Amdahl's Law Speedup Calculator</h3>
+                <p>Adjust the sequential fraction and core count to see how speedup behaves.</p>
+
+                <div class="control-group">
+                    <label for="sequential-pct">Sequential Fraction (%):</label>
+                    <input type="range" id="sequential-pct" min="0" max="100" value="30" 
+                           style="width: 100%; cursor: pointer;">
+                    <span id="seq-display">30%</span> / <span id="par-display">70% parallel</span>
+                </div>
+
+                <div class="control-group">
+                    <label for="core-count">Number of Cores:</label>
+                    <input type="range" id="core-count" min="1" max="32" value="4" 
+                           style="width: 100%; cursor: pointer;">
+                    <span id="core-display">4 cores</span>
+                </div>
+
+                <div class="control-group">
+                    <button id="calculate-amdahl">Calculate Speedup</button>
+                </div>
+
+                <div id="speedup-output" style="margin-top: 20px;"></div>
+            </div>
+
+            <div class="results-box">
+                <h3 style="margin-bottom: 15px; color: #6b21a8;">Amdahl's Law Results</h3>
+                <div class="results-row">
+                    <div class="result-item">
+                        <div class="label">Actual Speedup</div>
+                        <div class="value" id="actual-speedup">-</div>
+                    </div>
+                    <div class="result-item">
+                        <div class="label">Max Possible Speedup</div>
+                        <div class="value" id="max-speedup">-</div>
+                    </div>
+                </div>
+                <div class="results-row">
+                    <div class="result-item">
+                        <div class="label">Efficiency</div>
+                        <div class="value" id="efficiency">-</div>
+                    </div>
+                    <div class="result-item">
+                        <div class="label">Ideal Speedup (ignore seq)</div>
+                        <div class="value" id="ideal-speedup">-</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="activities">
+            <div class="section-heading">Part 4: Learning Activities</div>
+
+            <div class="content-block">
+                <h3 class="subsection-heading">Activity 1: Find the Sequential Bottleneck</h3>
+
+                <div class="activity-item">
+                    <strong>Program A: Matrix Multiplication (Embarrassingly Parallel)</strong>
+                    <div class="code-block">
+for (int i=0; i<N; i++) {
+    for (int j=0; j<N; j++) {
+        result[i][j] = dot_product(row_i, col_j);
+    }
+}
+// Each (i,j) cell is independent - fully parallelizable!
+                    </div>
+                    <p><strong>Questions:</strong></p>
+                    <div class="list-item">What fraction is sequential? (Hint: only I/O and setup)</div>
+                    <div class="list-item">Estimate max speedup</div>
+                    <div class="list-item">Expected speedup with 8 cores?</div>
+                </div>
+
+                <div class="activity-item">
+                    <strong>Program B: Linked List Processing (Limited Parallelism)</strong>
+                    <div class="code-block">
+Node* current = head;
+while (current != NULL) {
+    process(current);         // Must process in order!
+    current = current->next;  // Dependency on previous
+}
+// Each node depends on previous - can't parallelize!
+                    </div>
+                    <p><strong>Questions:</strong></p>
+                    <div class="list-item">What fraction is parallel? (Answer: ~0%)</div>
+                    <div class="list-item">Max speedup with infinite cores? (Answer: 1×)</div>
+                    <div class="list-item">Why is multicore useless for this?</div>
+                </div>
+            </div>
+
+            <div class="content-block">
+                <h3 class="subsection-heading">Activity 2: Breaking Down Amdahl's Law</h3>
+
+                <p>For a program with 20% sequential code:</p>
+                <div class="code-block">
+1. Calculate max speedup: ___________
+2. Calculate 4-core speedup: ___________
+3. Calculate 8-core speedup: ___________
+4. Calculate 16-core speedup: ___________
+
+Observations:
+- What's the diminishing return pattern?
+- Why does adding more cores help less and less?
+                </div>
+                <p><span style="color: #9333ea; font-weight: 600;">→ Use the simulator to verify your calculations</span></p>
+            </div>
+
+            <div class="content-block">
+                <h3 class="subsection-heading">Activity 3: Synchronization vs. Parallelism Trade-off</h3>
+
+                <p>You're parallelizing a summation algorithm. Compare two approaches:</p>
+                <div class="code-block">
+Approach A: Fine-grained locking (lock per element)
+  - No load imbalance
+  - High synchronization overhead
+  - Effective sequential fraction: 40%
+
+Approach B: Coarse-grained locking (lock once at end)
+  - Thread-local sums reduce lock contention
+  - Slight load imbalance (cores might finish unevenly)
+  - Effective sequential fraction: 5%
+
+Question: Which is faster with 8 cores?
+                </div>
+                <p><strong>Answer:</strong> Approach B is much better (max 20× speedup vs. 1.7× speedup).</p>
+            </div>
+        </section>
+
+        <section id="cpu-examples">
+            <div class="section-heading">Part 5: Real Multicore CPU Designs</div>
+
+            <div class="content-block">
+                <h3 class="subsection-heading">Why Multicore? The Fundamental Reason</h3>
+
+                <p>CPUs hit a power wall around 3-5 GHz. To increase performance further:</p>
+                <div class="list-item"><strong>Single-core approach:</strong> Make clock faster (hits power limit, 300W+)</div>
+                <div class="list-item"><strong>Multi-core approach:</strong> Add more cores (shares power budget)</div>
+
+                <p>Example: 8 cores at 3 GHz using same power as 1 core at 5 GHz.</p>
+                <div class="example-box">
+                    <strong>Real Constraint:</strong> Power budget (~200-300W for consumer CPU). Can't increase clock infinitely. Must use multiple cores.
+                </div>
+            </div>
+
+            <div class="content-block">
+                <h3 class="subsection-heading">Symmetric Multiprocessing (All Cores Identical)</h3>
+
+                <p><strong>Example: Intel Core i9-12900K</strong></p>
+                <div class="code-block">
+8 P-cores (Performance)  @ 5.2 GHz
+8 E-cores (Efficiency)   @ 3.9 GHz
+Shared L3 cache (30 MB)
+                </div>
+
+                <p><strong>Design Philosophy:</strong> All cores are general-purpose, any core can run any code.</p>
+                <div class="list-item">Pros: Flexible, easy to parallelize</div>
+                <div class="list-item">Cons: Can't optimize for specific workloads</div>
+            </div>
+
+            <div class="content-block">
+                <h3 class="subsection-heading">Heterogeneous Multiprocessing (Different Core Types)</h3>
+
+                <p><strong>Example: Apple M1</strong></p>
+                <div class="code-block">
+4 P-cores @ 3.2 GHz  (high performance, high power)
+4 E-cores @ 2.0 GHz  (lower performance, very low power)
+Shared L3 cache (16 MB)
+                </div>
+
+                <p><strong>Design Philosophy:</strong> Different core types for different tasks.</p>
+                <div class="list-item">P-cores: Sequential code, heavy workloads</div>
+                <div class="list-item">E-cores: Background tasks, lightweight work</div>
+
+                <div class="example-box">
+                    <strong>Advantage:</strong> E-cores use 1/10 the power of P-cores. Background tasks don't waste energy. Battery life 2-3× better than equivalent symmetric design.
+                </div>
+            </div>
+
+            <div class="content-block">
+                <h3 class="subsection-heading">Cache Coherency: The Hardware Cost of Multicore</h3>
+
+                <p>When multiple cores have private caches, we have a problem:</p>
+                <div class="code-block">
+Core 0:              Core 1:
+  x = 5              y = x + 1  ← Needs current x!
+  (x in L1 cache)    (x in L1 cache, but outdated?)
+
+Cache coherency protocol ensures all cores see consistent memory.
+Cost: Additional memory traffic, synchronization latency.
+                </div>
+
+                <p>This is a fundamental hardware challenge of multicore systems.</p>
+            </div>
+
+            <div class="content-block">
+                <h3 class="subsection-heading">Summary: Why Multicore Matters</h3>
+
+                <div class="list-item"><strong>Clock speed wall:</strong> Can't keep increasing single-core clock above 5-6 GHz (power/heat)</div>
+                <div class="list-item"><strong>Performance scaling:</strong> Multicore provides 2-10× speedup for parallelizable workloads</div>
+                <div class="list-item"><strong>Parallelization limit:</strong> Amdahl's Law hard limits speedup based on sequential code</div>
+                <div class="list-item"><strong>Heterogeneous future:</strong> Specializing cores for specific tasks (P-cores vs. E-cores) improves efficiency</div>
+                <div class="list-item"><strong>Programming challenge:</strong> Writing efficient parallel code is harder than single-threaded</div>
+            </div>
+        </section>
+
+        <div class="content-block" style="margin-top: 40px; background: linear-gradient(135deg, #faf5ff 0%, #e9d5ff 100%); border-left-color: #c084fc;">
+            <h3 class="subsection-heading" style="color: #6b21a8;">Conclusion: Putting It All Together</h3>
+            <p>You've now learned the three fundamental CPU optimizations:</p>
+            <div class="list-item"><strong>Week 15:</strong> Performance metrics (how to measure)</div>
+            <div class="list-item"><strong>Week 16 Part 1 (Pipelining):</strong> Instruction-level parallelism (overlap execution)</div>
+            <div class="list-item"><strong>Week 16 Part 2 (Caching):</strong> Memory hierarchy (reduce latency)</div>
+            <div class="list-item"><strong>Week 16 Part 3 (Multicore):</strong> CPU-level parallelism (multiple cores)</div>
+            <p style="margin-top: 20px; font-weight: 600; color: #6b21a8;">These three techniques are why modern CPUs are billions of transistors powerful. Each one is essential; together they create today's high-performance computing.</p>
+        </div>
+
+        <div style="text-align: center; margin-top: 60px; padding-top: 20px; border-top: 2px solid #d1d5db; color: #6b7280; font-size: 0.9rem;">
+            <p>CSC210 Computer Organization & Architecture | Mendocino College</p>
+            <p>Interactive Learning Module | Week 16 Part 3: Multicore & Parallel Processing</p>
+        </div>
+    </div>
+
+    <script>
+        class AmdahlCalculator {
+            constructor(sequentialFraction, numCores) {
+                this.sequentialFraction = sequentialFraction / 100;
+                this.parallelFraction = 1 - this.sequentialFraction;
+                this.numCores = numCores;
+            }
+            
+            calculateSpeedup() {
+                return 1 / (this.sequentialFraction + (this.parallelFraction / this.numCores));
+            }
+            
+            calculateMaxSpeedup() {
+                return 1 / this.sequentialFraction;
+            }
+            
+            calculateIdealSpeedup() {
+                return this.numCores;
+            }
+            
+            calculateEfficiency() {
+                const speedup = this.calculateSpeedup();
+                return (speedup / this.numCores * 100).toFixed(1);
+            }
+        }
+
+        function updateDisplay() {
+            const seqVal = document.getElementById('sequential-pct').value;
+            const parVal = 100 - seqVal;
+            const coreVal = document.getElementById('core-count').value;
+            
+            document.getElementById('seq-display').textContent = seqVal + '%';
+            document.getElementById('par-display').textContent = parVal + '% parallel';
+            document.getElementById('core-display').textContent = coreVal + ' cores';
+        }
+
+        function calculateAmdahl() {
+            const seqVal = parseInt(document.getElementById('sequential-pct').value);
+            const coreVal = parseInt(document.getElementById('core-count').value);
+            
+            const calc = new AmdahlCalculator(seqVal, coreVal);
+            const speedup = calc.calculateSpeedup();
+            const maxSpeedup = calc.calculateMaxSpeedup();
+            const idealSpeedup = calc.calculateIdealSpeedup();
+            const efficiency = calc.calculateEfficiency();
+            
+            document.getElementById('actual-speedup').textContent = speedup.toFixed(2) + 'x';
+            document.getElementById('max-speedup').textContent = maxSpeedup.toFixed(2) + 'x';
+            document.getElementById('ideal-speedup').textContent = idealSpeedup.toFixed(2) + 'x';
+            document.getElementById('efficiency').textContent = efficiency + '%';
+            
+            const output = document.getElementById('speedup-output');
+            output.innerHTML = `<div class="example-box fade-in">
+                <strong>Amdahl's Law Calculation:</strong><br>
+                Sequential: ${seqVal}% | Parallel: ${100-seqVal}%<br>
+                Speedup = 1 / (${seqVal/100} + ${(100-seqVal)/100} / ${coreVal})<br>
+                Speedup = 1 / (${(seqVal/100).toFixed(3)} + ${((100-seqVal)/100/coreVal).toFixed(3)})<br>
+                <strong>Speedup = ${speedup.toFixed(2)}x</strong>
+            </div>`;
+            output.classList.add('fade-in');
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('sequential-pct').addEventListener('input', updateDisplay);
+            document.getElementById('core-count').addEventListener('input', updateDisplay);
+            document.getElementById('calculate-amdahl').addEventListener('click', calculateAmdahl);
+            
+            updateDisplay();
+        });
+    </script>
+</body>
+</html>

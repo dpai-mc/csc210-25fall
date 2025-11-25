@@ -1,0 +1,985 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSC210 Week 16 Part 1: Pipelining & Instruction-Level Parallelism</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', sans-serif;
+            background-color: #FDFBF8;
+            color: #2C2C2C;
+            line-height: 1.6;
+        }
+
+        .container-custom {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header-section {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            color: white;
+            padding: 60px 20px;
+            text-align: center;
+            border-radius: 8px;
+            margin-bottom: 40px;
+        }
+
+        .header-section h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .section-heading {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #1e40af;
+            margin: 40px 0 20px 0;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #3b82f6;
+        }
+
+        .subsection-heading {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 25px 0 15px 0;
+        }
+
+        .content-block {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            border-left: 4px solid #3b82f6;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .content-block p {
+            margin-bottom: 15px;
+            text-align: justify;
+        }
+
+        .code-block {
+            background: #f3f4f6;
+            border: 1px solid #e5e7eb;
+            border-radius: 6px;
+            padding: 15px;
+            margin: 15px 0;
+            overflow-x: auto;
+            font-family: 'Monaco', 'Courier New', monospace;
+            font-size: 0.9rem;
+            line-height: 1.4;
+            color: #1f2937;
+        }
+
+        .example-box {
+            background: #eff6ff;
+            border-left: 4px solid #3b82f6;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 6px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: white;
+            border-radius: 6px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        thead {
+            background: #1e40af;
+            color: white;
+        }
+
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        tbody tr:hover {
+            background: #f3f4f6;
+        }
+
+        .nav-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 30px 0;
+            justify-content: center;
+        }
+
+        .nav-links a {
+            background: #3b82f6;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 6px;
+            text-decoration: none;
+            transition: background 0.3s;
+            font-weight: 500;
+        }
+
+        .nav-links a:hover {
+            background: #1e40af;
+        }
+
+        .interactive-section {
+            background: #eff6ff;
+            padding: 30px;
+            border-radius: 8px;
+            margin: 30px 0;
+            border: 2px solid #3b82f6;
+        }
+
+        .interactive-section h3 {
+            color: #1e40af;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .control-group {
+            margin: 15px 0;
+        }
+
+        .control-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+            color: #1f2937;
+        }
+
+        .control-group select,
+        .control-group input,
+        .control-group button {
+            padding: 8px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 4px;
+            font-size: 0.95rem;
+            background: white;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .control-group button {
+            background: #3b82f6;
+            color: white;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .control-group button:hover {
+            background: #1e40af;
+        }
+
+        .results-box {
+            background: white;
+            border: 2px solid #3b82f6;
+            border-radius: 6px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .results-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin: 10px 0;
+        }
+
+        .result-item {
+            padding: 10px;
+            background: #f3f4f6;
+            border-radius: 4px;
+        }
+
+        .result-item .label {
+            font-size: 0.85rem;
+            color: #6b7280;
+            font-weight: 500;
+            text-transform: uppercase;
+        }
+
+        .result-item .value {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #1e40af;
+            margin-top: 5px;
+        }
+
+        .activity-item {
+            background: white;
+            border-left: 4px solid #3b82f6;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 6px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        .activity-item h4 {
+            color: #1e40af;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .highlight {
+            background: #fef08a;
+            padding: 2px 4px;
+            border-radius: 2px;
+        }
+
+        .pipeline-diagram {
+            background: white;
+            border: 2px solid #1e40af;
+            border-radius: 6px;
+            padding: 20px;
+            margin: 20px 0;
+            font-family: 'Monaco', 'Courier New', monospace;
+            font-size: 0.9rem;
+            overflow-x: auto;
+            line-height: 1.8;
+        }
+
+        @media (max-width: 768px) {
+            .header-section h1 {
+                font-size: 1.8rem;
+            }
+
+            .results-row {
+                grid-template-columns: 1fr;
+            }
+
+            .content-block {
+                padding: 20px;
+            }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .list-item {
+            margin: 10px 0 10px 20px;
+            padding-left: 10px;
+            border-left: 3px solid #3b82f6;
+        }
+
+        .step-counter {
+            display: inline-block;
+            background: #3b82f6;
+            color: white;
+            width: 28px;
+            height: 28px;
+            line-height: 28px;
+            text-align: center;
+            border-radius: 50%;
+            font-weight: 700;
+            margin-right: 10px;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-custom">
+        <div class="header-section">
+            <h1>Pipelining & Instruction-Level Parallelism</h1>
+            <p>Week 16 Part 1 - CSC210 Computer Organization & Architecture</p>
+            <p style="font-size: 0.95rem; margin-top: 10px;">Interactive Learning Module for CPU Pipeline Execution</p>
+        </div>
+
+        <div class="nav-links">
+            <a href="#foundation">Foundation</a>
+            <a href="#hazards">Pipeline Hazards</a>
+            <a href="#simulator">Interactive Simulator</a>
+            <a href="#activities">Activities</a>
+            <a href="#cpu-examples">Real CPUs</a>
+        </div>
+
+        <section id="foundation">
+            <div class="section-heading">Part 1: The Pipeline Revolution</div>
+
+            <div class="content-block">
+                <h3 class="subsection-heading">Sequential vs. Pipelined Execution</h3>
+                <p>The fundamental problem: <span class="highlight">CPUs take multiple clock cycles to execute one instruction.</span></p>
+
+                <div class="pipeline-diagram">
+Instruction 1: [Fetch] [Decode] [Execute] [Memory] [Write] (5 cycles)
+Instruction 2:                                        [Fetch] [Decode] [Execute] [Memory] [Write] (5 cycles)
+Instruction 3:                                                                   [Fetch] [Decode] [Execute] [Memory] [Write] (5 cycles)
+
+Sequential: Total time = 5 + 5 + 5 = 15 cycles
+Throughput: 1 instruction per 5 cycles = 0.2 instr/cycle
+                </div>
+
+                <p>The insight: While Instruction 1 is in the Memory stage, Instruction 2 could be in Execute, and Instruction 3 could be in Decode. <span class="highlight">Why wait for one instruction to finish before starting the next?</span></p>
+
+                <div class="pipeline-diagram">
+Cycle:  1  2  3  4  5  6  7  8
+Instr1: F  D  E  M  W
+Instr2:    F  D  E  M  W
+Instr3:       F  D  E  M  W
+
+Pipelined: Total time = 5 + 2 = 7 cycles (one new instruction completes every cycle after initial fill)
+Throughput: 1 instruction per cycle = 1.0 instr/cycle
+                </div>
+
+                <p><strong>The speedup formula:</strong></p>
+                <div class="code-block">
+Speedup = Sequential Time / Pipelined Time
+        = (N instructions × 5 cycles) / (5 + N - 1 cycles)
+
+For large N: Speedup ≈ 5× (number of pipeline stages)
+
+Example: 1000 instructions
+  Sequential: 5000 cycles
+  Pipelined:  1004 cycles
+  Speedup: 4.98× ≈ 5×
+                </div>
+
+                <div class="example-box">
+                    <strong>Key Insight:</strong> Pipelining increases throughput by overlapping instruction execution. Each instruction still takes 5 cycles (latency unchanged), but new instructions complete every cycle (throughput 5×).
+                </div>
+            </div>
+
+            <div class="content-block">
+                <h3 class="subsection-heading">Real Pipeline Depths in Modern CPUs</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>CPU</th>
+                            <th>Pipeline Stages</th>
+                            <th>Clock Speed</th>
+                            <th>Year</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Intel Pentium (1993)</td>
+                            <td>5 stages</td>
+                            <td>60-200 MHz</td>
+                            <td>1993</td>
+                        </tr>
+                        <tr>
+                            <td>ARM Cortex-A72</td>
+                            <td>8 stages</td>
+                            <td>2.0 GHz</td>
+                            <td>2015</td>
+                        </tr>
+                        <tr>
+                            <td>Intel Core i9-12900K</td>
+                            <td>14-19 stages</td>
+                            <td>3.2-5.2 GHz</td>
+                            <td>2021</td>
+                        </tr>
+                        <tr>
+                            <td>Apple M1</td>
+                            <td>11 stages</td>
+                            <td>3.2 GHz</td>
+                            <td>2020</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <p><strong>Observation:</strong> Modern pipelines are much deeper (8-19 stages). Deeper pipelines enable higher clock speeds but introduce more hazard opportunities.</p>
+            </div>
+        </section>
+
+        <section id="hazards">
+            <div class="section-heading">Part 2: Pipeline Hazards - When Parallelism Breaks</div>
+
+            <div class="content-block">
+                <h3 class="subsection-heading">Hazard 1: Data Hazards (Read-After-Write Dependencies)</h3>
+
+                <p>Instruction Y needs data produced by Instruction X, but X hasn't completed yet.</p>
+
+                <div class="code-block">
+Instruction 1: ADD R1, R2, R3    (produces R1)
+Instruction 2: SUB R4, R1, R5    (needs R1!) ← DATA HAZARD
+
+Cycle:  1  2  3  4  5  6
+Instr1: F  D  E  M  W            (R1 ready at cycle 5)
+Instr2:    F  D  X  X  E  M  W   (needs R1, blocked until cycle 5)
+
+Without mitigation: Stall 2 cycles
+With forwarding: Forward R1 from Write stage to Decode stage → No stall!
+                </div>
+
+                <p><strong>Mitigation strategies:</strong></p>
+                <div class="list-item"><strong>Forwarding (Bypass):</strong> Send result directly from Write stage back to Decode stage, bypassing memory</div>
+                <div class="list-item"><strong>Stalling:</strong> Insert NOPs (no-operation) instructions until dependency resolves</div>
+                <div class="list-item"><strong>Out-of-Order Execution:</strong> Execute independent instructions while waiting for dependency</div>
+            </div>
+
+            <div class="content-block">
+                <h3 class="subsection-heading">Hazard 2: Control Hazards (Branches)</h3>
+
+                <p>Branch instructions change program flow, but the next instruction has already entered the pipeline.</p>
+
+                <div class="code-block">
+Instruction 1: BEQ R1, R2, LABEL  (branch if equal)
+Instruction 2: ADD R3, R4, R5      (next in sequence, but might not execute!)
+
+Cycle:  1  2  3  4  5  6
+Instr1: F  D  E  M  W             (branch decision made at cycle 4)
+Instr2:    F  D  E  M             (wrong instruction! Flushed at cycle 4)
+
+Without mitigation: Stall 2-3 cycles (flush wrong instructions)
+With branch prediction: Guess next address, reduce penalty
+                </div>
+
+                <p><strong>Mitigation strategies:</strong></p>
+                <div class="list-item"><strong>Branch Prediction:</strong> Guess whether branch taken or not, execute ahead speculatively</div>
+                <div class="list-item"><strong>Stalling:</strong> Wait for branch to complete before fetching next instruction (very slow)</div>
+                <div class="list-item"><strong>Delayed Branching:</strong> Execute instruction after branch regardless of outcome (MIPS ISA)</div>
+            </div>
+
+            <div class="content-block">
+                <h3 class="subsection-heading">Hazard 3: Structural Hazards (Resource Conflicts)</h3>
+
+                <p>Two instructions compete for the same hardware resource simultaneously.</p>
+
+                <div class="code-block">
+Scenario: Memory system handles only one access per cycle
+
+Instruction 1: LW R1, 0(R2)       (memory read at cycle 4)
+Instruction 2: ...
+Instruction 3: ...
+Instruction 4: SW R3, 0(R4)       (memory write also at cycle 4)
+
+Both can't access memory → Stall one instruction
+
+Mitigation: Replicate hardware (dual-ported memory, multiple ALUs)
+            Or pipeline memory system (separate read/write buses)
+                </div>
+
+                <p><strong>Modern CPUs have:</strong> Dual-ported caches, multiple memory ports, multiple ALUs → Structural hazards rare.</p>
+            </div>
+
+            <div class="content-block">
+                <h3 class="subsection-heading">Summary: The Three Hazards</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Hazard Type</th>
+                            <th>Cause</th>
+                            <th>Mitigation</th>
+                            <th>Modern Cost</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Data</td>
+                            <td>Instruction depends on previous result</td>
+                            <td>Forwarding, Out-of-order execution</td>
+                            <td>0-2 cycles (mostly forwarded)</td>
+                        </tr>
+                        <tr>
+                            <td>Control</td>
+                            <td>Branch changes program flow</td>
+                            <td>Branch prediction (>90% accurate)</td>
+                            <td>5-15 cycles (on misprediction)</td>
+                        </tr>
+                        <tr>
+                            <td>Structural</td>
+                            <td>Two instructions need same resource</td>
+                            <td>Replicate hardware</td>
+                            <td>Rare (modern CPUs have many ALUs)</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section id="simulator">
+            <div class="section-heading">Part 3: Interactive Pipeline Simulator</div>
+
+            <div class="interactive-section">
+                <h3>Pipeline Execution Simulator</h3>
+                <p>Select a program and pipeline configuration, then visualize instruction execution.</p>
+
+                <div class="control-group">
+                    <label for="program-select">Program:</label>
+                    <select id="program-select">
+                        <option value="simple_arithmetic">Simple Arithmetic (no hazards)</option>
+                        <option value="data_dependency">Data Dependency (R1 dependency)</option>
+                        <option value="load_dependency">Load Dependency (memory hazard)</option>
+                        <option value="with_branches">With Branches (control hazard)</option>
+                        <option value="complex">Complex Mix (all hazards)</option>
+                    </select>
+                </div>
+
+                <div class="control-group">
+                    <label for="pipeline-depth">Pipeline Depth:</label>
+                    <select id="pipeline-depth">
+                        <option value="3">3-stage (Fetch, Execute, Write)</option>
+                        <option value="4">4-stage (Fetch, Decode, Execute, Write)</option>
+                        <option value="5" selected>5-stage (Fetch, Decode, Execute, Memory, Write)</option>
+                        <option value="8">8-stage (Modern ARM-style)</option>
+                    </select>
+                </div>
+
+                <div class="control-group">
+                    <label>
+                        <input type="checkbox" id="hazard-forwarding" checked>
+                        Enable Forwarding (data hazard mitigation)
+                    </label>
+                </div>
+
+                <div class="control-group">
+                    <label>
+                        <input type="checkbox" id="branch-prediction" checked>
+                        Enable Branch Prediction (90% accurate)
+                    </label>
+                </div>
+
+                <div class="control-group">
+                    <button id="run-simulation">Run Simulation</button>
+                    <button id="step-forward" style="margin-left: 10px;">Step Forward</button>
+                    <button id="reset-simulation" style="margin-left: 10px;">Reset</button>
+                </div>
+
+                <div id="pipeline-output" style="margin-top: 20px;"></div>
+            </div>
+
+            <div class="results-box">
+                <h3 style="margin-bottom: 15px; color: #1e40af;">Pipeline Performance</h3>
+                <div class="results-row">
+                    <div class="result-item">
+                        <div class="label">Total Cycles</div>
+                        <div class="value" id="total-cycles">-</div>
+                    </div>
+                    <div class="result-item">
+                        <div class="label">Instructions</div>
+                        <div class="value" id="num-instructions">-</div>
+                    </div>
+                </div>
+                <div class="results-row">
+                    <div class="result-item">
+                        <div class="label">CPI (Cycles Per Instruction)</div>
+                        <div class="value" id="cpi">-</div>
+                    </div>
+                    <div class="result-item">
+                        <div class="label">Speedup vs. Sequential</div>
+                        <div class="value" id="pipeline-speedup">-</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="activities">
+            <div class="section-heading">Part 4: Learning Activities</div>
+
+            <div class="content-block">
+                <h3 class="subsection-heading">Activity 1: Identify Hazards by Hand</h3>
+
+                <div class="activity-item">
+                    <strong>Program A: Simple Arithmetic</strong>
+                    <div class="code-block">
+ADD R1, R2, R3    # Cycle 1
+ADD R4, R5, R6    # Cycle 2
+SUB R7, R8, R9    # Cycle 3
+                    </div>
+                    <p><strong>Questions:</strong></p>
+                    <div class="list-item">Are there any data dependencies? (Answer: No)</div>
+                    <div class="list-item">Are there any branch instructions? (Answer: No)</div>
+                    <div class="list-item">Expected CPI with perfect pipeline: 1.0</div>
+                </div>
+
+                <div class="activity-item">
+                    <strong>Program B: Data Dependency</strong>
+                    <div class="code-block">
+ADD R1, R2, R3    # Produces R1
+SUB R4, R1, R5    # Needs R1! ← HAZARD
+ADD R6, R7, R8    # No dependency
+                    </div>
+                    <p><strong>Questions:</strong></p>
+                    <div class="list-item">What type of hazard? (Answer: Data hazard)</div>
+                    <div class="list-item">How many cycles stalled without forwarding? (Answer: 2)</div>
+                    <div class="list-item">How many cycles with forwarding? (Answer: 0)</div>
+                </div>
+            </div>
+
+            <div class="content-block">
+                <h3 class="subsection-heading">Activity 2: Measure Pipeline Effectiveness</h3>
+
+                <p>Run each of the 5 programs in the simulator. Record results:</p>
+                <div class="code-block">
+Program                  Total Cycles  CPI    Speedup
+─────────────────────────────────────────────────────
+Simple Arithmetic        ___           ___    ___
+Data Dependency          ___           ___    ___
+Load Dependency          ___           ___    ___
+With Branches            ___           ___    ___
+Complex Mix              ___           ___    ___
+
+Questions:
+1. Which program achieves best speedup?
+2. Which hazard type causes most slowdown?
+3. How does branch prediction impact performance?
+                </div>
+            </div>
+
+            <div class="content-block">
+                <h3 class="subsection-heading">Activity 3: Compare Pipeline Depths</h3>
+
+                <p>Simulate the same program with different pipeline depths:</p>
+                <div class="code-block">
+Pipeline Depth  Total Cycles  CPI    Benefit?
+────────────────────────────────────────────
+3-stage         ___           ___    (baseline)
+4-stage         ___           ___    Compare to 3-stage
+5-stage         ___           ___    Compare to 3-stage
+8-stage         ___           ___    Compare to 3-stage
+
+Questions:
+1. Does deeper pipeline always mean faster?
+2. Why might deeper pipelines be slower?
+   (Hint: More stages = more hazard opportunities)
+                </div>
+            </div>
+        </section>
+
+        <section id="cpu-examples">
+            <div class="section-heading">Part 5: Real CPU Pipeline Designs</div>
+
+            <div class="content-block">
+                <h3 class="subsection-heading">ARM Cortex-A72: 8-Stage Pipeline</h3>
+                <div class="code-block">
+Fetch → Decode → ALU1 → ALU2 → Memory → Memory2 → Write → Commit
+
+8-stage pipeline balances:
+  - Higher clock speed (shorter stages)
+  - More hazard opportunities (longer latencies)
+                </div>
+                <div class="example-box">
+                    <strong>Design trade-off:</strong> 8 stages enable 2.0 GHz clock (high speed). Longer data path means data forwarding essential, and branch misses cost 8 cycles instead of 3.
+                </div>
+            </div>
+
+            <div class="content-block">
+                <h3 class="subsection-heading">Intel Core i9: 14-19 Stage Pipeline</h3>
+                <div class="code-block">
+Very deep pipeline enables 5.2 GHz clock speed!
+
+Cost: Branch misprediction = 15+ cycle penalty
+Solution: Excellent branch predictor (>95% accuracy)
+                </div>
+                <div class="example-box">
+                    <strong>Modern Design:</strong> Intel trades pipeline depth for raw clock speed. Sophisticated branch prediction needed to make deep pipelines practical.
+                </div>
+            </div>
+
+            <div class="content-block">
+                <h3 class="subsection-heading">Out-of-Order Execution: Beyond Pipelining</h3>
+
+                <p>Modern CPUs go further: execute instructions out of original program order.</p>
+                <div class="code-block">
+Instruction 1: ADD R1, R2, R3    (data hazard)
+Instruction 2: SUB R4, R5, R6    (independent - execute first!)
+Instruction 3: MUL R7, R8, R9    (independent - execute before instruction 1)
+Instruction 4: SUB R10, R1, ...   (depends on instruction 1)
+
+Out-of-order CPU:
+  Execute: 2, 3, 1, 4 (original: 1, 2, 3, 4)
+  Benefit: Hide data hazards, improve throughput
+                </div>
+
+                <p><strong>Cost:</strong> Additional hardware (instruction buffer, dependency checker, reorder buffer). Adds ~20-30% transistor count.</p>
+                <p><strong>Benefit:</strong> 20-40% performance improvement for real programs.</p>
+            </div>
+
+            <div class="section-heading">Summary: Why Pipelining Matters</div>
+
+            <div class="content-block">
+                <div class="list-item"><strong>Latency vs. Throughput:</strong> Pipelining doesn't reduce latency (one instruction still takes 5 cycles), but increases throughput (one result per cycle)</div>
+                <div class="list-item"><strong>Hazards are the enemy:</strong> Three types (data, control, structural) reduce pipeline efficiency</div>
+                <div class="list-item"><strong>Modern mitigation:</strong> Forwarding (data), branch prediction (control), replicated hardware (structural)</div>
+                <div class="list-item"><strong>Deeper pipelines trade off:</strong> Higher clock speed vs. more hazard opportunities</div>
+                <div class="list-item"><strong>Out-of-order execution:</strong> Further improvement by executing independent instructions ahead of dependencies</div>
+            </div>
+        </section>
+
+        <div class="content-block" style="margin-top: 40px; background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-left-color: #3b82f6;">
+            <h3 class="subsection-heading" style="color: #1e40af;">Next: Week 16 Part 2 - Memory Hierarchy & Caching</h3>
+            <p>You've learned how pipelining enables instruction-level parallelism by overlapping execution. But there's another critical problem: memory latency. In Part 2, we'll explore how CPUs use cache hierarchies to hide memory latency and achieve near-register performance.</p>
+        </div>
+
+        <div style="text-align: center; margin-top: 60px; padding-top: 20px; border-top: 2px solid #d1d5db; color: #6b7280; font-size: 0.9rem;">
+            <p>CSC210 Computer Organization & Architecture | Mendocino College</p>
+            <p>Interactive Learning Module | Week 16 Part 1: Pipelining & Instruction-Level Parallelism</p>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT PLACEHOLDER: Replace this entire script section with the JavaScript code provided separately -->
+    <script>
+       class PipelineSimulator {
+    constructor(pipelineDepth, enableForwarding, enableBranchPrediction) {
+        this.pipelineDepth = pipelineDepth;
+        this.enableForwarding = enableForwarding;
+        this.enableBranchPrediction = enableBranchPrediction;
+        this.resetState();
+    }
+
+    resetState() {
+        this.pipeline = {};
+        for (let i = 0; i < this.pipelineDepth; i++) {
+            this.pipeline[i] = null;
+        }
+        this.registerFile = {};
+        this.currentCycle = 0;
+        this.completedInstructions = 0;
+        this.stallCycles = 0;
+        this.mispredictions = 0;
+        this.executionLog = [];
+        this.hazardLog = [];
+    }
+
+    getProgram(programName) {
+        const programs = {
+            simple_arithmetic: [
+                { id: 1, op: 'ADD', dest: 'R1', src1: 'R2', src2: 'R3', cycles: 1, hazardType: null },
+                { id: 2, op: 'ADD', dest: 'R4', src1: 'R5', src2: 'R6', cycles: 1, hazardType: null },
+                { id: 3, op: 'SUB', dest: 'R7', src1: 'R8', src2: 'R9', cycles: 1, hazardType: null },
+                { id: 4, op: 'MUL', dest: 'R10', src1: 'R11', src2: 'R12', cycles: 1, hazardType: null }
+            ],
+            data_dependency: [
+                { id: 1, op: 'ADD', dest: 'R1', src1: 'R2', src2: 'R3', cycles: 1, hazardType: null },
+                { id: 2, op: 'SUB', dest: 'R4', src1: 'R1', src2: 'R5', cycles: 1, hazardType: 'data', hazardDistance: 1 },
+                { id: 3, op: 'ADD', dest: 'R6', src1: 'R7', src2: 'R8', cycles: 1, hazardType: null },
+                { id: 4, op: 'MUL', dest: 'R9', src1: 'R4', src2: 'R10', cycles: 1, hazardType: 'data', hazardDistance: 1 }
+            ],
+            load_dependency: [
+                { id: 1, op: 'LW', dest: 'R1', src1: 'R2', src2: null, cycles: 2, hazardType: null },
+                { id: 2, op: 'ADD', dest: 'R3', src1: 'R1', src2: 'R4', cycles: 1, hazardType: 'data', hazardDistance: 1 },
+                { id: 3, op: 'SW', dest: 'R3', src1: 'R5', src2: null, cycles: 2, hazardType: null },
+                { id: 4, op: 'ADD', dest: 'R6', src1: 'R7', src2: 'R8', cycles: 1, hazardType: null }
+            ],
+            with_branches: [
+                { id: 1, op: 'ADD', dest: 'R1', src1: 'R2', src2: 'R3', cycles: 1, hazardType: null },
+                { id: 2, op: 'BEQ', dest: null, src1: 'R1', src2: 'R0', cycles: 1, hazardType: 'control', taken: true },
+                { id: 3, op: 'ADD', dest: 'R4', src1: 'R5', src2: 'R6', cycles: 1, hazardType: 'control' },
+                { id: 4, op: 'SUB', dest: 'R7', src1: 'R8', src2: 'R9', cycles: 1, hazardType: null }
+            ],
+            complex: [
+                { id: 1, op: 'LW', dest: 'R1', src1: 'R2', src2: null, cycles: 2, hazardType: null },
+                { id: 2, op: 'ADD', dest: 'R3', src1: 'R1', src2: 'R4', cycles: 1, hazardType: 'data', hazardDistance: 1 },
+                { id: 3, op: 'BNE', dest: null, src1: 'R3', src2: 'R0', cycles: 1, hazardType: 'control', taken: false },
+                { id: 4, op: 'MUL', dest: 'R5', src1: 'R6', src2: 'R7', cycles: 1, hazardType: null },
+                { id: 5, op: 'SUB', dest: 'R8', src1: 'R5', src2: 'R9', cycles: 1, hazardType: 'data', hazardDistance: 1 }
+            ]
+        };
+        return programs[programName] || programs.simple_arithmetic;
+    }
+
+    getPipelineStages() {
+        const stages = {
+            3: ['F', 'E', 'W'],
+            4: ['F', 'D', 'E', 'W'],
+            5: ['F', 'D', 'E', 'M', 'W'],
+            8: ['F', 'D', 'E1', 'E2', 'M', 'M2', 'W', 'C']
+        };
+        return stages[this.pipelineDepth] || stages[5];
+    }
+
+    hasDataHazard(instruction, pipelineState) {
+        if (!instruction.src1 && !instruction.src2) return false;
+        
+        for (let stage = 0; stage < this.pipelineDepth; stage++) {
+            if (!pipelineState[stage]) continue;
+            const stagInstr = pipelineState[stage];
+            
+            if (stagInstr.dest && (stagInstr.dest === instruction.src1 || stagInstr.dest === instruction.src2)) {
+                const stageDistance = stage;
+                if (this.enableForwarding && stageDistance >= 2) {
+                    return false;
+                }
+                return true;
+            }
+        }
+        return false;
+    }
+
+    simulate(program) {
+        this.resetState();
+        const stages = this.getPipelineStages();
+        let instructionQueue = [...program];
+        let nextInstrIndex = 0;
+        let stallCycleCounter = 0;
+        let branchPredictionAccuracy = 0;
+        let branchAttempts = 0;
+
+        while (this.completedInstructions < program.length || this.pipelineHasInstructions()) {
+            this.currentCycle++;
+
+            // Move instructions through pipeline (right to left shift)
+            for (let stage = this.pipelineDepth - 1; stage > 0; stage--) {
+                this.pipeline[stage] = this.pipeline[stage - 1];
+            }
+
+            // Try to fetch next instruction
+            let canFetch = true;
+            
+            // Check for control hazard
+            if (this.pipeline[0] && this.pipeline[0].hazardType === 'control') {
+                if (this.enableBranchPrediction && Math.random() < 0.9) {
+                    branchPredictionAccuracy++;
+                } else {
+                    this.mispredictions++;
+                    stallCycleCounter += 3;
+                    canFetch = false;
+                }
+                branchAttempts++;
+            }
+
+            // Fetch new instruction
+            if (canFetch && nextInstrIndex < instructionQueue.length) {
+                const nextInstr = instructionQueue[nextInstrIndex];
+                
+                // Check for data hazard
+                if (this.hasDataHazard(nextInstr, this.pipeline)) {
+                    stallCycleCounter++;
+                } else {
+                    this.pipeline[0] = { ...nextInstr, fetchCycle: this.currentCycle, stages: {} };
+                    nextInstrIndex++;
+                }
+            } else {
+                this.pipeline[0] = null;
+            }
+
+            // Track instruction completion
+            if (this.pipeline[this.pipelineDepth - 1]) {
+                this.completedInstructions++;
+                const completedInstr = this.pipeline[this.pipelineDepth - 1];
+                this.executionLog.push({
+                    id: completedInstr.id,
+                    cycle: this.currentCycle,
+                    totalCycles: this.currentCycle - completedInstr.fetchCycle + 1
+                });
+            }
+
+            if (this.currentCycle > 1000) break; // Safety limit
+        }
+
+        this.stallCycles = stallCycleCounter;
+        return this.getResults(program);
+    }
+
+    pipelineHasInstructions() {
+        for (let stage = 0; stage < this.pipelineDepth; stage++) {
+            if (this.pipeline[stage]) return true;
+        }
+        return false;
+    }
+
+    getResults(program) {
+        const totalInstructions = program.length;
+        const cpi = (this.currentCycle / totalInstructions).toFixed(2);
+        const sequentialCycles = totalInstructions * 5; // Assume 5-cycle instruction
+        const speedup = (sequentialCycles / this.currentCycle).toFixed(2);
+
+        return {
+            totalCycles: this.currentCycle,
+            numInstructions: totalInstructions,
+            cpi: cpi,
+            speedup: speedup,
+            stallCycles: this.stallCycles,
+            mispredictions: this.mispredictions,
+            executionLog: this.executionLog
+        };
+    }
+}
+
+// Global simulator state
+let globalSimulator = null;
+let currentProgram = null;
+
+function runSimulation() {
+    const programSelect = document.getElementById('program-select').value;
+    const pipelineDepth = parseInt(document.getElementById('pipeline-depth').value);
+    const enableForwarding = document.getElementById('hazard-forwarding').checked;
+    const enableBranchPrediction = document.getElementById('branch-prediction').checked;
+
+    globalSimulator = new PipelineSimulator(pipelineDepth, enableForwarding, enableBranchPrediction);
+    currentProgram = globalSimulator.getProgram(programSelect);
+    
+    const results = globalSimulator.simulate(currentProgram);
+
+    displayPipelineResults(results, globalSimulator);
+}
+
+function displayPipelineResults(results, simulator) {
+    document.getElementById('total-cycles').textContent = results.totalCycles;
+    document.getElementById('num-instructions').textContent = results.numInstructions;
+    document.getElementById('cpi').textContent = results.cpi;
+    document.getElementById('pipeline-speedup').textContent = results.speedup + 'x';
+
+    const output = document.getElementById('pipeline-output');
+    const stages = simulator.getPipelineStages();
+    
+    let html = `<div class="example-box fade-in">
+        <strong>Pipeline Execution Summary:</strong><br>
+        Pipeline Depth: ${stages.length} stages (${stages.join(' → ')})<br>
+        Total Cycles: ${results.totalCycles} | Instructions: ${results.numInstructions}<br>
+        CPI: ${results.cpi} | Speedup vs Sequential: ${results.speedup}x<br>
+        Stall Cycles: ${results.stallCycles} | Branch Mispredictions: ${results.mispredictions}<br><br>
+        <strong>Instruction Completion Timeline:</strong><br>`;
+
+    results.executionLog.forEach(log => {
+        html += `Instruction ${log.id}: Completed at cycle ${log.cycle} (${log.totalCycles} cycles)<br>`;
+    });
+
+    html += `</div>`;
+    output.innerHTML = html;
+}
+
+function stepForward() {
+    if (!globalSimulator) {
+        alert('Run simulation first!');
+        return;
+    }
+    // Placeholder for step-by-step visualization
+    alert('Step-through visualization not yet implemented. Use Run Simulation for full results.');
+}
+
+function resetSimulation() {
+    document.getElementById('total-cycles').textContent = '-';
+    document.getElementById('num-instructions').textContent = '-';
+    document.getElementById('cpi').textContent = '-';
+    document.getElementById('pipeline-speedup').textContent = '-';
+    document.getElementById('pipeline-output').innerHTML = '';
+    globalSimulator = null;
+    currentProgram = null;
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('run-simulation').addEventListener('click', runSimulation);
+    document.getElementById('step-forward').addEventListener('click', stepForward);
+    document.getElementById('reset-simulation').addEventListener('click', resetSimulation);
+});
+    </script>
+</body>
+</html>

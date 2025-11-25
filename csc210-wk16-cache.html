@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSC210 Week 16 Part 2: Memory Hierarchy & Caching</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', sans-serif;
+            background-color: #FDFBF8;
+            color: #2C2C2C;
+            line-height: 1.6;
+        }
+
+        .container-custom {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header-section {
+            background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+            color: white;
+            padding: 60px 20px;
+            text-align: center;
+            border-radius: 8px;
+            margin-bottom: 40px;
+        }
+
+        .header-section h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .section-heading {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #047857;
+            margin: 40px 0 20px 0;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #10b981;
+        }
+
+        .subsection-heading {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #065f46;
+            margin: 25px 0 15px 0;
+        }
+
+        .content-block {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            border-left: 4px solid #10b981;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .content-block p {
+            margin-bottom: 15px;
+            text-align: justify;
+        }
+
+        .code-block {
+            background: #f3f4f6;
+            border: 1px solid #e5e7eb;
+            border-radius: 6px;
+            padding: 15px;
+            margin: 15px 0;
+            overflow-x: auto;
+            font-family: 'Monaco', 'Courier New', monospace;
+            font-size: 0.9rem;
+            line-height: 1.4;
+            color: #1f2937;
+        }
+
+        .example-box {
+            background: #ecfdf5;
+            border-left: 4px solid #10b981;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 6px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: white;
+            border-radius: 6px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        thead {
+            background: #047857;
+            color: white;
+        }
+
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        tbody tr:hover {
+            background: #f3f4f6;
+        }
+
+        .nav-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 30px 0;
+            justify-content: center;
+        }
+
+        .nav-links a {
+            background: #10b981;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 6px;
+            text-decoration: none;
+            transition: background 0.3s;
+            font-weight: 500;
+        }
+
+        .nav-links a:hover {
+            background: #047857;
+        }
+
+        .interactive-section {
+            background: #f0fdf4;
+            padding: 30px;
+            border-radius: 8px;
+            margin: 30px 0;
+            border: 2px solid #10b981;
+        }
+
+        .interactive-section h3 {
+            color: #047857;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .control-group {
+            margin: 15px 0;
+        }
+
+        .control-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+            color: #1f2937;
+        }
+
+        .control-group select,
+        .control-group input,
+        .control-group button {
+            padding: 8px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 4px;
+            font-size: 0.95rem;
+            background: white;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .control-group button {
+            background: #10b981;
+            color: white;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .control-group button:hover {
+            background: #059669;
+        }
+
+        .results-box {
+            background: white;
+            border: 2px solid #10b981;
+            border-radius: 6px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .results-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin: 10px 0;
+        }
+
+        .result-item {
+            padding: 10px;
+            background: #f3f4f6;
+            border-radius: 4px;
+        }
+
+        .result-item .label {
+            font-size: 0.85rem;
+            color: #6b7280;
+            font-weight: 500;
+            text-transform: uppercase;
+        }
+
+        .result-item .value {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #047857;
+            margin-top: 5px;
+        }
+
+        .activity-item {
+            background: white;
+            border-left: 4px solid #10b981;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 6px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        .activity-item h4 {
+            color: #047857;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .highlight {
+            background: #fef08a;
+            padding: 2px 4px;
+            border-radius: 2px;
+        }
+
+        .formula-box {
+            background: white;
+            border: 2px solid #047857;
+            border-radius: 6px;
+            padding: 20px;
+            margin: 20px 0;
+            font-family: 'Monaco', 'Courier New', monospace;
+            text-align: center;
+            font-size: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .header-section h1 {
+                font-size: 1.8rem;
+            }
+
+            .results-row {
+                grid-template-columns: 1fr;
+            }
+
+            .content-block {
+                padding: 20px;
+            }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .list-item {
+            margin: 10px 0 10px 20px;
+            padding-left: 10px;
+            border-left: 3px solid #10b981;
+        }
+
+        .step-counter {
+            display: inline-block;
+            background: #10b981;
+            color: white;
+            width: 28px;
+            height: 28px;
+            line-height: 28px;
+            text-align: center;
+            border-radius: 50%;
+            font-weight: 700;
+            margin-right: 10px;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-custom">
+        <div class="header-section">
+            <h1>Memory Hierarchy & Caching</h1>
+            <p>Week 16 Part 2 - CSC210 Computer Organization & Architecture</p>
+            <p style="font-size: 0.95rem; margin-top: 10px;">Interactive Learning Module for Memory Performance Optimization</p>
+        </div>
+
+        <div class="nav-links">
+            <a href="#foundation">Foundation</a>
+            <a href="#concepts">Key Concepts</a>
+            <a href="#simulator">Interactive Simulator</a>
+            <a href="#activities">Activities</a>
+            <a href="#cpu-examples">Real CPUs</a>
+        </div>
+
+        <section id="foundation">
+            <div class="section-heading">Part 1: The Memory Hierarchy Problem</div>
+
+            <div class="content-block">
+                <h3 class="subsection-heading">The Fundamental Mismatch</h3>
+                <p>Your CPU can execute an instruction in <strong>1 nanosecond</strong> (at 1 GHz).</p>
+                <p>Accessing main RAM takes approximately <strong>100 nanoseconds</strong>.</p>
+                <p>That's <span class="highlight">100× slower</span> than the CPU!</p>
+
+                <div class="example-box">
+                    <strong>The Problem:</strong> If pipelining enables one instruction per cycle, but memory accesses take 100 cycles, the CPU spends 99 out of 100 cycles waiting for memory. Pipelining doesn't help—memory is the bottleneck.
+                </div>
+
+                <p>This is why every modern CPU has <span class="highlight">cache memory</span>. A cache is a small, fast memory that stores copies of recently-accessed data from main RAM.</p>
+            </div>
+
+            <div class="content-block">
+                <h3 class="subsection-heading">The Memory Hierarchy: Multiple Levels</h3>
+                
+                <p>Rather than one big, slow memory, modern systems use a <span class="highlight">hierarchy</span>:</p>
+
+                <div class="code-block">
+┌──────────────────────────────────┐
+│ Registers (8-64 bytes)           │ Speed: 1 ns    (CPU speed)
+└──────────────────────────────────┘
+              ↓
+┌──────────────────────────────────┐
+│ L1 Cache (32-64 KB)              │ Speed: 4 ns    (10-100× faster than L2)
+└──────────────────────────────────┘
+              ↓
+┌──────────────────────────────────┐
+│ L2 Cache (256-512 KB)            │ Speed: 10 ns   (10× faster than L3)
+└──────────────────────────────────┘
+              ↓
+┌──────────────────────────────────┐
+│ L3 Cache (8-16 MB)               │ Speed: 50 ns   (2× faster than RAM)
+└──────────────────────────────────┘
+              ↓
+┌──────────────────────────────────┐
+│ Main Memory (8-64 GB)            │ Speed: 100 ns  (baseline)
+└──────────────────────────────────┘
+              ↓
+┌──────────────────────────────────┐
+│ Storage (SSD/HDD)                │ Speed: 1-10 ms (very slow!)
+└──────────────────────────────────┘
+                </div>
+
+                <p>The principle: <span class="highlight">Small and fast near the CPU, large and slow away from it.</span></p>
+            </div>
+
+            <div class="content-block">
+                <h3 class="subsection-heading">Why Caches Work: Locality</h3>
+
+                <p><strong>Temporal Locality:</strong> If you access data now, you'll likely access it again soon.</p>
+                <div class="code-block">
+for (int i = 0; i < 1000000; i++) {
+    sum += array[i];  // 'sum' accessed 1,000,000 times
+}
+// 'sum' stays in cache (extremely hot data)
+                </div>
+
+                <p><strong>Spatial Locality:</strong> If you access address X, you'll likely access nearby addresses soon.</p>
+                <div class="code-block">
+for (int i = 0; i < 1000; i++) {
+    array[i] = array[i] * 2;  // Sequential access
+}
+// Addresses accessed in order: excellent spatial locality
+                </div>
+
+                <p>These patterns are ubiquitous in real programs. <strong>Research shows ~90-95% of memory accesses exhibit temporal or spatial locality.</strong></p>
+
+                <div class="example-box">
+                    <strong>The Cache Bet:</strong> "Most programs access the same small set of data repeatedly." By keeping recently-accessed data in fast cache, we exploit this pattern to achieve near-register speeds without the cost of huge register files.
+                </div>
+            </div>
+        </section>
+
+        <section id="concepts">
+            <div class="section-heading">Part 2: How Caches Work</div>
+
+            <div class="content-block">
+                <h3 class="subsection-heading">Cache Operation: Hit or Miss</h3>
+
+                <p>When the CPU requests data at address X:</p>
+                <div class="list-item">1. Check if X is in cache (cache <span class="highlight">hit</span>) → return immediately (~4 ns) ✓</div>
+                <div class="list-item">2. If not found (cache <span class="highlight">miss</span>) → fetch from main RAM (~100 ns) ✗</div>
+                <div class="list-item">3. Store fetched data in cache (replacing old data if necessary)</div>
+
+                <div class="formula-box">
+                    <strong>Hit Rate =</strong> Hits ÷ (Hits + Misses)<br><br>
+                    <strong>Effective Memory Access Time (EMAT) =</strong><br>
+                    (Hit Rate × Cache Hit Time) + (Miss Rate × Cache Miss Time)
+                </div>
+
+                <p><strong>Example:</strong></p>
+                <div class="code-block">
+100 memory accesses, 95 hit cache, 5 miss
+Hit Rate = 95 ÷ 100 = 95%
+Miss Rate = 5 ÷ 100 = 5%
+
+EMAT = (0.95 × 4 ns) + (0.05 × 100 ns)
+     = 3.8 ns + 5.0 ns
+     = 8.8 ns
+
+Compare to:
+  Always hitting cache: 4 ns
+  Always missing cache: 100 ns
+  Our design: 8.8 ns (much better!)
+                </div>
+            </div>
+
+            <div class="content-block">
+                <h3 class="subsection-heading">Cache Organization: Direct-Mapped vs. Associative</h3>
+
+                <p><strong>Direct-Mapped Cache:</strong> Each memory address maps to exactly one cache location.</p>
+                <div class="code-block">
+Address 0x0045 → Cache Entry 5
+Address 0x008D → Cache Entry 5 (CONFLICT! Both can't be cached)
+
+Problem: "Conflict misses" when multiple addresses map to same location
+                </div>
+
+                <p><strong>Set-Associative Cache:</strong> Each address maps to one of N possible locations.</p>
+                <div class="code-block">
+2-way associative:
+Address 0x0045 → Can use Entry 5a or 5b
+Address 0x008D → Can use Entry 5a or 5b (if one is free)
+
+Advantage: Reduces conflict misses
+                </div>
+
+                <p><strong>Fully-Associative Cache:</strong> Any address can use any location.</p>
+                <div class="code-block">
+Any address can go to any of 16 entries
+
+Advantage: No conflict misses
+Disadvantage: Must search all entries (slow, expensive)
+                </div>
+
+                <p>Modern CPUs use set-associative caches (typically 4-8 way) as a middle ground.</p>
+            </div>
+
+            <div class="content-block">
+                <h3 class="subsection-heading">Real Cache Configurations</h3>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>CPU</th>
+                            <th>L1 Data</th>
+                            <th>L1 Inst.</th>
+                            <th>L2</th>
+                            <th>L3</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>ARM Cortex-A72</td>
+                            <td>32 KB, 4-way</td>
+                            <td>48 KB, 3-way</td>
+                            <td>512 KB</td>
+                            <td>4 MB</td>
+                        </tr>
+                        <tr>
+                            <td>Intel i7-8700K</td>
+                            <td>32 KB, 8-way</td>
+                            <td>32 KB, 8-way</td>
+                            <td>256 KB</td>
+                            <td>12 MB</td>
+                        </tr>
+                        <tr>
+                            <td>Apple M1</td>
+                            <td>64 KB, 8-way</td>
+                            <td>192 KB, 8-way</td>
+                            <td>2 MB</td>
+                            <td>16 MB</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <p><strong>Observation:</strong> L1 is small and simple, L3 is large and complex. Design follows: fast/small near CPU, slow/large away from CPU.</p>
+            </div>
+
+            <div class="content-block">
+                <h3 class="subsection-heading">The Three Types of Cache Misses</h3>
+
+                <div class="activity-item">
+                    <h4><span class="step-counter">1</span> Compulsory Miss</h4>
+                    <p>First access to a data block (unavoidable). Cannot optimize away.</p>
+                </div>
+
+                <div class="activity-item">
+                    <h4><span class="step-counter">2</span> Capacity Miss</h4>
+                    <p>Cache too small to hold all data in working set. Solution: larger cache (but slower and more expensive).</p>
+                </div>
+
+                <div class="activity-item">
+                    <h4><span class="step-counter">3</span> Conflict Miss</h4>
+                    <p>Multiple addresses map to same cache location. Solution: increase associativity (but more complex hardware).</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="simulator">
+            <div class="section-heading">Part 3: Interactive Cache Simulator</div>
+
+            <div class="interactive-section">
+                <h3>Cache Configuration & Hit Rate Calculator</h3>
+                <p>Configure a cache and simulate memory access patterns to measure hit rates and effective memory access time.</p>
+
+                <div class="control-group">
+                    <label for="cache-config">Cache Configuration:</label>
+                    <select id="cache-config">
+                        <option value="simple_8">Simple 8-entry Direct-Mapped</option>
+                        <option value="l1_realistic">Realistic L1 Cache (32 KB, 8-way)</option>
+                        <option value="l1_l2">L1 + L2 Hierarchy</option>
+                        <option value="custom">Custom Configuration</option>
+                    </select>
+                </div>
+
+                <div class="control-group">
+                    <label for="access-pattern">Memory Access Pattern:</label>
+                    <select id="access-pattern">
+                        <option value="sequential">Sequential (Best Case)</option>
+                        <option value="random">Random (Worst Case)</option>
+                        <option value="strided">Strided (Stride-4)</option>
+                        <option value="matrix_row">Matrix Row-Major</option>
+                        <option value="matrix_col">Matrix Column-Major</option>
+                    </select>
+                </div>
+
+                <div class="control-group">
+                    <button id="run-cache-sim">Run Cache Simulation</button>
+                    <button id="reset-cache" style="margin-left: 10px;">Reset</button>
+                </div>
+
+                <div id="cache-output" style="margin-top: 20px;"></div>
+            </div>
+
+            <div class="results-box">
+                <h3 style="margin-bottom: 15px; color: #047857;">Cache Performance Metrics</h3>
+                <div class="results-row">
+                    <div class="result-item">
+                        <div class="label">Hit Rate</div>
+                        <div class="value" id="hit-rate">-</div>
+                    </div>
+                    <div class="result-item">
+                        <div class="label">Miss Rate</div>
+                        <div class="value" id="miss-rate">-</div>
+                    </div>
+                </div>
+                <div class="results-row">
+                    <div class="result-item">
+                        <div class="label">EMAT (ns)</div>
+                        <div class="value" id="emat">-</div>
+                    </div>
+                    <div class="result-item">
+                        <div class="label">Speedup vs. No Cache</div>
+                        <div class="value" id="cache-speedup">-</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="activities">
+            <div class="section-heading">Part 4: Learning Activities</div>
+
+            <div class="content-block">
+                <h3 class="subsection-heading">Activity 1: Predict Cache Behavior</h3>
+
+                <div class="activity-item">
+                    <strong>Program A: Sequential Array Sum</strong>
+                    <div class="code-block">
+int sum = 0;
+for (int i = 0; i < 1000; i++) {
+    sum += array[i];
+}
+                    </div>
+                    <p><strong>Questions:</strong></p>
+                    <div class="list-item">Why does this have high temporal locality for 'sum'?</div>
+                    <div class="list-item">Why does this have high spatial locality for 'array'?</div>
+                    <div class="list-item">Expected hit rate: >95%</div>
+                </div>
+
+                <div class="activity-item">
+                    <strong>Program B: Random Array Access</strong>
+                    <div class="code-block">
+for (int i = 0; i < 1000; i++) {
+    sum += array[random_index[i]];
+}
+                    </div>
+                    <p><strong>Questions:</strong></p>
+                    <div class="list-item">Why does this have poor locality?</div>
+                    <div class="list-item">Predicted hit rate: <30%</div>
+                </div>
+            </div>
+
+            <div class="content-block">
+                <h3 class="subsection-heading">Activity 2: Associativity Impact</h3>
+
+                <p>Compare cache designs with same size but different associativity:</p>
+                <div class="code-block">
+Direct-mapped (1-way):    32 KB cache
+2-way associative:        32 KB cache
+4-way associative:        32 KB cache
+8-way associative:        32 KB cache
+
+Same total size, different internal organization.
+Which has highest hit rate?
+Why?
+                </div>
+
+                <p><strong>Answer:</strong> Higher associativity reduces conflict misses, improving hit rate. But increases complexity and slightly increases latency.</p>
+            </div>
+
+            <div class="content-block">
+                <h3 class="subsection-heading">Activity 3: L1 vs. L2 vs. L3 Trade-off</h3>
+
+                <p>Consider three cache design choices for a memory-intensive program:</p>
+                <div class="code-block">
+Option A: Larger L1 (64 KB), no L2
+Option B: Standard L1 (32 KB) + L2 (256 KB), no L3
+Option C: L1 (32 KB) + L2 (256 KB) + L3 (8 MB)
+
+Questions:
+1. Which minimizes average memory latency?
+2. Which costs least in hardware?
+3. Why do all real CPUs use three levels?
+                </div>
+            </div>
+        </section>
+
+        <section id="cpu-examples">
+            <div class="section-heading">Part 5: Real CPU Cache Hierarchies</div>
+
+            <div class="content-block">
+                <h3 class="subsection-heading">ARM Cortex-A72: Balanced Design</h3>
+                <p><strong>L1 Caches:</strong> 32 KB data + 48 KB instruction (separate for parallel access)</p>
+                <p><strong>L2 Cache:</strong> 512 KB per core (larger than L1, shared by all core activities)</p>
+                <p><strong>L3 Cache:</strong> 4 MB shared by all cores (helps multi-threaded workloads)</p>
+                <div class="example-box">
+                    <strong>Design Philosophy:</strong> Separate I-cache and D-cache in L1 (allows simultaneous fetch and memory access). L2/L3 unified (any data can go there).
+                </div>
+            </div>
+
+            <div class="content-block">
+                <h3 class="subsection-heading">Intel Core i9: Maximizing L3 for Performance</h3>
+                <p><strong>L1 Caches:</strong> 32 KB each (instruction and data)</p>
+                <p><strong>L2 Cache:</strong> 256 KB per core (victim cache for L1)</p>
+                <p><strong>L3 Cache:</strong> 12-20 MB shared (very large for aggressive prefetching)</p>
+                <div class="example-box">
+                    <strong>Design Philosophy:</strong> Aggressive L3 sizing. Large L3 helps with working set misses and enables sophisticated prefetching algorithms.
+                </div>
+            </div>
+
+            <div class="content-block">
+                <h3 class="subsection-heading">Apple M1: Specialized Caching</h3>
+                <p><strong>L1 Caches:</strong> 64 KB data + 192 KB instruction (larger L1, exploits spatial locality)</p>
+                <p><strong>L2 Cache:</strong> 2 MB per core (much larger than typical)</p>
+                <p><strong>L3 Cache:</strong> 16 MB shared (largest in this generation)</p>
+                <div class="example-box">
+                    <strong>Design Philosophy:</strong> Larger L1 (especially L1I) to reduce trips to L2. Combined with aggressive prefetching, reduces memory pressure.
+                </div>
+            </div>
+
+            <div class="content-block">
+                <h3 class="subsection-heading">Summary: Why Cache Matters</h3>
+                <p>Without caches, memory is the bottleneck (100× slower than CPU). With effective caching:</p>
+                <div class="list-item"><strong>Modern CPUs achieve 8-10 ns effective memory latency</strong> (compared to 100 ns for uncached RAM)</div>
+                <div class="list-item"><strong>Hit rates typically 90-95%</strong> for well-written code</div>
+                <div class="list-item"><strong>EMAT of ~10 ns</strong> enables pipelining to work (multiple instructions in flight)</div>
+                <div class="list-item"><strong>Code optimization for cache</strong> (sequential access, loop blocking) can provide 5-10× speedup</div>
+            </div>
+        </section>
+
+        <div class="content-block" style="margin-top: 40px; background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border-left-color: #10b981;">
+            <h3 class="subsection-heading" style="color: #047857;">Next: Week 16 Part 3 - Multicore & Parallel Processing</h3>
+            <p>You've learned that modern CPUs use two fundamental optimizations: pipelining and caching. Together, these enable the instruction-level parallelism and memory efficiency of modern computers. In Part 3, we'll explore CPU-level parallelism: multiple cores working in parallel.</p>
+        </div>
+
+        <div style="text-align: center; margin-top: 60px; padding-top: 20px; border-top: 2px solid #d1d5db; color: #6b7280; font-size: 0.9rem;">
+            <p>CSC210 Computer Organization & Architecture | Mendocino College</p>
+            <p>Interactive Learning Module | Week 16 Part 2: Memory Hierarchy & Caching</p>
+        </div>
+    </div>
+
+    <script>
+        class CacheSimulator {
+            constructor(cacheSize, lineSize, associativity, hitTime, missTime) {
+                this.cacheSize = cacheSize;
+                this.lineSize = lineSize;
+                this.associativity = associativity;
+                this.hitTime = hitTime;
+                this.missTime = missTime;
+                
+                this.numEntries = cacheSize / lineSize;
+                this.numSets = this.numEntries / associativity;
+                this.cache = {};
+                this.hits = 0;
+                this.misses = 0;
+                this.log = [];
+            }
+            
+            getSet(address) {
+                return (address / this.lineSize) % this.numSets;
+            }
+            
+            access(address) {
+                const set = this.getSet(address);
+                const tag = Math.floor(address / (this.lineSize * this.numSets));
+                
+                if (!this.cache[set]) {
+                    this.cache[set] = [];
+                }
+                
+                const setData = this.cache[set];
+                const found = setData.find(entry => entry.tag === tag);
+                
+                if (found) {
+                    this.hits++;
+                    found.lastAccess = Date.now();
+                    this.log.push({ address, type: 'HIT' });
+                    return true;
+                } else {
+                    this.misses++;
+                    if (setData.length < this.associativity) {
+                        setData.push({ tag: tag, lastAccess: Date.now() });
+                    } else {
+                        const oldest = setData.reduce((min, e) => 
+                            e.lastAccess < min.lastAccess ? e : min
+                        );
+                        const idx = setData.indexOf(oldest);
+                        setData[idx] = { tag: tag, lastAccess: Date.now() };
+                    }
+                    this.log.push({ address, type: 'MISS' });
+                    return false;
+                }
+            }
+            
+            simulatePattern(pattern, count = 100) {
+                let addresses = [];
+                
+                switch(pattern) {
+                    case 'sequential':
+                        for (let i = 0; i < count; i++) {
+                            addresses.push(i);
+                        }
+                        break;
+                    case 'random':
+                        for (let i = 0; i < count; i++) {
+                            addresses.push(Math.floor(Math.random() * 1000));
+                        }
+                        break;
+                    case 'strided':
+                        for (let i = 0; i < count; i++) {
+                            addresses.push(i * 4);
+                        }
+                        break;
+                    case 'matrix_row':
+                        const cols = 16;
+                        for (let i = 0; i < count; i++) {
+                            addresses.push(Math.floor(i / cols) * cols + (i % cols));
+                        }
+                        break;
+                    case 'matrix_col':
+                        for (let i = 0; i < count; i++) {
+                            addresses.push((i % 16) * 16 + Math.floor(i / 16));
+                        }
+                        break;
+                }
+                
+                addresses.forEach(addr => this.access(addr));
+            }
+            
+            getResults() {
+                const total = this.hits + this.misses;
+                const hitRate = total > 0 ? (this.hits / total * 100).toFixed(1) : 0;
+                const missRate = 100 - hitRate;
+                const emat = (hitRate/100 * this.hitTime) + (missRate/100 * this.missTime);
+                const noCache = this.missTime;
+                const speedup = (noCache / emat).toFixed(2);
+                
+                return { hitRate, missRate, emat: emat.toFixed(1), speedup };
+            }
+        }
+
+        function runCacheSimulation() {
+            const configSelect = document.getElementById('cache-config').value;
+            const patternSelect = document.getElementById('access-pattern').value;
+            
+            let simulator;
+            
+            switch(configSelect) {
+                case 'simple_8':
+                    simulator = new CacheSimulator(64, 8, 1, 4, 100);
+                    break;
+                case 'l1_realistic':
+                    simulator = new CacheSimulator(32768, 64, 8, 4, 12);
+                    break;
+                case 'l1_l2':
+                    simulator = new CacheSimulator(32768 + 262144, 64, 8, 4, 100);
+                    break;
+                default:
+                    simulator = new CacheSimulator(65536, 64, 4, 4, 50);
+            }
+            
+            simulator.simulatePattern(patternSelect, 100);
+            const results = simulator.getResults();
+            
+            document.getElementById('hit-rate').textContent = results.hitRate + '%';
+            document.getElementById('miss-rate').textContent = results.missRate.toFixed(1) + '%';
+            document.getElementById('emat').textContent = results.emat;
+            document.getElementById('cache-speedup').textContent = results.speedup + 'x';
+            
+            const output = document.getElementById('cache-output');
+            output.innerHTML = `<div class="example-box" style="margin: 15px 0;">
+                <strong>Simulation Result:</strong> Accessed 100 memory addresses using ${patternSelect} pattern.<br>
+                Hit Rate: ${results.hitRate}% | Miss Rate: ${results.missRate.toFixed(1)}% | EMAT: ${results.emat} ns
+            </div>`;
+            output.classList.add('fade-in');
+        }
+
+        function resetCache() {
+            document.getElementById('hit-rate').textContent = '-';
+            document.getElementById('miss-rate').textContent = '-';
+            document.getElementById('emat').textContent = '-';
+            document.getElementById('cache-speedup').textContent = '-';
+            document.getElementById('cache-output').innerHTML = '';
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('run-cache-sim').addEventListener('click', runCacheSimulation);
+            document.getElementById('reset-cache').addEventListener('click', resetCache);
+        });
+    </script>
+</body>
+</html>
