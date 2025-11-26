@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Circuits: Final CPU - RESET</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwindConfig = {
+            theme: {
+                extend: {
+                    colors: {
+                        background: '#FDFBF8',
+                        'text-primary': '#1A1A1A',
+                        'accent-blue': '#2563EB',
+                        'code-gray': '#4B5563'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif']
+                    }
+                }
+            },
+            corePlugins: {
+                darkMode: false
+            }
+        }
+    </script>
+    <style>
+        html, body { 
+            background-color: #FDFBF8 !important; 
+            color: #1A1A1A !important; 
+            font-family: 'Inter', sans-serif !important; 
+        }
+        
+        h1 { 
+            font-size: 2.25rem !important;
+            line-height: 2.5rem !important;
+            font-weight: 700 !important;
+            color: #1A1A1A !important;
+            margin-top: 0 !important;
+            margin-bottom: 2rem !important;
+            background-color: transparent !important;
+        }
+        
+        h2 { 
+            font-size: 1.5rem !important;
+            line-height: 2rem !important;
+            font-weight: 700 !important;
+            color: #1A1A1A !important;
+            margin-top: 2rem !important;
+            margin-bottom: 1.5rem !important;
+            background-color: transparent !important;
+        }
+        
+        h3 {
+            font-size: 1.25rem !important;
+            line-height: 1.75rem !important;
+            font-weight: 700 !important;
+            color: #1A1A1A !important;
+            margin-top: 2rem !important;
+            margin-bottom: 1.5rem !important;
+            background-color: transparent !important;
+        }
+        
+        p { 
+            color: #1A1A1A !important;
+            line-height: 1.625 !important;
+            margin-bottom: 1.5rem !important;
+            background-color: transparent !important;
+        }
+        
+        ul, ol {
+            margin-bottom: 1.5rem !important;
+            padding-left: 2rem !important;
+        }
+        
+        li {
+            color: #1A1A1A !important;
+            line-height: 1.625 !important;
+            margin-bottom: 0.5rem !important;
+            background-color: transparent !important;
+        }
+        
+        a { 
+            color: #2563eb !important;
+            text-decoration: underline !important;
+            font-weight: 500 !important;
+        }
+        
+        a:hover { 
+            color: #1d4ed8 !important;
+        }
+        
+        figure {
+            margin-top: 1.5rem !important;
+            margin-bottom: 1.5rem !important;
+            background-color: transparent !important;
+        }
+        
+        strong {
+            font-weight: 700 !important;
+            color: #1A1A1A !important;
+        }
+        
+        /* Skip to Content */
+        .skip-link {
+            position: absolute !important;
+            top: 0 !important;
+            left: 0 !important;
+            padding: 0.5rem 1rem !important;
+            background-color: #2563eb !important;
+            color: white !important;
+            transform: translateY(-100%) !important;
+            z-index: 50 !important;
+            transition: transform 0.2s !important;
+            font-weight: 500 !important;
+        }
+        
+        .skip-link:focus {
+            transform: translateY(0) !important;
+        }
+    </style>
+</head>
+<body class="font-sans" style="background-color: #FDFBF8; color: #1A1A1A;">
+    <!-- Skip to Content Link -->
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+
+    <!-- Main Content -->
+    <main id="main-content" class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <article>
+            <h1>RESET</h1>
+            
+            <p>We need to set a "RESET" input that will allow us to set all registers and memory locations to hold all 0's. At the CPU level, there are 2 places where we want to have the reset signal sent: The Control Section and to RAM.</p>
+            
+            <p>We use a 1-bit input for RESET that goes into the Control Section. We also set a Tunnel from this input so that we can use this same input as the RESET input for RAM</p>
+            
+            <h3>Reset Input to Control Section</h3>
+            
+            <figure class="my-6">
+                <img src="images/reset-input-to-control.jpg" 
+                     alt="ResetInputToControl.jpg" 
+                     class="max-w-full h-auto rounded-lg border border-gray-300 shadow-sm mx-auto"
+                     style="max-width: 640px;"
+                     loading="lazy">
+            </figure>
+            
+            <h3>Control Section - RESET Input Locale</h3>
+            
+            <figure class="my-6">
+                <img src="images/reset-bit-in-control-section.jpg" 
+                     alt="ResetBitInControlSection.jpg" 
+                     class="max-w-full h-auto rounded-lg border border-gray-300 shadow-sm mx-auto"
+                     style="max-width: 640px;"
+                     loading="lazy">
+            </figure>
+            
+            <h3>RESET Tunnel to RAM</h3>
+            
+            <figure class="my-6">
+                <img src="images/reset-input-to-ram.jpg" 
+                     alt="ResetInputToRAM.jpg" 
+                     class="max-w-full h-auto rounded-lg border border-gray-300 shadow-sm mx-auto"
+                     style="max-width: 640px;"
+                     loading="lazy">
+            </figure>
+            
+            <h3>RESET Pin in RAM</h3>
+            
+            <figure class="my-6">
+                <img src="images/reset-bit-in-ram.jpg" 
+                     alt="ResetBitInRAM.jpg" 
+                     class="max-w-full h-auto rounded-lg border border-gray-300 shadow-sm mx-auto"
+                     style="max-width: 640px;"
+                     loading="lazy">
+            </figure>
+        </article>
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-gray-200 mt-12 py-6 text-center text-sm text-gray-600">
+        <div class="max-w-4xl mx-auto px-4">
+            <p>RESET • CSC210 Computer Organization & Architecture</p>
+            <p class="mt-2 text-xs">Last updated: November 2025</p>
+        </div>
+    </footer>
+</body>
+</html>
