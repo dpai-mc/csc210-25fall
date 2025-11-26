@@ -1,28 +1,180 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <title>Carry In Circuit</title>
-  </head>
-  <body>
-    <h1>Carry In Circuit</h1>
-    <p>We need to set the Carry In for the ALU which will come from the Carry output from the Control Section</p>
-<table style="border-collapse: collapse; width: 97.9497%;" border="1">
-    <tbody>
-        <tr>
-            <td style="width: 49.9524%;"></td>
-            <td style="width: 49.9524%;"></td>
-        </tr>
-    </tbody>
-</table>
-<p><img id="963968" src="https://mendocino.instructure.com/courses/19705/files/2501451/preview" alt="CarryIn.jpg" data-api-endpoint="https://mendocino.instructure.com/api/v1/courses/19705/files/2501451" data-api-returntype="File" /></p>
-<p>Ctmp is a small circuit that has 2 inputs, S from Temp1 and C from the Carry Out of the ALU (comes out from the Flags link).</p>
-<p>The output from the Ctmp circuit is ANDed with the Carry from the Control System</p>
-<p><img id="963971" src="https://mendocino.instructure.com/courses/19705/files/2501446/preview" alt="CarryIn_C_Control.jpg" data-api-endpoint="https://mendocino.instructure.com/api/v1/courses/19705/files/2501446" data-api-returntype="File" /></p>
-<p>Tunnels S comes off the TMP_S output from the Control Section. The Tunnel C comes off the Control output, shown above.</p>
-<p><img id="963967" src="https://mendocino.instructure.com/courses/19705/files/2501444/preview" alt="CarryInS_C.jpg" data-api-endpoint="https://mendocino.instructure.com/api/v1/courses/19705/files/2501444" data-api-returntype="File" /></p>
-<p>The Ctmp circuit details include 2 inputs, S and C with a single output into the AND gate. The details of Ctmp is that it is a simple 1 bit memory circuit.</p>
-<p><img id="963969" src="https://mendocino.instructure.com/courses/19705/files/2501449/preview" alt="CarryIn_Appearance.jpg" data-api-endpoint="https://mendocino.instructure.com/api/v1/courses/19705/files/2501449" data-api-returntype="File" /></p>
-<p>Ctmp Circuit Details:</p>
-<p><img id="963970" src="https://mendocino.instructure.com/courses/19705/files/2501443/preview" alt="CarryIn_Details.jpg" data-api-endpoint="https://mendocino.instructure.com/api/v1/courses/19705/files/2501443" data-api-returntype="File" /></p>
-  </body>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Circuits: Final CPU - Carry In</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwindConfig = {
+            theme: {
+                extend: {
+                    colors: {
+                        background: '#FDFBF8',
+                        'text-primary': '#1A1A1A',
+                        'accent-blue': '#2563EB',
+                        'code-gray': '#4B5563'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif']
+                    }
+                }
+            },
+            corePlugins: {
+                darkMode: false
+            }
+        }
+    </script>
+    <style>
+        html, body { 
+            background-color: #FDFBF8 !important; 
+            color: #1A1A1A !important; 
+            font-family: 'Inter', sans-serif !important; 
+        }
+        
+        h1 { 
+            font-size: 2.25rem !important;
+            line-height: 2.5rem !important;
+            font-weight: 700 !important;
+            color: #1A1A1A !important;
+            margin-top: 0 !important;
+            margin-bottom: 2rem !important;
+            background-color: transparent !important;
+        }
+        
+        h2 { 
+            font-size: 1.5rem !important;
+            line-height: 2rem !important;
+            font-weight: 700 !important;
+            color: #1A1A1A !important;
+            margin-top: 2rem !important;
+            margin-bottom: 1.5rem !important;
+            background-color: transparent !important;
+        }
+        
+        p { 
+            color: #1A1A1A !important;
+            line-height: 1.625 !important;
+            margin-bottom: 1.5rem !important;
+            background-color: transparent !important;
+        }
+        
+        ul, ol {
+            margin-bottom: 1.5rem !important;
+            padding-left: 2rem !important;
+        }
+        
+        li {
+            color: #1A1A1A !important;
+            line-height: 1.625 !important;
+            margin-bottom: 0.5rem !important;
+            background-color: transparent !important;
+        }
+        
+        a { 
+            color: #2563eb !important;
+            text-decoration: underline !important;
+            font-weight: 500 !important;
+        }
+        
+        a:hover { 
+            color: #1d4ed8 !important;
+        }
+        
+        figure {
+            margin-top: 1.5rem !important;
+            margin-bottom: 1.5rem !important;
+            background-color: transparent !important;
+        }
+        
+        /* Skip to Content */
+        .skip-link {
+            position: absolute !important;
+            top: 0 !important;
+            left: 0 !important;
+            padding: 0.5rem 1rem !important;
+            background-color: #2563eb !important;
+            color: white !important;
+            transform: translateY(-100%) !important;
+            z-index: 50 !important;
+            transition: transform 0.2s !important;
+            font-weight: 500 !important;
+        }
+        
+        .skip-link:focus {
+            transform: translateY(0) !important;
+        }
+    </style>
+</head>
+<body class="font-sans" style="background-color: #FDFBF8; color: #1A1A1A;">
+    <!-- Skip to Content Link -->
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+
+    <!-- Main Content -->
+    <main id="main-content" class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <article>
+            <h1>Carry In Circuit</h1>
+            
+            <p>We need to set the Carry In for the ALU which will come from the Carry output from the Control Section</p>
+            
+            <figure class="my-6">
+                <img src="images/carry-in.jpg" 
+                     alt="CarryIn.jpg" 
+                     class="max-w-full h-auto rounded-lg border border-gray-300 shadow-sm mx-auto"
+                     style="max-width: 640px;"
+                     loading="lazy">
+            </figure>
+            
+            <p>Ctmp is a small circuit that has 2 inputs, S from Temp1 and C from the Carry Out of the ALU (comes out from the Flags link).</p>
+            
+            <p>The output from the Ctmp circuit is ANDed with the Carry from the Control System</p>
+            
+            <figure class="my-6">
+                <img src="images/carry-in-c-control.jpg" 
+                     alt="CarryIn_C_Control.jpg" 
+                     class="max-w-full h-auto rounded-lg border border-gray-300 shadow-sm mx-auto"
+                     style="max-width: 640px;"
+                     loading="lazy">
+            </figure>
+            
+            <p>Tunnels S comes off the TMP_S output from the Control Section. The Tunnel C comes off the Control output, shown above.</p>
+            
+            <figure class="my-6">
+                <img src="images/carry-in-s-c.jpg" 
+                     alt="CarryInS_C.jpg" 
+                     class="max-w-full h-auto rounded-lg border border-gray-300 shadow-sm mx-auto"
+                     style="max-width: 640px;"
+                     loading="lazy">
+            </figure>
+            
+            <p>The Ctmp circuit details include 2 inputs, S and C with a single output into the AND gate. The details of Ctmp is that it is a simple 1 bit memory circuit.</p>
+            
+            <figure class="my-6">
+                <img src="images/carry-in-appearance.jpg" 
+                     alt="CarryIn_Appearance.jpg" 
+                     class="max-w-full h-auto rounded-lg border border-gray-300 shadow-sm mx-auto"
+                     style="max-width: 640px;"
+                     loading="lazy">
+            </figure>
+            
+            <p>Ctmp Circuit Details:</p>
+            
+            <figure class="my-6">
+                <img src="images/carry-in-details.jpg" 
+                     alt="CarryIn_Details.jpg" 
+                     class="max-w-full h-auto rounded-lg border border-gray-300 shadow-sm mx-auto"
+                     style="max-width: 640px;"
+                     loading="lazy">
+            </figure>
+        </article>
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-gray-200 mt-12 py-6 text-center text-sm text-gray-600">
+        <div class="max-w-4xl mx-auto px-4">
+            <p>Carry In Circuit • CSC210 Computer Organization & Architecture</p>
+            <p class="mt-2 text-xs">Last updated: November 2025</p>
+        </div>
+    </footer>
+</body>
 </html>
