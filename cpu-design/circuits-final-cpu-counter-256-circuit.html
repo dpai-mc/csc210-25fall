@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Circuits: Final CPU - Counter 256 Circuit</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwindConfig = {
+            theme: {
+                extend: {
+                    colors: {
+                        background: '#FDFBF8',
+                        'text-primary': '#1A1A1A',
+                        'accent-blue': '#2563EB',
+                        'code-gray': '#4B5563'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif']
+                    }
+                }
+            },
+            corePlugins: {
+                darkMode: false
+            }
+        }
+    </script>
+    <style>
+        html, body { 
+            background-color: #FDFBF8 !important; 
+            color: #1A1A1A !important; 
+            font-family: 'Inter', sans-serif !important; 
+        }
+        
+        h1 { 
+            font-size: 2.25rem !important;
+            line-height: 2.5rem !important;
+            font-weight: 700 !important;
+            color: #1A1A1A !important;
+            margin-top: 0 !important;
+            margin-bottom: 2rem !important;
+            background-color: transparent !important;
+        }
+        
+        h2 { 
+            font-size: 1.5rem !important;
+            line-height: 2rem !important;
+            font-weight: 700 !important;
+            color: #1A1A1A !important;
+            margin-top: 2rem !important;
+            margin-bottom: 1.5rem !important;
+            background-color: transparent !important;
+        }
+        
+        p { 
+            color: #1A1A1A !important;
+            line-height: 1.625 !important;
+            margin-bottom: 1.5rem !important;
+            background-color: transparent !important;
+        }
+        
+        ul, ol {
+            margin-bottom: 1.5rem !important;
+            padding-left: 2rem !important;
+        }
+        
+        li {
+            color: #1A1A1A !important;
+            line-height: 1.625 !important;
+            margin-bottom: 0.5rem !important;
+            background-color: transparent !important;
+        }
+        
+        a { 
+            color: #2563eb !important;
+            text-decoration: underline !important;
+            font-weight: 500 !important;
+        }
+        
+        a:hover { 
+            color: #1d4ed8 !important;
+        }
+        
+        figure {
+            margin-top: 1.5rem !important;
+            margin-bottom: 1.5rem !important;
+            background-color: transparent !important;
+        }
+        
+        /* Skip to Content */
+        .skip-link {
+            position: absolute !important;
+            top: 0 !important;
+            left: 0 !important;
+            padding: 0.5rem 1rem !important;
+            background-color: #2563eb !important;
+            color: white !important;
+            transform: translateY(-100%) !important;
+            z-index: 50 !important;
+            transition: transform 0.2s !important;
+            font-weight: 500 !important;
+        }
+        
+        .skip-link:focus {
+            transform: translateY(0) !important;
+        }
+    </style>
+</head>
+<body class="font-sans" style="background-color: #FDFBF8; color: #1A1A1A;">
+    <!-- Skip to Content Link -->
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+
+    <!-- Main Content -->
+    <main id="main-content" class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <article>
+            <h1>Counter 256 Circuit</h1>
+            
+            <p>The last circuit/modification is to add a counter that counts from 0 to 255 (Hex 00 - FF). We will use this to cycle through our 256 bytes of RAM and load the appropriate assembly language command to run our program.</p>
+            
+            <p>The main circuit, "256," has a "LOAD" input from the "LOAD" pin via a tunnel (<a href="https://mendocino.instructure.com/courses/19705/pages/circuits-final-cpu-load-mars-end" target="_blank" rel="noopener" title="Link to LOAD, MARS, END in Canvas LMS">Circuits: Final CPU: LOAD, MARS, END</a>)</p>
+            
+            <p>This "LOAD" input is ANDed with the "clkl" input from our "Clock" via a tunnel (<a href="https://mendocino.instructure.com/courses/19705/pages/circuits-final-cpu-clock-input" target="_blank" rel="noopener" title="Link to Clock Input in Canvas LMS">Circuits: Final CPU - Clock Input</a>)</p>
+            
+            <p>The "LOAD" input is also used as the enable on a buffered output attached to the output side of the "clk 256" circuit.</p>
+            
+            <figure class="my-6">
+                <img src="images/clk256-circuit-overview.jpg" 
+                     alt="Clk256circuit_Overview.jpg" 
+                     class="max-w-full h-auto rounded-lg border border-gray-300 shadow-sm mx-auto"
+                     style="max-width: 640px;"
+                     loading="lazy">
+            </figure>
+            
+            <p>The "256" circuit uses a constant input and the "clk" input based upon a "counter" memory circuit (discussed below). There are also 2 outputs:</p>
+            
+            <p>A 1-bit carry output that is NOTted (we will not use this) and an 8-bit output we call "count." The counter basically counts from 0 to 255 at each clock pulse and we can use this as a RAM memory address to load our programs.</p>
+            
+            <figure class="my-6">
+                <img src="images/clk256-detail.jpg" 
+                     alt="Clk256Detail.jpg" 
+                     class="max-w-full h-auto rounded-lg border border-gray-300 shadow-sm mx-auto"
+                     style="max-width: 640px;"
+                     loading="lazy">
+            </figure>
+            
+            <p>The counter used in the circuit is found in the "Memory" folder and is called "Counter." We need to modify the behavior by setting the following 2 behaviors:</p>
+            
+            <ul>
+                <li>Action On Overflow - Set to "Stay at value"</li>
+                <li>Trigger - "Falling Edge"</li>
+            </ul>
+            
+            <p>The default for all of the other options should match those shown in the figure below. If not, then set them to the values in this provided image.</p>
+            
+            <figure class="my-6">
+                <img src="images/clk256-counter.jpg" 
+                     alt="Clk256Counter.jpg" 
+                     class="max-w-full h-auto rounded-lg border border-gray-300 shadow-sm mx-auto"
+                     style="max-width: 640px;"
+                     loading="lazy">
+            </figure>
+            
+            <p>The circuit can then be redrawn where:</p>
+            
+            <ul>
+                <li>c - is the carry output pin that we will not use</li>
+                <li>clk - is the ANDed LOAD, clkl input</li>
+                <li>output pin (on the right) will be the 8-bit output labeled "count" in the circuit details provided 2 images above.</li>
+            </ul>
+            
+            <figure class="my-6">
+                <img src="images/clk256-appearance.jpg" 
+                     alt="Clk256Appearance.jpg" 
+                     class="max-w-full h-auto rounded-lg border border-gray-300 shadow-sm mx-auto"
+                     style="max-width: 640px;"
+                     loading="lazy">
+            </figure>
+        </article>
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-gray-200 mt-12 py-6 text-center text-sm text-gray-600">
+        <div class="max-w-4xl mx-auto px-4">
+            <p>Counter 256 Circuit • CSC210 Computer Organization & Architecture</p>
+            <p class="mt-2 text-xs">Last updated: November 2025</p>
+        </div>
+    </footer>
+</body>
+</html>
