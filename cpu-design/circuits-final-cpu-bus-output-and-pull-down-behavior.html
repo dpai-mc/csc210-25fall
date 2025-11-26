@@ -1,58 +1,213 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <title>BUS Output and Pull Down Behavior</title>
-  </head>
-  <body>
-    <h1> BUS Output and Pull Down Behavior</h1>
-    <p>We need to add an 8-bit output to our "Bus" so that we can see at the next higher level what is on the "Bus" at any given point in time. Additionally, we want to give all of the connections to the "Bus" a "Pull Down" behavior meaning that every time we start up the simulation, these will all "Pull Down" to the state of "0" ensuring that our "Bus" always starts out empty.</p>
-<table style="border-collapse: collapse; width: 97.9497%;" border="1">
-    <tbody>
-        <tr>
-            <td style="width: 49.9524%;"><img id="960434" src="https://mendocino.instructure.com/courses/19705/files/2501460/preview" alt="BusOutput.png" data-api-endpoint="https://mendocino.instructure.com/api/v1/courses/19705/files/2501460" data-api-returntype="File" /></td>
-            <td style="width: 49.9524%;"><img id="960433" src="https://mendocino.instructure.com/courses/19705/files/2501435/preview" alt="BusOutputPD.png" data-api-endpoint="https://mendocino.instructure.com/api/v1/courses/19705/files/2501435" data-api-returntype="File" /></td>
-        </tr>
-    </tbody>
-</table>
-<p>In order to set elements to "Pull Down," you will have to edit those specific circuits that hold the input and/or output to be modified. For example, you can modify all of the registers (R0-R4, assuming you used the same circuit for each) by opening up the 8-bit register circuit and checking/changing the input and output behavior to "Pull Down."</p>
-<p><img id="960435" src="https://mendocino.instructure.com/courses/19705/files/2501459/preview" alt="RegistersPD.png" data-api-endpoint="https://mendocino.instructure.com/api/v1/courses/19705/files/2501459" data-api-returntype="File" /></p>
-<p>Items that should be set to "Pull Down"</p>
-<p>Inputs/Outputs for:</p>
-<ul>
-    <li>R0-R4</li>
-    <li>ALU
-        <ul>
-            <li>8-bit inputs a, b</li>
-            <li>8-bit output c</li>
-            <li>1-bit inputs a, b, c for Operation Code</li>
-            <li>1-bit outputs a larger, equal, zero, and carry out</li>
-        </ul>
-    </li>
-    <li>TMP
-        <ul>
-            <li>8-bit input and output</li>
-        </ul>
-    </li>
-    <li>Accumulator
-        <ul>
-            <li>8-bit input and output</li>
-            <li>1-bit inputs for s and e</li>
-        </ul>
-    </li>
-    <li>BUS-1
-        <ul>
-            <li>8-bit input and output</li>
-            <li>1-bit input "bus1"</li>
-        </ul>
-    </li>
-    <li>PC</li>
-    <li>IR</li>
-    <li>RAM
-        <ul>
-            <li>8-bit "address", i (input), o (output)</li>
-            <li>1-bit reset</li>
-        </ul>
-    </li>
-</ul>
-  </body>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Circuits: Final CPU - BUS Output and Pull Down Behavior</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwindConfig = {
+            theme: {
+                extend: {
+                    colors: {
+                        background: '#FDFBF8',
+                        'text-primary': '#1A1A1A',
+                        'accent-blue': '#2563EB',
+                        'code-gray': '#4B5563'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif']
+                    }
+                }
+            },
+            corePlugins: {
+                darkMode: false
+            }
+        }
+    </script>
+    <style>
+        html, body { 
+            background-color: #FDFBF8 !important; 
+            color: #1A1A1A !important; 
+            font-family: 'Inter', sans-serif !important; 
+        }
+        
+        h1 { 
+            font-size: 2.25rem !important;
+            line-height: 2.5rem !important;
+            font-weight: 700 !important;
+            color: #1A1A1A !important;
+            margin-top: 0 !important;
+            margin-bottom: 2rem !important;
+            background-color: transparent !important;
+        }
+        
+        h2 { 
+            font-size: 1.5rem !important;
+            line-height: 2rem !important;
+            font-weight: 700 !important;
+            color: #1A1A1A !important;
+            margin-top: 2rem !important;
+            margin-bottom: 1.5rem !important;
+            background-color: transparent !important;
+        }
+        
+        p { 
+            color: #1A1A1A !important;
+            line-height: 1.625 !important;
+            margin-bottom: 1.5rem !important;
+            background-color: transparent !important;
+        }
+        
+        ul, ol {
+            margin-bottom: 1.5rem !important;
+            padding-left: 2rem !important;
+        }
+        
+        li {
+            color: #1A1A1A !important;
+            line-height: 1.625 !important;
+            margin-bottom: 0.5rem !important;
+            background-color: transparent !important;
+        }
+        
+        a { 
+            color: #2563eb !important;
+            text-decoration: underline !important;
+            font-weight: 500 !important;
+        }
+        
+        a:hover { 
+            color: #1d4ed8 !important;
+        }
+        
+        figure {
+            margin-top: 1.5rem !important;
+            margin-bottom: 1.5rem !important;
+            background-color: transparent !important;
+        }
+        
+        .image-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin: 1.5rem 0;
+        }
+        
+        .image-grid figure {
+            margin: 0 !important;
+        }
+        
+        @media (max-width: 768px) {
+            .image-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        /* Skip to Content */
+        .skip-link {
+            position: absolute !important;
+            top: 0 !important;
+            left: 0 !important;
+            padding: 0.5rem 1rem !important;
+            background-color: #2563eb !important;
+            color: white !important;
+            transform: translateY(-100%) !important;
+            z-index: 50 !important;
+            transition: transform 0.2s !important;
+            font-weight: 500 !important;
+        }
+        
+        .skip-link:focus {
+            transform: translateY(0) !important;
+        }
+    </style>
+</head>
+<body class="font-sans" style="background-color: #FDFBF8; color: #1A1A1A;">
+    <!-- Skip to Content Link -->
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+
+    <!-- Main Content -->
+    <main id="main-content" class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <article>
+            <h1>BUS Output and Pull Down Behavior</h1>
+            
+            <p>We need to add an 8-bit output to our "Bus" so that we can see at the next higher level what is on the "Bus" at any given point in time. Additionally, we want to give all of the connections to the "Bus" a "Pull Down" behavior meaning that every time we start up the simulation, these will all "Pull Down" to the state of "0" ensuring that our "Bus" always starts out empty.</p>
+            
+            <div class="image-grid">
+                <figure>
+                    <img src="images/bus-output.png" 
+                         alt="BusOutput.png" 
+                         class="max-w-full h-auto rounded-lg border border-gray-300 shadow-sm"
+                         loading="lazy">
+                </figure>
+                <figure>
+                    <img src="images/bus-output-pd.png" 
+                         alt="BusOutputPD.png" 
+                         class="max-w-full h-auto rounded-lg border border-gray-300 shadow-sm"
+                         loading="lazy">
+                </figure>
+            </div>
+            
+            <p>In order to set elements to "Pull Down," you will have to edit those specific circuits that hold the input and/or output to be modified. For example, you can modify all of the registers (R0-R4, assuming you used the same circuit for each) by opening up the 8-bit register circuit and checking/changing the input and output behavior to "Pull Down."</p>
+            
+            <figure class="my-6">
+                <img src="images/registers-pd.png" 
+                     alt="RegistersPD.png" 
+                     class="max-w-full h-auto rounded-lg border border-gray-300 shadow-sm mx-auto"
+                     style="max-width: 640px;"
+                     loading="lazy">
+            </figure>
+            
+            <p>Items that should be set to "Pull Down"</p>
+            
+            <p>Inputs/Outputs for:</p>
+            
+            <ul>
+                <li>R0-R4</li>
+                <li>ALU
+                    <ul>
+                        <li>8-bit inputs a, b</li>
+                        <li>8-bit output c</li>
+                        <li>1-bit inputs a, b, c for Operation Code</li>
+                        <li>1-bit outputs a larger, equal, zero, and carry out</li>
+                    </ul>
+                </li>
+                <li>TMP
+                    <ul>
+                        <li>8-bit input and output</li>
+                    </ul>
+                </li>
+                <li>Accumulator
+                    <ul>
+                        <li>8-bit input and output</li>
+                        <li>1-bit inputs for s and e</li>
+                    </ul>
+                </li>
+                <li>BUS-1
+                    <ul>
+                        <li>8-bit input and output</li>
+                        <li>1-bit input "bus1"</li>
+                    </ul>
+                </li>
+                <li>PC</li>
+                <li>IR</li>
+                <li>RAM
+                    <ul>
+                        <li>8-bit "address", i (input), o (output)</li>
+                        <li>1-bit reset</li>
+                    </ul>
+                </li>
+            </ul>
+        </article>
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-gray-200 mt-12 py-6 text-center text-sm text-gray-600">
+        <div class="max-w-4xl mx-auto px-4">
+            <p>BUS Output and Pull Down Behavior • CSC210 Computer Organization & Architecture</p>
+            <p class="mt-2 text-xs">Last updated: November 2025</p>
+        </div>
+    </footer>
+</body>
 </html>
