@@ -1,0 +1,949 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Title for CSC210 Week 16 -->
+    <title>CSC210 - Week 16: Modern Architecture Topics</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            /* Warm, approachable color scheme suitable for a technical course */
+            background-color: #F8F9FA; 
+            color: #343A40;
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .code-font {
+            font-family: 'Fira Code', monospace;
+        }
+        
+        /* Style for the currently active transcript line */
+        .active-transcript-line {
+            background-color: #f0f7ff;
+            font-weight: 600;
+            border-left: 4px solid #1e88e5;
+            padding-left: 12px;
+            transition: background-color 0.2s;
+        }
+
+        /* Skip link style (Accessibility requirement) */
+        .skip-link {
+            position: absolute;
+            top: -40px;
+            left: 0;
+            background: #1E88E5;
+            color: #F8F9FA;
+            padding: 8px;
+            z-index: 100;
+            transition: top 0.3s;
+        }
+
+        .skip-link:focus {
+            top: 0;
+        }
+
+        /* Custom scrollbar for transcript */
+        #transcript-container::-webkit-scrollbar {
+            width: 8px;
+        }
+        #transcript-container::-webkit-scrollbar-thumb {
+            background-color: #ced4da;
+            border-radius: 10px;
+        }
+        #transcript-container::-webkit-scrollbar-thumb:hover {
+            background-color: #adb5bd;
+        }
+    </style>
+</head>
+<body class="p-4 sm:p-8">
+    <a href="#main-content" class="skip-link rounded-br-md">Skip to main content</a>
+    
+    <div id="main-content" class="max-w-7xl mx-auto">
+        <header class="mb-8">
+            <h1 class="text-3xl sm:text-4xl font-extrabold text-gray-800 mb-2">CSC210 - Week 16: Modern Architecture Topics</h1>
+            <p class="text-lg text-gray-600">Aloha, and welcome to <strong>Week 16</strong>—the final week of the semester! This week explores <strong>modern CPU architecture topics</strong> that bridge the gap between the simple 8-bit CPU we've built and real-world processors. We examine <strong>performance considerations</strong>, <strong>pipelining and instruction-level parallelism</strong>, <strong>memory hierarchy and cache optimization</strong>, and <strong>multi-core and parallel processing</strong>. Rather than assigning new work, this week encourages you to focus on completing your final project while reviewing these essential architectural concepts. By the end of this week, you'll understand the fundamental techniques that make modern CPUs fast and efficient.</p>
+        </header>
+
+        <main>
+            <!-- Video and Transcript Section using v2 Guide Layout -->
+            <div class="flex flex-col lg:flex-row gap-4 w-full mb-8">
+                <!-- Video Player Section: 66% width on large screens -->
+                <div class="w-full lg:w-2/3 flex-shrink-0">
+                    <h2 class="text-2xl font-semibold mb-4 text-gray-700">Video Lecture: Modern Architecture Topics</h2>
+                    <div id="video-container" style="width: 100%; height: 0; padding-bottom: 56.25%; position: relative;">
+                        <iframe id="youtube-player"
+                                style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"
+                                src="https://www.youtube.com/embed/OVRXlcZy7r4?enablejsapi=1"
+                                title="YouTube video player"
+                                frameborder="0"
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                referrerpolicy="strict-origin-when-cross-origin"
+                                allowfullscreen>
+                        </iframe>
+                    </div>
+                    <p class="mt-4 text-sm text-gray-500">Video ID: <span class="code-font">OVRXlcZy7r4</span></p>
+                </div>
+
+                <!-- Transcript Container Section: 33% width on large screens -->
+                <div class="w-full lg:w-1/3 flex-shrink-0">
+                    <h2 class="text-2xl font-semibold mb-4 text-gray-700">Video Transcript</h2>
+                    <div id="transcript-container" class="h-96 overflow-y-scroll bg-white shadow-inner p-4 rounded-lg border border-gray-300">
+                        <p class="text-gray-500 text-center">Loading transcript...</p>
+                    </div>
+                    <p class="mt-4 text-sm text-gray-600">Click any line in the transcript or use the <strong>Enter/Space</strong> keys when focused to jump to that moment in the video.</p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // 1. CONFIGURATION
+        const VIDEO_ID = 'OVRXlcZy7r4';
+        let player;
+        let timeUpdater;
+        let parsedTranscript = [];
+
+        // --- VTT CONTENT ---
+        const vttContent = `WEBVTT
+
+00:00.440 --> 00:02.840
+Aloha and welcome to week 16.
+
+00:04.100 --> 00:07.700
+This week's topic is modern architecture topics.
+
+00:08.620 --> 00:10.880
+Okay, and so there's actually a lot of stuff in here,
+
+00:11.460 --> 00:14.460
+but there is no required assignment
+
+00:14.460 --> 00:16.840
+because I still want you to just work on your final project
+
+00:16.840 --> 00:17.760
+if it's not done.
+
+00:18.360 --> 00:22.460
+Having said that, this chapter really goes,
+
+00:22.620 --> 00:25.740
+or this week, we're really looking at
+
+00:25.740 --> 00:30.320
+how do we go from our simple 8-bit CPU,
+
+00:30.720 --> 00:33.880
+single processing type of thing
+
+00:33.880 --> 00:38.720
+to something that's more real, if you will,
+
+00:39.120 --> 00:40.200
+something that's more,
+
+00:42.500 --> 00:45.460
+how do we get from where we're at to a real CPU?
+
+00:46.820 --> 00:50.380
+Okay, so I have four parts this week, okay,
+
+00:50.380 --> 00:52.760
+and they're all about the same as the other week,
+
+00:52.760 --> 00:54.320
+so it's a lot more stuff,
+
+00:54.720 --> 00:55.720
+but it is,
+
+00:55.740 --> 00:59.220
+it is important and good stuff for you to look at, okay?
+
+00:59.380 --> 01:01.960
+So the first one is performance considerations.
+
+01:01.960 --> 01:05.160
+So the first step in improving our performance
+
+01:05.160 --> 01:07.800
+is how do we calculate performance
+
+01:07.800 --> 01:12.780
+and how do we make trade-offs on performance,
+
+01:13.080 --> 01:14.160
+that kind of thing, okay?
+
+01:14.260 --> 01:17.920
+And so the basic performance equation is,
+
+01:18.340 --> 01:20.560
+you know, execution time equals instruction count.
+
+01:20.680 --> 01:24.920
+So how many instructions do we have to do?
+
+01:25.740 --> 01:27.780
+How many instructions do we have to do?
+
+01:27.780 --> 01:29.820
+How many cycles does it take to do an instruction?
+
+01:29.820 --> 01:34.820
+So CPI is a term we use for cycles per instruction.
+
+01:35.580 --> 01:38.980
+So how many cycles does it take to do an instruction?
+
+01:38.980 --> 01:40.680
+Now, different types of instructions
+
+01:40.680 --> 01:43.080
+have different CPIs potentially, okay?
+
+01:43.080 --> 01:46.560
+So let's get our CPI and then we divide it
+
+01:46.560 --> 01:48.340
+by the clock rate of how fast it is
+
+01:48.340 --> 01:49.760
+and that's how long it's gonna take us
+
+01:49.760 --> 01:52.940
+to run that instruction, whatever it is,
+
+01:52.940 --> 01:54.940
+or run that set of instructions, okay?
+
+01:55.740 --> 01:57.360
+And so it's pretty straightforward
+
+01:57.360 --> 02:00.640
+and this just defines them, okay?
+
+02:00.640 --> 02:05.380
+Cycles per instruction, clock rate, okay?
+
+02:05.840 --> 02:09.020
+And so I have a couple examples, right?
+
+02:09.100 --> 02:10.360
+So this is the basic performance.
+
+02:10.560 --> 02:12.520
+This is what you do, how you do.
+
+02:12.660 --> 02:15.680
+We have a little calculator, practice it, try some stuff.
+
+02:16.120 --> 02:21.300
+Here's some real CPU examples of what CPIs there are.
+
+02:22.620 --> 02:25.120
+You know, our week two, 14 CPU,
+
+02:25.740 --> 02:28.100
+you know, two cycles per instruction.
+
+02:29.800 --> 02:31.360
+And actually, I think it's actually more than,
+
+02:31.360 --> 02:35.160
+I think it's like four, I think it's actually four.
+
+02:35.160 --> 02:38.980
+But anyway, two, four, okay?
+
+02:38.980 --> 02:42.540
+Pretty slow, okay?
+
+02:42.540 --> 02:45.760
+But it's simple, okay?
+
+02:45.760 --> 02:49.160
+Our clock is really probably 0.0001 megahertz
+
+02:49.160 --> 02:51.900
+because it's essentially however fast we click on it.
+
+02:53.540 --> 02:54.360
+All right?
+
+02:54.360 --> 02:57.900
+So it gives you an idea of how long it takes to do something.
+
+02:58.780 --> 03:03.680
+Typical CPIs for different CPUs.
+
+03:03.680 --> 03:05.320
+And you look at some of these, like,
+
+03:05.320 --> 03:09.200
+wait, why is this, you know, 0.6,
+
+03:09.200 --> 03:13.940
+but it's only 0.000833 milliseconds
+
+03:13.940 --> 03:18.540
+when this 10 one takes 67, you know, 6,700.
+
+03:18.540 --> 03:21.040
+Part of it's, a lot of it's because of the clock speed.
+
+03:22.100 --> 03:22.940
+Okay?
+
+03:22.940 --> 03:24.200
+Clock speed's higher.
+
+03:24.200 --> 03:27.720
+Cycles per instruction is lower.
+
+03:27.720 --> 03:29.520
+That means it's faster, right?
+
+03:29.520 --> 03:30.900
+Lower is better.
+
+03:32.500 --> 03:33.340
+Okay?
+
+03:33.340 --> 03:34.180
+Anyway.
+
+03:37.180 --> 03:38.880
+All right, so this talks about that.
+
+03:40.040 --> 03:45.040
+Now, the next part is pipelining
+
+03:45.920 --> 03:47.480
+and instruction level parallelism.
+
+03:47.480 --> 03:51.040
+So we're gonna get into parallel processing down here.
+
+03:51.040 --> 03:52.660
+Pipelining is the idea of, we don't, you know,
+
+03:52.660 --> 03:53.620
+we don't know what's going on.
+
+03:53.620 --> 03:58.620
+We don't have to, basically what we do right now in our CPU,
+
+04:00.120 --> 04:02.620
+we can only run one instruction at a time.
+
+04:02.620 --> 04:04.020
+We have to run the whole instruction
+
+04:04.020 --> 04:05.760
+before we run the next instruction.
+
+04:06.720 --> 04:07.560
+Okay?
+
+04:07.560 --> 04:09.480
+And if you remember, or you understand
+
+04:09.480 --> 04:12.940
+how our system is working, we do enable.
+
+04:14.600 --> 04:15.440
+Okay?
+
+04:15.440 --> 04:18.700
+Turn on enable, then we turn on set,
+
+04:18.700 --> 04:23.200
+and then we turn offset, and then we turn off enable.
+
+04:23.620 --> 04:27.080
+It's kind of like the cycle of four things we have to do
+
+04:27.080 --> 04:30.340
+to do one cycle, to do one thing.
+
+04:30.340 --> 04:31.620
+And then we do the next one.
+
+04:31.620 --> 04:35.740
+Well, I have these four steps in a pipeline.
+
+04:35.740 --> 04:39.900
+What I'm gonna do is I'm gonna stack four different ones
+
+04:39.900 --> 04:41.260
+and offset them by one.
+
+04:41.260 --> 04:43.400
+So when I'm doing step one of process one,
+
+04:43.400 --> 04:45.060
+I can do step two of process two,
+
+04:45.060 --> 04:46.500
+and I can do step three of process three,
+
+04:46.500 --> 04:49.220
+and step four of process four, all simultaneously,
+
+04:49.220 --> 04:50.560
+and then just slide them over, slide them over,
+
+04:50.560 --> 04:51.400
+slide them over.
+
+04:51.400 --> 04:52.620
+That's the basics of pipelining.
+
+04:52.620 --> 04:53.460
+Okay?
+
+04:53.620 --> 04:57.920
+And so this section talks about pipelining,
+
+04:57.920 --> 05:00.160
+which is an instruction level parallelism,
+
+05:00.160 --> 05:03.680
+meaning we do multiple instructions in parallel.
+
+05:03.680 --> 05:05.260
+We don't do processes in parallel,
+
+05:05.260 --> 05:06.820
+we do instructions in parallel.
+
+05:07.820 --> 05:09.120
+All right?
+
+05:09.120 --> 05:10.860
+So that's pipelining.
+
+05:10.860 --> 05:15.860
+So that's like a first stage of how do we make our CPU
+
+05:16.320 --> 05:17.520
+have higher performance.
+
+05:19.780 --> 05:20.620
+Okay?
+
+05:20.620 --> 05:21.780
+Memory hierarchy and cache.
+
+05:21.780 --> 05:23.380
+We're gonna go over this again.
+
+05:23.620 --> 05:24.460
+Okay?
+
+05:24.460 --> 05:26.600
+Let's talk about the memory hierarchy,
+
+05:26.600 --> 05:29.020
+because even though we went over it earlier,
+
+05:29.020 --> 05:31.640
+it's a good thing to review again,
+
+05:31.640 --> 05:36.640
+because these are the concepts of how do we make things faster
+
+05:36.940 --> 05:41.940
+because one of the problems with memory is typically
+
+05:42.100 --> 05:44.240
+it's like a hundred megahertz.
+
+05:44.240 --> 05:45.080
+Okay?
+
+05:45.080 --> 05:45.900
+Memory is a hundred megahertz,
+
+05:45.900 --> 05:50.900
+but my CPU is, you know, five gigahertz, you know?
+
+05:51.180 --> 05:52.100
+So those are like,
+
+05:53.620 --> 05:56.420
+you know, order of magnitude or a different,
+
+05:56.420 --> 05:59.240
+at least one order of magnitude difference in speed.
+
+05:59.240 --> 06:00.580
+So how do you time them?
+
+06:00.580 --> 06:02.820
+How do you get them in sync?
+
+06:02.820 --> 06:03.640
+Okay?
+
+06:03.640 --> 06:05.320
+And this talks about that.
+
+06:06.420 --> 06:08.940
+We do that with primary with caches.
+
+06:08.940 --> 06:09.980
+Okay?
+
+06:09.980 --> 06:12.040
+And the three different caches that we use
+
+06:12.040 --> 06:15.080
+and one cache is faster than the next cache,
+
+06:15.080 --> 06:16.940
+which is faster than the next cache,
+
+06:16.940 --> 06:17.760
+kind of a thing,
+
+06:17.760 --> 06:19.600
+which is faster than memory,
+
+06:19.600 --> 06:21.860
+so that's why he's cached,
+
+06:21.860 --> 06:23.460
+in order to help us,
+
+06:23.620 --> 06:25.400
+not bottleneck on memory.
+
+06:28.180 --> 06:30.200
+All right, and then the last one is multi-core
+
+06:30.200 --> 06:31.360
+and parallel processing.
+
+06:32.080 --> 06:33.620
+You know, so how do we do multi-core processing?
+
+06:33.900 --> 06:35.160
+How do we do parallel processing?
+
+06:35.920 --> 06:37.400
+You know, how does that speed things up?
+
+06:37.440 --> 06:39.440
+It's not, you know, if I use two,
+
+06:39.960 --> 06:42.540
+it's not twice as fast because there's some overhead.
+
+06:43.480 --> 06:44.780
+You know, I can't just put it in half.
+
+06:44.780 --> 06:47.880
+And once I, you know, one core does half
+
+06:47.880 --> 06:48.900
+and the other core does half,
+
+06:49.160 --> 06:52.540
+there's still some administration that has to go on,
+
+06:52.540 --> 06:54.940
+you know, has to split it apart,
+
+06:55.020 --> 06:56.000
+has to put it back together.
+
+06:56.460 --> 06:57.280
+So there's some,
+
+06:57.280 --> 07:01.760
+I don't want to say inefficiencies,
+
+07:02.500 --> 07:04.420
+but there are sort of inefficiencies
+
+07:04.420 --> 07:08.180
+from the standpoint of I can't just do half and half
+
+07:08.180 --> 07:10.300
+because one has to be in charge.
+
+07:10.820 --> 07:14.260
+So that one in charge does less than the other one.
+
+07:14.260 --> 07:15.880
+So it's not a 50-50 split,
+
+07:16.020 --> 07:18.340
+which means it's not half the time.
+
+07:19.800 --> 07:20.020
+Okay.
+
+07:22.540 --> 07:27.260
+And the other reality, not all code paralyzes.
+
+07:27.500 --> 07:28.720
+You can't always paralyze.
+
+07:28.840 --> 07:30.940
+And there's different ways to parallelize stuff.
+
+07:32.080 --> 07:32.300
+Okay.
+
+07:32.520 --> 07:35.820
+So this walks through the Amdahl's law,
+
+07:36.820 --> 07:40.360
+which is the mathematical reality of parallelism.
+
+07:40.840 --> 07:43.380
+There's a simulator again to look at it.
+
+07:43.380 --> 07:45.040
+There's some activities to do.
+
+07:46.020 --> 07:48.860
+And then there's just examples of real CPUs
+
+07:48.860 --> 07:52.060
+on some of the ideas of how they work.
+
+07:52.540 --> 07:53.240
+Okay.
+
+07:53.820 --> 07:56.180
+You know, from a top level, not down deep,
+
+07:56.180 --> 07:57.900
+but at least from a top level.
+
+07:59.160 --> 07:59.300
+Okay.
+
+07:59.360 --> 08:00.880
+So all these things, like I said,
+
+08:00.920 --> 08:04.100
+are really important in terms of extrapolating
+
+08:04.100 --> 08:06.500
+our knowledge base out to modern CPUs,
+
+08:06.560 --> 08:08.820
+which we should all be able to do,
+
+08:08.960 --> 08:10.680
+or at least understand those concepts.
+
+08:11.520 --> 08:14.700
+We may not be able to actually build them or design them,
+
+08:14.720 --> 08:16.520
+but at least we understand the basic concepts,
+
+08:16.600 --> 08:18.660
+how they work and why they work.
+
+08:21.080 --> 08:21.660
+All right.
+
+08:21.660 --> 08:22.500
+So then,
+
+08:22.540 --> 08:27.400
+I put in here because there are some assignments
+
+08:27.400 --> 08:29.200
+without those, through those four things,
+
+08:29.480 --> 08:31.480
+you can do this participation if you want,
+
+08:32.700 --> 08:36.200
+which is just to do the activities built into the,
+
+08:37.040 --> 08:40.460
+to those pages, the lecture pages.
+
+08:41.280 --> 08:43.100
+And then the only other thing to work on
+
+08:43.100 --> 08:45.020
+will be your final project,
+
+08:45.820 --> 08:50.780
+which I have everything posted, I believe.
+
+08:50.780 --> 08:51.860
+Everything is posted.
+
+08:51.860 --> 08:55.560
+As of Wednesday, nine at eight o'clock,
+
+08:55.560 --> 08:56.600
+when I'm doing this video,
+
+08:56.720 --> 08:58.580
+the 26th, the day before Thanksgiving,
+
+08:58.580 --> 09:01.480
+everything's posted except for this,
+
+09:01.540 --> 09:03.380
+how to run the final SIM.
+
+09:03.560 --> 09:06.820
+And the final SIM is doing binary multiplication.
+
+09:07.320 --> 09:09.260
+So I explained how binary multiplication works
+
+09:09.260 --> 09:11.980
+and how that's actually being done in our CPU.
+
+09:13.600 --> 09:14.080
+Okay.
+
+09:14.200 --> 09:16.540
+So, and that, I just have that,
+
+09:16.600 --> 09:19.160
+I just have to reformat it and get it posted.
+
+09:19.160 --> 09:19.900
+So hopefully,
+
+09:19.900 --> 09:20.020
+hopefully,
+
+09:20.020 --> 09:21.160
+hopefully,
+
+09:21.860 --> 09:22.700
+maybe not tonight,
+
+09:22.700 --> 09:25.580
+but maybe Friday because tomorrow's Thanksgiving.
+
+09:25.580 --> 09:26.900
+So it won't happen tomorrow.
+
+09:28.520 --> 09:29.560
+Not sure when you're seeing this,
+
+09:29.560 --> 09:32.060
+but that's when it's going to happen.
+
+09:33.240 --> 09:33.560
+All right.
+
+09:34.340 --> 09:39.020
+So thanks for sticking it out the whole semester with me.
+
+09:39.480 --> 09:43.280
+Hopefully you found this class worthwhile and you found some,
+
+09:43.280 --> 09:48.920
+got some basics of how CPUs work and how they're made.
+
+09:50.420 --> 09:51.480
+Maybe we'll see you.
+
+09:52.700 --> 09:53.600
+In the spring.
+
+09:53.640 --> 09:54.160
+If not,
+
+09:54.340 --> 09:54.580
+you know,
+
+09:54.580 --> 09:55.880
+have a happy Thanksgiving,
+
+09:56.280 --> 10:04.080
+have a Merry Christmas and good luck.
+
+10:04.080 --> 10:05.400
+Bye.
+`;
+        // ------------------------------------
+
+        // 2. CORE UTILITIES
+        function timeToSeconds(timeStr) {
+            if (!timeStr) return 0;
+            const parts = timeStr.trim().split(':');
+            
+            // Handle both MM:SS.mmm and HH:MM:SS.mmm formats
+            if (parts.length === 2) {
+                // MM:SS.mmm format
+                let minutes = parseInt(parts[0]) || 0;
+                let seconds = parseFloat(parts[1]) || 0;
+                return minutes * 60 + seconds;
+            } else if (parts.length === 3) {
+                // HH:MM:SS.mmm format
+                let hours = parseInt(parts[0]) || 0;
+                let minutes = parseInt(parts[1]) || 0;
+                let seconds = parseFloat(parts[2]) || 0;
+                return hours * 3600 + minutes * 60 + seconds;
+            }
+            return 0;
+        }
+
+        function parseVtt(vttText) {
+            const cues = vttText.trim().split(/\n\n+/);
+            const parsedCues = [];
+            
+            cues.forEach(cueBlock => {
+                if (cueBlock.startsWith('WEBVTT') || cueBlock.trim() === '') return;
+                
+                const lines = cueBlock.trim().split('\n');
+                const timeLine = lines.find(line => line.includes('-->'));
+                if (!timeLine) return;
+
+                const [startTimeStr, endTimeStr] = timeLine.split(' --> ');
+                const textLines = lines.slice(lines.indexOf(timeLine) + 1);
+                
+                parsedCues.push({
+                    start: timeToSeconds(startTimeStr),
+                    end: timeToSeconds(endTimeStr),
+                    text: textLines.join(' ').trim()
+                });
+            });
+            return parsedCues;
+        }
+
+        // 3. TRANSCRIPT RENDERING AND INTERACTIVITY
+        function populateTranscript() {
+            const container = document.getElementById('transcript-container');
+            container.innerHTML = '';
+
+            parsedTranscript.forEach(cue => {
+                const lineElement = document.createElement('div');
+                lineElement.className = 'transcript-line p-2 cursor-pointer hover:bg-gray-100 rounded-lg';
+                lineElement.dataset.start = cue.start;
+                lineElement.dataset.end = cue.end;
+                lineElement.textContent = cue.text;
+                lineElement.setAttribute('role', 'button');
+                lineElement.setAttribute('tabindex', '0');
+
+                const seekToTime = () => {
+                    if (player && player.seekTo) {
+                        player.seekTo(cue.start, true);
+                        player.playVideo();
+                    }
+                };
+                
+                lineElement.addEventListener('click', seekToTime);
+                lineElement.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') { 
+                        e.preventDefault(); 
+                        seekToTime(); 
+                    }
+                });
+
+                container.appendChild(lineElement);
+            });
+        }
+
+        // 4. SYNC LOGIC
+        function highlightCurrentLine() {
+            if (!player || !player.getCurrentTime) return;
+
+            const currentTime = player.getCurrentTime();
+            const lines = document.querySelectorAll('#transcript-container .transcript-line');
+            let foundActive = false;
+
+            lines.forEach(line => {
+                const start = parseFloat(line.dataset.start);
+                const end = parseFloat(line.dataset.end);
+
+                if (currentTime >= start && currentTime < end) {
+                    if (!line.classList.contains('active-transcript-line')) {
+                        document.querySelector('.active-transcript-line')?.classList.remove('active-transcript-line');
+                        line.classList.add('active-transcript-line');
+                        line.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
+                    foundActive = true;
+                } else {
+                    line.classList.remove('active-transcript-line');
+                }
+            });
+        }
+
+        // 5. HEIGHT SYNCHRONIZATION (Transcript matches video container)
+        function syncTranscriptHeight() {
+            const mediaQuery = window.matchMedia('(min-width: 1024px)');
+            const videoContainer = document.getElementById('video-container');
+            const transcriptContainer = document.getElementById('transcript-container');
+            
+            if (!videoContainer || !transcriptContainer) return;
+            
+            if (mediaQuery.matches) {
+                // On large screens, match the video container height
+                const videoHeight = videoContainer.offsetHeight;
+                transcriptContainer.style.maxHeight = videoHeight + 'px';
+            } else {
+                // On mobile, revert to default fixed height
+                transcriptContainer.style.maxHeight = '24rem'; // h-96 equivalent
+            }
+        }
+
+        // 6. PLAYER STATE MANAGEMENT
+        function onPlayerStateChange(event) {
+            clearInterval(timeUpdater);
+            if (event.data === YT.PlayerState.PLAYING) {
+                timeUpdater = setInterval(highlightCurrentLine, 300);
+            }
+        }
+
+        // 7. INITIALIZATION
+        window.onYouTubeIframeAPIReady = function() {
+            player = new YT.Player('youtube-player', {
+                videoId: VIDEO_ID,
+                events: {
+                    'onStateChange': onPlayerStateChange
+                }
+            });
+        };
+
+        // --- DOM READY INITIALIZATION ---
+        document.addEventListener('DOMContentLoaded', () => {
+            parsedTranscript = parseVtt(vttContent);
+            populateTranscript();
+            syncTranscriptHeight();
+            
+            // Load YouTube API
+            if (typeof(YT) == 'undefined' || typeof(YT.Player) == 'undefined') {
+                const tag = document.createElement('script');
+                tag.src = "https://www.youtube.com/iframe_api";
+                document.head.appendChild(tag);
+            } else {
+                onYouTubeIframeAPIReady();
+            }
+            
+            console.log('CSC210 Week 16 page initialized.');
+        });
+
+        // 8. WINDOW RESIZE HANDLER
+        let resizeTimeout;
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(syncTranscriptHeight, 250);
+        });
+    </script>
+</body>
+</html>
