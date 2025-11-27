@@ -1,0 +1,1155 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Title for CSC210 Running the Final Simulation -->
+    <title>CSC210 - Running Our 8-bit CPU Simulator</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            /* Warm, approachable color scheme suitable for a technical course */
+            background-color: #F8F9FA; 
+            color: #343A40;
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .code-font {
+            font-family: 'Fira Code', monospace;
+        }
+        
+        /* Style for the currently active transcript line */
+        .active-transcript-line {
+            background-color: #f0f7ff;
+            font-weight: 600;
+            border-left: 4px solid #1e88e5;
+            padding-left: 12px;
+            transition: background-color 0.2s;
+        }
+
+        /* Skip link style (Accessibility requirement) */
+        .skip-link {
+            position: absolute;
+            top: -40px;
+            left: 0;
+            background: #1E88E5;
+            color: #F8F9FA;
+            padding: 8px;
+            z-index: 100;
+            transition: top 0.3s;
+        }
+
+        .skip-link:focus {
+            top: 0;
+        }
+
+        /* Custom scrollbar for transcript */
+        .transcript-container::-webkit-scrollbar {
+            width: 8px;
+        }
+        .transcript-container::-webkit-scrollbar-thumb {
+            background-color: #ced4da;
+            border-radius: 10px;
+        }
+        .transcript-container::-webkit-scrollbar-thumb:hover {
+            background-color: #adb5bd;
+        }
+
+        /* Video section divider */
+        .video-divider {
+            border-top: 2px solid #dee2e6;
+            padding: 2rem 0;
+            margin: 2rem 0;
+        }
+
+        /* Part badge styling */
+        .part-badge {
+            display: inline-block;
+            background-color: #1e88e5;
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+    </style>
+</head>
+<body class="p-4 sm:p-8">
+    <a href="#main-content" class="skip-link rounded-br-md">Skip to main content</a>
+    
+    <div id="main-content" class="max-w-7xl mx-auto">
+        <header class="mb-8">
+            <h1 class="text-3xl sm:text-4xl font-extrabold text-gray-800 mb-2">Running Our 8-bit CPU Simulator</h1>
+            <p class="text-lg text-gray-600">These videos detail how to load and run the final simulation on your 8-bit CPU design, including a comprehensive explanation of how the simulator performs binary multiplication using shift and add operations. The videos were recorded on May 17, 2022, and have been split into two parts for easier navigation.</p>
+        </header>
+
+        <main>
+            <!-- PART 1: Loading and Running the Simulation -->
+            <section class="mb-12">
+                <div class="part-badge">Part 1: Loading and Running the Simulation</div>
+                <h2 class="text-2xl font-semibold mb-4 text-gray-700">How to Load the Program and Run the Final Simulation</h2>
+                
+                <div class="flex flex-col lg:flex-row gap-4 w-full mb-8">
+                    <!-- Video Player Section -->
+                    <div class="w-full lg:w-2/3 flex-shrink-0">
+                        <div id="video-container-1" style="width: 100%; height: 0; padding-bottom: 56.25%; position: relative;">
+                            <iframe id="youtube-player-1"
+                                    style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"
+                                    src="https://www.youtube.com/embed/-UPmtT8e21g?enablejsapi=1"
+                                    title="YouTube video player"
+                                    frameborder="0"
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                    referrerpolicy="strict-origin-when-cross-origin"
+                                    allowfullscreen>
+                            </iframe>
+                        </div>
+                        <p class="mt-4 text-sm text-gray-500">Video ID: <span class="code-font">-UPmtT8e21g</span> | Duration: 0:00 - 10:02</p>
+                    </div>
+
+                    <!-- Transcript Container -->
+                    <div class="w-full lg:w-1/3 flex-shrink-0">
+                        <h3 class="text-lg font-semibold mb-3 text-gray-700">Video Transcript</h3>
+                        <div id="transcript-container-1" class="transcript-container h-96 overflow-y-scroll bg-white shadow-inner p-4 rounded-lg border border-gray-300">
+                            <p class="text-gray-500 text-center">Loading transcript...</p>
+                        </div>
+                        <p class="mt-4 text-sm text-gray-600">Click any line in the transcript or use the <strong>Enter/Space</strong> keys when focused to jump to that moment in the video.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- DIVIDER -->
+            <div class="video-divider"></div>
+
+            <!-- PART 2: Understanding Binary Multiplication -->
+            <section>
+                <div class="part-badge">Part 2: Understanding Binary Multiplication</div>
+                <h2 class="text-2xl font-semibold mb-4 text-gray-700">How Binary Multiplication Works with Shift and Add</h2>
+                
+                <div class="flex flex-col lg:flex-row gap-4 w-full mb-8">
+                    <!-- Video Player Section -->
+                    <div class="w-full lg:w-2/3 flex-shrink-0">
+                        <div id="video-container-2" style="width: 100%; height: 0; padding-bottom: 56.25%; position: relative;">
+                            <iframe id="youtube-player-2"
+                                    style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"
+                                    src="https://www.youtube.com/embed/QEZxFppWsaw?enablejsapi=1"
+                                    title="YouTube video player"
+                                    frameborder="0"
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                    referrerpolicy="strict-origin-when-cross-origin"
+                                    allowfullscreen>
+                            </iframe>
+                        </div>
+                        <p class="mt-4 text-sm text-gray-500">Video ID: <span class="code-font">QEZxFppWsaw</span> | Duration: 10:02 - 20:04</p>
+                    </div>
+
+                    <!-- Transcript Container -->
+                    <div class="w-full lg:w-1/3 flex-shrink-0">
+                        <h3 class="text-lg font-semibold mb-3 text-gray-700">Video Transcript</h3>
+                        <div id="transcript-container-2" class="transcript-container h-96 overflow-y-scroll bg-white shadow-inner p-4 rounded-lg border border-gray-300">
+                            <p class="text-gray-500 text-center">Loading transcript...</p>
+                        </div>
+                        <p class="mt-4 text-sm text-gray-600">Click any line in the transcript or use the <strong>Enter/Space</strong> keys when focused to jump to that moment in the video.</p>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        // ========================================
+        // VIDEO 1: LOADING AND RUNNING
+        // ========================================
+        const VIDEO_ID_1 = '-UPmtT8e21g';
+        let player1;
+        let timeUpdater1;
+        let parsedTranscript1 = [];
+
+        const vttContent1 = `WEBVTT
+
+00:00.000 --> 00:07.080
+ok I'm going to do that right now
+
+00:07.080 --> 00:11.280
+let me share my screen
+
+00:11.280 --> 00:24.180
+ok so to run you get to this point and
+
+00:24.180 --> 00:29.720
+you want to run it right the first thing
+
+00:29.720 --> 00:39.980
+you want to do is put the simulation on
+
+00:39.980 --> 00:44.780
+sorry is you want to reset everything
+
+00:44.780 --> 00:51.160
+and you know sometimes I have to load
+
+00:51.160 --> 00:55.520
+normally what I do is I turn it hit the
+
+00:55.520 --> 00:57.900
+load on and then reset just push the
+
+00:57.900 --> 00:59.540
+reset button that you put in there
+
+00:59.540 --> 01:03.740
+ok and then what you want to do is you
+
+01:03.740 --> 01:06.860
+want to look at all your hex output to
+
+01:06.860 --> 01:08.300
+make sure they're all zeros
+
+01:08.300 --> 01:12.020
+ok and then what you really want to do
+
+01:12.020 --> 01:16.740
+is you want to go into your CPU and you
+
+01:16.740 --> 01:20.780
+want to really look into RAM and you
+
+01:20.780 --> 01:22.460
+want to make sure that all these RAM
+
+01:22.460 --> 01:26.720
+inputs you know we have the first two
+
+01:26.720 --> 01:29.540
+rows that are filled in with actual RAM
+
+01:29.540 --> 01:31.400
+bytes you want to make sure they're all
+
+01:31.400 --> 01:35.000
+zeros and you don't get some kind of X
+
+01:35.000 --> 01:38.900
+in there ok if you have an X in one of
+
+01:38.900 --> 01:40.700
+those that means there's an error and
+
+01:40.700 --> 01:48.440
+the easiest thing to do is to just go out
+
+01:48.440 --> 01:51.300
+of simulation click on the one that has
+
+01:51.300 --> 01:52.640
+an arrow just click on the box because
+
+01:52.640 --> 01:54.860
+you made that hopefully you made it as a
+
+01:54.860 --> 01:59.180
+box you can delete the box and then grab
+
+01:59.180 --> 02:04.780
+one that's has the right rear all zeros
+
+02:04.780 --> 02:08.300
+duplicate it control D can duplicate and
+
+02:08.300 --> 02:11.480
+then you can just drag it into the same
+
+02:11.480 --> 02:18.200
+spot it wasn't okay all right so you
+
+02:18.200 --> 02:19.040
+just want to make sure those are all
+
+02:19.040 --> 02:26.640
+zeros and then
+
+02:26.640 --> 02:34.460
+what you have to do is you want to
+
+02:34.460 --> 02:37.760
+there's two steps you have to do and you
+
+02:37.760 --> 02:43.140
+can either set your Mars
+
+02:43.140 --> 02:44.940
+ok so there's two things wanna do first
+
+02:44.940 --> 02:46.500
+we want to load the program into
+
+02:46.500 --> 02:47.880
+external RAM
+
+02:47.880 --> 02:50.580
+ok so we're going to right-click on
+
+02:50.580 --> 02:54.440
+external ram and click edit content
+
+02:54.440 --> 02:56.640
+which will go
+
+02:56.640 --> 03:03.480
+give us this hex editor so it's all in hex so we're gonna do is open and we're
+
+03:03.480 --> 03:12.180
+gonna select that file I posted for the program say open and you'll see in here
+
+03:12.180 --> 03:19.280
+that the values change to hex values okay and then you can just close window
+
+03:19.280 --> 03:24.240
+so our external RAM now doesn't have all zeros in it it has some value just start
+
+03:24.240 --> 03:32.860
+with 2005 okay and then what we need to do is we need to set our Mars to say
+
+03:32.860 --> 03:43.920
+we're gonna basically we're gonna set the internal clock in the CPU okay we're
+
+03:43.920 --> 03:48.560
+gonna let because we set Mars we're gonna use every
+
+03:52.860 --> 03:53.980
+this little clock
+
+03:54.240 --> 03:58.200
+this 256 clock down here everything that cycles through what it's gonna do is
+
+03:58.200 --> 04:04.140
+gonna change the memory address and RAM we're using okay that's why we want to
+
+04:04.140 --> 04:11.320
+select Mars for memory address register set so that we can take what's in
+
+04:11.320 --> 04:17.520
+external RAM right we're gonna take what's in this external RAM and we're
+
+04:17.520 --> 04:24.220
+gonna put it into our CPU into RAM of our CPU okay and to do that what we go
+
+04:24.220 --> 04:29.080
+all we have to do is go to simulate select our tick frequency of whatever we
+
+04:29.080 --> 04:37.480
+want okay and then I'm going to cycle up here so we can see the bus and then
+
+04:37.480 --> 04:46.840
+we'll go tick tick enabled and it'll cycle through and run and whenever my bus
+
+04:46.840 --> 04:51.220
+gets the FF that's 255 it means it's gone from 0 to 255 memory address
+
+04:51.220 --> 04:55.940
+locations okay if you look at your clock down here in the corner it's still
+
+04:55.940 --> 05:03.640
+cycling but nothing's happening because I've set that I've limited that internal
+
+05:03.640 --> 05:09.520
+bus clock to zero to 55 okay so then we go to simulate and we turn off tick
+
+05:09.520 --> 05:18.100
+enabled so it's no longer running and then we want to go into our CPU into our
+
+05:18.100 --> 05:26.600
+RAM and we want to see that memory some of these memory locations that now have
+
+05:26.600 --> 05:31.360
+values other than zero in them okay so this means we've loaded our program into
+
+05:31.360 --> 05:42.760
+RAM okay so our external programs in the RAM which means we no longer need to set
+
+05:42.760 --> 05:47.500
+memory address registers and we no longer need to load our program because
+
+05:47.500 --> 05:48.080
+our programs are running so we're going to run our program and we're going to
+
+05:48.080 --> 05:54.700
+see that it's already loaded okay for programs loaded and now we can run our
+
+05:54.700 --> 06:01.340
+program which is going to be five times five okay and we can watch all these and
+
+06:01.340 --> 06:07.340
+again we can set the frequency to lower if we wanted to happen slower or higher
+
+06:07.340 --> 06:12.020
+if we wanted to happen faster but again all we need to do is tick enabled and
+
+06:12.020 --> 06:17.480
+then we'll start running the program okay
+
+06:17.480 --> 06:22.100
+And it'll go through the whole program until it's done.
+
+06:25.100 --> 06:25.540
+Okay.
+
+06:25.940 --> 06:26.880
+So it's now done.
+
+06:29.280 --> 06:29.720
+Okay.
+
+06:30.060 --> 06:33.900
+And R2 is the answer, which is 1, 9, and I'll explain that in a minute.
+
+06:34.000 --> 06:35.940
+But it's 1, 9 or 25.
+
+06:37.660 --> 06:43.160
+Again, once it's done, we want to go deselect ticks enabled, and it's done running.
+
+06:44.040 --> 06:44.480
+Okay.
+
+06:44.720 --> 06:46.920
+And we know it's done because end is now red.
+
+06:47.480 --> 06:47.880
+Okay.
+
+06:50.800 --> 06:53.040
+Our little LED for end is now red.
+
+06:55.740 --> 06:56.100
+Okay.
+
+06:56.180 --> 06:57.340
+So that's how you run your program.
+
+06:59.380 --> 06:59.740
+Okay.
+
+06:59.780 --> 07:04.160
+If you want to try it again, you know, load, reset.
+
+07:08.660 --> 07:10.580
+I'm not sure why everything's FF.
+
+07:10.580 --> 07:16.580
+But we're looking to simulate reset.
+
+07:17.480 --> 07:31.700
+Oh, and then I'm going to enable simulation to solve zeros.
+
+07:32.940 --> 07:33.100
+Okay.
+
+07:39.100 --> 07:39.680
+All right.
+
+07:39.720 --> 07:40.680
+So any questions about how to run it?
+
+07:42.680 --> 07:46.920
+Now, another thing I did want to talk about.
+
+07:47.160 --> 07:47.460
+Let's see.
+
+07:47.480 --> 07:51.160
+This was how this multiplication happens.
+
+07:52.820 --> 07:53.260
+Okay.
+
+07:54.200 --> 07:55.980
+And we're doing 5 times 5.
+
+08:00.980 --> 08:01.420
+Okay.
+
+08:01.420 --> 08:03.420
+So how multiplication works.
+
+08:08.840 --> 08:13.700
+2, 3, 4, 5, 6, 7, 8.
+
+08:14.000 --> 08:14.200
+Okay.
+
+08:14.280 --> 08:14.920
+So that's 5.
+
+08:15.920 --> 08:16.980
+0, 0.
+
+08:17.460 --> 08:19.060
+0, 0, 0, 1, 0, 1.
+
+08:19.540 --> 08:29.120
+And so we're doing 5 times 5 times 0, 0, 0, 0, 0, 0, 1, 0.
+
+08:29.260 --> 08:29.460
+Oops.
+
+08:33.140 --> 08:33.540
+Okay.
+
+08:33.660 --> 08:34.760
+We're doing 5 times 5.
+
+08:40.180 --> 08:41.400
+And those are almost.
+
+08:42.040 --> 08:43.060
+Let me change these.
+
+08:43.060 --> 08:44.240
+Let me change this to.
+
+08:47.460 --> 08:50.520
+Something that's.
+
+08:54.520 --> 08:54.760
+Okay.
+
+08:54.760 --> 08:54.880
+Okay.
+
+08:56.460 --> 08:56.900
+Okay.
+
+08:57.340 --> 08:58.300
+So if we're doing this.
+
+08:58.880 --> 08:59.320
+Right.
+
+09:00.840 --> 09:02.260
+If we do multiplication.
+
+09:02.500 --> 09:02.640
+Right.
+
+09:02.880 --> 09:03.320
+1.
+
+09:03.480 --> 09:05.100
+We always start at the bottom on the right.
+
+09:05.200 --> 09:07.160
+And we multiply the first digit here.
+
+09:07.300 --> 09:08.120
+Which is this.
+
+09:08.840 --> 09:09.280
+1.
+
+09:11.060 --> 09:12.240
+Times everything above it.
+
+09:12.260 --> 09:12.460
+Right.
+
+09:13.180 --> 09:14.680
+Or the top times that first one.
+
+09:15.480 --> 09:17.000
+So that first one then would be.
+
+09:17.220 --> 09:17.340
+1.
+
+09:17.340 --> 09:17.440
+1.
+
+09:17.440 --> 09:17.460
+1.
+
+09:17.600 --> 09:17.840
+Times.
+
+09:19.000 --> 09:20.060
+All that would be.
+
+09:20.780 --> 09:23.160
+0, 0, 0, 0, 0, 0.
+
+09:23.780 --> 09:24.640
+1, 0, 1.
+
+09:25.380 --> 09:25.780
+Right.
+
+09:27.800 --> 09:29.200
+Let me make that underline.
+
+09:30.680 --> 09:31.100
+Okay.
+
+09:31.840 --> 09:33.220
+And then the next one would be.
+
+09:34.440 --> 09:36.300
+0 times everything above it would be.
+
+09:37.260 --> 09:40.040
+0, 2, 3, 4, 5, 6, 7, 8.
+
+09:40.220 --> 09:40.520
+Right.
+
+09:41.880 --> 09:42.620
+That's the.
+
+09:43.040 --> 09:44.460
+That's the 0 times.
+
+09:45.800 --> 09:46.460
+What's above it.
+
+09:46.540 --> 09:46.740
+Right.
+
+09:46.740 --> 09:50.380
+The next one would be 1 times what's above it.
+
+09:50.380 --> 10:00.740
+So we would come over one more, it would be 0, 2, 3, 4, 5, 1, 0, 1, right?
+`;
+
+        // ========================================
+        // VIDEO 2: BINARY MULTIPLICATION
+        // ========================================
+        const VIDEO_ID_2 = 'QEZxFppWsaw';
+        let player2;
+        let timeUpdater2;
+        let parsedTranscript2 = [];
+
+        const vttContent2 = `WEBVTT
+
+00:00.000 --> 00:03.840
+and we keep doing that all the way down
+
+00:03.840 --> 00:08.460
+right and then we add all these numbers together to get our result
+
+00:08.460 --> 00:09.900
+noting that
+
+00:09.900 --> 00:13.540
+this blank space is really
+
+00:13.540 --> 00:16.960
+a zero
+
+00:16.960 --> 00:22.040
+right
+
+00:22.040 --> 00:29.040
+right all these blank spaces are really zeros
+
+00:38.200 --> 00:41.400
+okay and we would just walk through and if we had more ones and zeros we just
+
+00:41.400 --> 00:45.680
+keep going right
+
+00:45.680 --> 00:48.680
+all the rest are zero so we actually literally just go
+
+00:52.040 --> 00:58.160
+right until we finished all the multiplications
+
+00:58.160 --> 01:01.720
+okay and then you add them all up
+
+01:01.720 --> 01:07.000
+so what you should notice
+
+01:07.000 --> 01:09.940
+on all of these is that
+
+01:09.940 --> 01:12.740
+the
+
+01:12.740 --> 01:18.540
+whenever it's we're doing one times
+
+01:18.540 --> 01:22.020
+we always get whatever is in the top and if it's
+
+01:22.040 --> 01:26.260
+zero times it's always zero
+
+01:26.260 --> 01:29.940
+okay so how we do this
+
+01:29.940 --> 01:36.780
+and our cpu which doesn't have multiplication only as addition
+
+01:36.780 --> 01:38.640
+so what we do is
+
+01:38.640 --> 01:45.640
+we start with this
+
+01:47.020 --> 01:48.440
+okay
+
+01:48.440 --> 01:51.700
+and so these are our r zero and r one
+
+01:52.040 --> 01:59.500
+okay I'm not sure which one is which but it doesn't matter ones are 0 ones are 1
+
+01:59.500 --> 02:07.000
+okay so what we're going to do is we're going to put the result in r2 and then
+
+02:07.000 --> 02:19.540
+we're going to keep adding so and then we're going to use r3 as our counter to
+
+02:19.540 --> 02:23.300
+know if we've done all the multiplication we need to do if we did
+
+02:23.300 --> 02:31.520
+all eight bits times all eight bits okay so we start here it's one times the
+
+02:31.520 --> 02:42.880
+numerator right or one times the multiple on the top so we get zero zero
+
+02:42.880 --> 02:48.240
+zero zero zero one zero one okay
+
+02:49.540 --> 03:00.540
+and that's what we put in r2 gets that's our current result okay and then what we
+
+03:00.540 --> 03:03.980
+do is
+
+03:06.460 --> 03:17.600
+that's in r2 and then r3 is our counter
+
+03:18.360 --> 03:19.460
+this is the counter
+
+03:19.540 --> 03:38.000
+r3 let's just say this is r0 r1 okay so then what we do is we want to do the
+
+03:38.000 --> 03:46.020
+second multiplication which is the zero so what we do the first thing we do is
+
+03:46.020 --> 03:50.260
+before we can do the second multiplication
+
+03:55.240 --> 04:01.820
+what we want to do for our zero is we want to shift left okay so our zero now
+
+04:01.820 --> 04:13.780
+becomes shift left which means we move it left one so our zero now becomes zero
+
+04:13.780 --> 04:16.000
+zero zero four zeros one zero
+
+04:16.000 --> 04:29.920
+0 1 0 and our one becomes we shift right for our one so our one becomes okay so
+
+04:29.920 --> 04:41.200
+we shift left for our zero shift right okay now we do the multiplication and it
+
+04:41.200 --> 04:48.580
+doesn't go into our two right the multiplication is it's all zeros right
+
+04:48.580 --> 05:01.660
+and we add that to our to whatever the result is and our three becomes we shift
+
+05:01.660 --> 05:04.480
+left for our three
+
+05:07.580 --> 05:11.000
+and then for our three we
+
+05:11.200 --> 05:32.500
+so our three becomes 1 0 meaning we just did the second bit okay and then we
+
+05:32.500 --> 05:36.240
+repeat that process shift left shift right
+
+05:41.200 --> 05:50.440
+shift left oops I don't want this
+
+06:09.200 --> 06:11.180
+I want to keep that same process so R is
+
+06:11.180 --> 06:16.360
+0 we shift left one so our zero becomes
+
+06:18.340 --> 06:26.300
+one zero zero zero one zero one zero zero our one we shift right so our one
+
+06:26.300 --> 06:35.900
+becomes seven zeros with the one okay we do that multiplication and we get zero
+
+06:35.900 --> 06:38.300
+zero
+
+06:39.060 --> 06:41.060
+we add that to our two
+
+06:41.180 --> 06:49.660
+whatever is already in our two and our three is shift left so becomes 1 0 0
+
+06:49.660 --> 06:58.980
+ok so the value in our to now is this first number we put in here zero zero
+
+06:58.980 --> 07:06.480
+zero zero zero one zero one which is this number here right plus 0 what are
+
+07:06.480 --> 07:11.000
+we doing plus 0 0 0 1 0 1 0 1 0 1
+
+07:11.180 --> 07:18.820
+zero which is this number here right
+
+07:21.560 --> 07:26.300
+okay and you just repeat that process shift left shift right if it's a one
+
+07:26.300 --> 07:32.180
+take that number that's on the top add it to what's in our to shift left our
+
+07:32.180 --> 07:38.740
+three one and your and you just keep shifting left on our three and tell you
+
+07:38.740 --> 07:48.160
+know until our three becomes so the last one the eighth one is one zero zero
+
+07:48.160 --> 07:57.120
+zero zero zero zero zero yeah okay that's the eighth one so that's our
+
+07:57.120 --> 08:07.620
+eighth bit and so when it becomes when that one shifts out we know we're done
+
+08:07.620 --> 08:08.720
+because we've done all
+
+08:08.720 --> 08:16.160
+eight bits right this is on our three when our three shifts out then we know
+
+08:16.160 --> 08:22.320
+we're done we already did eight bits okay so every time we just take if this
+
+08:22.320 --> 08:28.580
+rightmost bit in the bottom is a one we just take the value of our zero and add
+
+08:28.580 --> 08:36.560
+it to our two okay and then what we do is we shift our zero left one we shift
+
+08:36.560 --> 08:38.700
+our zero right one look at that left one and then we shift our zero right one
+
+08:38.720 --> 08:44.600
+rightmost bit to zero we just skip everything and go repeat that shift
+
+08:44.600 --> 08:50.000
+shift left shift right process so one we take whatever is in the top and add it
+
+08:50.000 --> 09:00.840
+into our two okay and since you don't know what's all in these bits you always
+
+09:00.840 --> 09:05.580
+process all eight bits okay even though we have a bunch of zeros in the front we
+
+09:05.580 --> 09:08.580
+still process all eight bits
+
+09:08.720 --> 09:13.440
+that's what we're using in this case we're using our three to do that by
+
+09:13.440 --> 09:17.240
+shifting it left and keeping track of it
+
+09:21.140 --> 09:25.740
+okay so that's how we do multiplication
+
+09:26.860 --> 09:34.160
+in binary as repeated addition but in between we do these shifts you know
+
+09:34.160 --> 09:38.720
+multiply the top by two divide the bottom by two so that we can grab that
+
+09:38.720 --> 09:41.480
+next bit
+
+09:44.100 --> 09:50.140
+okay and these these shifts left are basically padding these red zeros in to
+
+09:50.140 --> 09:57.340
+our numbers okay and the shift right is just to get what's the current number
+
+09:57.340 --> 10:03.740
+we're using as our multiplier in this rightmost column
+`;
+
+        // ========================================
+        // SHARED UTILITIES
+        // ========================================
+        function timeToSeconds(timeStr) {
+            if (!timeStr) return 0;
+            const parts = timeStr.trim().split(':');
+            
+            if (parts.length === 2) {
+                let minutes = parseInt(parts[0]) || 0;
+                let seconds = parseFloat(parts[1]) || 0;
+                return minutes * 60 + seconds;
+            } else if (parts.length === 3) {
+                let hours = parseInt(parts[0]) || 0;
+                let minutes = parseInt(parts[1]) || 0;
+                let seconds = parseFloat(parts[2]) || 0;
+                return hours * 3600 + minutes * 60 + seconds;
+            }
+            return 0;
+        }
+
+        function parseVtt(vttText) {
+            const cues = vttText.trim().split(/\n\n+/);
+            const parsedCues = [];
+            
+            cues.forEach(cueBlock => {
+                if (cueBlock.startsWith('WEBVTT') || cueBlock.trim() === '') return;
+                
+                const lines = cueBlock.trim().split('\n');
+                const timeLine = lines.find(line => line.includes('-->'));
+                if (!timeLine) return;
+
+                const [startTimeStr, endTimeStr] = timeLine.split(' --> ');
+                const textLines = lines.slice(lines.indexOf(timeLine) + 1);
+                
+                parsedCues.push({
+                    start: timeToSeconds(startTimeStr),
+                    end: timeToSeconds(endTimeStr),
+                    text: textLines.join(' ').trim()
+                });
+            });
+            return parsedCues;
+        }
+
+        // ========================================
+        // VIDEO 1 FUNCTIONS
+        // ========================================
+        function populateTranscript1() {
+            const container = document.getElementById('transcript-container-1');
+            container.innerHTML = '';
+
+            parsedTranscript1.forEach(cue => {
+                const lineElement = document.createElement('div');
+                lineElement.className = 'transcript-line p-2 cursor-pointer hover:bg-gray-100 rounded-lg';
+                lineElement.dataset.start = cue.start;
+                lineElement.dataset.end = cue.end;
+                lineElement.textContent = cue.text;
+                lineElement.setAttribute('role', 'button');
+                lineElement.setAttribute('tabindex', '0');
+
+                const seekToTime = () => {
+                    if (player1 && player1.seekTo) {
+                        player1.seekTo(cue.start, true);
+                        player1.playVideo();
+                    }
+                };
+                
+                lineElement.addEventListener('click', seekToTime);
+                lineElement.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') { 
+                        e.preventDefault(); 
+                        seekToTime(); 
+                    }
+                });
+
+                container.appendChild(lineElement);
+            });
+        }
+
+        function highlightCurrentLine1() {
+            if (!player1 || !player1.getCurrentTime) return;
+
+            const currentTime = player1.getCurrentTime();
+            const lines = document.querySelectorAll('#transcript-container-1 .transcript-line');
+
+            lines.forEach(line => {
+                const start = parseFloat(line.dataset.start);
+                const end = parseFloat(line.dataset.end);
+
+                if (currentTime >= start && currentTime < end) {
+                    if (!line.classList.contains('active-transcript-line')) {
+                        document.querySelector('#transcript-container-1 .active-transcript-line')?.classList.remove('active-transcript-line');
+                        line.classList.add('active-transcript-line');
+                        line.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
+                } else {
+                    line.classList.remove('active-transcript-line');
+                }
+            });
+        }
+
+        function syncTranscriptHeight1() {
+            const mediaQuery = window.matchMedia('(min-width: 1024px)');
+            const videoContainer = document.getElementById('video-container-1');
+            const transcriptContainer = document.getElementById('transcript-container-1');
+            
+            if (!videoContainer || !transcriptContainer) return;
+            
+            if (mediaQuery.matches) {
+                const videoHeight = videoContainer.offsetHeight;
+                transcriptContainer.style.maxHeight = videoHeight + 'px';
+            } else {
+                transcriptContainer.style.maxHeight = '24rem';
+            }
+        }
+
+        function onPlayerStateChange1(event) {
+            clearInterval(timeUpdater1);
+            if (event.data === YT.PlayerState.PLAYING) {
+                timeUpdater1 = setInterval(highlightCurrentLine1, 300);
+            }
+        }
+
+        window.onYouTubeIframeAPIReady = function() {
+            player1 = new YT.Player('youtube-player-1', {
+                videoId: VIDEO_ID_1,
+                events: {
+                    'onStateChange': onPlayerStateChange1
+                }
+            });
+
+            setTimeout(() => {
+                player2 = new YT.Player('youtube-player-2', {
+                    videoId: VIDEO_ID_2,
+                    events: {
+                        'onStateChange': onPlayerStateChange2
+                    }
+                });
+            }, 100);
+        };
+
+        // ========================================
+        // VIDEO 2 FUNCTIONS
+        // ========================================
+        function populateTranscript2() {
+            const container = document.getElementById('transcript-container-2');
+            container.innerHTML = '';
+
+            parsedTranscript2.forEach(cue => {
+                const lineElement = document.createElement('div');
+                lineElement.className = 'transcript-line p-2 cursor-pointer hover:bg-gray-100 rounded-lg';
+                lineElement.dataset.start = cue.start;
+                lineElement.dataset.end = cue.end;
+                lineElement.textContent = cue.text;
+                lineElement.setAttribute('role', 'button');
+                lineElement.setAttribute('tabindex', '0');
+
+                const seekToTime = () => {
+                    if (player2 && player2.seekTo) {
+                        player2.seekTo(cue.start, true);
+                        player2.playVideo();
+                    }
+                };
+                
+                lineElement.addEventListener('click', seekToTime);
+                lineElement.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') { 
+                        e.preventDefault(); 
+                        seekToTime(); 
+                    }
+                });
+
+                container.appendChild(lineElement);
+            });
+        }
+
+        function highlightCurrentLine2() {
+            if (!player2 || !player2.getCurrentTime) return;
+
+            const currentTime = player2.getCurrentTime();
+            const lines = document.querySelectorAll('#transcript-container-2 .transcript-line');
+
+            lines.forEach(line => {
+                const start = parseFloat(line.dataset.start);
+                const end = parseFloat(line.dataset.end);
+
+                if (currentTime >= start && currentTime < end) {
+                    if (!line.classList.contains('active-transcript-line')) {
+                        document.querySelector('#transcript-container-2 .active-transcript-line')?.classList.remove('active-transcript-line');
+                        line.classList.add('active-transcript-line');
+                        line.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
+                } else {
+                    line.classList.remove('active-transcript-line');
+                }
+            });
+        }
+
+        function syncTranscriptHeight2() {
+            const mediaQuery = window.matchMedia('(min-width: 1024px)');
+            const videoContainer = document.getElementById('video-container-2');
+            const transcriptContainer = document.getElementById('transcript-container-2');
+            
+            if (!videoContainer || !transcriptContainer) return;
+            
+            if (mediaQuery.matches) {
+                const videoHeight = videoContainer.offsetHeight;
+                transcriptContainer.style.maxHeight = videoHeight + 'px';
+            } else {
+                transcriptContainer.style.maxHeight = '24rem';
+            }
+        }
+
+        function onPlayerStateChange2(event) {
+            clearInterval(timeUpdater2);
+            if (event.data === YT.PlayerState.PLAYING) {
+                timeUpdater2 = setInterval(highlightCurrentLine2, 300);
+            }
+        }
+
+        // ========================================
+        // INITIALIZATION
+        // ========================================
+        document.addEventListener('DOMContentLoaded', () => {
+            parsedTranscript1 = parseVtt(vttContent1);
+            populateTranscript1();
+            syncTranscriptHeight1();
+
+            parsedTranscript2 = parseVtt(vttContent2);
+            populateTranscript2();
+            syncTranscriptHeight2();
+            
+            if (typeof(YT) == 'undefined' || typeof(YT.Player) == 'undefined') {
+                const tag = document.createElement('script');
+                tag.src = "https://www.youtube.com/iframe_api";
+                document.head.appendChild(tag);
+            } else {
+                onYouTubeIframeAPIReady();
+            }
+            
+            console.log('CSC210 Run Final Simulation page initialized.');
+        });
+
+        // ========================================
+        // WINDOW RESIZE HANDLER
+        // ========================================
+        let resizeTimeout;
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(() => {
+                syncTranscriptHeight1();
+                syncTranscriptHeight2();
+            }, 250);
+        });
+    </script>
+</body>
+</html>
